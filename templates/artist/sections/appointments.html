@@ -1,0 +1,122 @@
+<!-- ════════ MY APPOINTMENTS ════════ -->
+<div id="sec-appointments" class="section">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold" style="color: var(--text);">My Appointments</h2>
+        <p class="text-sm text-studio-muted mt-1">Manage and track all your studio bookings and requests</p>
+    </div>
+
+    <div class="card" style="background: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 24px;">
+        <div class="card-head"
+            style="flex-wrap: wrap; gap: 1rem; background: #F8F9FA; border-bottom: 1px solid #E9ECEF;">
+            <span class="card-title" style="color: #2F3640;">Booking Management</span>
+            <div class="ftabs">
+                <style>
+                    body.light .ftab.active {
+                        color: #4834D4;
+                        border-color: #4834D4;
+                        background: #FFFFFF;
+                        box-shadow: 0 4px 12px rgba(72, 52, 212, 0.1);
+                    }
+                </style>
+                <button class="ftab active" onclick="filt('ar', 'all', this)">All</button>
+                <button class="ftab" onclick="filt('ar','Pending',this)">Pending</button>
+                <button class="ftab" onclick="filt('ar','Approved',this)">Approved</button>
+                <button class="ftab" onclick="filt('ar','Done',this)">Done</button>
+                <button class="ftab" onclick="filt('ar','Rejected',this)">Rejected</button>
+            </div>
+        </div>
+        <div class="tbl-wrap">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Customer</th>
+                        <th>Concept</th>
+                        <th>Reference</th>
+                        <th>Schedule</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if appointments %}
+                    {% for appt in appointments %}
+                    <tr class="ar" data-status="{{ appt.status }}">
+                        <td class="mono" style="font-size: 0.75rem; color: var(--text-dim);">#{{ appt.appointment_id }}
+                        </td>
+                        <td style="font-weight: 600;">{{ appt.customer_name }}</td>
+                        <td>
+                            <div style="font-size: 0.85rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                title="{{ appt.tattoo_concept }}">
+                                {{ appt.tattoo_concept }}
+                            </div>
+                        </td>
+                        <td>
+                            {% if appt.reference %}
+                            {% if appt.reference.startswith('http') %}
+                            <a href="{{ appt.reference }}" target="_blank"
+                                class="px-2 py-1 bg-studio-light rounded text-[10px] font-bold hover:bg-gold hover:text-black transition-all"
+                                style="color: var(--text-muted); border: 1px solid var(--border);">
+                                <i class="fa-solid fa-link"></i> Link
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('static', filename=appt.reference) }}" target="_blank"
+                                class="px-2 py-1 bg-studio-light rounded text-[10px] font-bold hover:bg-gold hover:text-black transition-all"
+                                style="color: var(--text-muted); border: 1px solid var(--border);">
+                                <i class="fa-solid fa-image"></i> Image
+                            </a>
+                            {% endif %}
+                            {% else %}
+                            <span style="color: var(--text-dim); font-size: 0.75rem;">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="mono">
+                            <div style="font-size: 0.8rem; color: var(--text);">{{ appt.appointment_date }}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">at {{ appt.appointment_time }} ({{
+                                appt.duration_hours if appt.duration_hours else '?' }}h)</div>
+                        </td>
+                        <td>
+                            <span
+                                class="badge {% if appt.status=='Pending' %}bp{% elif appt.status=='Approved' %}ba{% elif appt.status=='Done' %}bd{% elif appt.status=='Rejected' %}br{% else %}bc{% endif %}">
+                                {{ appt.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if appt.status=='Pending' %}
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
+                                    style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input class="ninput" type="number" name="duration_hours" placeholder="Hrs" min="1"
+                                        max="12" required>
+                                    <button type="submit" class="btn btn-gr btn-sm" title="Approve"><i
+                                            class="fa-solid fa-check"></i></button>
+                                </form>
+                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}">
+                                    <button type="submit" class="btn btn-rd btn-sm" title="Reject"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </form>
+                            </div>
+                            {% elif appt.status=='Approved' %}
+                            <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
+                                <button type="submit" class="btn btn-bl btn-sm"><i
+                                        class="fa-solid fa-flag-checkered mr-1"></i> Mark Done</button>
+                            </form>
+                            {% else %}
+                            <span style="color: var(--text-dim); font-size: 0.75rem;">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="empty">
+                            <i class="fa-regular fa-calendar-xmark"></i>
+                            <p>No appointments found in your schedule.</p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

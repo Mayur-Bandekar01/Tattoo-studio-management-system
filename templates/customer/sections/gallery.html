@@ -1,0 +1,88 @@
+<!-- ═══════════════════════════════════════
+     SECTION: GALLERY  (sec-gallery)
+     File: templates/customer/sections/gallery.html
+═══════════════════════════════════════ -->
+<div id="sec-gallery" class="section">
+
+    <div class="content-card">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="font-display text-studio-dark text-base">Studio Gallery</h3>
+                <p class="text-studio-muted text-xs mt-1">
+                    {% if gallery %}
+                        {{ gallery|length }} artwork{{ 's' if gallery|length != 1 }} by our artists
+                    {% else %}
+                        Browse our portfolio for inspiration!
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Style filter pills (dynamic from DB) -->
+            <div class="flex gap-2 flex-wrap">
+                <button onclick="filterGallery('all',this)"
+                    class="px-3 py-1 text-xs rounded-full bg-studio-dark text-white font-medium gal-f">All</button>
+                {% set styles = gallery | map(attribute='style') | select | unique | list %}
+                {% for style in styles %}
+                <button onclick="filterGallery('{{ style }}',this)"
+                    class="px-3 py-1 text-xs rounded-full bg-studio-light text-studio-muted font-medium gal-f">{{ style }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if gallery %}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="galleryGrid">
+            {% for item in gallery %}
+            <div class="gallery-item"
+                 data-category="{{ item.style or 'Other' }}"
+                 data-img="{{ url_for('static', filename=item.image_path) }}"
+                 data-title="{{ item.caption or 'Untitled' }}"
+                 data-artist="{{ item.artist_name }}"
+                 data-style="{{ item.style or '' }}"
+                 onclick="openLb(this)">
+
+                <div style="overflow:hidden;height:176px;">
+                    <img src="{{ url_for('static', filename=item.image_path) }}"
+                         alt="{{ item.caption or 'Tattoo' }}"
+                         class="gallery-img" loading="lazy">
+                </div>
+
+                <div class="gallery-overlay">
+                    <div class="text-center px-3">
+                        <i class="fa-solid fa-expand" style="color:#fff;font-size:1.1rem;display:block;margin-bottom:0.4rem;"></i>
+                        <p style="color:#fff;font-size:0.75rem;font-weight:600;">{{ item.caption or 'Untitled' }}</p>
+                        <p style="color:#c8a040;font-size:0.68rem;margin-top:2px;">by {{ item.artist_name }}</p>
+                    </div>
+                </div>
+
+                <div style="padding:0.65rem 0.9rem;">
+                    <p style="font-size:0.78rem;font-weight:600;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ item.caption or 'Untitled' }}</p>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
+                        <p style="font-size:0.68rem;color:#777;">{{ item.artist_name }}</p>
+                        {% if item.style %}
+                        <span style="font-size:0.58rem;background:rgba(200,160,64,0.1);color:#c8a040;border:1px solid rgba(200,160,64,0.25);padding:0.1rem 0.4rem;border-radius:20px;">{{ item.style }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- No results after filter -->
+        <div id="galNoResult" style="display:none;text-align:center;padding:3rem 0;">
+            <i class="fa-solid fa-filter" style="font-size:2rem;color:#ddd;display:block;margin-bottom:0.75rem;"></i>
+            <p style="color:#777;font-size:0.85rem;">No artworks in this style yet.</p>
+        </div>
+
+        {% else %}
+        <!-- Empty state -->
+        <div style="text-align:center;padding:4rem 0;">
+            <div style="width:64px;height:64px;border-radius:16px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                <i class="fa-solid fa-images" style="font-size:1.75rem;color:#ccc;"></i>
+            </div>
+            <h4 class="font-display text-studio-dark text-base mb-2">Gallery Coming Soon</h4>
+            <p style="color:#777;font-size:0.83rem;">Our artists haven't uploaded any work yet. Check back soon!</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>

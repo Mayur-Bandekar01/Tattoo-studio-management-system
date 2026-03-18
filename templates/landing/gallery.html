@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)', text: 'var(--text)', muted: 'var(--muted)',
+                            card: 'var(--card-bg)', border: 'var(--border)',
+                            gold: 'var(--accent, #c8a040)', goldLight: '#e0b84a'
+                        }
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --bg-primary: #000000;
+            --bg-primary-rgb: 0, 0, 0;
+            --bg-secondary: #050505;
+            --text-primary: #f5f5f7;
+            --text-muted: #86868b;
+            --accent-color: #c8a040;
+            --accent-rgb: 200, 160, 64;
+            --accent-light: #e0b84a;
+            --card-bg: #141414;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+        }
+
+        html.light-mode {
+            --bg-primary: #ffffff;
+            --bg-primary-rgb: 255, 255, 255;
+            --bg-secondary: #f8fafc;
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #0d9488;
+            --accent-rgb: 13, 148, 136;
+            --accent-light: #2dd4bf;
+            --card-bg: #ffffff;
+            --border-subtle: #e2e8f0;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(var(--bg-primary-rgb, 0, 0, 0), 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            right: 50%;
+            height: 1px;
+            background: #c8a040;
+            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+            right: 0;
+        }
+
+        .nav-link.active {
+            color: var(--accent-color);
+        }
+
+        .nav-link.active::after {
+            left: 0;
+            right: 0;
+            background: var(--accent-color);
+            height: 2px;
+        }
+
+        /* BURGER */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        /* OVERRIDE THEME BUTTON COLOR (GALLERY ONLY) */
+        html.light-mode #globalThemeBtn {
+            background: var(--accent-color) !important;
+            border-color: var(--accent-light) !important;
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3) !important;
+        }
+
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #86868b;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
+
+        /* MOBILE MENU */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #86868b;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
+
+        .mobile-menu-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--accent-color);
+            opacity: 0.3;
+        }
+
+        /* HERO */
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(var(--accent-rgb, 200, 160, 64), 0.06) 0%, transparent 60%), var(--bg-primary);
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0.2;
+        }
+
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, var(--text-primary), var(--accent-color), var(--text-primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #86868b;
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            letter-spacing: 0.02em;
+        }
+
+        .filter-btn:hover {
+            border-color: rgba(200, 160, 64, 0.4);
+            color: #f5f5f7;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 20px var(--accent-color);
+        }
+
+        .stat-badge {
+            font-size: 0.6rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: var(--accent-color);
+            opacity: 1;
+            border: 1px solid var(--accent-color);
+            color: var(--bg-primary);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        /* Adjusting for readability on badge */
+        .stat-badge {
+            background: color-mix(in srgb, var(--accent-color) 10%, transparent);
+            color: var(--accent-color);
+            border: 1px solid color-mix(in srgb, var(--accent-color) 20%, transparent);
+        }
+
+        /* PREMIUM FRAMING */
+        .gallery-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow:
+                0 40px 100px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(200, 160, 64, 0.3);
+            border-color: rgba(200, 160, 64, 0.4);
+        }
+
+        .gallery-img-container {
+            overflow: hidden;
+            aspect-ratio: 3 / 4;
+            /* Portrait-focused to show more of the tattoo artwork */
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Show the entire image without cropping */
+            display: block;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: none !important;
+            background: #0a0a0a;
+            /* Dark background to fill the container around contained image */
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.08);
+            /* Sophisticated, subtle zoom */
+        }
+
+        /* Removed gallery-overlay styles per user request for clean images */
+
+        /* Light Mode Overrides — Premium Purple/Indigo Theme */
+        html.light-mode .text-gradient {
+            background: linear-gradient(to right, #2d3436, #845EC2, #2d3436);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        html.light-mode .filter-btn {
+            background: #fff;
+            border-color: #e0e0e0;
+            color: #636e72;
+        }
+
+        html.light-mode .filter-btn:hover {
+            border-color: #845EC2;
+            color: #845EC2;
+        }
+
+        html.light-mode .filter-btn.active {
+            background: #845EC2;
+            border-color: #845EC2;
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(132, 94, 194, 0.3);
+        }
+
+        html.light-mode .gallery-item {
+            background: #fff;
+            border-color: #eee;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        html.light-mode .gallery-item:hover {
+            border-color: #845EC2;
+            box-shadow: 0 30px 60px rgba(132, 94, 194, 0.15);
+        }
+
+        html.light-mode .stat-badge {
+            background: rgba(132, 94, 194, 0.08);
+            border-color: rgba(132, 94, 194, 0.2);
+            color: #845EC2;
+        }
+
+        /* REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.05s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.15s;
+        }
+
+        .reveal-d4 {
+            transition-delay: 0.2s;
+        }
+
+
+        .gallery-placeholder {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--card-bg) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+            height: 200px;
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            /* Stack image and info panel */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s;
+        }
+
+        .lightbox.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-img {
+            max-height: 100%;
+            /* Respect the wrapper's boundaries */
+            max-width: 95vw;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .lb-nav:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #c8a040;
+            color: #c8a040;
+        }
+
+        .lb-prev {
+            left: 2rem;
+        }
+
+        .lb-next {
+            right: 2rem;
+        }
+
+        .lightbox-info {
+            position: relative;
+            /* No longer overlapping */
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
+        }
+
+        .lightbox-img-wrapper {
+            flex: 1;
+            /* Take up all available space above the info panel */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 0;
+            /* Important for flex-shrink/overflow */
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            padding: 1.5rem;
+            background: rgba(200, 160, 64, 0.04);
+            border: 1px solid rgba(200, 160, 64, 0.1);
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-link {
+            color: #86868b;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #c8a040;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8a040;
+        }
+
+        /* LIGHT MODE - Removed redundant hardcoded overrides in favor of variables above */
+        body.light-mode {
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+        }
+
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
+
+        <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i class="fa-solid fa-chevron-right"></i></button>
+
+        <div class="lightbox-img-wrapper">
+            <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image">
+        </div>
+
+        <div class="lightbox-info">
+            <div class="max-w-xl mx-auto">
+                <span id="lbStyle" class="stat-badge mb-3 pointer-events-none"></span>
+                <h2 id="lbTitle" class="font-display text-2xl md:text-4xl text-white mt-1 leading-tight"></h2>
+                <div class="flex items-center justify-center gap-4 mt-3">
+                    <p id="lbArtist" class="text-apple-gold text-base tracking-wide uppercase font-bold"></p>
+                    <div class="w-1 h-1 bg-white/20 rounded-full"></div>
+                    <p id="lbSpec" class="text-white/50 text-sm italic"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/gallery" class="active">Gallery</a>
+        <a href="/contact">Contact</a>
+        <div class="mobile-menu-divider"></div>
+        <div class="flex gap-4">
+            <a href="/login"
+                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+            <a href="/register"
+                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-8 h-8 rounded-full object-cover">
+                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link active">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex gap-3">
+                    <a href="/login"
+                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                    <a href="/register"
+                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                </div>
+                <button class="burger md:hidden" id="burgerBtn"
+                    onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero text-center">
+        <div class="page-hero-grid"></div>
+        <div class="relative z-10">
+            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium reveal">Our Infinite Archive
+            </p>
+            <h1 class="font-display text-5xl md:text-7xl mb-4 text-gradient reveal reveal-d1">Gallery</h1>
+            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed reveal reveal-d2">
+                A collection of our finest work. Each piece tells a unique story — crafted with passion and surgical
+                precision.
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN SECTION -->
+    <section class="py-16 px-6" style="background: var(--bg-secondary);">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Stats Bar — only show if images exist -->
+            {% if gallery %}
+            <div class="stats-bar reveal">
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#c8a040;">{{
+                        gallery|length }}</p>
+                    <p
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Artworks</p>
+                </div>
+                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#c8a040;">{{
+                        artist_count }}</p>
+                    <p
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Artists</p>
+                </div>
+                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#c8a040;">{{
+                        styles_count }}</p>
+                    <p
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Styles</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Filter Pills -->
+            <div class="flex flex-wrap gap-3 justify-center mb-12 reveal">
+                <button class="filter-btn active" onclick="filterGallery('all',this)">All Masterpieces</button>
+                <button class="filter-btn" onclick="filterGallery('Blackwork',this)">Blackwork</button>
+                <button class="filter-btn" onclick="filterGallery('Fine Line',this)">Fine Line</button>
+                <button class="filter-btn" onclick="filterGallery('Japanese',this)">Japanese</button>
+                <button class="filter-btn" onclick="filterGallery('Realism',this)">Realism</button>
+                <button class="filter-btn" onclick="filterGallery('Traditional',this)">Traditional</button>
+                <button class="filter-btn" onclick="filterGallery('Geometric',this)">Geometric</button>
+                <button class="filter-btn" onclick="filterGallery('Watercolour',this)">Watercolour</button>
+            </div>
+
+            <!-- ═══════════════════════════════════════════
+             GALLERY GRID — FROM DATABASE
+        ═══════════════════════════════════════════ -->
+            {% if gallery %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="galleryGrid">
+                {% for item in gallery %}
+                <div class="gallery-item reveal reveal-d{{ loop.index % 4 + 1 }}"
+                    data-category="{{ item.style or 'Other' }}"
+                    data-img="{{ url_for('static', filename=item.image_path) }}"
+                    data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
+                    data-spec="{{ item.specialisation or '' }}" data-style="{{ item.style or '' }}"
+                    onclick="openLightbox(this)">
+
+                    <!-- Image Container -->
+                    <div class="gallery-img-container">
+                        <img src="{{ url_for('static', filename=item.image_path) }}"
+                            alt="{{ item.caption or 'Tattoo' }}" class="gallery-img" loading="lazy">
+
+                        <!-- (Overlay removed for clean image view) -->
+                    </div>
+
+                    <!-- Metadata Bar -->
+                    <div class="p-5 border-t border-white/5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-apple-text font-semibold text-sm truncate max-w-[150px]">
+                                    {{ item.caption or 'Untitled' }}
+                                </p>
+                                <p class="text-apple-muted text-[11px] mt-0.5">by {{ item.artist_name }}</p>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-apple-gold/40 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- No results after filter -->
+            <div id="noResults" style="display:none;" class="text-center py-16">
+                <i class="fa-solid fa-filter"
+                    style="font-size:2.5rem;color:rgba(200,160,64,0.2);display:block;margin-bottom:1rem;"></i>
+                <p style="color:#86868b;font-size:0.88rem;">No artworks found in this style yet.</p>
+            </div>
+
+            {% else %}
+            <!-- ── Empty State (no images uploaded yet) ── -->
+            <div class="text-center py-20">
+                <div
+                    style="width:80px;height:80px;border-radius:20px;background:rgba(200,160,64,0.06);border:1px solid rgba(200,160,64,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+                    <i class="fa-solid fa-images" style="font-size:2rem;color:rgba(200,160,64,0.3);"></i>
+                </div>
+                <h3 class="font-display text-xl mb-2" style="color: var(--text-primary);">Gallery Coming Soon</h3>
+                <p style="color:#86868b;font-size:0.85rem;max-width:380px;margin:0 auto;line-height:1.7;">
+                    Our artists are creating amazing work. Photos will appear here as sessions are completed.
+                </p>
+                <a href="/register"
+                    style="display:inline-block;margin-top:1.75rem;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;">
+                    Book Your Session
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Book CTA -->
+            <div class="mt-16 text-center coming-soon p-10 rounded-2xl reveal"
+                style="background: var(--card-bg); border: 1px solid var(--accent-color); opacity: 0.9;">
+                <p
+                    style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color: var(--accent-color); margin-bottom:0.75rem;">
+                    Ready for Your Own?</p>
+                <h3 class="font-display text-xl mb-3" style="color: var(--text-primary);">Your Story, Our Canvas</h3>
+                <p style="color: var(--text-muted); font-size:0.83rem;max-width:400px;margin:0 auto 1.5rem;line-height:1.7;">
+                    Book a consultation with one of our artists and turn your idea into a permanent masterpiece.
+                </p>
+                <a href="/register"
+                    style="display:inline-block;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;margin-right:0.75rem;">
+                    Book Now
+                </a>
+                <a href="/services"
+                    style="display:inline-block;padding:0.65rem 1.75rem;border:1px solid var(--border-subtle); color: var(--text-muted); border-radius:20px;font-size:0.8rem;font-weight:500;text-decoration:none;">
+                    View Services
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-7 h-7 rounded-full object-cover opacity-80">
+                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
+                    Studio</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/services" class="footer-link">Services</a>
+                <a href="/gallery" class="footer-link">Gallery</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+            <p style="color:rgba(134,134,139,0.4);font-size:0.72rem;">© 2025 Dragon Tattoos Studio</p>
+        </div>
+    </footer>
+
+    <script>
+        // ── REVEAL OBSERVER
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // ── FILTER
+        function filterGallery(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            let visible = 0;
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                const show = cat === 'all' || item.dataset.category === cat;
+                item.style.display = show ? 'block' : 'none';
+                if (show) visible++;
+            });
+            const nr = document.getElementById('noResults');
+            if (nr) nr.style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        // ── LIGHTBOX
+        let currentLbIndex = -1;
+        let lbItems = [];
+
+        function openLightbox(el) {
+            updateLbItems();
+            currentLbIndex = lbItems.indexOf(el);
+            renderLightbox(el);
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateLbItems() {
+            lbItems = Array.from(document.querySelectorAll('.gallery-item'))
+                .filter(item => item.style.display !== 'none');
+        }
+
+        function renderLightbox(el) {
+            const img = el.dataset.img;
+            const title = el.dataset.title;
+            const artist = el.dataset.artist;
+            const style = el.dataset.style;
+            const spec = el.dataset.spec;
+
+            document.getElementById('lbImg').src = img;
+            document.getElementById('lbTitle').textContent = title;
+            document.getElementById('lbArtist').textContent = 'By ' + artist;
+            document.getElementById('lbStyle').textContent = style || 'Ink';
+            document.getElementById('lbSpec').textContent = spec || '';
+        }
+
+        function changeLightbox(dir) {
+            if (lbItems.length === 0) return;
+            currentLbIndex = (currentLbIndex + dir + lbItems.length) % lbItems.length;
+            renderLightbox(lbItems[currentLbIndex]);
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('lightbox').addEventListener('click', function (e) { if (e.target === this) closeLightbox(); });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') changeLightbox(1);
+            if (e.key === 'ArrowLeft') changeLightbox(-1);
+        });
+
+        // ── MOBILE MENU
+        function toggleMobileMenu() {
+            const m = document.getElementById('mobileMenu');
+            const b = document.getElementById('burgerBtn');
+            m.classList.toggle('open'); b.classList.toggle('open');
+            document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+        }
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+    </script>
+</body>
+
+</html>

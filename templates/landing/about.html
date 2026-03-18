@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)',
+                            text: 'var(--text)',
+                            muted: 'var(--muted)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--border)',
+                            gold: 'var(--accent, #c8a040)',
+                            goldLight: '#e0b84a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: #000;
+            color: #f5f5f7;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent, #c8a040);
+        }
+
+        /* hamburger */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #8b8b93;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
+
+        /* mobile menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(3, 3, 3, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #8b8b93;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
+
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
+        }
+
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.3s;
+        }
+
+        /* timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
+            padding-bottom: 2.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.45rem;
+            top: 1.5rem;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #1d1d1f;
+            border: 2px solid #c8a040;
+            box-shadow: 0 0 8px rgba(200, 160, 64, 0.3);
+        }
+
+        .timeline-dot.active {
+            background: #c8a040;
+            box-shadow: 0 0 12px rgba(200, 160, 64, 0.5);
+        }
+
+        /* value cards */
+        .value-card {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 1.75rem;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .value-card:hover {
+            background: #2a2a2d;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(200, 160, 64, 0.12);
+        }
+
+        .value-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover .value-icon {
+            transform: scale(1.1);
+        }
+
+        /* artist cards */
+        .artist-card {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .artist-card:hover {
+            background: #2a2a2d;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .artist-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d1d1f, #2a2a2d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: #c8a040;
+            margin: 0 auto;
+            border: 2px solid rgba(200, 160, 64, 0.3);
+        }
+
+        footer {
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-link {
+            color: #86868b;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #c8a040;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8a040
+        }
+
+        /* ── LIGHT THEME (White + Orange Energetic) ── */
+        body.light-mode,
+        html.light-mode body {
+            --bg: #ffffff;
+            --bg-grad: rgba(249, 115, 22, 0.05);
+            --sidebar-bg: rgba(255, 255, 255, 0.96);
+            --topbar-bg: rgba(255, 255, 255, 0.96);
+            --card-bg: #fffaf5;
+            --card-hover: #ffedd5;
+            --border: #fdba74;
+            --border-h: #f97316;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #f97316;
+            --nav-muted: #9ca3af;
+            --nav-item: #4b5563;
+            --nav-hover: #f97316;
+            --shadow: rgba(249, 115, 22, 0.1);
+
+            background-color: var(--bg) !important;
+            color: var(--text) !important;
+        }
+
+        html.light-mode .navbar,
+        html.light-mode nav {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .nav-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .nav-link:hover,
+        html.light-mode .nav-link.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .mobile-menu {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        html.light-mode .mobile-menu a {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .mobile-menu a:hover,
+        html.light-mode .mobile-menu a.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .hero-section,
+        html.light-mode .page-hero,
+        html.light-mode section,
+        html.light-mode .section-dark,
+        html.light-mode .section-surface {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode .feature-card,
+        html.light-mode .testi-card,
+        html.light-mode .value-card,
+        html.light-mode .artist-card,
+        html.light-mode .stat-card {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 4px 20px var(--shadow) !important;
+        }
+
+        html.light-mode .feature-card:hover,
+        html.light-mode .testi-card:hover,
+        html.light-mode .value-card:hover,
+        html.light-mode .artist-card:hover,
+        html.light-mode .stat-card:hover {
+            background: var(--card-hover) !important;
+            border-color: var(--border-h) !important;
+        }
+
+        html.light-mode .testi-quote,
+        html.light-mode .testi-detail,
+        html.light-mode .footer-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .testi-name,
+        html.light-mode .footer-brand {
+            color: var(--text) !important;
+        }
+
+        html.light-mode footer,
+        html.light-mode nav~* footer {
+            background: #fffaf5 !important;
+            border-top: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .btn-outline {
+            border-color: var(--border) !important;
+            color: var(--text) !important;
+            background: rgba(249, 115, 22, 0.05) !important;
+        }
+
+        html.light-mode .burger span {
+            background: var(--muted) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-track {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-thumb {
+            background: var(--accent) !important;
+        }
+
+        /* global transition */
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/">Home</a><a href="/about" class="active">About</a><a href="/services">Services</a>
+        <a href="/gallery">Gallery</a><a href="/contact">Contact</a>
+        <div class="mobile-menu-divider"></div>
+        <div class="flex gap-4">
+            <a href="/login"
+                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+            <a href="/register"
+                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-8 h-8 rounded-full object-cover">
+                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link active">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex gap-3">
+                    <a href="/login"
+                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                    <a href="/register"
+                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                </div>
+                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
+                    aria-label="Menu"><span></span><span></span><span></span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <div class="page-hero text-center">
+        <div class="page-hero-grid"></div>
+        <div class="relative z-10">
+            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium">Who We Are</p>
+            <h1 class="font-display text-5xl md:text-6xl text-apple-text mb-4 tracking-tight">About Us</h1>
+            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed">
+                Born from passion, driven by art. Dragon Tattoos Studio has been creating meaningful ink since 2019.
+            </p>
+        </div>
+    </div>
+
+    <!-- STORY -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">Our Story</p>
+                <h2 class="font-display text-4xl text-apple-text mb-6 tracking-tight">Where It All Began</h2>
+                <p class="text-apple-muted text-sm leading-relaxed mb-4">
+                    Dragon Tattoos Studio was founded in 2019 by a group of passionate artists who believed that
+                    tattooing is more than just ink on skin — it is a powerful form of self-expression and storytelling.
+                </p>
+                <p class="text-apple-muted text-sm leading-relaxed mb-4">
+                    What started as a small studio with one artist has grown into a full creative space with multiple
+                    talented artists, each specialising in different styles and techniques.
+                </p>
+                <p class="text-apple-muted text-sm leading-relaxed">
+                    Today we are proud to have served over 500 happy clients, creating thousands of unique tattoos that
+                    tell their individual stories.
+                </p>
+            </div>
+
+            <!-- timeline -->
+            <div class="reveal reveal-d1">
+                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-8">Our Journey</p>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2019</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Studio Founded</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Started with one artist and a dream to create
+                        meaningful tattoo art.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2020</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Team Expanded</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Welcomed two more specialist artists — fine line
+                        and realism.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2022</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">100+ Happy Clients</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Reached our first major milestone of 100
+                        satisfied customers.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2024</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">500+ Tattoos Done</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Crossed 500 completed sessions with glowing
+                        reviews.</p>
+                </div>
+                <div class="timeline-item" style="padding-bottom:0">
+                    <div class="timeline-dot active"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2025</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Online Booking Launched</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Studio management system for easy online
+                        appointment booking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUES -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">What We Stand For</p>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Our Values</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="value-card reveal reveal-d1">
+                    <div class="value-icon"><i class="fa-solid fa-shield-halved text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Safety First</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">All equipment is sterilized before every
+                        session. We follow strict hygiene protocols at every step.</p>
+                </div>
+                <div class="value-card reveal reveal-d2">
+                    <div class="value-icon"><i class="fa-solid fa-palette text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Artistic Excellence</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Every tattoo is crafted with precision,
+                        attention to detail and genuine passion for the art form.</p>
+                </div>
+                <div class="value-card reveal reveal-d3">
+                    <div class="value-icon"><i class="fa-solid fa-handshake text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Client First</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Your vision is our priority. We listen carefully
+                        and work until the design matches exactly what you imagined.</p>
+                </div>
+                <div class="value-card reveal reveal-d1">
+                    <div class="value-icon"><i class="fa-solid fa-leaf text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Eco Conscious</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">We use vegan-friendly inks and eco-conscious
+                        materials wherever possible.</p>
+                </div>
+                <div class="value-card reveal reveal-d2">
+                    <div class="value-icon"><i class="fa-solid fa-lightbulb text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Always Innovating</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">We stay updated with the latest techniques and
+                        trends to bring you the best.</p>
+                </div>
+                <div class="value-card reveal reveal-d3">
+                    <div class="value-icon"><i class="fa-solid fa-heart text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Passion Driven</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Tattooing is not just our job — it is our
+                        passion. That love shows in every piece we create.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">The People Behind The
+                    Art</p>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Meet Our Artists</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="artist-card p-8 text-center reveal reveal-d1">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Raj Kumar</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Blackwork Specialist</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Blackwork</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Geometric</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Tribal</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">5 years crafting bold blackwork and
+                        intricate geometric patterns.</p>
+                    <a href="https://instagram.com/rajkumar.ink" target="_blank"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @rajkumar.ink
+                    </a>
+                </div>
+                <div class="artist-card p-8 text-center reveal reveal-d2">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-paintbrush"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Priya Sharma</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Fine Line Artist</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Fine
+                            Line</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Floral</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Minimal</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">Specialises in delicate fine-line and
+                        botanical designs.</p>
+                    <a href="https://instagram.com/priya.fineline" target="_blank"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @priya.fineline
+                    </a>
+                </div>
+                <div class="artist-card p-8 text-center reveal reveal-d3">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Arjun Mehta</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Realism Expert</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Realism</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Portraits</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Nature</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">Creates stunning photorealistic portraits
+                        with incredible detail.</p>
+                    <a href="https://instagram.com/arjun.realism" target="_blank"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @arjun.realism
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-7 h-7 rounded-full object-cover opacity-80">
+                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
+                    Studio</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/services" class="footer-link">Services</a>
+                <a href="/gallery" class="footer-link">Gallery</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+            <p class="text-apple-muted/40 text-xs">© 2025 Dragon Tattoos Studio</p>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('burgerBtn');
+            menu.classList.toggle('open'); btn.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        }
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+    </script>
+</body>
+
+</html>

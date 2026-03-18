@@ -1,0 +1,64 @@
+<!-- ════════ TODAY'S SCHEDULE ════════ -->
+<div id="sec-schedule" class="section">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold" style="color: var(--text);">Today's Schedule</h2>
+        <p id="todayStr" class="text-sm font-semibold mt-1" style="color: var(--primary);"></p>
+    </div>
+
+    <div class="card card-pad">
+        <div class="flex items-center gap-4 mb-8 pb-6 border-b" style="border-color: var(--border);">
+            <div class="w-12 h-12 rounded-xl bg-primary-dim flex items-center justify-center border border-primary-dim"
+                style="color: var(--primary);">
+                <i class="fa-solid fa-clock text-xl"></i>
+            </div>
+            <div>
+                <p class="text-base font-bold" style="color: var(--text);">Dynamic Daily View</p>
+                <p id="slotCount" class="text-xs text-studio-muted mt-0.5">Calculating sessions...</p>
+            </div>
+        </div>
+
+        {% if today_appointments %}
+        <div class="relative pl-5">
+            <!-- Timeline line -->
+            <div class="absolute left-0 top-0 bottom-0 w-0.5 rounded-full" style="background: var(--border);"></div>
+
+            {% for appt in today_appointments %}
+            <div class="tl-item">
+                <div
+                    style="position: absolute; left: -24px; top: 18px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--primary-dim);">
+                </div>
+
+                <div class="tl-time" style="min-width: 80px;">{{ appt.appointment_time }}</div>
+                <div style="flex: 1;">
+                    <p style="font-weight: 700; font-size: 1rem; color: var(--text);">{{ appt.customer_name }}</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4;">{{
+                        appt.tattoo_concept }}</p>
+                </div>
+                <div style="text-align: right; flex-shrink: 0;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;"
+                        class="mono">
+                        {{ appt.duration_hours if appt.duration_hours else '?' }} hrs
+                    </div>
+                    {% if appt.status=='Approved' %}
+                    <span class="badge ba" style="font-size: 0.65rem;">ACTIVE</span>
+                    {% elif appt.status=='Done' %}
+                    <span class="badge bd" style="font-size: 0.65rem;">SUCCESS</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty" style="padding: 5rem 1rem;">
+            <div
+                style="width: 70px; height: 70px; border-radius: 50%; background: var(--surface-raised); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 1px solid var(--border);">
+                <i class="fa-regular fa-sun" style="font-size: 2rem; color: var(--primary); opacity: 0.5;"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">No Sessions
+                Today</h3>
+            <p style="color: var(--text-muted); max-width: 280px; margin: 0 auto;">No appointments scheduled for today.
+                Take some time to sketch or manage your portfolio!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>

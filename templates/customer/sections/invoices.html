@@ -1,0 +1,57 @@
+<!-- ═══════════════════════════════════════
+     SECTION: MY INVOICES  (sec-invoices)
+     File: templates/customer/sections/invoices.html
+═══════════════════════════════════════ -->
+<div id="sec-invoices" class="section">
+
+    <div class="content-card">
+        <h3 class="font-display text-studio-dark text-base mb-4">My Invoices</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Appointment</th>
+                    <th>Concept</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Payment</th>
+                    <th>Bill</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if invoices %}
+                {% for inv in invoices %}
+                <tr>
+                    <td class="text-studio-muted">#{{ inv.invoice_id }}</td>
+                    <td>#{{ inv.appointment_id }}</td>
+                    <td>{{ inv.concept_type }}</td>
+                    <td class="font-semibold text-studio-dark">₹{{ inv.total_amt }}</td>
+                    <td>{{ inv.generated_date }}</td>
+                    <td>
+                        {% if inv.pay_status=='Paid' %}
+                        <span class="badge-paid">✓ Paid</span>
+                        {% else %}
+                        <span class="badge-unpaid">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/invoice/view/{{ inv.invoice_id }}" target="_blank"
+                           style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.28rem 0.75rem;background:#1a1a2e;color:#fff;border-radius:8px;font-size:0.68rem;font-weight:600;text-decoration:none;white-space:nowrap;">
+                            🧾 View Bill
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-studio-muted py-10">
+                        No invoices yet! Complete a session to get your invoice.
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+</div>

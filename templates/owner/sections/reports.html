@@ -1,0 +1,180 @@
+<!-- ═══════════════════════════════════════
+     SECTION: OWNER REPORTS
+     File: templates/owner/sections/reports.html
+═══════════════════════════════════════ -->
+<div class="grid md:grid-cols-2 gap-8 mb-10">
+    <!-- Yield Analytics -->
+    <div class="content-card">
+        <div class="flex items-center gap-4 mb-10">
+            <div
+                class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
+                <i class="fa-solid fa-chart-line text-xl"></i>
+            </div>
+            <div>
+                <h4 class="font-display text-studio-text text-lg uppercase tracking-wider">Yield Analytics</h4>
+                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Financial performance
+                    metrics</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div
+                class="flex justify-between items-center p-4 bg-white/5 border border-studio-border group hover:border-studio-gold transition-all">
+                <span class="text-studio-muted text-[10px] font-black uppercase tracking-widest">Total Gross
+                    Yield</span>
+                <span class="text-studio-text text-lg font-bold">₹{{ total_revenue | default(0) }}</span>
+            </div>
+            <div
+                class="flex justify-between items-center p-4 bg-green-500/5 border border-green-500/20 group hover:border-green-500/50 transition-all">
+                <span class="text-green-400 text-[10px] font-black uppercase tracking-widest">Verified
+                    Settlements</span>
+                <span class="text-green-400 text-lg font-bold">₹{{ paid_revenue | default(0) }}</span>
+            </div>
+            <div
+                class="flex justify-between items-center p-4 bg-orange-500/5 border border-orange-500/20 group hover:border-orange-500/50 transition-all">
+                <span class="text-orange-400 text-[10px] font-black uppercase tracking-widest">Awaiting Clearance</span>
+                <span class="text-orange-400 text-lg font-bold">₹{{ pending_revenue | default(0) }}</span>
+            </div>
+            <div class="flex justify-between items-center p-4 bg-studio-card border border-studio-border">
+                <span class="text-studio-muted text-[10px] font-black uppercase tracking-widest">Document Count</span>
+                <span class="text-studio-text text-lg font-bold">{{ total_invoices | default(0) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operational Matrix -->
+    <div class="content-card">
+        <div class="flex items-center gap-4 mb-10">
+            <div
+                class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                <i class="fa-solid fa-microchip text-xl"></i>
+            </div>
+            <div>
+                <h4 class="font-display text-studio-text text-lg uppercase tracking-wider">Operations Matrix</h4>
+                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Session status
+                    distribution</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            {% set statuses =
+            [('Done','badge-done',done_count),('Approved','badge-approved',approved_count),('Pending','badge-pending',pending_count),('Rejected','badge-rejected',rejected_count)]
+            %}
+            {% for label, badge, count in statuses %}
+            <div class="group">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-studio-muted text-[10px] font-black uppercase tracking-[0.2em]">{{ label }}</span>
+                    <span class="badge {{ badge }}">{{ count | default(0) }}</span>
+                </div>
+                <div class="progress-bar">
+                    {% set pct = ((count | default(0)) / total_appointments * 100)|int if total_appointments and
+                    total_appointments > 0 else 0 %}
+                    <div class="progress-fill {% if label == 'Done' %}bg-blue-400{% elif label == 'Approved' %}bg-green-400{% elif label == 'Pending' %}bg-studio-gold{% else %}bg-red-500{% endif %}"
+                        data-progress="{{ pct }}"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Artist Efficiency Ledger -->
+<div class="content-card mb-10">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <i class="fa-solid fa-users-gear text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Efficiency Ledger</h3>
+                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Individual artist
+                    performance analytics</p>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>Identity</th>
+                    <th>Discipline</th>
+                    <th>Session Count</th>
+                    <th>Verified</th>
+                    <th>Awaiting</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if artist_performance %}
+                {% for ap in artist_performance %}
+                <tr class="group">
+                    <td class="font-bold text-studio-text uppercase tracking-wide">{{ ap.artist_name }}</td>
+                    <td>
+                        <span
+                            class="px-2 py-1 bg-studio-gold/10 border border-studio-gold/20 text-studio-gold text-[10px] font-black uppercase tracking-widest">{{
+                            ap.specialisation }}</span>
+                    </td>
+                    <td class="text-studio-text font-mono font-bold">{{ ap.total_appts | default(0) }}</td>
+                    <td class="text-green-400 font-bold font-mono">{{ ap.done_appts | default(0) }}</td>
+                    <td class="text-orange-400 font-bold font-mono">{{ ap.pending_appts | default(0) }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-studio-muted py-12">
+                        <i class="fa-solid fa-user-slash text-4xl mb-4 block opacity-20"></i>
+                        No performance data recorded.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Settlement Protocols -->
+<div class="content-card">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
+                <i class="fa-solid fa-receipt text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Settlement Protocols</h3>
+                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Distribution of payment
+                    methods</p>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>Protocol Identity</th>
+                    <th>Usage Frequency</th>
+                    <th>Total Valuation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if payment_methods %}
+                {% for pm in payment_methods %}
+                <tr class="group">
+                    <td class="font-bold text-studio-text uppercase tracking-widest text-xs">{{ pm.payment_method }}
+                    </td>
+                    <td class="text-studio-gold font-black font-mono">{{ pm.count }}</td>
+                    <td class="text-green-400 font-bold text-lg">₹{{ pm.total }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-studio-muted py-12">
+                        <i class="fa-solid fa-credit-card text-4xl mb-4 block opacity-20"></i>
+                        No protocol usage data available.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

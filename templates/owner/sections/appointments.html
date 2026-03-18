@@ -1,0 +1,91 @@
+<!-- ═══════════════════════════════════════
+     SECTION: OWNER APPOINTMENTS
+     File: templates/owner/sections/appointments.html
+═══════════════════════════════════════ -->
+<div class="content-card">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div>
+            <h3 class="font-display text-studio-text text-2xl uppercase tracking-wider">Session Management</h3>
+            <p class="text-studio-muted text-[10px] mt-2 uppercase tracking-[0.2em] font-black">Coordinating the studio
+                timeline</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button onclick="filterTable('appt-row','all',this)"
+                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-gold text-black border border-studio-gold appt-f">All</button>
+            <button onclick="filterTable('appt-row','Pending',this)"
+                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Pending</button>
+            <button onclick="filterTable('appt-row','Approved',this)"
+                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Approved</button>
+            <button onclick="filterTable('appt-row','Done',this)"
+                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Done</button>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Artist</th>
+                    <th>Concept</th>
+                    <th>Timestamp</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if appointments %}
+                {% for a in appointments %}
+                <tr class="appt-row group" data-status="{{ a.status }}">
+                    <td class="text-studio-muted font-mono">#{{ a.appointment_id }}</td>
+                    <td class="font-bold text-studio-text uppercase tracking-wide">{{ a.customer_name }}</td>
+                    <td class="text-studio-gold font-bold uppercase text-xs">{{ a.artist_name }}</td>
+                    <td class="text-studio-muted italic font-serif">"{{ a.tattoo_concept }}"</td>
+                    <td>
+                        <p class="text-studio-text text-xs font-bold">{{ a.appointment_date }}</p>
+                        <p class="text-studio-muted text-[10px] uppercase font-black mt-1">{{ a.appointment_time }}</p>
+                    </td>
+                    <td class="text-studio-muted text-xs font-bold">{{ a.duration_hours if a.duration_hours else '—' }}
+                        HRS</td>
+                    <td>
+                        {% if a.status=='Pending' %}<span class="badge badge-pending">Pending</span>
+                        {% elif a.status=='Approved' %}<span class="badge badge-approved">Approved</span>
+                        {% elif a.status=='Done' %}<span class="badge badge-done">Done</span>
+                        {% elif a.status=='Rejected' %}<span class="badge badge-rejected">Rejected</span>
+                        {% else %}<span class="badge badge-cancelled">Cancelled</span>{% endif %}
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            {% if a.status == 'Done' and not a.has_invoice %}
+                            <button onclick="prefillInvoice('{{ a.appointment_id }}')"
+                                class="px-4 py-2 bg-studio-card border border-studio-gold text-studio-gold text-[10px] font-black uppercase tracking-widest hover:bg-studio-gold hover:text-black transition-all">
+                                Invoice
+                            </button>
+                            {% elif a.status == 'Pending' %}
+                            <form method="POST" action="/owner/cancel/{{ a.appointment_id }}">
+                                <button type="submit"
+                                    class="px-4 py-2 bg-studio-card border border-red-500/50 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+                                    Cancel
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-studio-muted text-xs opacity-30">—</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-studio-muted py-12">
+                        <i class="fa-solid fa-ghost text-4xl mb-4 block opacity-20"></i>
+                        No sessions found in the archive.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

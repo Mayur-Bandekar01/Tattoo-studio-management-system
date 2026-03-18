@@ -1,0 +1,77 @@
+<!-- ═══════════════════════════════════════
+     SECTION: OWNER INVENTORY
+     File: templates/owner/sections/inventory.html
+═══════════════════════════════════════ -->
+<div class="content-card">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
+                <i class="fa-solid fa-boxes-stacked text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-display text-studio-text text-2xl uppercase tracking-wider">Logistics Control</h3>
+                <p class="text-studio-muted text-[10px] mt-1 uppercase tracking-[0.2em] font-black">Stock monitoring and
+                    replenishment protocols</p>
+            </div>
+        </div>
+
+        {% if low_stock_items or low_stock > 0 %}
+        <div class="flex items-center gap-3 px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-500">
+            <i class="fa-solid fa-triangle-exclamation text-xs animate-pulse"></i>
+            <span class="text-[10px] font-black uppercase tracking-widest">{{ low_stock }} Critical Shortfalls</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="overflow-x-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Identity</th>
+                    <th>Category</th>
+                    <th>Unit</th>
+                    <th>Stock</th>
+                    <th>Threshold</th>
+                    <th>Valuation</th>
+                    <th>Total Liability</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if inventory %}
+                {% for item in inventory %}
+                <tr class="group">
+                    <td class="font-bold text-studio-text uppercase tracking-wide text-xs">{{ item.item_name }}</td>
+                    <td class="text-studio-muted text-[10px] font-black uppercase tracking-widest">{{ item.category }}
+                    </td>
+                    <td class="text-studio-muted text-xs italic">{{ item.unit }}</td>
+                    <td
+                        class="font-mono text-sm {% if item.quant_stock <= item.reorder_level %}text-red-500 font-bold{% else %}text-studio-text{% endif %}">
+                        {{ item.quant_stock }}
+                    </td>
+                    <td class="text-studio-muted font-mono text-xs">{{ item.reorder_level }}</td>
+                    <td class="text-studio-muted text-xs font-bold">₹{{ item.unit_cost }}</td>
+                    <td class="text-studio-text font-bold text-xs">₹{{ "%.2f"|format(item.quant_stock * item.unit_cost)
+                        }}
+                    </td>
+                    <td>
+                        {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-low">⚠ Low Stock</span>
+                            {% else %}
+                            <span class="badge badge-ok">✓ Nominal</span>
+                            {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-studio-muted py-12">
+                        <i class="fa-solid fa-box-open text-4xl mb-4 block opacity-20"></i>
+                        No logistics data found in the warehouse ledger.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

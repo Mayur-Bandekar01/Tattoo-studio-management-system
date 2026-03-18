@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #030303;
+            color: #f5f5f7;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── NAVBAR ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            height: 54px;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            background: rgba(3, 3, 3, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+
+        .nav-link {
+            color: #8b8b93;
+            font-size: 0.78rem;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 2px;
+            transition: color 0.25s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            right: 50%;
+            height: 1px;
+            background: #6366f1;
+            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-link:hover {
+            color: #f5f5f7;
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+            right: 0;
+        }
+
+        /* Simplified Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            background: #030303;
+        }
+
+        /* ── CARD ── */
+        .card-wrap {
+            position: relative;
+            border-radius: 1.35rem;
+            padding: 2px;
+            background: linear-gradient(145deg, #4f46e5 0%, #6366f1 50%, #4338ca 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-wrap:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card-body {
+            background: #050505;
+            border-radius: calc(1.35rem - 2px);
+            overflow: hidden;
+        }
+
+        /* ── INPUTS ── */
+        .field {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1.5px solid rgba(99, 102, 241, 0.3);
+            border-radius: 0.65rem;
+            color: #f8fafc;
+            font-size: 0.92rem;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+        }
+
+        .field::placeholder {
+            color: rgba(148, 163, 184, 0.4);
+        }
+
+        .field:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .field:focus {
+            border-color: #6366f1;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .field.error {
+            border-color: rgba(220, 60, 60, 0.7);
+        }
+
+        .field.success {
+            border-color: rgba(60, 200, 100, 0.6);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-gold {
+            width: 100%;
+            padding: 0.85rem;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 0.65rem;
+            background: #6366f1;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-gold:not(:disabled):hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-gold:active {
+            transform: scale(0.97);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.28;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── STRENGTH BAR ── */
+        .strength-bar-bg {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.35s ease, background 0.35s ease;
+            width: 0%;
+        }
+
+        /* ── TITLE ── */
+        .title-grad {
+            background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── STEP INDICATOR ── */
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #6366f1;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+        }
+
+        .step-dot.done {
+            background: rgba(60, 200, 100, 0.7);
+        }
+
+        label {
+            color: #94a3b8;
+        }
+
+        /* ── LIGHT MODE ── */
+        body.light-mode,
+        html.light-mode body {
+            background: #ffffff !important;
+            color: #1f2937 !important;
+        }
+
+        html.light-mode nav {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2) !important;
+        }
+
+        html.light-mode #navBrand {
+            color: #1f2937 !important;
+        }
+
+        html.light-mode .nav-link {
+            color: #6b7280;
+        }
+
+        html.light-mode .nav-link:hover {
+            color: #6366f1;
+        }
+
+        html.light-mode .nav-link::after {
+            background: #6366f1;
+        }
+
+        /* slate card border */
+        html.light-mode .card-wrap {
+            background: #4169E1;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        /* solid white card body */
+        html.light-mode .card-body {
+            background: #ffffff;
+            box-shadow: none;
+        }
+
+        html.light-mode .field {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        html.light-mode .field:hover {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+
+        html.light-mode .field:focus {
+            background: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        html.light-mode .field::placeholder {
+            color: #94a3b8;
+        }
+
+        html.light-mode .field.error {
+            border-color: rgba(220, 60, 60, 0.7);
+        }
+
+        html.light-mode .field.success {
+            border-color: rgba(60, 200, 100, 0.6);
+        }
+
+        /* step dots */
+        html.light-mode .step-dot {
+            background: #e2e8f0;
+        }
+
+        html.light-mode .step-dot.active {
+            background: #6366f1;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+        }
+
+        html.light-mode .step-dot.done {
+            background: rgba(60, 200, 100, 0.7);
+        }
+
+        /* primary button */
+        html.light-mode .btn-gold {
+            background: #6366f1;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+        }
+
+        html.light-mode .btn-gold:not(:disabled):hover {
+            background: #4f46e5;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+        }
+
+        html.light-mode label {
+            color: #64748b !important;
+        }
+
+        html.light-mode .title-grad {
+            background: linear-gradient(135deg, #6366f1, #4f46e5, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Simplified light mode background */
+        html.light-mode body::before {
+            background: #f9fafb;
+        }
+
+        /* card header */
+        html.light-mode #cardHeader {
+            background: transparent !important;
+            border-bottom-color: #f1f5f9 !important;
+        }
+
+        /* logo circle */
+        html.light-mode #logoCircle {
+            background: #ffffff !important;
+            border-color: #f1f5f9 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* subtitle */
+        html.light-mode #cardSubtitle {
+            color: #94a3b8 !important;
+        }
+
+        /* password rules box & summary box */
+        html.light-mode .info-box {
+            background: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+            border-radius: 16px !important;
+        }
+
+        html.light-mode .info-box p:first-child {
+            color: #2d3436 !important;
+            font-weight: 700 !important;
+        }
+
+        /* Allow JS to control rule colors by not using !important here */
+        html.light-mode .info-box p {
+            color: #64748b;
+        }
+
+        @keyframes boxFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-box {
+            animation: boxFadeIn 0.5s ease-out forwards;
+        }
+
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body
+    style="min-height:100vh;padding:1rem;padding-top:4rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:center;">
+
+    <!-- NAVBAR -->
+    <nav>
+        <div
+            style="max-width:72rem;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;">
+            <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
+                <span id="navBrand"
+                    style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
+                    Tattoos</span>
+            </a>
+            <div style="display:flex;align-items:center;gap:1.75rem;">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <a href="/login"
+                style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:600;background:#6366f1;color:#fff;border-radius:20px;text-decoration:none;transition:background 0.2s;"
+                onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">← Login</a>
+        </div>
+    </nav>
+
+
+    <!-- REGISTER CARD -->
+    <div class="card-wrap w-full" style="max-width:580px;">
+        <div class="card-body">
+
+            <!-- Header -->
+            <div id="cardHeader"
+                style="padding:2rem 2.5rem 1.25rem;text-align:center;border-bottom:1px solid rgba(99, 102, 241, 0.1);background:linear-gradient(180deg,rgba(15,23,42,0.5) 0%,transparent 100%);">
+                <div id="logoCircle"
+                    style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;margin-bottom:0.85rem;overflow:hidden;border:2px solid rgba(99, 102, 241, 0.3);box-shadow:0 8px 16px rgba(0,0,0,0.1);background:#0f172a;">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                </div>
+                <h1 class="title-grad"
+                    style="font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:0.06em;margin:0 0 0.25rem;">CREATE
+                    ACCOUNT</h1>
+                <p id="cardSubtitle"
+                    style="color:#94a3b8;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin:0;">
+                    Dragon
+                    Tattoos — Customer Registration</p>
+
+                <!-- Step dots -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;">
+                    <div class="step-dot active" id="dot1"></div>
+                    <div style="height:1px;width:28px;background:rgba(99, 102, 241, 0.15);"></div>
+                    <div class="step-dot" id="dot2"></div>
+                    <div style="height:1px;width:28px;background:rgba(99, 102, 241, 0.15);"></div>
+                    <div class="step-dot" id="dot3"></div>
+                </div>
+                <p id="stepLabel" style="font-size:0.68rem;color:#666;margin:0.4rem 0 0;letter-spacing:0.1em;">STEP 1 OF
+                    3 — Personal Info</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div style="padding:0.75rem 1.5rem 0;">
+                {% for category, message in messages %}
+                {% if category == 'error' %}
+                <div
+                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:#fca5a5;">
+                    {{ message }}</div>
+                {% else %}
+                <div
+                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(99, 102, 241, 0.1);border:1px solid rgba(99, 102, 241, 0.3);color:#818cf8;">
+                    {{ message }}</div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- FORM -->
+            <div style="padding:1.75rem 2.5rem 2.25rem;">
+                <form id="registerForm" method="POST" action="/register" autocomplete="off">
+
+                    <!-- ── STEP 1: Personal Info ── -->
+                    <div id="step1">
+                        <div style="display:flex;flex-direction:column;gap:1rem;">
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-regular fa-user" style="margin-right:0.4rem;"></i>Full Name <span
+                                        style="color:#dc3545;">*</span>
+                                </label>
+                                <input type="text" id="full_name" name="full_name" class="field"
+                                    placeholder="Enter your full name" required pattern="^[A-Za-z\s]+$"
+                                    oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,''); liveValidate('full_name')">
+                                <p class="field-hint" id="hint_full_name"
+                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-regular fa-envelope" style="margin-right:0.4rem;"></i>Email Address
+                                    <span style="color:#dc3545;">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" class="field"
+                                    placeholder="Enter your email address" required oninput="liveValidate('email')">
+                                <p class="field-hint" id="hint_email"
+                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-solid fa-phone" style="margin-right:0.4rem;"></i>Phone Number <span
+                                        style="color:#dc3545;">*</span>
+                                </label>
+                                <input type="tel" id="phone" name="phone" class="field"
+                                    placeholder="Enter 10-digit mobile number" maxlength="10" required
+                                    oninput="this.value=this.value.replace(/\D/g,''); liveValidate('phone')">
+                                <p class="field-hint" id="hint_phone"
+                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
+                            </div>
+
+                        </div>
+                        <div style="margin-top:1.5rem;">
+                            <button type="button" onclick="goStep2()" class="btn-gold">
+                                NEXT — Security &amp; Password <i class="fa-solid fa-arrow-right"
+                                    style="margin-left:0.5rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 2: Password ── -->
+                    <div id="step2" style="display:none;">
+                        <div style="display:flex;flex-direction:column;gap:1rem;">
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-solid fa-lock" style="margin-right:0.4rem;"></i>Password <span
+                                        style="color:#dc3545;">*</span>
+                                </label>
+                                <div style="position:relative;">
+                                    <input type="password" id="password" name="password" class="field"
+                                        placeholder="Min 8 characters" required
+                                        oninput="checkStrength(); liveValidate('password')"
+                                        style="padding-right:2.75rem;">
+                                    <button type="button" onclick="togglePass('password','eyePass')"
+                                        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:0;">
+                                        <i class="fa-regular fa-eye" id="eyePass"></i>
+                                    </button>
+                                </div>
+                                <!-- Strength bar -->
+                                <div class="strength-bar-bg" style="background:rgba(255,255,255,0.05);">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <p id="strengthLabel" style="font-size:0.68rem;color:#666;margin:0.3rem 0 0;"></p>
+                            </div>
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-solid fa-lock" style="margin-right:0.4rem;"></i>Confirm Password <span
+                                        style="color:#dc3545;">*</span>
+                                </label>
+                                <div style="position:relative;">
+                                    <input type="password" id="confirm_password" name="confirm_password" class="field"
+                                        placeholder="Re-enter your password" required
+                                        oninput="liveValidate('confirm_password')" style="padding-right:2.75rem;">
+                                    <button type="button" onclick="togglePass('confirm_password','eyeConf')"
+                                        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:0;">
+                                        <i class="fa-regular fa-eye" id="eyeConf"></i>
+                                    </button>
+                                </div>
+                                <p class="field-hint" id="hint_confirm_password"
+                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
+                            </div>
+
+                            <!-- Password rules -->
+                            <div class="info-box fade-in-box"
+                                style="background:rgba(15,23,42,0.4);border:1px solid rgba(99,102,241,0.2);border-radius:1rem;padding:0.75rem 1rem;">
+                                <p
+                                    style="font-size:0.68rem;color:#666;margin:0 0 0.4rem;letter-spacing:0.06em;text-transform:uppercase;">
+                                    Password must contain:</p>
+                                <div style="display:flex;flex-direction:column;gap:0.25rem;">
+                                    <p id="rule_len" style="font-size:0.72rem;margin:0;color:#555;">✗ At least 8
+                                        characters</p>
+                                    <p id="rule_upper" style="font-size:0.72rem;margin:0;color:#555;">✗ One uppercase
+                                        letter</p>
+                                    <p id="rule_num" style="font-size:0.72rem;margin:0;color:#555;">✗ One number</p>
+                                    <p id="rule_spec" style="font-size:0.72rem;margin:0;color:#555;">✗ One special
+                                        character</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+                            <button type="button" onclick="goBack(1)"
+                                style="padding:0.85rem 1.25rem;border:1px solid rgba(99, 102, 241, 0.25);border-radius:0.65rem;background:transparent;color:#94a3b8;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
+                                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'"
+                                onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.25)';this.style.color='#94a3b8'">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <button type="button" onclick="goStep3()" class="btn-gold" style="flex:1;">
+                                NEXT — Optional Info <i class="fa-solid fa-arrow-right" style="margin-left:0.5rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 3: Optional Info ── -->
+                    <div id="step3" style="display:none;">
+                        <div style="display:flex;flex-direction:column;gap:1rem;">
+
+                            <div>
+                                <label
+                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
+                                    <i class="fa-brands fa-instagram" style="margin-right:0.4rem;"></i>Instagram ID
+                                    <span
+                                        style="color:#666;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.68rem;">
+                                        (optional)</span>
+                                </label>
+                                <div style="position:relative;">
+                                    <span
+                                        style="position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:rgba(99, 102, 241, 0.5);font-size:0.9rem;">@</span>
+                                    <input type="text" id="insta_id" name="insta_id" class="field"
+                                        placeholder="your.instagram.handle" style="padding-left:2rem;">
+                                </div>
+                                <p style="font-size:0.68rem;color:#555;margin:0.3rem 0 0;">
+                                    We use this to share your tattoo photos (with permission).
+                                </p>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="info-box fade-in-box"
+                                style="background:rgba(15,23,42,0.4);border:1px solid rgba(99,102,241,0.2);border-radius:1rem;padding:1rem 1.1rem;">
+                                <p
+                                    style="font-size:0.7rem;color:#6366f1;margin:0 0 0.6rem;letter-spacing:0.1em;text-transform:uppercase;">
+                                    Account Summary</p>
+                                <div style="display:flex;flex-direction:column;gap:0.35rem;">
+                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+                                        <span style="color:#666;">Name</span>
+                                        <span id="sum_name" style="color:#6366f1;font-weight:500;">—</span>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+                                        <span style="color:#666;">Email</span>
+                                        <span id="sum_email" style="color:#6366f1;font-weight:500;">—</span>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+                                        <span style="color:#666;">Phone</span>
+                                        <span id="sum_phone" style="color:#6366f1;font-weight:500;">—</span>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
+                                        <span style="color:#666;">Password</span>
+                                        <span style="color:#4ade80;font-weight:500;">••••••••</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms -->
+                            <div style="display:flex;align-items:flex-start;gap:0.6rem;">
+                                <input type="checkbox" id="terms" required
+                                    style="margin-top:0.1rem;accent-color:#6366f1;width:14px;height:14px;flex-shrink:0;cursor:pointer;">
+                                <label for="terms" style="font-size:0.74rem;color:#666;cursor:pointer;line-height:1.5;">
+                                    I agree to the <a href="#" style="color:#6366f1;text-decoration:none;"
+                                        onmouseover="this.style.textDecoration='underline'"
+                                        onmouseout="this.style.textDecoration='none'">Terms of Service</a>
+                                    and confirm that I am 18+ years old.
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+                            <button type="button" onclick="goBack(2)"
+                                style="padding:0.85rem 1.25rem;border:1px solid rgba(99, 102, 241, 0.25);border-radius:0.65rem;background:transparent;color:#94a3b8;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
+                                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'"
+                                onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.25)';this.style.color='#94a3b8'">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <button type="submit" id="submitBtn" class="btn-gold" style="flex:1;">
+                                <i class="fa-solid fa-check" style="margin-right:0.5rem;"></i>CREATE ACCOUNT
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- Login link -->
+                <p style="text-align:center;margin-top:1.25rem;font-size:0.8rem;color:#555;">
+                    Already have an account?
+                    <a href="/login" style="color:#6366f1;font-weight:600;text-decoration:none;"
+                        onmouseover="this.style.color='#818cf8'" onmouseout="this.style.color='#6366f1'">
+                        Login here →
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        // ── Step navigation ───────────────────────────────────────
+        function showStep(n) {
+            [1, 2, 3].forEach(i => {
+                document.getElementById('step' + i).style.display = i === n ? 'block' : 'none';
+                const dot = document.getElementById('dot' + i);
+                dot.classList.remove('active', 'done');
+                if (i < n) dot.classList.add('done');
+                if (i === n) dot.classList.add('active');
+            });
+            const labels = ['Personal Info', 'Password Setup', 'Final Details'];
+            document.getElementById('stepLabel').textContent =
+                `STEP ${n} OF 3 — ${labels[n - 1]}`;
+            currentStep = n;
+        }
+
+        function goStep2() {
+            const name = document.getElementById('full_name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            let ok = true;
+            if (name.length < 2) { showHint('full_name', 'error', 'Enter your full name'); ok = false; }
+            if (!/\S+@\S+\.\S+/.test(email)) { showHint('email', 'error', 'Enter a valid email'); ok = false; }
+            if (!/^\d{10}$/.test(phone)) { showHint('phone', 'error', 'Enter a valid 10-digit number'); ok = false; }
+            if (ok) showStep(2);
+        }
+
+        function goStep3() {
+            const pw = document.getElementById('password').value;
+            const cpw = document.getElementById('confirm_password').value;
+            if (pw.length < 8) { showHint('password', 'error', 'Password must be at least 8 characters'); return; }
+            if (pw !== cpw) { showHint('confirm_password', 'error', 'Passwords do not match'); return; }
+            // Populate summary
+            document.getElementById('sum_name').textContent = document.getElementById('full_name').value.trim();
+            document.getElementById('sum_email').textContent = document.getElementById('email').value.trim();
+            document.getElementById('sum_phone').textContent = document.getElementById('phone').value.trim();
+            showStep(3);
+        }
+
+        function goBack(n) { showStep(n); }
+
+        // ── Live validation ───────────────────────────────────────
+        function liveValidate(field) {
+            const val = document.getElementById(field).value.trim();
+            if (field === 'full_name') {
+                const isAlpha = /^[A-Za-z\s]+$/.test(val);
+                (val.length >= 2 && isAlpha)
+                    ? showHint(field, 'success', '✓ Looks good')
+                    : showHint(field, 'error', isAlpha ? 'Enter your full name' : 'Name can only contain letters and spaces');
+            }
+            if (field === 'email') {
+                /\S+@\S+\.\S+/.test(val)
+                    ? showHint(field, 'success', '✓ Valid email')
+                    : showHint(field, 'error', 'Enter a valid email address');
+            }
+            if (field === 'phone') {
+                /^\d{10}$/.test(val)
+                    ? showHint(field, 'success', '✓ Valid number')
+                    : showHint(field, 'error', 'Must be exactly 10 digits');
+            }
+            if (field === 'confirm_password') {
+                const pw = document.getElementById('password').value;
+                val === pw && val.length > 0
+                    ? showHint(field, 'success', '✓ Passwords match')
+                    : showHint(field, 'error', 'Passwords do not match');
+            }
+        }
+
+        function showHint(field, type, msg) {
+            const el = document.getElementById('hint_' + field);
+            const inp = document.getElementById(field);
+            if (!el) return;
+            el.textContent = msg;
+            el.style.display = 'block';
+            el.style.color = type === 'success' ? '#4ade80' : '#fca5a5';
+            inp.classList.toggle('error', type === 'error');
+            inp.classList.toggle('success', type === 'success');
+        }
+
+        // ── Password strength ─────────────────────────────────────
+        function checkStrength() {
+            const pw = document.getElementById('password').value;
+            const bar = document.getElementById('strengthBar');
+            const lbl = document.getElementById('strengthLabel');
+
+            // Rules
+            const len = pw.length >= 8;
+            const upper = /[A-Z]/.test(pw);
+            const num = /[0-9]/.test(pw);
+            const spec = /[^A-Za-z0-9]/.test(pw);
+
+            // Update rule indicators
+            setRule('rule_len', len);
+            setRule('rule_upper', upper);
+            setRule('rule_num', num);
+            setRule('rule_spec', spec);
+
+            const score = [len, upper, num, spec].filter(Boolean).length;
+            const configs = [
+                { w: '0%', c: 'transparent', t: '' },
+                { w: '25%', c: '#dc3545', t: 'Weak' },
+                { w: '50%', c: '#fd7e14', t: 'Fair' },
+                { w: '75%', c: '#ffc107', t: 'Good' },
+                { w: '100%', c: '#4ade80', t: 'Strong' },
+            ];
+            const cfg = configs[score];
+            bar.style.width = cfg.w;
+            bar.style.background = cfg.c;
+            lbl.textContent = cfg.t;
+            lbl.style.color = cfg.c;
+        }
+
+        function setRule(id, pass) {
+            const el = document.getElementById(id);
+            el.textContent = (pass ? '✓ ' : '✗ ') + el.textContent.slice(2);
+            if (document.documentElement.classList.contains('light-mode')) {
+                el.style.color = pass ? '#00B894' : '#64748b';
+            } else {
+                el.style.color = pass ? '#4ade80' : '#555';
+            }
+        }
+
+        // ── Eye toggle ────────────────────────────────────────────
+        function togglePass(inputId, iconId) {
+            const inp = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            const show = inp.type === 'password';
+            inp.type = show ? 'text' : 'password';
+            icon.className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+        }
+    </script>
+
+</body>
+
+</html>

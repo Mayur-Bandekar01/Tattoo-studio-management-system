@@ -1,0 +1,136 @@
+<!-- ═══════════════════════════════════════
+     SECTION: OWNER INVOICE
+     File: templates/owner/sections/invoice.html
+═══════════════════════════════════════ -->
+<!-- Invoice Creation Portal -->
+<div class="content-card mb-10">
+    <div class="flex items-center gap-4 mb-8">
+        <div
+            class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
+            <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
+        </div>
+        <div>
+            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Debit Manifest</h3>
+            <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Generating financial issuance
+                for completed works</p>
+        </div>
+    </div>
+
+    <form method="POST" action="/owner/invoice/generate">
+        <div class="grid md:grid-cols-2 gap-8 mb-10">
+            <div class="space-y-2">
+                <label>Appointment Context</label>
+                <select name="appointment_id" id="apptSelect" required>
+                    <option value="">Select completed session...</option>
+                    {% if appointments %}
+                    {% for a in appointments %}
+                    {% if a.status == 'Done' and not a.has_invoice %}
+                    <option value="{{ a.appointment_id }}">
+                        #{{ a.appointment_id }} — {{ a.customer_name }} ({{ a.appointment_date }})
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label>Execution Category</label>
+                <select name="concept_type" required>
+                    <option value="">Select...</option>
+                    <option>Tattoo</option>
+                    <option>Touch-up</option>
+                    <option>Removal</option>
+                    <option>Sketch</option>
+                    <option>Consultation</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label>Valuation (₹)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-studio-gold font-bold">₹</span>
+                    <input type="number" name="total_amt" id="totalAmt" class="pl-10" placeholder="0.00" step="any"
+                        min="0" required>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label>Issuance Date</label>
+                <input type="date" name="generated_date" required>
+            </div>
+        </div>
+        <button type="submit"
+            class="px-10 py-4 bg-studio-gold hover:bg-studio-gold/90 text-black text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(200,160,64,0.3)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
+            <i class="fa-solid fa-file-signature mr-3"></i> Finalize Issuance
+        </button>
+    </form>
+</div>
+
+<!-- Transaction Ledger -->
+<div class="content-card">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Debit Archive</h3>
+            <p class="text-studio-muted text-[10px] mt-2 uppercase tracking-[0.2em] font-black">History of generated
+                invoices</p>
+        </div>
+        <div
+            class="w-10 h-10 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
+            <i class="fa-solid fa-vault text-xs"></i>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Session</th>
+                    <th>Category</th>
+                    <th>Valuation</th>
+                    <th>Issuance</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if invoices %}
+                {% for inv in invoices %}
+                <tr class="group">
+                    <td class="text-studio-muted font-mono text-xs">#INV-{{ inv.invoice_id }}</td>
+                    <td class="font-bold text-studio-text text-xs">#APT-{{ inv.appointment_id }}</td>
+                    <td class="text-studio-gold font-bold uppercase text-[10px] tracking-widest">{{ inv.concept_type }}
+                    </td>
+                    <td class="font-bold text-studio-text uppercase tracking-wide">₹{{ inv.total_amt }}</td>
+                    <td class="text-studio-muted text-xs">{{ inv.generated_date }}</td>
+                    <td>
+                        {% if inv.pay_status == 'Paid' %}
+                        <span class="badge badge-paid">✓ Settled</span>
+                        {% else %}
+                        <span class="badge badge-unpaid">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if inv.pay_status == 'Pending' %}
+                        <button onclick="prefillPayment('{{ inv.invoice_id }}', '{{ inv.total_amt }}')"
+                            class="px-4 py-2 bg-studio-card border border-studio-gold text-studio-gold text-[10px] font-black uppercase tracking-widest hover:bg-studio-gold hover:text-black transition-all">
+                            Record Pay
+                        </button>
+                        {% else %}
+                        <span
+                            class="text-studio-muted text-[10px] font-black uppercase tracking-widest opacity-30 italic">Clear
+                            ✓</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-studio-muted py-12">
+                        <i class="fa-solid fa-file-invoice text-4xl mb-4 block opacity-20"></i>
+                        No transaction records found.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

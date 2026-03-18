@@ -1,0 +1,111 @@
+<!-- ═══════════════════════════════════════
+     SECTION: MY APPOINTMENTS  (sec-appointments)
+     File: templates/customer/sections/appointments.html
+═══════════════════════════════════════ -->
+<div id="sec-appointments" class="section">
+
+    <div class="content-card">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display text-studio-dark text-base">My Appointments</h3>
+            <div class="flex gap-2">
+                <button onclick="filterAppts('all',this)"
+                    class="px-3 py-1 text-xs rounded-lg bg-studio-dark text-white font-medium appt-f">All</button>
+                <button onclick="filterAppts('Pending',this)"
+                    class="px-3 py-1 text-xs rounded-lg bg-studio-light text-studio-muted font-medium appt-f">Pending</button>
+                <button onclick="filterAppts('Approved',this)"
+                    class="px-3 py-1 text-xs rounded-lg bg-studio-light text-studio-muted font-medium appt-f">Approved</button>
+                <button onclick="filterAppts('Done',this)"
+                    class="px-3 py-1 text-xs rounded-lg bg-studio-light text-studio-muted font-medium appt-f">Done</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Artist</th>
+                    <th>Concept</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if appointments %}
+                {% for a in appointments %}
+                <tr class="appt-row" data-status="{{ a.status }}">
+                    <td class="text-studio-muted">#{{ a.appointment_id }}</td>
+                    <td class="font-medium">{{ a.artist_name }}</td>
+                    <td>{{ a.tattoo_concept }}</td>
+                    <td>
+                        {% if a.reference_image %}
+                        <img src="{{ url_for('static', filename=a.reference_image) }}" alt="Reference"
+                            style="width:40px;height:40px;object-fit:cover;border-radius:8px;border:1px solid #ddd;cursor:pointer;"
+                            onclick="openRefLb(this.src)" title="Click to view full image">
+                        {% else %}
+                        <span class="text-studio-muted text-xs">—</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ a.appointment_date }}</td>
+                    <td>{{ a.appointment_time }}</td>
+                    <td>{{ a.duration_hours if a.duration_hours else '—' }}{% if a.duration_hours %} hrs{% endif %}</td>
+                    <td>
+                        {% if a.status=='Pending' %}<span class="badge-pending">Pending</span>
+                        {% elif a.status=='Approved' %}<span class="badge-approved">Approved ✓</span>
+                        {% elif a.status=='Done' %}<span class="badge-done">Done ✓</span>
+                        {% elif a.status=='Rejected' %}<span class="badge-rejected">Rejected</span>
+                        {% else %}<span class="badge-cancelled">Cancelled</span>{% endif %}
+                    </td>
+                    <td>
+                        {% if a.status == 'Pending' %}
+                        <form method="POST" action="/customer/cancel/{{ a.appointment_id }}">
+                            <button type="submit" onclick="return confirm('Cancel this appointment?')"
+                                class="px-2 py-1 bg-red-500 text-white text-xs rounded-lg">Cancel</button>
+                        </form>
+                        {% else %}
+                        <span class="text-studio-muted text-xs">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center text-studio-muted py-10">
+                        No appointments yet!
+                        <button onclick="nav('book', document.querySelectorAll('.nav-item')[1])"
+                            class="ml-2 text-studio-dark font-semibold underline">Book one now!</button>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Reference image lightbox (for appointments table) -->
+    <div id="refLb" onclick="closeRefLb()"
+        style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.92);backdrop-filter:blur(16px);align-items:center;justify-content:center;">
+        <img id="refLbImg" src="" alt="Reference"
+            style="max-height:80vh;max-width:88vw;border-radius:14px;object-fit:contain;box-shadow:0 32px 80px rgba(0,0,0,0.8);">
+        <button onclick="closeRefLb()"
+            style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(255,255,255,0.08);border:none;color:#aaa;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <script>
+        function openRefLb(src) {
+            const lb = document.getElementById('refLb');
+            document.getElementById('refLbImg').src = src;
+            lb.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeRefLb() {
+            document.getElementById('refLb').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    </script>
+
+</div>

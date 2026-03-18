@@ -1,0 +1,81 @@
+<!-- ════════ MY PROFILE ════════ -->
+<div id="sec-profile" class="section">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold" style="color: var(--text);">Artist Identity</h2>
+        <p class="text-sm text-studio-muted mt-1">Manage your professional credentials and account security</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+
+        <!-- Profile Info Card -->
+        <div class="card p-8">
+            <div
+                style="width: 80px; height: 80px; border-radius: 20px; background: var(--primary-dim); border: 2px solid var(--primary-dim); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); margin: 0 auto 1.5rem; box-shadow: var(--shadow);">
+                <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <div class="text-center mb-8">
+                <h3 class="text-xl font-bold mb-1" style="color: var(--text);">{{ artist_profile.artist_name if
+                    artist_profile else name }}</h3>
+                <p
+                    style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--primary); font-weight: 700;">
+                    Resident Artist</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div class="prow"
+                    style="background: rgba(255,255,255,0.02); padding: 0.75rem 1rem; border-radius: 8px;">
+                    <span
+                        style="font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Artist
+                        ID</span>
+                    <span class="mono" style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">#{{
+                        session.get('user_id') }}</span>
+                </div>
+                <div class="prow" style="padding: 0.75rem 1rem;">
+                    <span
+                        style="font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Primary
+                        Email</span>
+                    <span style="font-size: 0.85rem; color: var(--text);">{{ artist_profile.artist_email if
+                        artist_profile else '—' }}</span>
+                </div>
+                <div class="prow" style="padding: 0.75rem 1rem;">
+                    <span
+                        style="font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Contact
+                        Number</span>
+                    <span style="font-size: 0.85rem; color: var(--text);">{{ artist_profile.phone if artist_profile else
+                        '—' }}</span>
+                </div>
+                <div class="prow" style="padding: 0.75rem 1rem; border-bottom: none;">
+                    <span
+                        style="font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">Specialisation</span>
+                    <span class="badge ba" style="font-size: 0.7rem; font-weight: 700;">{{ artist_profile.specialisation
+                        if artist_profile else '—' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="card card-pad">
+            <div class="mb-6">
+                <h3 class="text-sm font-bold tracking-wide" style="color: var(--text);">SECURITY SETTINGS</h3>
+            </div>
+            <form method="POST" action="/artist/change-password">
+                <div style="margin-bottom: 1.25rem;">
+                    <label class="lbl">Current Password</label>
+                    <input class="inp" type="password" name="current_password" placeholder="Verify identity..."
+                        required>
+                </div>
+                <div style="margin-bottom: 1.25rem;">
+                    <label class="lbl">New Password</label>
+                    <input class="inp" type="password" name="new_password" placeholder="Min. 8 characters" required>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <label class="lbl">Confirm New Password</label>
+                    <input class="inp" type="password" name="confirm_password" placeholder="Repeat new password"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-g w-full py-3 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i> Update Security Credentials
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

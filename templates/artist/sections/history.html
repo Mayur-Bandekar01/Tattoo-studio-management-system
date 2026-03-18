@@ -1,0 +1,77 @@
+<!-- ════════ SESSION HISTORY ════════ -->
+<div id="sec-history" class="section">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold" style="color: var(--text);">Archive & History</h2>
+        <p class="text-sm text-studio-muted mt-1">A comprehensive record of all your completed artistic sessions</p>
+    </div>
+
+    <div class="card" style="background: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 24px;">
+        <div class="card-head" style="background: #F8F9FA; border-bottom: 1px solid #E9ECEF;">
+            <h3 class="text-sm font-bold tracking-wide" style="color: #2F3640;">COMPLETED WORK LOG</h3>
+        </div>
+        <div class="tbl-wrap">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Ref ID</th>
+                        <th>Client</th>
+                        <th>Project Details</th>
+                        <th>Date Completed</th>
+                        <th>Duration</th>
+                        <th style="width: 100px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if appointments %}
+                    {% set done_list = appointments | selectattr('status','equalto','Done') | list %}
+                    {% if done_list %}
+                    {% for appt in done_list %}
+                    <tr>
+                        <td class="mono" style="color: var(--text-dim); font-size: 0.8rem; font-weight: 600;">#{{
+                            appt.appointment_id }}</td>
+                        <td>
+                            <div style="font-weight: 700; color: var(--text);">{{ appt.customer_name }}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">"{{
+                                appt.tattoo_concept }}"</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem; font-weight: 500; color: var(--text);">{{
+                                appt.appointment_date }}</div>
+                        </td>
+                        <td class="mono">
+                            <span style="font-weight: 700; color: var(--primary);">{{ appt.duration_hours }}</span>
+                            <small style="color: var(--text-dim);">HRS</small>
+                        </td>
+                        <td>
+                            <span class="badge bd"
+                                style="font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;">ARCHIVED</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty" style="padding: 5rem 1rem;">
+                            <i class="fa-solid fa-clock-rotate-left"
+                                style="font-size: 2.5rem; opacity: 0.3; margin-bottom: 1.5rem;"></i>
+                            <p style="font-size: 1rem; color: var(--text-muted);">No completed sessions found in
+                                history.</p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty" style="padding: 5rem 1rem;">
+                            <i class="fa-solid fa-folder-open"
+                                style="font-size: 2.5rem; opacity: 0.3; margin-bottom: 1.5rem;"></i>
+                            <p style="font-size: 1rem; color: var(--text-muted);">Appointment records are currently
+                                empty.</p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
