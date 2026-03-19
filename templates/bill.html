@@ -83,7 +83,7 @@
         /* ── Body ── */
         .bill-body { padding: 2rem 2.5rem; }
 
-        /* ── Info row ── */
+        /* ── Info grid ── */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -182,7 +182,7 @@
         .totals {
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         .totals-box { min-width: 260px; }
         .total-row {
@@ -217,7 +217,7 @@
             color: #fff;
         }
 
-        /* ── Payment status ── */
+        /* ── Payment status badge ── */
         .pay-status {
             display: flex;
             align-items: center;
@@ -226,30 +226,91 @@
             border-radius: 12px;
             margin-bottom: 1.5rem;
         }
-        .pay-status.paid    { background: #f0fdf4; border: 1px solid #bbf7d0; }
-        .pay-status.pending { background: #fffbeb; border: 1px solid #fde68a; }
+        .pay-status.paid        { background: #f0fdf4; border: 1px solid #bbf7d0; }
+        .pay-status.pending     { background: #fffbeb; border: 1px solid #fde68a; }
+        .pay-status.under-review { background: #eff6ff; border: 1px solid #bfdbfe; }
+
         .pay-status-left { display: flex; align-items: center; gap: 0.75rem; }
         .pay-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        .paid .pay-dot    { background: #10b981; box-shadow: 0 0 6px #10b981; }
-        .pending .pay-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
-        .pay-status p:first-child { font-size: 0.82rem; font-weight: 700; }
-        .paid    .pay-status p:first-child { color: #065f46; }
-        .pending .pay-status p:first-child { color: #92400e; }
-        .pay-status p:last-child { font-size: 0.68rem; }
-        .paid    .pay-status p:last-child { color: #6ee7b7; }
-        .pending .pay-status p:last-child { color: #fcd34d; }
+        .paid         .pay-dot { background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .pending      .pay-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+        .under-review .pay-dot {
+            background: #3b82f6;
+            box-shadow: 0 0 6px #3b82f6;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        .pay-status p:first-child  { font-size: 0.82rem; font-weight: 700; }
+        .pay-status p:last-child   { font-size: 0.68rem; }
+        .paid         .pay-status p:first-child { color: #065f46; }
+        .pending      .pay-status p:first-child { color: #92400e; }
+        .under-review .pay-status p:first-child { color: #1e40af; }
+        .paid         .pay-status p:last-child  { color: #6ee7b7; }
+        .pending      .pay-status p:last-child  { color: #fcd34d; }
+        .under-review .pay-status p:last-child  { color: #93c5fd; }
+
         .pay-method-badge {
             font-size: 0.72rem;
             font-weight: 600;
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
         }
-        .paid    .pay-method-badge { background: #d1fae5; color: #065f46; }
-        .pending .pay-method-badge { background: #fef3c7; color: #92400e; }
+        .paid         .pay-method-badge { background: #d1fae5; color: #065f46; }
+        .pending      .pay-method-badge { background: #fef3c7; color: #92400e; }
+        .under-review .pay-method-badge { background: #dbeafe; color: #1e40af; }
 
-        /* ══════════════════════════════════════════════════════
-           PAYMENT SECTION (customer only, unpaid invoices)
-        ══════════════════════════════════════════════════════ */
+        /* ══════════════════════════════════════
+           UNDER REVIEW BANNER
+        ══════════════════════════════════════ */
+        .under-review-banner {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1.5px solid #bfdbfe;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .review-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            animation: spin-slow 3s linear infinite;
+        }
+        @keyframes spin-slow {
+            0%   { transform: rotate(0deg);   }
+            100% { transform: rotate(360deg); }
+        }
+        .review-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+        .review-note {
+            font-size: 0.8rem;
+            color: #3b82f6;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        .review-ref {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #1e40af;
+            letter-spacing: 0.05em;
+        }
+
+        /* ══════════════════════════════════════
+           PAYMENT SECTION (Pending only)
+        ══════════════════════════════════════ */
         .pay-section {
             border: 2px dashed #e5e7eb;
             border-radius: 16px;
@@ -299,7 +360,7 @@
         .pm-title { font-size: 0.82rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.2rem; }
         .pm-sub   { font-size: 0.65rem; color: #9ca3af; }
 
-        /* ── UPI modal ── */
+        /* ── UPI panel ── */
         .upi-box {
             display: none;
             margin-top: 1.25rem;
@@ -311,8 +372,7 @@
             animation: fadeUp 0.3s ease;
         }
         .upi-qr {
-            width: 160px;
-            height: 160px;
+            width: 160px; height: 160px;
             margin: 0 auto 1rem;
             background: #fff;
             padding: 8px;
@@ -322,10 +382,8 @@
             align-items: center;
             justify-content: center;
         }
-        /* Fake QR pattern using CSS */
         .qr-inner {
-            width: 140px;
-            height: 140px;
+            width: 140px; height: 140px;
             background-image:
                 repeating-linear-gradient(0deg,   #1a1a2e 0, #1a1a2e 7px, transparent 7px, transparent 14px),
                 repeating-linear-gradient(90deg,  #1a1a2e 0, #1a1a2e 7px, transparent 7px, transparent 14px);
@@ -339,20 +397,55 @@
             font-size: 3rem;
             position: absolute;
             top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             background: #fff;
             padding: 4px;
             border-radius: 6px;
         }
-        .upi-id {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 0.25rem;
-        }
+        .upi-id   { font-size: 0.9rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.25rem; }
         .upi-note { font-size: 0.72rem; color: #9ca3af; margin-bottom: 1.25rem; }
 
-        /* ── Card form ── */
+        /* UTR input */
+        .utr-group { margin-bottom: 1.25rem; text-align: left; }
+        .utr-label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        .utr-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-align: center;
+            color: #1a1a2e;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .utr-input:focus { border-color: #1a1a2e; }
+        .utr-input.error { border-color: #dc2626; background: #fff5f5; }
+        .utr-error {
+            display: none;
+            color: #dc2626;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.4rem;
+        }
+        .utr-hint {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            margin-top: 0.35rem;
+        }
+
+        /* ── Card panel ── */
         .card-form-box {
             display: none;
             margin-top: 1.25rem;
@@ -362,7 +455,6 @@
             padding: 1.5rem;
             animation: fadeUp 0.3s ease;
         }
-        /* Fake credit card visual */
         .fake-card {
             background: linear-gradient(135deg, #1a1a2e 0%, #2d3561 100%);
             border-radius: 14px;
@@ -402,15 +494,20 @@
             color: #fff;
             margin-bottom: 0.75rem;
             font-family: 'Courier New', monospace;
-            transition: all 0.2s;
         }
         .card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
         }
-        .card-label-small { font-size: 0.55rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+        .card-label-small {
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
         .card-value-small { font-size: 0.78rem; font-weight: 600; color: #fff; }
+
         .cf-group { margin-bottom: 1rem; }
         .cf-label {
             display: block;
@@ -429,13 +526,13 @@
             font-size: 0.88rem;
             font-family: 'Inter', sans-serif;
             color: #1a1a2e;
-            transition: border-color 0.2s;
             outline: none;
+            transition: border-color 0.2s;
         }
         .cf-input:focus { border-color: #1a1a2e; }
         .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
-        /* ── Cash box ── */
+        /* ── Cash panel ── */
         .cash-box {
             display: none;
             margin-top: 1.25rem;
@@ -446,7 +543,7 @@
             text-align: center;
             animation: fadeUp 0.3s ease;
         }
-        .cash-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .cash-icon  { font-size: 2.5rem; margin-bottom: 0.75rem; }
         .cash-title { font-size: 0.95rem; font-weight: 700; color: #065f46; margin-bottom: 0.5rem; }
         .cash-note  { font-size: 0.78rem; color: #059669; line-height: 1.5; margin-bottom: 1.25rem; }
 
@@ -479,7 +576,7 @@
         }
         .processing-sub { font-size: 0.72rem; color: rgba(255,255,255,0.6); }
 
-        /* ── Pay CTA button ── */
+        /* ── Pay CTA ── */
         .btn-pay {
             width: 100%;
             padding: 0.9rem;
@@ -500,11 +597,7 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(26,26,46,0.3);
         }
-        .btn-pay:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         /* ── Footer ── */
         .bill-footer {
@@ -556,32 +649,31 @@
 
         @media print {
             body { background: #fff; padding: 0; }
-            .print-bar, .pay-section { display: none !important; }
+            .print-bar, .pay-section,
+            .under-review-banner { display: none !important; }
             .bill { box-shadow: none; border-radius: 0; }
         }
     </style>
 </head>
 <body>
 
-<!-- Processing overlay -->
+<!-- Processing overlay (card payment) -->
 <div class="processing-overlay" id="processingOverlay">
     <div class="spinner"></div>
     <div class="processing-text">PROCESSING PAYMENT</div>
     <div class="processing-sub">Please do not close this window...</div>
 </div>
 
-<!-- Action bar (hidden on print) -->
+<!-- Action bar -->
 <div class="print-bar">
-    <!-- FIX: role-aware back button -->
     <a href="{{ '/owner/dashboard' if role == 'owner' else '/customer/dashboard' }}"
        class="btn-back">← Back to Dashboard</a>
     <button class="btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
 </div>
 
-<!-- ═══════════════════════════ BILL ═══════════════════════════ -->
 <div class="bill">
 
-    <!-- Header -->
+    <!-- ── Header ── -->
     <div class="bill-header">
         <div>
             <p class="studio-name">DRAGON TATTOOS</p>
@@ -593,7 +685,7 @@
         </div>
     </div>
 
-    <!-- Body -->
+    <!-- ── Body ── -->
     <div class="bill-body">
 
         <!-- Info grid -->
@@ -690,40 +782,71 @@
             </div>
         </div>
 
-        <!-- Payment status badge -->
-        <div class="pay-status {{ 'paid' if invoice.pay_status == 'Paid' else 'pending' }}">
+        <!-- Payment status row -->
+        <div class="pay-status
+            {% if invoice.pay_status == 'Paid' %}paid
+            {% elif invoice.pay_status == 'Under Review' %}under-review
+            {% else %}pending{% endif %}">
+
             <div class="pay-status-left">
                 <div class="pay-dot"></div>
                 <div>
-                    <p>{{ '✓ Payment Received' if invoice.pay_status == 'Paid' else '⏳ Payment Pending' }}</p>
+                    <p>
+                        {% if invoice.pay_status == 'Paid' %}
+                            ✓ Payment Received
+                        {% elif invoice.pay_status == 'Under Review' %}
+                            🔄 Under Review
+                        {% else %}
+                            ⏳ Payment Pending
+                        {% endif %}
+                    </p>
                     <p>
                         {% if invoice.pay_status == 'Paid' and payment %}
-                            Paid on {{ payment.payment_date }}
+                            Paid on {{ payment.payment_date }} via {{ payment.payment_method }}
+                        {% elif invoice.pay_status == 'Under Review' %}
+                            Awaiting owner verification
                         {% else %}
                             Please complete payment below
                         {% endif %}
                     </p>
                 </div>
             </div>
-            {% if invoice.pay_status == 'Paid' and payment %}
-            <span class="pay-method-badge">{{ payment.payment_method }}</span>
-            {% else %}
-            <span class="pay-method-badge">Unpaid</span>
+
+            <span class="pay-method-badge">
+                {% if invoice.pay_status == 'Paid' %}Paid
+                {% elif invoice.pay_status == 'Under Review' %}Verifying
+                {% else %}Unpaid{% endif %}
+            </span>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+             CASE 1: Under Review — show waiting banner
+        ══════════════════════════════════════════════════ -->
+        {% if role == 'customer' and invoice.pay_status == 'Under Review' %}
+        <div class="under-review-banner">
+            <div class="review-icon">⏳</div>
+            <p class="review-title">Payment Submitted — Awaiting Verification</p>
+            <p class="review-note">
+                Your payment has been received and is currently being verified
+                by the studio owner. This usually takes a few hours.<br>
+                You will see the status update to <strong>Paid</strong> once confirmed.
+            </p>
+            {% if payment and payment.payment_method %}
+            <div class="review-ref">
+                Ref: {{ payment.payment_method }}
+            </div>
             {% endif %}
         </div>
 
-        <!-- ══════════════════════════════════════════════════════
-             PAYMENT SECTION
-             Shown only to customer when invoice is unpaid
-        ══════════════════════════════════════════════════════ -->
-        {% if role == 'customer' and invoice.pay_status != 'Paid' %}
+        <!-- ══════════════════════════════════════════════════
+             CASE 2: Pending — show payment form
+        ══════════════════════════════════════════════════ -->
+        {% elif role == 'customer' and invoice.pay_status == 'Pending' %}
         <div class="pay-section">
 
-            <p class="pay-section-title">
-                💳 Choose Payment Method
-            </p>
+            <p class="pay-section-title">💳 Choose Payment Method</p>
 
-            <!-- Method selector cards -->
+            <!-- Method cards -->
             <div class="pay-methods">
                 <div class="pay-method-card" id="pm-upi"  onclick="selectMethod('upi')">
                     <div class="pm-icon">📱</div>
@@ -742,7 +865,7 @@
                 </div>
             </div>
 
-            <!-- ── UPI panel ── -->
+            <!-- ── UPI Panel ── -->
             <div class="upi-box" id="upi-panel">
                 <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;
                            letter-spacing:0.1em;color:#6b7280;margin-bottom:1rem;">
@@ -757,22 +880,45 @@
                         ₹{{ "%.2f" | format(invoice.total_amt) }}
                     </strong>
                 </p>
-                <p style="font-size:0.72rem;color:#9ca3af;margin-bottom:1.25rem;">
-                    Open any UPI app → Scan → Enter amount → Pay
+                <p style="font-size:0.72rem;color:#9ca3af;margin-bottom:1.5rem;">
+                    Open PhonePe / GPay / Paytm → Scan QR → Pay →
+                    Copy the <strong>UTR / Transaction ID</strong> shown on the success screen
                 </p>
-                <form method="POST" action="/customer/pay/{{ invoice.invoice_id }}">
+
+                <!-- UTR input -->
+                <div class="utr-group">
+                    <label class="utr-label">
+                        Enter UPI Transaction Reference (UTR) *
+                    </label>
+                    <input type="text"
+                           id="utrInput"
+                           class="utr-input"
+                           maxlength="12"
+                           placeholder="e.g. 407219384612"
+                           oninput="onUTRInput(this)"
+                           autocomplete="off">
+                    <p class="utr-hint">12-digit number from your UPI app success screen</p>
+                    <p class="utr-error" id="utrError">
+                        ⚠ Please enter a valid 12-digit UTR number.
+                    </p>
+                </div>
+
+                <form method="POST"
+                      action="/customer/pay/{{ invoice.invoice_id }}"
+                      onsubmit="return validateUTR(event, this)">
                     <input type="hidden" name="payment_method" value="UPI">
+                    <input type="hidden" name="transaction_ref" id="utrHidden">
                     <button type="submit" class="btn-pay">
-                        ✅ &nbsp;I Have Paid
+                        ✅ &nbsp;Confirm Payment
                     </button>
                 </form>
             </div>
 
-            <!-- ── Card panel ── -->
+            <!-- ── Card Panel ── -->
             <div class="card-form-box" id="card-panel">
 
-                <!-- Visual card that updates as user types -->
-                <div class="fake-card" id="fakeCard">
+                <!-- Visual card -->
+                <div class="fake-card">
                     <div class="card-chip"></div>
                     <div class="card-number-display" id="cardDisplay">
                         •••• &nbsp;•••• &nbsp;•••• &nbsp;••••
@@ -789,15 +935,19 @@
                     </div>
                 </div>
 
-                <form id="cardForm" method="POST" action="/customer/pay/{{ invoice.invoice_id }}"
+                <form id="cardForm"
+                      method="POST"
+                      action="/customer/pay/{{ invoice.invoice_id }}"
                       onsubmit="submitCard(event)">
                     <input type="hidden" name="payment_method" value="Card">
+                    <input type="hidden" name="transaction_ref" value="">
 
                     <div class="cf-group">
                         <label class="cf-label">Card Number</label>
                         <input class="cf-input" id="cardNumber" type="text"
                                placeholder="1234 5678 9012 3456"
-                               maxlength="19" oninput="fmtCard(this)"
+                               maxlength="19"
+                               oninput="fmtCard(this)"
                                autocomplete="off" required>
                     </div>
                     <div class="cf-group">
@@ -829,12 +979,13 @@
                 </form>
             </div>
 
-            <!-- ── Cash panel ── -->
+            <!-- ── Cash Panel ── -->
             <div class="cash-box" id="cash-panel">
                 <div class="cash-icon">🏪</div>
                 <p class="cash-title">Pay at the Studio</p>
                 <p class="cash-note">
-                    Please bring <strong>₹{{ "%.2f" | format(invoice.total_amt) }}</strong>
+                    Please bring
+                    <strong>₹{{ "%.2f" | format(invoice.total_amt) }}</strong>
                     to the Dragon Tattoos studio at the time of your appointment.<br>
                     Our team will collect payment and update your invoice.
                 </p>
@@ -844,6 +995,7 @@
                 </div>
                 <form method="POST" action="/customer/pay/{{ invoice.invoice_id }}">
                     <input type="hidden" name="payment_method" value="Cash">
+                    <input type="hidden" name="transaction_ref" value="">
                     <button type="submit" class="btn-pay">
                         ✅ &nbsp;Confirm — I'll Pay at Studio
                     </button>
@@ -868,34 +1020,53 @@
 <script>
     /* ── Method selector ── */
     function selectMethod(method) {
-        /* deselect all cards */
-        ['upi','card','cash'].forEach(m => {
+        ['upi', 'card', 'cash'].forEach(m => {
             document.getElementById('pm-' + m).classList.remove('selected');
             document.getElementById(m + '-panel').style.display = 'none';
         });
-
-        /* select chosen */
         document.getElementById('pm-' + method).classList.add('selected');
         document.getElementById(method + '-panel').style.display = 'block';
-
-        /* scroll into view smoothly */
         document.getElementById(method + '-panel').scrollIntoView({
             behavior: 'smooth', block: 'nearest'
         });
     }
 
-    /* ── Card number formatter: XXXX XXXX XXXX XXXX ── */
+    /* ── UTR live input: digits only ── */
+    function onUTRInput(input) {
+        input.value = input.value.replace(/\D/g, '').substring(0, 12);
+        // reset error styling while typing
+        input.classList.remove('error');
+        document.getElementById('utrError').style.display = 'none';
+    }
+
+    /* ── UTR validation on submit ── */
+    function validateUTR(e, form) {
+        const utr = document.getElementById('utrInput').value.trim();
+        const err = document.getElementById('utrError');
+        const inp = document.getElementById('utrInput');
+
+        if (!/^\d{12}$/.test(utr)) {
+            e.preventDefault();
+            inp.classList.add('error');
+            inp.style.borderColor = '#dc2626';
+            err.style.display = 'block';
+            inp.focus();
+            return false;
+        }
+
+        // Copy UTR into hidden field then submit
+        document.getElementById('utrHidden').value = utr;
+        return true;
+    }
+
+    /* ── Card number formatter ── */
     function fmtCard(input) {
         let v = input.value.replace(/\D/g, '').substring(0, 16);
         input.value = v.replace(/(.{4})/g, '$1 ').trim();
-
-        /* update visual card */
-        const display = v.padEnd(16, '•');
+        const d = v.padEnd(16, '•');
         document.getElementById('cardDisplay').textContent =
-            display.substring(0,4)  + ' ' +
-            display.substring(4,8)  + ' ' +
-            display.substring(8,12) + ' ' +
-            display.substring(12,16);
+            d.substring(0,4)  + ' ' + d.substring(4,8)  + ' ' +
+            d.substring(8,12) + ' ' + d.substring(12,16);
     }
 
     /* ── Cardholder name → visual card ── */
@@ -904,25 +1075,21 @@
             val.toUpperCase() || 'YOUR NAME';
     }
 
-    /* ── Expiry formatter: MM/YY ── */
+    /* ── Expiry formatter ── */
     function fmtExp(input) {
         let v = input.value.replace(/\D/g, '').substring(0, 4);
-        if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+        if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
         input.value = v;
         document.getElementById('cardExpDisplay').textContent = v || 'MM/YY';
     }
 
-    /* ── Card submit: show processing overlay, then submit ── */
+    /* ── Card submit: 2.5s processing animation ── */
     function submitCard(e) {
         e.preventDefault();
-
         const btn = document.getElementById('cardPayBtn');
-        btn.disabled = true;
+        btn.disabled    = true;
         btn.textContent = 'Processing...';
-
         document.getElementById('processingOverlay').classList.add('show');
-
-        /* Simulate 2.5s processing delay then submit the form */
         setTimeout(() => {
             document.getElementById('cardForm').submit();
         }, 2500);

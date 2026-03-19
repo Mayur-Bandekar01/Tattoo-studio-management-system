@@ -113,13 +113,17 @@ def login_post():
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
 
+    # ── CUSTOMER ─────────────────────────────────────────────
     if role == 'customer':
         email = request.form.get('email', '').strip()
         if not email:
             conn.close()
             flash("Please enter your email!")
             return redirect('/login')
-        cursor.execute("SELECT * FROM customer WHERE customer_email = %s AND password = %s", (email, password))
+        cursor.execute(
+            "SELECT * FROM customer WHERE customer_email = %s AND password = %s",
+            (email, password)
+        )
         user = cursor.fetchone()
         conn.close()
         if user:
@@ -131,13 +135,17 @@ def login_post():
         flash("Invalid email or password!")
         return redirect('/login')
 
+    # ── ARTIST ───────────────────────────────────────────────
     elif role == 'artist':
         artist_id = request.form.get('artist_id', '').strip()
         if not artist_id:
             conn.close()
             flash("Please enter your Artist ID!")
             return redirect('/login')
-        cursor.execute("SELECT * FROM artist WHERE artist_id = %s AND password = %s", (artist_id, password))
+        cursor.execute(
+            "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
+            (artist_id, password)
+        )
         user = cursor.fetchone()
         conn.close()
         if user:
@@ -149,13 +157,17 @@ def login_post():
         flash("Invalid Artist ID or password!")
         return redirect('/login')
 
+    # ── OWNER ────────────────────────────────────────────────
     elif role == 'owner':
         email = request.form.get('email', '').strip()
         if not email:
             conn.close()
             flash("Please enter your email!")
             return redirect('/login')
-        cursor.execute("SELECT * FROM owner WHERE email = %s AND password = %s", (email, password))
+        cursor.execute(
+            "SELECT * FROM owner WHERE email = %s AND password = %s",
+            (email, password)
+        )
         user = cursor.fetchone()
         conn.close()
         if user:
@@ -197,11 +209,14 @@ def register_post():
 
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT customer_id FROM customer WHERE customer_email = %s", (email,))
+    cursor.execute(
+        "SELECT customer_id FROM customer WHERE customer_email = %s", (email,)
+    )
     if cursor.fetchone():
         conn.close()
         flash("Email already registered! Please login.")
         return redirect('/register')
+
     cursor.execute("""
         INSERT INTO customer (customer_name, customer_email, password, phone, insta_id)
         VALUES (%s, %s, %s, %s, %s)
@@ -220,7 +235,7 @@ def logout():
 
 
 # ════════════════════════════════════════════════════════════
-#  FORGOT PASSWORD
+#  FORGOT PASSWORD — STEP 1
 # ════════════════════════════════════════════════════════════
 
 @app.route('/forgot-password', methods=['GET'])
@@ -238,7 +253,10 @@ def forgot_password_post():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT customer_id, customer_name FROM customer WHERE customer_email = %s", (email,))
+    cursor.execute(
+        "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s",
+        (email,)
+    )
     customer = cursor.fetchone()
     conn.close()
 
@@ -249,15 +267,21 @@ def forgot_password_post():
     otp = str(random.randint(100000, 999999))
     session['reset_otp']   = otp
     session['reset_email'] = email
-    session['otp_expiry']  = (datetime.now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
+    session['otp_expiry']  = (
+        datetime.now() + timedelta(minutes=10)
+    ).strftime('%Y-%m-%d %H:%M:%S')
 
     try:
-        msg      = Message(subject="Dragon Tattoos — Your Password Reset OTP", recipients=[email])
+        msg      = Message(
+            subject    = "Dragon Tattoos — Your Password Reset OTP",
+            recipients = [email]
+        )
         msg.body = f"Your OTP is: {otp}\nValid for 10 minutes.\nDo not share this with anyone."
         msg.html = f"""
 <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
 body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
-.wrap{{max-width:520px;margin:30px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}}
+.wrap{{max-width:520px;margin:30px auto;background:#fff;border-radius:12px;
+       overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}}
 .hdr{{background:#1a1a2e;padding:32px 40px;text-align:center;}}
 .hdr h1{{color:#fff;font-size:22px;margin:0;letter-spacing:0.15em;}}
 .hdr p{{color:#c8a040;font-size:11px;margin:6px 0 0;letter-spacing:0.2em;}}
@@ -267,7 +291,8 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
 .otp-lbl{{font-size:11px;color:#c8a040;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;}}
 .otp-code{{font-size:42px;font-weight:700;color:#fff;letter-spacing:0.3em;}}
 .exp{{font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;}}
-.warn{{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:14px 18px;font-size:12px;color:#92400e;}}
+.warn{{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;
+       padding:14px 18px;font-size:12px;color:#92400e;}}
 .foot{{background:#f8f9fa;padding:20px 40px;text-align:center;border-top:1px solid #eee;}}
 .foot p{{font-size:11px;color:#aaa;margin:0;}}
 </style></head><body>
@@ -275,8 +300,10 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
   <div class="hdr"><h1>DRAGON TATTOOS</h1><p>Art Etched in Eternity</p></div>
   <div class="strip"></div>
   <div class="body">
-    <p style="font-size:16px;color:#1a1a2e;font-weight:600;margin-bottom:8px;">Hello, {customer['customer_name']}!</p>
-    <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:28px;">Use the OTP below to reset your password.</p>
+    <p style="font-size:16px;color:#1a1a2e;font-weight:600;margin-bottom:8px;">
+      Hello, {customer['customer_name']}!</p>
+    <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:28px;">
+      Use the OTP below to reset your password.</p>
     <div class="otp-box">
       <p class="otp-lbl">Your One-Time Password</p>
       <div class="otp-code">{otp}</div>
@@ -287,7 +314,11 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
   <div class="foot"><p>Dragon Tattoos Studio | Automated email, do not reply.</p></div>
 </div></body></html>"""
         mail.send(msg)
-        flash("OTP resent successfully! Check your inbox." if resend else "OTP sent! Check your email inbox.", "success")
+        flash(
+            "OTP resent successfully! Check your inbox." if resend
+            else "OTP sent! Check your email inbox.",
+            "success"
+        )
     except Exception as e:
         print("EMAIL ERROR:", e)
         flash("Failed to send OTP. Please try again!", "error")
@@ -295,6 +326,10 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
 
     return render_template('verify_otp.html', email=email)
 
+
+# ════════════════════════════════════════════════════════════
+#  FORGOT PASSWORD — STEP 2
+# ════════════════════════════════════════════════════════════
 
 @app.route('/verify-otp', methods=['POST'])
 def verify_otp():
@@ -310,7 +345,9 @@ def verify_otp():
     try:
         expiry = datetime.strptime(expiry_str, '%Y-%m-%d %H:%M:%S')
         if datetime.now() > expiry:
-            session.pop('reset_otp', None); session.pop('reset_email', None); session.pop('otp_expiry', None)
+            session.pop('reset_otp', None)
+            session.pop('reset_email', None)
+            session.pop('otp_expiry', None)
             flash("OTP has expired! Please request a new one.", "error")
             return redirect('/forgot-password')
     except Exception:
@@ -325,6 +362,10 @@ def verify_otp():
     session.pop('reset_otp', None)
     return render_template('reset_password.html')
 
+
+# ════════════════════════════════════════════════════════════
+#  FORGOT PASSWORD — STEP 3
+# ════════════════════════════════════════════════════════════
 
 @app.route('/reset-password', methods=['POST'])
 def reset_password():
@@ -348,12 +389,18 @@ def reset_password():
 
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email))
+    cursor.execute(
+        "UPDATE customer SET password = %s WHERE customer_email = %s",
+        (new_pass, email)
+    )
     conn.commit()
     conn.close()
 
-    session.pop('otp_verified', None); session.pop('reset_email', None); session.pop('otp_expiry', None)
-    flash("Password reset successful! Please login with your new password.", "success")
+    session.pop('otp_verified', None)
+    session.pop('reset_email',  None)
+    session.pop('otp_expiry',   None)
+
+    flash("Password reset successful! Please login.", "success")
     return redirect('/login')
 
 
@@ -387,7 +434,9 @@ def customer_dashboard():
     cursor.execute("SELECT * FROM artist")
     artists = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM customer WHERE customer_id = %s", (customer_id,))
+    cursor.execute(
+        "SELECT * FROM customer WHERE customer_id = %s", (customer_id,)
+    )
     customer_profile = cursor.fetchone()
 
     cursor.execute("""
@@ -397,7 +446,10 @@ def customer_dashboard():
     """)
     gallery = cursor.fetchall()
 
-    cursor.execute("SELECT gallery_id FROM gallery_likes WHERE customer_id = %s", (customer_id,))
+    cursor.execute(
+        "SELECT gallery_id FROM gallery_likes WHERE customer_id = %s",
+        (customer_id,)
+    )
     liked_rows  = cursor.fetchall()
     liked_ids   = set(row['gallery_id'] for row in liked_rows)
     liked_count = len(liked_ids)
@@ -409,11 +461,18 @@ def customer_dashboard():
     total_invoices     = len(invoices)
 
     return render_template('customer/dashboard.html',
-        name=session['name'], appointments=appointments, invoices=invoices,
-        artists=artists, customer_profile=customer_profile, gallery=gallery,
-        liked_ids=liked_ids, liked_count=liked_count,
-        total_appointments=total_appointments, pending_count=pending_count,
-        done_count=done_count, total_invoices=total_invoices
+        name               = session['name'],
+        appointments       = appointments,
+        invoices           = invoices,
+        artists            = artists,
+        customer_profile   = customer_profile,
+        gallery            = gallery,
+        liked_ids          = liked_ids,
+        liked_count        = liked_count,
+        total_appointments = total_appointments,
+        pending_count      = pending_count,
+        done_count         = done_count,
+        total_invoices     = total_invoices
     )
 
 
@@ -440,7 +499,8 @@ def customer_book():
         flash("Cannot book appointments in the past.", "error")
         return redirect('/customer/dashboard')
 
-    extra_details = {}
+    extra_details  = {}
+    tattoo_concept = ''
 
     if service_type == 'tattoo':
         tattoo_concept = request.form.get('tattoo_concept', '').strip()
@@ -448,12 +508,12 @@ def customer_book():
             flash("Please enter a tattoo concept.", "error")
             return redirect('/customer/dashboard')
         extra_details = {
-            'service': 'Tattoo Making',
-            'size': request.form.get('tattoo_size', ''),
-            'placement': request.form.get('body_placement', ''),
-            'style': request.form.get('tattoo_style', ''),
-            'colour_preference': request.form.get('colour_preference', ''),
-            'notes': request.form.get('tattoo_notes', ''),
+            'service'           : 'Tattoo Making',
+            'size'              : request.form.get('tattoo_size', ''),
+            'placement'         : request.form.get('body_placement', ''),
+            'style'             : request.form.get('tattoo_style', ''),
+            'colour_preference' : request.form.get('colour_preference', ''),
+            'notes'             : request.form.get('tattoo_notes', ''),
         }
 
     elif service_type == 'art':
@@ -463,25 +523,25 @@ def customer_book():
             return redirect('/customer/dashboard')
         tattoo_concept = f"Art / Sketching — {art_type}"
         extra_details = {
-            'service': 'Art / Sketching',
-            'art_type': art_type,
-            'art_size': request.form.get('art_size', ''),
-            'colour_preference': request.form.get('art_color_preference', ''),
-            'deadline': request.form.get('art_deadline', ''),
-            'notes': request.form.get('art_notes', ''),
+            'service'           : 'Art / Sketching',
+            'art_type'          : art_type,
+            'art_size'          : request.form.get('art_size', ''),
+            'colour_preference' : request.form.get('art_color_preference', ''),
+            'deadline'          : request.form.get('art_deadline', ''),
+            'notes'             : request.form.get('art_notes', ''),
         }
 
     elif service_type == 'removal':
         tattoo_concept = 'Tattoo Removal'
         extra_details = {
-            'service': 'Tattoo Removal',
-            'tattoo_size': request.form.get('removal_tattoo_size', ''),
-            'tattoo_color': request.form.get('removal_tattoo_color', ''),
-            'body_location': request.form.get('removal_body_location', ''),
-            'tattoo_age': request.form.get('removal_tattoo_age', ''),
-            'sessions_expected': request.form.get('removal_sessions', ''),
-            'skin_sensitivity': request.form.get('removal_skin_sensitivity', ''),
-            'notes': request.form.get('removal_notes', ''),
+            'service'           : 'Tattoo Removal',
+            'tattoo_size'       : request.form.get('removal_tattoo_size', ''),
+            'tattoo_color'      : request.form.get('removal_tattoo_color', ''),
+            'body_location'     : request.form.get('removal_body_location', ''),
+            'tattoo_age'        : request.form.get('removal_tattoo_age', ''),
+            'sessions_expected' : request.form.get('removal_sessions', ''),
+            'skin_sensitivity'  : request.form.get('removal_skin_sensitivity', ''),
+            'notes'             : request.form.get('removal_notes', ''),
         }
     else:
         flash("Invalid service type selected.", "error")
@@ -501,7 +561,9 @@ def customer_book():
             flash("File size must be under 5 MB!", "error")
             return redirect('/customer/dashboard')
         ext      = uploaded_file.filename.rsplit('.', 1)[1].lower()
-        filename = secure_filename(f"ref_{session['user_id']}_{int(time.time())}.{ext}")
+        filename = secure_filename(
+            f"ref_{session['user_id']}_{int(time.time())}.{ext}"
+        )
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         uploaded_file.save(save_path)
         reference = f"uploads/references/{filename}"
@@ -509,11 +571,12 @@ def customer_book():
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    # Conflict check 1: slot taken by someone else
+    # Conflict check 1 — slot already taken
     cursor.execute("""
         SELECT appointment_id FROM appointment
         WHERE artist_id = %s AND appointment_date = %s
-          AND appointment_time = %s AND status NOT IN ('Cancelled','Rejected')
+          AND appointment_time = %s
+          AND status NOT IN ('Cancelled', 'Rejected')
     """, (artist_id, appt_date, appt_time))
     if cursor.fetchone():
         conn.close()
@@ -523,12 +586,12 @@ def customer_book():
         flash("That time slot is already booked. Please choose a different time.", "error")
         return redirect('/customer/dashboard')
 
-    # Conflict check 2: same customer double-submitting
+    # Conflict check 2 — same customer double submit
     cursor.execute("""
         SELECT appointment_id FROM appointment
         WHERE customer_id = %s AND artist_id = %s
           AND appointment_date = %s AND appointment_time = %s
-          AND status NOT IN ('Cancelled','Rejected')
+          AND status NOT IN ('Cancelled', 'Rejected')
     """, (session['user_id'], artist_id, appt_date, appt_time))
     if cursor.fetchone():
         conn.close()
@@ -544,8 +607,10 @@ def customer_book():
                 (customer_id, artist_id, tattoo_concept, reference,
                  appointment_date, appointment_time, extra_details)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (session['user_id'], artist_id, tattoo_concept, reference,
-              appt_date, appt_time, json.dumps(extra_details)))
+        """, (
+            session['user_id'], artist_id, tattoo_concept, reference,
+            appt_date, appt_time, json.dumps(extra_details)
+        ))
         conn.commit()
         flash("Booking submitted! Waiting for artist approval.", "success")
     except Exception as e:
@@ -610,7 +675,9 @@ def customer_delete(appointment_id):
             try: os.remove(file_path)
             except Exception as e: print(f"[File Delete Error] {e}")
 
-    cursor.execute("DELETE FROM appointment WHERE appointment_id = %s", (appointment_id,))
+    cursor.execute(
+        "DELETE FROM appointment WHERE appointment_id = %s", (appointment_id,)
+    )
     conn.commit()
     conn.close()
     flash("Appointment deleted successfully.", "success")
@@ -618,7 +685,9 @@ def customer_delete(appointment_id):
 
 
 # ════════════════════════════════════════════════════════════
-#  CUSTOMER PAY INVOICE  ← NEW
+#  CUSTOMER PAY INVOICE
+#  Customer submits payment → goes to "Under Review"
+#  Owner must approve before it becomes "Paid"
 # ════════════════════════════════════════════════════════════
 
 @app.route('/customer/pay/<int:invoice_id>', methods=['POST'])
@@ -626,10 +695,26 @@ def customer_pay(invoice_id):
     if session.get('role') != 'customer':
         return redirect('/login')
 
-    payment_method = request.form.get('payment_method', '').strip()
+    payment_method  = request.form.get('payment_method', '').strip()
+    transaction_ref = request.form.get('transaction_ref', '').strip()
+
     if payment_method not in ('UPI', 'Card', 'Cash'):
         flash("Invalid payment method.", "error")
         return redirect('/customer/dashboard')
+
+    # Server-side UTR validation for UPI
+    if payment_method == 'UPI':
+        if not transaction_ref or len(transaction_ref) != 12 or not transaction_ref.isdigit():
+            flash("Invalid UTR number. Please enter the 12-digit reference from your UPI app.", "error")
+            return redirect(f'/invoice/view/{invoice_id}')
+
+    # Build readable method string stored in DB
+    if payment_method == 'UPI':
+        stored_method = f"UPI — UTR: {transaction_ref}"
+    elif payment_method == 'Card':
+        stored_method = "Card"
+    else:
+        stored_method = "Cash"
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -652,20 +737,30 @@ def customer_pay(invoice_id):
         flash("This invoice is already paid!", "error")
         return redirect('/customer/dashboard')
 
-    # Record the payment
+    if invoice['pay_status'] == 'Under Review':
+        conn.close()
+        flash("Your payment is already under review. Please wait for owner confirmation.", "error")
+        return redirect('/customer/dashboard')
+
+    # Insert payment record as Pending Approval
     cursor.execute("""
-        INSERT INTO payment (invoice_id, amount_paid, payment_method, payment_date)
-        VALUES (%s, %s, %s, CURDATE())
-    """, (invoice_id, invoice['total_amt'], payment_method))
+        INSERT INTO payment
+            (invoice_id, amount_paid, payment_method, payment_date, status)
+        VALUES (%s, %s, %s, CURDATE(), 'Pending Approval')
+    """, (invoice_id, invoice['total_amt'], stored_method))
+
+    # Move invoice to Under Review
     cursor.execute("""
-        UPDATE invoice SET pay_status = 'Paid' WHERE invoice_id = %s
+        UPDATE invoice SET pay_status = 'Under Review'
+        WHERE invoice_id = %s
     """, (invoice_id,))
+
     conn.commit()
     conn.close()
 
     flash(
-        f"Payment of ₹{invoice['total_amt']} via {payment_method} confirmed! "
-        f"Your invoice is now marked as Paid.",
+        "Payment submitted successfully! "
+        "The owner will verify and confirm within 24 hours.",
         "success"
     )
     return redirect('/customer/dashboard')
@@ -693,15 +788,19 @@ def customer_change_password():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM customer WHERE customer_id = %s AND password = %s",
-                   (session['user_id'], current))
+    cursor.execute(
+        "SELECT * FROM customer WHERE customer_id = %s AND password = %s",
+        (session['user_id'], current)
+    )
     if not cursor.fetchone():
         conn.close()
         flash("Current password is incorrect!", "error")
         return redirect('/customer/dashboard')
 
-    cursor.execute("UPDATE customer SET password = %s WHERE customer_id = %s",
-                   (new_pass, session['user_id']))
+    cursor.execute(
+        "UPDATE customer SET password = %s WHERE customer_id = %s",
+        (new_pass, session['user_id'])
+    )
     conn.commit()
     conn.close()
     flash("Password updated successfully!", "success")
@@ -721,23 +820,35 @@ def customer_gallery_like(gallery_id):
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT like_id FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
-                   (gallery_id, customer_id))
+    cursor.execute(
+        "SELECT like_id FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
+        (gallery_id, customer_id)
+    )
     existing = cursor.fetchone()
 
     if existing:
-        cursor.execute("DELETE FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
-                       (gallery_id, customer_id))
+        cursor.execute(
+            "DELETE FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
+            (gallery_id, customer_id)
+        )
         conn.commit()
-        cursor.execute("SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s", (gallery_id,))
+        cursor.execute(
+            "SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s",
+            (gallery_id,)
+        )
         count = cursor.fetchone()['cnt']
         conn.close()
         return jsonify({'success': True, 'liked': False, 'count': count})
     else:
-        cursor.execute("INSERT INTO gallery_likes (gallery_id, customer_id) VALUES (%s, %s)",
-                       (gallery_id, customer_id))
+        cursor.execute(
+            "INSERT INTO gallery_likes (gallery_id, customer_id) VALUES (%s, %s)",
+            (gallery_id, customer_id)
+        )
         conn.commit()
-        cursor.execute("SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s", (gallery_id,))
+        cursor.execute(
+            "SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s",
+            (gallery_id,)
+        )
         count = cursor.fetchone()['cnt']
         conn.close()
         return jsonify({'success': True, 'liked': True, 'count': count})
@@ -764,9 +875,15 @@ def customer_gallery_liked():
     liked_items = cursor.fetchall()
     conn.close()
 
-    result = [{'gallery_id': i['gallery_id'], 'image_path': i['image_path'],
-               'caption': i['caption'] or 'Untitled', 'style': i['style'] or '',
-               'artist_name': i['artist_name']} for i in liked_items]
+    result = []
+    for item in liked_items:
+        result.append({
+            'gallery_id' : item['gallery_id'],
+            'image_path' : item['image_path'],
+            'caption'    : item['caption'] or 'Untitled',
+            'style'      : item['style'] or '',
+            'artist_name': item['artist_name'],
+        })
     return jsonify({'success': True, 'items': result})
 
 
@@ -794,7 +911,8 @@ def artist_dashboard():
         SELECT a.*, c.customer_name FROM appointment a
         JOIN customer c ON a.customer_id = c.customer_id
         WHERE a.artist_id = %s AND a.appointment_date = CURDATE()
-          AND a.status IN ('Approved','Done') ORDER BY a.appointment_time
+          AND a.status IN ('Approved', 'Done')
+        ORDER BY a.appointment_time
     """, (artist_id,))
     today_appointments = cursor.fetchall()
 
@@ -812,7 +930,10 @@ def artist_dashboard():
     cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
     artist_profile = cursor.fetchone()
 
-    cursor.execute("SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC", (artist_id,))
+    cursor.execute(
+        "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
+        (artist_id,)
+    )
     my_gallery = cursor.fetchall()
 
     pending_count = sum(1 for a in appointments if a['status'] == 'Pending')
@@ -822,11 +943,17 @@ def artist_dashboard():
     conn.close()
 
     return render_template('artist/dashboard.html',
-        name=session['name'], appointments=appointments,
-        today_appointments=today_appointments, inventory=inventory,
-        usage_logs=usage_logs, artist_profile=artist_profile,
-        my_gallery=my_gallery, pending_count=pending_count,
-        today_count=today_count, done_count=done_count, low_stock=low_stock
+        name               = session['name'],
+        appointments       = appointments,
+        today_appointments = today_appointments,
+        inventory          = inventory,
+        usage_logs         = usage_logs,
+        artist_profile     = artist_profile,
+        my_gallery         = my_gallery,
+        pending_count      = pending_count,
+        today_count        = today_count,
+        done_count         = done_count,
+        low_stock          = low_stock
     )
 
 
@@ -841,7 +968,8 @@ def artist_approve(appointment_id):
     duration = request.form.get('duration_hours', '').strip()
     try:
         duration = int(duration)
-        if duration <= 0: raise ValueError
+        if duration <= 0:
+            raise ValueError
     except (ValueError, TypeError):
         flash("Please enter a valid duration!", "error")
         return redirect('/artist/dashboard')
@@ -864,8 +992,10 @@ def artist_reject(appointment_id):
         return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE appointment SET status = 'Rejected' WHERE appointment_id = %s AND artist_id = %s",
-                   (appointment_id, session['user_id']))
+    cursor.execute("""
+        UPDATE appointment SET status = 'Rejected'
+        WHERE appointment_id = %s AND artist_id = %s
+    """, (appointment_id, session['user_id']))
     conn.commit()
     conn.close()
     flash("Appointment rejected.", "success")
@@ -878,8 +1008,10 @@ def artist_done(appointment_id):
         return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE appointment SET status = 'Done' WHERE appointment_id = %s AND artist_id = %s",
-                   (appointment_id, session['user_id']))
+    cursor.execute("""
+        UPDATE appointment SET status = 'Done'
+        WHERE appointment_id = %s AND artist_id = %s
+    """, (appointment_id, session['user_id']))
     conn.commit()
     conn.close()
     flash("Session marked as done!", "success")
@@ -897,11 +1029,14 @@ def artist_inventory_add():
     conn   = get_db()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO inventory (item_name, category, unit, quant_stock, reorder_level, unit_cost)
+        INSERT INTO inventory
+        (item_name, category, unit, quant_stock, reorder_level, unit_cost)
         VALUES (%s, %s, %s, %s, %s, %s)
-    """, (request.form.get('item_name'), request.form.get('category'),
-          request.form.get('unit'), request.form.get('quant_stock'),
-          request.form.get('reorder_level'), request.form.get('unit_cost')))
+    """, (
+        request.form.get('item_name'), request.form.get('category'),
+        request.form.get('unit'),      request.form.get('quant_stock'),
+        request.form.get('reorder_level'), request.form.get('unit_cost')
+    ))
     conn.commit()
     conn.close()
     flash("Inventory item added!", "success")
@@ -914,8 +1049,10 @@ def artist_inventory_update(item_id):
         return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE inventory SET quant_stock = %s WHERE item_id = %s",
-                   (request.form.get('quant_stock'), item_id))
+    cursor.execute(
+        "UPDATE inventory SET quant_stock = %s WHERE item_id = %s",
+        (request.form.get('quant_stock'), item_id)
+    )
     conn.commit()
     conn.close()
     flash("Stock updated!", "success")
@@ -950,14 +1087,18 @@ def artist_log_usage():
 
     try:
         qty_used = int(qty_used)
-        if qty_used <= 0: raise ValueError
+        if qty_used <= 0:
+            raise ValueError
     except (ValueError, TypeError):
         flash("Invalid quantity entered!", "error")
         return redirect('/artist/dashboard')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT quant_stock, item_name FROM inventory WHERE item_id = %s", (item_id,))
+    cursor.execute(
+        "SELECT quant_stock, item_name FROM inventory WHERE item_id = %s",
+        (item_id,)
+    )
     item = cursor.fetchone()
 
     if not item:
@@ -967,13 +1108,21 @@ def artist_log_usage():
 
     if qty_used > item['quant_stock']:
         conn.close()
-        flash(f"Not enough stock! Only {item['quant_stock']} units available for {item['item_name']}.", "error")
+        flash(
+            f"Not enough stock! Only {item['quant_stock']} units "
+            f"available for {item['item_name']}.",
+            "error"
+        )
         return redirect('/artist/dashboard')
 
-    cursor.execute("INSERT INTO inventory_usage (appointment_id, item_id, qty_used) VALUES (%s, %s, %s)",
-                   (appointment_id, item_id, qty_used))
-    cursor.execute("UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s",
-                   (qty_used, item_id))
+    cursor.execute(
+        "INSERT INTO inventory_usage (appointment_id, item_id, qty_used) VALUES (%s, %s, %s)",
+        (appointment_id, item_id, qty_used)
+    )
+    cursor.execute(
+        "UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s",
+        (qty_used, item_id)
+    )
     conn.commit()
     conn.close()
     flash("Usage logged and stock updated!", "success")
@@ -1002,15 +1151,19 @@ def artist_change_password():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM artist WHERE artist_id = %s AND password = %s",
-                   (session['user_id'], current))
+    cursor.execute(
+        "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
+        (session['user_id'], current)
+    )
     if not cursor.fetchone():
         conn.close()
         flash("Current password is incorrect!", "error")
         return redirect('/artist/dashboard')
 
-    cursor.execute("UPDATE artist SET password = %s WHERE artist_id = %s",
-                   (new_pass, session['user_id']))
+    cursor.execute(
+        "UPDATE artist SET password = %s WHERE artist_id = %s",
+        (new_pass, session['user_id'])
+    )
     conn.commit()
     conn.close()
     flash("Password updated successfully!", "success")
@@ -1045,15 +1198,19 @@ def artist_gallery_upload():
         return redirect('/artist/dashboard')
 
     ext      = uploaded_file.filename.rsplit('.', 1)[1].lower()
-    filename = secure_filename(f"gallery_{session['user_id']}_{int(time.time())}.{ext}")
+    filename = secure_filename(
+        f"gallery_{session['user_id']}_{int(time.time())}.{ext}"
+    )
     gallery_folder = os.path.join('static', 'uploads', 'gallery')
     os.makedirs(gallery_folder, exist_ok=True)
     uploaded_file.save(os.path.join(gallery_folder, filename))
 
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO gallery (artist_id, image_path, caption, style) VALUES (%s, %s, %s, %s)",
-                   (session['user_id'], f"uploads/gallery/{filename}", caption, style))
+    cursor.execute(
+        "INSERT INTO gallery (artist_id, image_path, caption, style) VALUES (%s, %s, %s, %s)",
+        (session['user_id'], f"uploads/gallery/{filename}", caption, style)
+    )
     conn.commit()
     conn.close()
     flash("Image uploaded to gallery successfully!", "success")
@@ -1067,8 +1224,10 @@ def artist_gallery_delete(gallery_id):
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM gallery WHERE gallery_id = %s AND artist_id = %s",
-                   (gallery_id, session['user_id']))
+    cursor.execute(
+        "SELECT * FROM gallery WHERE gallery_id = %s AND artist_id = %s",
+        (gallery_id, session['user_id'])
+    )
     item = cursor.fetchone()
 
     if item:
@@ -1099,7 +1258,8 @@ def owner_dashboard():
 
     cursor.execute("""
         SELECT a.*, c.customer_name, ar.artist_name,
-               (SELECT COUNT(*) FROM invoice i WHERE i.appointment_id = a.appointment_id) as has_invoice
+               (SELECT COUNT(*) FROM invoice i
+                WHERE i.appointment_id = a.appointment_id) as has_invoice
         FROM appointment a
         JOIN customer c  ON a.customer_id = c.customer_id
         JOIN artist   ar ON a.artist_id   = ar.artist_id
@@ -1121,34 +1281,42 @@ def owner_dashboard():
 
     cursor.execute("""
         SELECT ar.artist_name, ar.specialisation,
-               COUNT(a.appointment_id) as total_appts,
+               COUNT(a.appointment_id)      as total_appts,
                SUM(CASE WHEN a.status='Done'      THEN 1 ELSE 0 END) as done_appts,
                SUM(CASE WHEN a.status='Pending'   THEN 1 ELSE 0 END) as pending_appts,
                SUM(CASE WHEN a.status='Approved'  THEN 1 ELSE 0 END) as approved_appts,
                SUM(CASE WHEN a.status='Rejected'  THEN 1 ELSE 0 END) as rejected_count,
                SUM(CASE WHEN a.status='Cancelled' THEN 1 ELSE 0 END) as cancelled_appts,
-               (SELECT IFNULL(SUM(p.amount_paid),0)
-                FROM payment p JOIN invoice i ON p.invoice_id=i.invoice_id
-                JOIN appointment a2 ON i.appointment_id=a2.appointment_id
-                WHERE a2.artist_id=ar.artist_id) as total_revenue
-        FROM artist ar LEFT JOIN appointment a ON ar.artist_id=a.artist_id
+               (SELECT IFNULL(SUM(p.amount_paid), 0)
+                FROM payment p
+                JOIN invoice i  ON p.invoice_id       = i.invoice_id
+                JOIN appointment a2 ON i.appointment_id = a2.appointment_id
+                WHERE a2.artist_id = ar.artist_id
+                  AND p.status = 'Approved') as total_revenue
+        FROM artist ar
+        LEFT JOIN appointment a ON ar.artist_id = a.artist_id
         GROUP BY ar.artist_id, ar.artist_name, ar.specialisation
         ORDER BY total_revenue DESC
     """)
     artist_performance = cursor.fetchall()
 
     cursor.execute("""
-        SELECT payment_method, COUNT(*) as count, SUM(amount_paid) as total
-        FROM payment GROUP BY payment_method ORDER BY total DESC
+        SELECT payment_method,
+               COUNT(*)         as count,
+               SUM(amount_paid) as total
+        FROM payment
+        WHERE status = 'Approved'
+        GROUP BY payment_method ORDER BY total DESC
     """)
     payment_methods = cursor.fetchall()
 
     cursor.execute("""
-        SELECT DATE_FORMAT(generated_date,'%Y-%m-%d') as date_key,
-               DATE_FORMAT(generated_date,'%b %d')    as date_label,
+        SELECT DATE_FORMAT(generated_date, '%Y-%m-%d') as date_key,
+               DATE_FORMAT(generated_date, '%b %d')    as date_label,
                SUM(total_amt) as total_revenue
         FROM invoice
-        WHERE pay_status='Paid' AND generated_date>=DATE_SUB(CURDATE(),INTERVAL 365 DAY)
+        WHERE pay_status = 'Paid'
+          AND generated_date >= DATE_SUB(CURDATE(), INTERVAL 365 DAY)
         GROUP BY date_key, date_label ORDER BY date_key ASC
     """)
     daily_revenue = cursor.fetchall()
@@ -1168,22 +1336,44 @@ def owner_dashboard():
     low_stock          = len(low_stock_items)
     unpaid_invoices    = sum(1 for i in invoices if i['pay_status'] == 'Pending')
     total_invoices     = len(invoices)
-    total_revenue      = sum(i['total_amt']   for i in invoices) if invoices else 0
-    paid_revenue       = sum(p['amount_paid'] for p in payments) if payments else 0
-    pending_revenue    = total_revenue - paid_revenue
+    total_revenue      = sum(
+        p['amount_paid'] for p in payments if p.get('status') == 'Approved'
+    ) if payments else 0
+    paid_revenue       = total_revenue
+    pending_revenue    = sum(i['total_amt'] for i in invoices
+                             if i['pay_status'] in ('Pending', 'Under Review'))
+
+    # Count payments pending approval for nav badge
+    pending_approvals = sum(
+        1 for p in payments if p.get('status') == 'Pending Approval'
+    )
 
     return render_template('owner/dashboard.html',
-        name=session['name'], appointments=appointments, artists=artists,
-        invoices=invoices, payments=payments, inventory=inventory,
-        artist_performance=artist_performance, payment_methods=payment_methods,
-        daily_revenue=daily_revenue, total_appointments=total_appointments,
-        pending_count=pending_count, approved_count=approved_count,
-        done_count=done_count, rejected_count=rejected_count,
-        cancelled_count=cancelled_count, total_artists=total_artists,
-        low_stock=low_stock, low_stock_items=low_stock_items,
-        unpaid_invoices=unpaid_invoices, total_invoices=total_invoices,
-        total_revenue=total_revenue, paid_revenue=paid_revenue,
-        pending_revenue=pending_revenue, total_customers=total_customers
+        name               = session['name'],
+        appointments       = appointments,
+        artists            = artists,
+        invoices           = invoices,
+        payments           = payments,
+        inventory          = inventory,
+        artist_performance = artist_performance,
+        payment_methods    = payment_methods,
+        daily_revenue      = daily_revenue,
+        total_appointments = total_appointments,
+        pending_count      = pending_count,
+        approved_count     = approved_count,
+        done_count         = done_count,
+        rejected_count     = rejected_count,
+        cancelled_count    = cancelled_count,
+        total_artists      = total_artists,
+        low_stock          = low_stock,
+        low_stock_items    = low_stock_items,
+        unpaid_invoices    = unpaid_invoices,
+        total_invoices     = total_invoices,
+        total_revenue      = total_revenue,
+        paid_revenue       = paid_revenue,
+        pending_revenue    = pending_revenue,
+        total_customers    = total_customers,
+        pending_approvals  = pending_approvals
     )
 
 
@@ -1197,7 +1387,10 @@ def owner_cancel(appointment_id):
         return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
-    cursor.execute("UPDATE appointment SET status='Cancelled' WHERE appointment_id=%s", (appointment_id,))
+    cursor.execute(
+        "UPDATE appointment SET status = 'Cancelled' WHERE appointment_id = %s",
+        (appointment_id,)
+    )
     conn.commit()
     conn.close()
     flash("Appointment cancelled successfully.", "success")
@@ -1231,7 +1424,8 @@ def owner_artist_add():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            INSERT INTO artist (artist_id, artist_name, artist_email, password, phone, specialisation)
+            INSERT INTO artist
+            (artist_id, artist_name, artist_email, password, phone, specialisation)
             VALUES (%s, %s, %s, %s, %s, %s)
         """, (artist_id, artist_name, artist_email, password, phone, specialisation))
         conn.commit()
@@ -1290,7 +1484,8 @@ def owner_invoice_generate():
 
     try:
         total_amt = float(total_amt)
-        if total_amt <= 0: raise ValueError
+        if total_amt <= 0:
+            raise ValueError
     except ValueError:
         flash("Invalid amount entered!", "error")
         return redirect('/owner/dashboard')
@@ -1299,7 +1494,8 @@ def owner_invoice_generate():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            INSERT INTO invoice (appointment_id, owner_id, total_amt, concept_type, pay_status, generated_date)
+            INSERT INTO invoice
+            (appointment_id, owner_id, total_amt, concept_type, pay_status, generated_date)
             VALUES (%s, %s, %s, %s, 'Pending', %s)
         """, (appointment_id, session['user_id'], total_amt, concept_type, generated_date))
         conn.commit()
@@ -1312,7 +1508,7 @@ def owner_invoice_generate():
 
 
 # ════════════════════════════════════════════════════════════
-#  OWNER RECORD PAYMENT
+#  OWNER RECORD PAYMENT (manual entry — still works as before)
 # ════════════════════════════════════════════════════════════
 
 @app.route('/owner/payment/record', methods=['POST'])
@@ -1331,14 +1527,17 @@ def owner_payment_record():
 
     try:
         amount_paid = float(amount_paid)
-        if amount_paid <= 0: raise ValueError
+        if amount_paid <= 0:
+            raise ValueError
     except ValueError:
         flash("Invalid payment amount!", "error")
         return redirect('/owner/dashboard')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT pay_status FROM invoice WHERE invoice_id = %s", (invoice_id,))
+    cursor.execute(
+        "SELECT pay_status FROM invoice WHERE invoice_id = %s", (invoice_id,)
+    )
     invoice = cursor.fetchone()
 
     if not invoice:
@@ -1350,12 +1549,98 @@ def owner_payment_record():
         flash("This invoice is already marked as paid!", "error")
         return redirect('/owner/dashboard')
 
-    cursor.execute("INSERT INTO payment (invoice_id, amount_paid, payment_method, payment_date) VALUES (%s,%s,%s,%s)",
-                   (invoice_id, amount_paid, payment_method, payment_date))
-    cursor.execute("UPDATE invoice SET pay_status='Paid' WHERE invoice_id=%s", (invoice_id,))
+    # Manual owner entry goes straight to Approved
+    cursor.execute("""
+        INSERT INTO payment
+            (invoice_id, amount_paid, payment_method, payment_date, status)
+        VALUES (%s, %s, %s, %s, 'Approved')
+    """, (invoice_id, amount_paid, payment_method, payment_date))
+    cursor.execute(
+        "UPDATE invoice SET pay_status = 'Paid' WHERE invoice_id = %s",
+        (invoice_id,)
+    )
     conn.commit()
     conn.close()
     flash("Payment recorded and invoice marked as Paid!", "success")
+    return redirect('/owner/dashboard')
+
+
+# ════════════════════════════════════════════════════════════
+#  OWNER APPROVE PAYMENT  ← NEW
+# ════════════════════════════════════════════════════════════
+
+@app.route('/owner/payment/approve/<int:payment_id>', methods=['POST'])
+def owner_payment_approve(payment_id):
+    if session.get('role') != 'owner':
+        return redirect('/login')
+
+    conn   = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT p.*, i.invoice_id FROM payment p
+        JOIN invoice i ON p.invoice_id = i.invoice_id
+        WHERE p.payment_id = %s
+    """, (payment_id,))
+    payment = cursor.fetchone()
+
+    if not payment:
+        conn.close()
+        flash("Payment record not found!", "error")
+        return redirect('/owner/dashboard')
+
+    # Mark payment as Approved and invoice as Paid
+    cursor.execute(
+        "UPDATE payment SET status = 'Approved' WHERE payment_id = %s",
+        (payment_id,)
+    )
+    cursor.execute(
+        "UPDATE invoice SET pay_status = 'Paid' WHERE invoice_id = %s",
+        (payment['invoice_id'],)
+    )
+    conn.commit()
+    conn.close()
+
+    flash("Payment approved! Invoice is now marked as Paid.", "success")
+    return redirect('/owner/dashboard')
+
+
+# ════════════════════════════════════════════════════════════
+#  OWNER REJECT PAYMENT  ← NEW
+# ════════════════════════════════════════════════════════════
+
+@app.route('/owner/payment/reject/<int:payment_id>', methods=['POST'])
+def owner_payment_reject(payment_id):
+    if session.get('role') != 'owner':
+        return redirect('/login')
+
+    conn   = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT p.*, i.invoice_id FROM payment p
+        JOIN invoice i ON p.invoice_id = i.invoice_id
+        WHERE p.payment_id = %s
+    """, (payment_id,))
+    payment = cursor.fetchone()
+
+    if not payment:
+        conn.close()
+        flash("Payment record not found!", "error")
+        return redirect('/owner/dashboard')
+
+    invoice_id = payment['invoice_id']
+
+    # Delete the failed payment and return invoice to Pending
+    cursor.execute("DELETE FROM payment WHERE payment_id = %s", (payment_id,))
+    cursor.execute(
+        "UPDATE invoice SET pay_status = 'Pending' WHERE invoice_id = %s",
+        (invoice_id,)
+    )
+    conn.commit()
+    conn.close()
+
+    flash("Payment rejected. Invoice has been returned to Pending.", "success")
     return redirect('/owner/dashboard')
 
 
@@ -1387,15 +1672,19 @@ def owner_change_password():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM owner WHERE owner_id = %s AND password = %s",
-                   (session['user_id'], current))
+    cursor.execute(
+        "SELECT * FROM owner WHERE owner_id = %s AND password = %s",
+        (session['user_id'], current)
+    )
     if not cursor.fetchone():
         conn.close()
         flash("Current password is incorrect!", "error")
         return redirect('/owner/dashboard')
 
-    cursor.execute("UPDATE owner SET password = %s WHERE owner_id = %s",
-                   (new_pass, session['user_id']))
+    cursor.execute(
+        "UPDATE owner SET password = %s WHERE owner_id = %s",
+        (new_pass, session['user_id'])
+    )
     conn.commit()
     conn.close()
     flash("Password updated successfully!", "success")
@@ -1423,8 +1712,10 @@ def invoice_view(invoice_id):
         return redirect('/customer/dashboard' if role == 'customer' else '/owner/dashboard')
 
     if role == 'customer':
-        cursor.execute("SELECT a.customer_id FROM appointment a WHERE a.appointment_id = %s",
-                       (invoice['appointment_id'],))
+        cursor.execute(
+            "SELECT a.customer_id FROM appointment a WHERE a.appointment_id = %s",
+            (invoice['appointment_id'],)
+        )
         appt_check = cursor.fetchone()
         if not appt_check or appt_check['customer_id'] != session['user_id']:
             conn.close()
@@ -1439,18 +1730,26 @@ def invoice_view(invoice_id):
     """, (invoice['appointment_id'],))
     appointment = cursor.fetchone()
 
-    cursor.execute("SELECT * FROM payment WHERE invoice_id = %s", (invoice_id,))
+    cursor.execute(
+        "SELECT * FROM payment WHERE invoice_id = %s ORDER BY payment_date DESC LIMIT 1",
+        (invoice_id,)
+    )
     payment = cursor.fetchone()
     conn.close()
 
     extra = {}
     if appointment and appointment.get('extra_details'):
-        try: extra = json.loads(appointment['extra_details'])
-        except Exception: extra = {}
+        try:
+            extra = json.loads(appointment['extra_details'])
+        except Exception:
+            extra = {}
 
     return render_template('bill.html',
-        invoice=invoice, appointment=appointment,
-        payment=payment, extra=extra, role=role
+        invoice     = invoice,
+        appointment = appointment,
+        payment     = payment,
+        extra       = extra,
+        role        = role
     )
 
 
