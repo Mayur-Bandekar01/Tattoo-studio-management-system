@@ -1,57 +1,57 @@
-<!-- ═══════════════════════════════════════
-     SECTION: MY INVOICES  (sec-invoices)
-     File: templates/customer/sections/invoices.html
-═══════════════════════════════════════ -->
-<div id="sec-invoices" class="section">
+<div id="sec-invoices" class="content-section">
+    <div class="studio-card">
+        <h3 class="card-title">My Invoices</h3>
 
-    <div class="content-card">
-        <h3 class="font-display text-studio-dark text-base mb-4">My Invoices</h3>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Invoice ID</th>
-                    <th>Appointment</th>
-                    <th>Concept</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Payment</th>
-                    <th>Bill</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% if invoices %}
-                {% for inv in invoices %}
-                <tr>
-                    <td class="text-studio-muted">#{{ inv.invoice_id }}</td>
-                    <td>#{{ inv.appointment_id }}</td>
-                    <td>{{ inv.concept_type }}</td>
-                    <td class="font-semibold text-studio-dark">₹{{ inv.total_amt }}</td>
-                    <td>{{ inv.generated_date }}</td>
-                    <td>
-                        {% if inv.pay_status=='Paid' %}
-                        <span class="badge-paid">✓ Paid</span>
-                        {% else %}
-                        <span class="badge-unpaid">Pending</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="/invoice/view/{{ inv.invoice_id }}" target="_blank"
-                           style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.28rem 0.75rem;background:#1a1a2e;color:#fff;border-radius:8px;font-size:0.68rem;font-weight:600;text-decoration:none;white-space:nowrap;">
-                            🧾 View Bill
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="7" class="text-center text-studio-muted py-10">
-                        No invoices yet! Complete a session to get your invoice.
-                    </td>
-                </tr>
-            {% endif %}
-            </tbody>
-        </table>
+        <div class="studio-table-container">
+            <table class="studio-table">
+                <thead>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>Appointment ID</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if invoices %}
+                    {% for inv in invoices %}
+                    <tr>
+                        <td style="color: var(--studio-text-secondary); font-size: 0.85rem;">#{{ inv.invoice_id }}</td>
+                        <td style="font-weight: 600;">#{{ inv.appointment_id }}</td>
+                        <td>{{ inv.concept_type }}</td>
+                        <td style="font-weight: 700; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
+                        <td>{{ inv.generated_date }}</td>
+                        <td>
+                            {% if inv.pay_status=='Paid' %}
+                            <span class="badge badge-paid">Paid</span>
+                            {% else %}
+                            <span class="badge badge-unpaid">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/invoice/view/{{ inv.invoice_id }}" target="_blank" class="btn-studio btn-primary"
+                                style="padding: 0.5rem 1rem; font-size: 0.75rem; text-decoration: none;">
+                                <i class="fas fa-file-invoice" style="margin-right: 0.5rem;"></i> View Bill
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-file-invoice-dollar"
+                                style="font-size: 2.5rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            No invoices generated yet.
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Once your appointment is completed, your
+                                invoice will appear here.</p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
-
 </div>

@@ -1,36 +1,37 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER APPOINTMENTS
-     File: templates/owner/sections/appointments.html
-═══════════════════════════════════════ -->
-<div class="content-card">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+     Refactored: Vanilla CSS Shell
+     ═══════════════════════════════════════ -->
+<div class="studio-card">
+    <div
+        style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
         <div>
-            <h3 class="font-display text-studio-text text-2xl uppercase tracking-wider">Session Management</h3>
-            <p class="text-studio-muted text-[10px] mt-2 uppercase tracking-[0.2em] font-black">Coordinating the studio
-                timeline</p>
+            <h3 class="studio-title" style="margin-bottom: 0.25rem;">Session Management</h3>
+            <p
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                {{ total_appointments }} Total Bookings
+            </p>
         </div>
-        <div class="flex flex-wrap gap-2">
-            <button onclick="filterTable('appt-row','all',this)"
-                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-gold text-black border border-studio-gold appt-f">All</button>
-            <button onclick="filterTable('appt-row','Pending',this)"
-                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Pending</button>
-            <button onclick="filterTable('appt-row','Approved',this)"
-                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Approved</button>
-            <button onclick="filterTable('appt-row','Done',this)"
-                class="px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all appt-f">Done</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button onclick="filterTable('appt-row','all',this)" class="btn-studio btn-primary">All</button>
+            <button onclick="filterTable('appt-row','Pending',this)" class="btn-studio btn-secondary">Pending {{ '(' ~
+                pending_count ~ ')' if pending_count > 0 }}</button>
+            <button onclick="filterTable('appt-row','Approved',this)" class="btn-studio btn-secondary">Approved {{ '(' ~
+                approved_count ~ ')' if approved_count > 0 }}</button>
+            <button onclick="filterTable('appt-row','Done',this)" class="btn-studio btn-secondary">Done</button>
+            <button onclick="filterTable('appt-row','Rejected',this)" class="btn-studio btn-secondary">Rejected</button>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table>
+    <div class="studio-table-container">
+        <table class="studio-table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Ref</th>
                     <th>Customer</th>
                     <th>Artist</th>
                     <th>Concept</th>
-                    <th>Timestamp</th>
-                    <th>Duration</th>
+                    <th>Date/Time</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -38,40 +39,45 @@
             <tbody>
                 {% if appointments %}
                 {% for a in appointments %}
-                <tr class="appt-row group" data-status="{{ a.status }}">
-                    <td class="text-studio-muted font-mono">#{{ a.appointment_id }}</td>
-                    <td class="font-bold text-studio-text uppercase tracking-wide">{{ a.customer_name }}</td>
-                    <td class="text-studio-gold font-bold uppercase text-xs">{{ a.artist_name }}</td>
-                    <td class="text-studio-muted italic font-serif">"{{ a.tattoo_concept }}"</td>
-                    <td>
-                        <p class="text-studio-text text-xs font-bold">{{ a.appointment_date }}</p>
-                        <p class="text-studio-muted text-[10px] uppercase font-black mt-1">{{ a.appointment_time }}</p>
-                    </td>
-                    <td class="text-studio-muted text-xs font-bold">{{ a.duration_hours if a.duration_hours else '—' }}
-                        HRS</td>
-                    <td>
-                        {% if a.status=='Pending' %}<span class="badge badge-pending">Pending</span>
-                        {% elif a.status=='Approved' %}<span class="badge badge-approved">Approved</span>
-                        {% elif a.status=='Done' %}<span class="badge badge-done">Done</span>
-                        {% elif a.status=='Rejected' %}<span class="badge badge-rejected">Rejected</span>
-                        {% else %}<span class="badge badge-cancelled">Cancelled</span>{% endif %}
+                <tr class="appt-row" data-status="{{ a.status }}">
+                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--studio-text-secondary);">#{{
+                        a.appointment_id }}</td>
+                    <td style="font-weight: 700;">{{ a.customer_name }}</td>
+                    <td style="color: var(--studio-indigo); font-weight: 600;">{{ a.artist_name }}</td>
+                    <td style="font-style: italic; font-size: 0.85rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                        title="{{ a.tattoo_concept }}">
+                        "{{ a.tattoo_concept }}"
                     </td>
                     <td>
-                        <div class="flex items-center gap-2">
+                        <div style="font-weight: 600;">{{ a.appointment_date }}</div>
+                        <div style="font-size: 0.7rem; color: var(--studio-text-secondary); font-weight: 700;">{{
+                            a.appointment_time }}</div>
+                    </td>
+                    <td>
+                        <span
+                            class="badge {{ 'badge-paid' if a.status=='Approved' or a.status=='Done' else 'badge-pending' if a.status=='Pending' else 'badge-rejected' }}">
+                            {{ a.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 10px;">
                             {% if a.status == 'Done' and not a.has_invoice %}
-                            <button onclick="prefillInvoice('{{ a.appointment_id }}')"
-                                class="px-4 py-2 bg-studio-card border border-studio-gold text-studio-gold text-[10px] font-black uppercase tracking-widest hover:bg-studio-gold hover:text-black transition-all">
-                                Invoice
+                            <button onclick="prefillInvoice('{{ a.appointment_id }}')" class="btn-studio btn-secondary"
+                                style="padding: 6px 12px; font-size: 0.65rem;">
+                                <i class="fa-solid fa-file-invoice"></i> Invoice
                             </button>
-                            {% elif a.status == 'Pending' %}
-                            <form method="POST" action="/owner/cancel/{{ a.appointment_id }}">
-                                <button type="submit"
-                                    class="px-4 py-2 bg-studio-card border border-red-500/50 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
-                                    Cancel
+                            {% endif %}
+                            {% if a.status == 'Pending' %}
+                            <form method="POST" action="/owner/cancel/{{ a.appointment_id }}" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Cancel this appointment?')"
+                                    class="btn-studio"
+                                    style="padding: 6px 12px; font-size: 0.65rem; color: #ef4444; border: 1px solid #fee2e2;">
+                                    <i class="fa-solid fa-xmark"></i> Cancel
                                 </button>
                             </form>
-                            {% else %}
-                            <span class="text-studio-muted text-xs opacity-30">—</span>
+                            {% endif %}
+                            {% if a.status == 'Done' and a.has_invoice %}
+                            <span style="font-size: 0.65rem; font-weight: 800; color: #22c55e;">INVOICED ✓</span>
                             {% endif %}
                         </div>
                     </td>
@@ -79,9 +85,8 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="8" class="text-center text-studio-muted py-12">
-                        <i class="fa-solid fa-ghost text-4xl mb-4 block opacity-20"></i>
-                        No sessions found in the archive.
+                    <td colspan="7" style="text-align: center; color: var(--studio-text-secondary); padding: 3rem;">
+                        No appointments found.
                     </td>
                 </tr>
                 {% endif %}

@@ -1,25 +1,25 @@
-<!-- ════════ INVENTORY ════════ -->
 <div id="sec-inventory" class="section">
-    <div class="mb-8">
-        <h2 class="text-xl font-bold text-studio-dark">Supply Management</h2>
-        <p class="text-sm text-studio-muted mt-1">Monitor stock levels and manage your tattooing supplies</p>
+    <div style="margin-bottom: 2.5rem;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Supply
+            Management</h2>
+        <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Monitor stock levels and manage your
+            tattooing supplies</p>
     </div>
 
     <!-- Add Item Form -->
-    <div class="card card-pad" style="margin-bottom: 2rem; border-radius: 24px;">
-        <div class="card-head" style="margin-bottom: 1.5rem; background: transparent; border-bottom: none;">
-            <h3 class="text-xs font-extrabold text-studio-dark tracking-[0.2em]">REGISTER NEW SUPPLY</h3>
-        </div>
+    <div class="studio-card" style="margin-bottom: 2rem;">
+        <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">REGISTER NEW
+            SUPPLY</h3>
         <form method="POST" action="/artist/inventory/add">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
-                <div>
-                    <label class="lbl">Item Name</label>
-                    <input class="inp" type="text" name="item_name" placeholder="e.g. Dynamic Black Ink (8oz)" required>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Item Name</label>
+                    <input class="studio-input" type="text" name="item_name" placeholder="e.g. Dynamic Black Ink (8oz)"
+                        required>
                 </div>
-                <div>
-                    <label class="lbl">Category</label>
-                    <select class="inp" name="category" required>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="studio-input" name="category" required>
                         <option value="">Select Category...</option>
                         <option>Needle</option>
                         <option>Ink</option>
@@ -28,47 +28,48 @@
                         <option>Other</option>
                     </select>
                 </div>
-                <div>
-                    <label class="lbl">Unit Type</label>
-                    <input class="inp" type="text" name="unit" placeholder="e.g. Boxes, Bottles, Packs" required>
-                </div>
-                <div>
-                    <label class="lbl">Initial Quantity</label>
-                    <input class="inp" type="number" name="quant_stock" placeholder="0" min="0" required>
-                </div>
-                <div>
-                    <label class="lbl">Reorder Trigger</label>
-                    <input class="inp" type="number" name="reorder_level" placeholder="Alert at this level" min="0"
+                <div class="form-group">
+                    <label class="form-label">Unit Type</label>
+                    <input class="studio-input" type="text" name="unit" placeholder="e.g. Boxes, Bottles, Packs"
                         required>
                 </div>
-                <div>
-                    <label class="lbl" style="color: #20BF6B; font-weight: 700;">Unit Price (₹)</label>
-                    <input class="inp" type="number" name="unit_cost" placeholder="0" step="any" min="0" required
-                        style="border: 1px solid #E9ECEF; background: #FFFFFF;">
+                <div class="form-group">
+                    <label class="form-label">Initial Quantity</label>
+                    <input class="studio-input" type="number" name="quant_stock" placeholder="0" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reorder Trigger</label>
+                    <input class="studio-input" type="number" name="reorder_level" placeholder="Alert at this level"
+                        min="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="color: #20BF6B;">Unit Price (₹)</label>
+                    <input class="studio-input" type="number" name="unit_cost" placeholder="0" step="any" min="0"
+                        required>
                 </div>
             </div>
-            <div class="flex items-center gap-4 pt-6 border-t" style="border-color: var(--border);">
-                <button type="submit" class="btn btn-g">
-                    <i class="fa-solid fa-plus-circle mr-2"></i> Add to Inventory
+            <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
+                <button type="submit" class="btn-studio btn-primary">
+                    <i class="fas fa-plus-circle"></i> Add to Inventory
                 </button>
-                <button type="reset" class="btn btn-gh">Clear Form</button>
+                <button type="reset" class="btn-studio btn-outline">Clear Form</button>
             </div>
         </form>
     </div>
 
     <!-- Stock Table -->
-    <div class="card">
-        <div class="card-head" style="gap: 1.5rem; background: #F8F9FA;">
-            <h3 class="text-sm font-bold tracking-wide" style="color: #2F3640;">LIVE INVENTORY</h3>
+    <div class="studio-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3 class="card-title" style="margin-bottom: 0;">LIVE INVENTORY</h3>
             {% if low_stock > 0 %}
-            <span class="badge br" style="animation: pulse 2s infinite;">
-                <i class="fa-solid fa-warning" style="margin-right: 0.4rem;"></i> {{ low_stock }} Item{{ 's' if
-                low_stock != 1 else '' }} Low
+            <span class="badge badge-danger pulse">
+                <i class="fas fa-exclamation-triangle"></i> {{ low_stock }} Item{{ 's' if low_stock != 1 else '' }} Low
             </span>
             {% endif %}
         </div>
-        <div class="tbl-wrap">
-            <table class="tbl">
+
+        <div class="studio-table-container">
+            <table class="studio-table">
                 <thead>
                     <tr>
                         <th>Supply Item</th>
@@ -84,48 +85,47 @@
                 <tbody>
                     {% if inventory %}
                     {% for item in inventory %}
-                    <tr {% if item.quant_stock <=item.reorder_level %}style="background: var(--red-soft);" {% endif %}>
+                    <tr {% if item.quant_stock <=item.reorder_level %}style="background: rgba(255, 71, 87, 0.03);" {%
+                        endif %}>
                         <td>
-                            <div style="font-weight: 700; color: var(--text);">{{ item.item_name }}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ item.unit }}</div>
+                            <div style="font-weight: 700; color: var(--studio-text-primary);">{{ item.item_name }}</div>
+                            <div style="font-size: 0.75rem; color: var(--studio-text-secondary);">{{ item.unit }}</div>
                         </td>
                         <td>
-                            <span class="badge bc" style="font-size: 0.7rem; font-weight: 600;">{{ item.category
-                                }}</span>
+                            <span class="badge badge-muted">{{ item.category }}</span>
                         </td>
                         <td>
-                            {% set stock_color = 'var(--red)' if item.quant_stock <= item.reorder_level
-                                else 'var(--green)' %} <span class="mono"
-                                style="font-size: 1rem; font-weight: 700; color: {{ stock_color }};">
+                            <span
+                                style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: {% if item.quant_stock <= item.reorder_level %}#FF4757{% else %}#1DB954{% endif %};">
                                 {{ item.quant_stock }}
-                                </span>
+                            </span>
                         </td>
-                        <td class="mono" style="font-size: 0.8rem; color: var(--text-dim);">{{ item.reorder_level }}
-                        </td>
-                        <td class="mono" style="font-weight: 800; color: var(--green);">₹{{
-                            item.unit_cost|float|round(2) if item.unit_cost %
-                            1 != 0 else item.unit_cost|int }}</td>
+                        <td style="font-family: monospace; color: var(--studio-text-secondary);">{{ item.reorder_level
+                            }}</td>
+                        <td style="font-family: monospace; font-weight: 800; color: #1DB954;">₹{{
+                            item.unit_cost|float|round(2) if item.unit_cost % 1 != 0 else item.unit_cost|int }}</td>
                         <td>
-                            {% if item.quant_stock <= item.reorder_level %} <span class="badge br"
+                            {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-danger"
                                 style="font-size: 0.65rem;">LOW STOCK</span>
                                 {% else %}
-                                <span class="badge ba" style="font-size: 0.65rem;">OPTIMAL</span>
+                                <span class="badge badge-success" style="font-size: 0.65rem;">OPTIMAL</span>
                                 {% endif %}
                         </td>
                         <td>
                             <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                                style="display: flex; gap: 0.5rem; align-items: center;">
-                                <input class="ninput" type="number" name="quant_stock" value="{{ item.quant_stock }}"
-                                    min="0" style="width: 80px;">
-                                <button type="submit" class="btn btn-bl btn-sm" title="Sync">SS</button>
+                                style="display: flex; gap: 0.4rem; align-items: center;">
+                                <input class="studio-input" type="number" name="quant_stock"
+                                    value="{{ item.quant_stock }}" min="0"
+                                    style="width: 70px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                                <button type="submit" class="btn-studio btn-primary"
+                                    style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">Update</button>
                             </form>
                         </td>
                         <td>
                             <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
-                                <button type="submit" class="btn btn-rd btn-sm"
-                                    onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')"
-                                    title="Delete Item">
-                                    <i class="fa-solid fa-trash-can"></i>
+                                <button type="submit" class="btn-studio" style="padding: 0.4rem; color: #FF4757;"
+                                    onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
                         </td>
@@ -133,9 +133,10 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="8" class="empty">
-                            <i class="fa-solid fa-boxes-stacked"></i>
-                            <p>Your inventory is currently empty.</p>
+                        <td colspan="8" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-boxes"
+                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
+                            Your inventory is currently empty.
                         </td>
                     </tr>
                     {% endif %}

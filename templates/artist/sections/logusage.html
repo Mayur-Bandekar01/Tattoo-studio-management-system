@@ -1,23 +1,21 @@
-<!-- ════════ LOG USAGE ════════ -->
 <div id="sec-logusage" class="section">
-    <div class="mb-8">
-        <h2 class="text-xl font-bold" style="color: var(--text);">Consumption Tracking</h2>
-        <p class="text-sm text-studio-muted mt-1">Record and monitor supplies used during your tattoo sessions</p>
+    <div style="margin-bottom: 2.5rem;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Consumption
+            Tracking</h2>
+        <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Record and monitor supplies used during your
+            tattoo sessions</p>
     </div>
 
     <!-- Log Form -->
-    <div class="card card-pad"
-        style="margin-bottom: 2rem; background: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 24px;">
-        <div class="card-head" style="margin-bottom: 1.5rem; background: #F8F9FA; border-bottom: 1px solid #E9ECEF;">
-            <h3 class="text-xs font-extrabold tracking-wide" style="color: #2F3640;">RECORD NEW CONSUMPTION</h3>
-        </div>
+    <div class="studio-card" style="margin-bottom: 2rem;">
+        <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">RECORD NEW
+            CONSUMPTION</h3>
         <form method="POST" action="/artist/log-usage">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                <div>
-                    <label class="lbl">Related Appointment</label>
-                    <select class="inp" name="appointment_id" required>
-                        <option value="">Select a completed session...</option>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Related Appointment</label>
+                    <select class="studio-input" name="appointment_id" required>
+                        <option value="">Select a session...</option>
                         {% if appointments %}
                         {% for appt in appointments %}
                         {% if appt.status=='Done' %}
@@ -28,9 +26,9 @@
                         {% endif %}
                     </select>
                 </div>
-                <div>
-                    <label class="lbl">Material Consumed</label>
-                    <select class="inp" name="item_id" required>
+                <div class="form-group">
+                    <label class="form-label">Material Consumed</label>
+                    <select class="studio-input" name="item_id" required>
                         <option value="">Select supply item...</option>
                         {% if inventory %}
                         {% for item in inventory %}
@@ -40,27 +38,26 @@
                         {% endif %}
                     </select>
                 </div>
-                <div>
-                    <label class="lbl">Log Quantity</label>
-                    <input class="inp" type="number" name="qty_used" placeholder="Amount used" min="1" required>
+                <div class="form-group">
+                    <label class="form-label">Log Quantity</label>
+                    <input class="studio-input" type="number" name="qty_used" placeholder="Amount used" min="1"
+                        required>
                 </div>
             </div>
-            <div class="flex items-center gap-4 pt-6 border-t" style="border-color: var(--border);">
-                <button type="submit" class="btn btn-g">
-                    <i class="fa-solid fa-clipboard-check mr-2"></i> Submit Usage Log
+            <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
+                <button type="submit" class="btn-studio btn-primary">
+                    <i class="fas fa-clipboard-check"></i> Submit Usage Log
                 </button>
-                <button type="reset" class="btn btn-gh">Reset Entry</button>
+                <button type="reset" class="btn-studio btn-outline">Reset Entry</button>
             </div>
         </form>
     </div>
 
     <!-- Usage History -->
-    <div class="card" style="background: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 24px;">
-        <div class="card-head" style="background: #F8F9FA; border-bottom: 1px solid #E9ECEF;">
-            <h3 class="text-xs font-extrabold tracking-wide" style="color: #2F3640;">RECENT CONSUMPTION LOGS</h3>
-        </div>
-        <div class="tbl-wrap">
-            <table class="tbl">
+    <div class="studio-card">
+        <h3 class="card-title" style="margin-bottom: 2rem;">RECENT CONSUMPTION LOGS</h3>
+        <div class="studio-table-container">
+            <table class="studio-table">
                 <thead>
                     <tr>
                         <th style="width: 140px;">Session ID</th>
@@ -73,31 +70,30 @@
                     {% if usage_logs %}
                     {% for log in usage_logs %}
                     <tr>
-                        <td class="mono" style="font-weight: 700; color: var(--text-dim); font-size: 0.8rem;">#{{
-                            log.appointment_id }}</td>
+                        <td
+                            style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: var(--studio-text-secondary);">
+                            #{{ log.appointment_id }}</td>
+                        <td style="font-weight: 700; color: var(--studio-text-primary);">{{ log.item_name }}</td>
                         <td>
-                            <div style="font-weight: 600; color: var(--text);">{{ log.item_name }}</div>
-                        </td>
-                        <td class="mono">
-                            <span
-                                style="font-weight: 700; color: var(--primary); background: var(--primary-dim); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">
+                            <span class="badge badge-info"
+                                style="font-family: monospace; font-size: 0.9rem; font-weight: 800; padding: 0.35rem 0.75rem;">
                                 {{ log.qty_used }}
                             </span>
                         </td>
                         <td>
                             <div
-                                style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
-                                <i class="fa-regular fa-clock" style="font-size: 0.7rem;"></i>
-                                {{ log.logged_at }}
+                                style="font-size: 0.8rem; color: var(--studio-text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="far fa-clock"></i> {{ log.logged_at }}
                             </div>
                         </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="4" class="empty">
-                            <i class="fa-solid fa-clipboard-list"></i>
-                            <p>No material consumption has been logged yet.</p>
+                        <td colspan="4" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-clipboard-list"
+                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
+                            No material consumption has been logged yet.
                         </td>
                     </tr>
                     {% endif %}

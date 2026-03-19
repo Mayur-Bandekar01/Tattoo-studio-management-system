@@ -1,110 +1,112 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER PAYMENTS
-     File: templates/owner/sections/payment.html
-═══════════════════════════════════════ -->
-<!-- Settlement Entry Portal -->
-<div class="content-card mb-10">
-    <div class="flex items-center gap-4 mb-8">
+     Refactored: Vanilla CSS Shell
+     ═══════════════════════════════════════ -->
+
+<!-- Record Payment Section -->
+<div class="studio-card">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
         <div
-            class="w-12 h-12 bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
-            <i class="fa-solid fa-indian-rupee-sign text-xl"></i>
+            style="width: 45px; height: 45px; background: #DCFCE7; color: #166534; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
         </div>
         <div>
-            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Vault Settlement</h3>
-            <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Recording financial intake
-                and clearing pending ledgers</p>
+            <h3 class="studio-title" style="margin: 0;">Payment Recording</h3>
+            <p
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                Manage receivables and revenue updates</p>
         </div>
     </div>
 
     <form method="POST" action="/owner/payment/record">
-        <div class="grid md:grid-cols-2 gap-8 mb-10">
-            <div class="space-y-2">
-                <label>Debit Context (Invoice)</label>
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div>
+                <label>Select Invoice</label>
                 <select name="invoice_id" id="invoiceSelect" required>
                     <option value="">Select pending invoice...</option>
                     {% if invoices %}
                     {% for inv in invoices %}
                     {% if inv.pay_status == 'Pending' %}
                     <option value="{{ inv.invoice_id }}">
-                        #INV-{{ inv.invoice_id }} — ₹{{ inv.total_amt }} (Sess #{{ inv.appointment_id }})
+                        #INV-{{ inv.invoice_id }} — ₹{{ inv.total_amt }}
                     </option>
                     {% endif %}
                     {% endfor %}
                     {% endif %}
                 </select>
             </div>
-            <div class="space-y-2">
-                <label>Transfer Protocol</label>
+            <div>
+                <label>Payment Method</label>
                 <select name="payment_method" required>
                     <option value="">Select method...</option>
                     <option>Cash</option>
                     <option>UPI</option>
                     <option>Card</option>
-                    <option>Other</option>
+                    <option>Bank Transfer</option>
                 </select>
             </div>
-            <div class="space-y-2">
-                <label>Settlement Value (₹)</label>
-                <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-green-400 font-bold">₹</span>
-                    <input type="number" name="amount_paid" id="amountPaid" class="pl-10" placeholder="0.00" step="any"
-                        min="0" required>
+            <div>
+                <label>Amount Paid (₹)</label>
+                <div style="position: relative;">
+                    <span style="position: absolute; left: 15px; top: 12px; font-weight: 700; color: #22c55e;">₹</span>
+                    <input type="number" name="amount_paid" id="amountPaid" placeholder="0.00" step="any" min="0"
+                        required style="padding-left: 2.5rem;">
                 </div>
             </div>
-            <div class="space-y-2">
-                <label>Settlement Date</label>
+            <div>
+                <label>Payment Date</label>
                 <input type="date" name="payment_date" required>
             </div>
         </div>
-        <button type="submit"
-            class="px-10 py-4 bg-green-500 hover:bg-green-600 text-black text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(34,197,94,0.3)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
-            <i class="fa-solid fa-check-circle mr-3"></i> Clear Transaction
+        <button type="submit" class="btn-studio" style="background: #22c55e; color: #FFF; padding: 14px 30px;">
+            <i class="fa-solid fa-check-circle"></i> Complete Ledger Entry
         </button>
     </form>
 </div>
 
-<!-- Settlement History -->
-<div class="content-card">
-    <div class="flex items-center justify-between mb-8">
+<!-- Payment History -->
+<div class="studio-card">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
         <div>
-            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Vault Archive</h3>
-            <p class="text-studio-muted text-[10px] mt-2 uppercase tracking-[0.2em] font-black">Verified settlement
-                history</p>
-        </div>
-        <div
-            class="w-10 h-10 bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-400">
-            <i class="fa-solid fa-receipt text-xs"></i>
+            <h3 class="studio-title" style="margin: 0;">Ledger History</h3>
+            <p
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                History of all recorded payments</p>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table>
+    <div class="studio-table-container">
+        <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Receipt ID</th>
-                    <th>Manifest Ref</th>
-                    <th>Settled Value</th>
-                    <th>Protocol</th>
-                    <th>Execution</th>
+                    <th>Payment#</th>
+                    <th>Invoice#</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% if payments %}
                 {% for p in payments %}
-                <tr class="group">
-                    <td class="text-studio-muted font-mono text-xs">#PAY-{{ p.payment_id }}</td>
-                    <td class="font-bold text-studio-text text-xs">#INV-{{ p.invoice_id }}</td>
-                    <td class="font-bold text-green-400 uppercase tracking-wide">₹{{ p.amount_paid }}</td>
-                    <td class="text-studio-muted font-black uppercase text-[10px] tracking-widest">{{ p.payment_method
-                        }}</td>
-                    <td class="text-studio-muted text-xs">{{ p.payment_date }}</td>
+                <tr>
+                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--studio-text-secondary);">#PAY-{{
+                        p.payment_id }}</td>
+                    <td style="font-weight: 700;">#INV-{{ p.invoice_id }}</td>
+                    <td style="font-weight: 800; color: #166534;">₹{{ p.amount_paid }}</td>
+                    <td>
+                        <span class="badge" style="background: #F0FDF4; color: #166534; border: 1px solid #DCFCE7;">
+                            {{ p.payment_method }}
+                        </span>
+                    </td>
+                    <td style="font-size: 0.85rem;">{{ p.payment_date }}</td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="5" class="text-center text-studio-muted py-12">
-                        <i class="fa-solid fa-money-bill-transfer text-4xl mb-4 block opacity-20"></i>
-                        No settlements recorded in the current cycle.
+                    <td colspan="5" style="text-align: center; color: var(--studio-text-secondary); padding: 3rem;">
+                        No payments recorded yet.
                     </td>
                 </tr>
                 {% endif %}

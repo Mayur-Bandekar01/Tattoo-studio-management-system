@@ -1,111 +1,106 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER ARTISTS
-     File: templates/owner/sections/artists.html
-═══════════════════════════════════════ -->
-<!-- Team Recruitment Portal -->
-<div class="content-card mb-10">
-    <div class="flex items-center gap-4 mb-8">
+     Refactored: Vanilla CSS Shell
+     ═══════════════════════════════════════ -->
+
+<!-- Add New Artist Section -->
+<div class="studio-card">
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
         <div
-            class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
-            <i class="fa-solid fa-user-plus text-xl"></i>
+            style="width: 45px; height: 45px; background: rgba(72, 52, 212, 0.1); color: var(--studio-indigo); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <i class="fa-solid fa-user-plus"></i>
         </div>
         <div>
-            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Team Recruitment</h3>
-            <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Register new talent to the
-                collective</p>
+            <h3 class="studio-title" style="margin: 0;">Add New Artist</h3>
+            <p
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                Register new studio talent</p>
         </div>
     </div>
 
     <form method="POST" action="/owner/artist/add">
-        <div class="grid md:grid-cols-3 gap-8 mb-10">
-            <div class="space-y-2">
-                <label>Designation ID</label>
-                <input type="text" name="artist_id" placeholder="e.g. DRAG-ART-003" required>
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div>
+                <label>Artist ID</label>
+                <input type="text" name="artist_id" placeholder="DRAG-ART-003" required>
             </div>
-            <div class="space-y-2">
-                <label>Full Identity</label>
-                <input type="text" name="artist_name" placeholder="Artist full name" required>
+            <div>
+                <label>Full Name</label>
+                <input type="text" name="artist_name" placeholder="Artist Name" required>
             </div>
-            <div class="space-y-2">
-                <label>Digital Ledger (Email)</label>
+            <div>
+                <label>Email Address</label>
                 <input type="email" name="artist_email" placeholder="artist@email.com" required>
             </div>
-            <div class="space-y-2">
-                <label>Vocal Comm (Phone)</label>
-                <input type="text" name="phone" placeholder="Phone number" required>
+            <div>
+                <label>Phone Number</label>
+                <input type="text" name="phone" placeholder="Contact number" required>
             </div>
-            <div class="space-y-2">
-                <label>Artistic Discipline</label>
+            <div>
+                <label>Specialty</label>
                 <select name="specialisation" required>
-                    <option value="">Select...</option>
+                    <option value="">Select Specialty...</option>
                     <option>Blackwork</option>
                     <option>Fine Line</option>
                     <option>Realism</option>
                     <option>Traditional</option>
-                    <option>Watercolour</option>
                     <option>Geometric</option>
-                    <option>Portraits</option>
                 </select>
             </div>
-            <div class="space-y-2">
-                <label>Cipher Key (Password)</label>
-                <input type="text" name="password" placeholder="Set artist password" required>
+            <div>
+                <label>Password</label>
+                <input type="text" name="password" placeholder="Artist entry password" required>
             </div>
         </div>
-        <button type="submit"
-            class="px-10 py-4 bg-studio-gold hover:bg-studio-gold/90 text-black text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(200,160,64,0.3)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
-            <i class="fa-solid fa-user-plus mr-3"></i> Register Artist
+        <button type="submit" class="btn-studio btn-primary" style="padding: 14px 30px;">
+            <i class="fa-solid fa-user-plus"></i> Register Artist
         </button>
     </form>
 </div>
 
-<!-- Collective Table -->
-<div class="content-card">
-    <div class="flex items-center justify-between mb-8">
+<!-- Artist Team Table -->
+<div class="studio-card">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
         <div>
-            <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Studio Collective</h3>
-            <p class="text-studio-muted text-[10px] mt-2 uppercase tracking-[0.2em] font-black">Managing our master
-                artists</p>
-        </div>
-        <div
-            class="w-10 h-10 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
-            <i class="fa-solid fa-users text-xs"></i>
+            <h3 class="studio-title" style="margin: 0;">Studio Team</h3>
+            <p
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                Manage active artists</p>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table>
+    <div class="studio-table-container">
+        <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Designation</th>
-                    <th>Identity</th>
+                    <th>Ref</th>
+                    <th>Name</th>
                     <th>Email</th>
-                    <th>Contact</th>
-                    <th>Discipline</th>
+                    <th>Specialty</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% if artists %}
                 {% for artist in artists %}
-                <tr class="group">
-                    <td class="font-bold text-studio-gold uppercase tracking-widest text-xs">{{ artist.artist_id }}</td>
-                    <td class="font-bold text-studio-text uppercase tracking-wide">{{ artist.artist_name }}</td>
-                    <td class="text-studio-muted text-xs">{{ artist.artist_email }}</td>
-                    <td class="text-studio-muted text-xs">{{ artist.phone }}</td>
+                <tr>
+                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--studio-text-secondary);">#{{
+                        artist.artist_id }}</td>
+                    <td style="font-weight: 700;">{{ artist.artist_name }}</td>
+                    <td style="font-size: 0.85rem; color: var(--studio-text-secondary);">{{ artist.artist_email }}</td>
                     <td>
-                        <span
-                            class="px-3 py-1 bg-studio-gold/10 border border-studio-gold/20 text-studio-gold text-[10px] font-black uppercase tracking-widest">
+                        <span class="badge" style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo);">
                             {{ artist.specialisation }}
                         </span>
                     </td>
                     <td>
-                        <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}">
-                            <button type="submit"
-                                class="px-4 py-2 bg-studio-card border border-red-500/50 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
-                                data-name="{{ artist.artist_name }}"
-                                onclick="return confirm('Expel ' + this.getAttribute('data-name') + ' from the collective?')">
-                                Expel
+                        <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}"
+                            style="display: inline;">
+                            <button type="submit" onclick="return confirm('Remove this artist from the team?')"
+                                class="btn-studio"
+                                style="padding: 6px 12px; font-size: 0.65rem; color: #ef4444; border: 1px solid #fee2e2;">
+                                <i class="fa-solid fa-trash-can"></i> Remove
                             </button>
                         </form>
                     </td>
@@ -113,9 +108,8 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="6" class="text-center text-studio-muted py-12">
-                        <i class="fa-solid fa-ghost text-4xl mb-4 block opacity-20"></i>
-                        No artists registered in the collective.
+                    <td colspan="5" style="text-align: center; color: var(--studio-text-secondary); padding: 3rem;">
+                        No artists registered yet.
                     </td>
                 </tr>
                 {% endif %}

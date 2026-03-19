@@ -1,88 +1,316 @@
-<!-- ═══════════════════════════════════════
-     SECTION: GALLERY  (sec-gallery)
-     File: templates/customer/sections/gallery.html
-═══════════════════════════════════════ -->
-<div id="sec-gallery" class="section">
+<!-- SECTION: GALLERY -->
+<div id="sec-gallery" class="content-section">
+    <div class="studio-card">
 
-    <div class="content-card">
-        <div class="flex items-center justify-between mb-5">
+        <!-- Header -->
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h3 class="font-display text-studio-dark text-base">Studio Gallery</h3>
-                <p class="text-studio-muted text-xs mt-1">
-                    {% if gallery %}
-                        {{ gallery|length }} artwork{{ 's' if gallery|length != 1 }} by our artists
-                    {% else %}
-                        Browse our portfolio for inspiration!
-                    {% endif %}
+                <h3 class="card-title" style="margin-bottom: 0.25rem;">Studio Gallery</h3>
+                <p style="font-size: 0.85rem; color: var(--studio-text-secondary);" id="galCountLabel">
+                    {% if gallery %}{{ gallery|length }} artworks browse for inspiration{% else %}No artworks yet{%
+                    endif %}
                 </p>
             </div>
 
-            <!-- Style filter pills (dynamic from DB) -->
-            <div class="flex gap-2 flex-wrap">
-                <button onclick="filterGallery('all',this)"
-                    class="px-3 py-1 text-xs rounded-full bg-studio-dark text-white font-medium gal-f">All</button>
+            <div class="filter-group">
+                <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
                 {% set styles = gallery | map(attribute='style') | select | unique | list %}
                 {% for style in styles %}
-                <button onclick="filterGallery('{{ style }}',this)"
-                    class="px-3 py-1 text-xs rounded-full bg-studio-light text-studio-muted font-medium gal-f">{{ style }}</button>
+                <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
                 {% endfor %}
+                <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
+                    style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-heart" style="color: #FF4757;"></i> Saved
+                    <span
+                        style="background: rgba(255, 71, 87, 0.1); color: #FF4757; padding: 0.1rem 0.4rem; border-radius: 10px; font-size: 0.7rem;"
+                        id="savedBadge">
+                        {{ liked_count | default(0) }}
+                    </span>
+                </button>
             </div>
         </div>
 
-        {% if gallery %}
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="galleryGrid">
+        <!-- All Gallery Grid -->
+        <div class="gallery-grid" id="galleryGrid">
+            {% if gallery %}
             {% for item in gallery %}
-            <div class="gallery-item"
-                 data-category="{{ item.style or 'Other' }}"
-                 data-img="{{ url_for('static', filename=item.image_path) }}"
-                 data-title="{{ item.caption or 'Untitled' }}"
-                 data-artist="{{ item.artist_name }}"
-                 data-style="{{ item.style or '' }}"
-                 onclick="openLb(this)">
+            <div class="gallery-item" onclick="openLb(this)" style="cursor: pointer;" data-id="{{ item.gallery_id }}"
+                data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
+                data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
+                data-style="{{ item.style or '' }}">
 
-                <div style="overflow:hidden;height:176px;">
-                    <img src="{{ url_for('static', filename=item.image_path) }}"
-                         alt="{{ item.caption or 'Tattoo' }}"
-                         class="gallery-img" loading="lazy">
-                </div>
+                <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
+                    id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
+                    <i class="fas fa-heart"></i>
+                </button>
 
-                <div class="gallery-overlay">
-                    <div class="text-center px-3">
-                        <i class="fa-solid fa-expand" style="color:#fff;font-size:1.1rem;display:block;margin-bottom:0.4rem;"></i>
-                        <p style="color:#fff;font-size:0.75rem;font-weight:600;">{{ item.caption or 'Untitled' }}</p>
-                        <p style="color:#c8a040;font-size:0.68rem;margin-top:2px;">by {{ item.artist_name }}</p>
+                <div class="gallery-img-wrapper">
+                    <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
+                        class="gallery-img" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div>
+                            <i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                            <p style="font-weight: 600;">View Details</p>
+                        </div>
                     </div>
                 </div>
-
-                <div style="padding:0.65rem 0.9rem;">
-                    <p style="font-size:0.78rem;font-weight:600;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ item.caption or 'Untitled' }}</p>
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px;">
-                        <p style="font-size:0.68rem;color:#777;">{{ item.artist_name }}</p>
+                <div class="gallery-info">
+                    <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="gallery-artist">by {{ item.artist_name }}</span>
                         {% if item.style %}
-                        <span style="font-size:0.58rem;background:rgba(200,160,64,0.1);color:#c8a040;border:1px solid rgba(200,160,64,0.25);padding:0.1rem 0.4rem;border-radius:20px;">{{ item.style }}</span>
+                        <span class="badge"
+                            style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo); font-size: 0.6rem;">{{
+                            item.style }}</span>
                         {% endif %}
                     </div>
                 </div>
             </div>
             {% endfor %}
-        </div>
-
-        <!-- No results after filter -->
-        <div id="galNoResult" style="display:none;text-align:center;padding:3rem 0;">
-            <i class="fa-solid fa-filter" style="font-size:2rem;color:#ddd;display:block;margin-bottom:0.75rem;"></i>
-            <p style="color:#777;font-size:0.85rem;">No artworks in this style yet.</p>
-        </div>
-
-        {% else %}
-        <!-- Empty state -->
-        <div style="text-align:center;padding:4rem 0;">
-            <div style="width:64px;height:64px;border-radius:16px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-                <i class="fa-solid fa-images" style="font-size:1.75rem;color:#ccc;"></i>
+            {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+                <p>No artworks uploaded to the gallery yet.</p>
             </div>
-            <h4 class="font-display text-studio-dark text-base mb-2">Gallery Coming Soon</h4>
-            <p style="color:#777;font-size:0.83rem;">Our artists haven't uploaded any work yet. Check back soon!</p>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <!-- No Results -->
+        <div id="galNoResult"
+            style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+            <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+            <p>No artworks found for this style.</p>
+        </div>
+
+        <!-- Saved Grid -->
+        <div id="savedGrid" style="display: none;">
+            <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+                <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
+                <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
+                    class="btn-studio btn-primary">Browse Gallery</button>
+            </div>
+            <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
+        </div>
+
     </div>
 
+    <!-- Gallery Lightbox Modal -->
+    <div id="lb"
+        style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: opacity 0.3s ease;">
+        <button onclick="closeLb()"
+            style="position: absolute; top: 2rem; right: 2rem; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; transition: transform 0.2s;"><i
+                class="fa-solid fa-xmark"></i></button>
+        <div style="text-align:center; max-width: 90vw;">
+            <img id="lbImg" src="" alt=""
+                style="max-height: 80vh; max-width: 100%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); object-fit: contain;">
+            <div style="margin-top: 1.5rem;">
+                <p id="lbTitle"
+                    style="font-family:'Cinzel',serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0 0 0.5rem 0; letter-spacing: 1px;">
+                </p>
+                <p id="lbSub"
+                    style="font-size: 0.9rem; color: #a1a1aa; margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Toast -->
+<div class="studio-toast" id="likeToast">
+    <i class="fas fa-heart"></i>
+    <span id="likeToastMsg">Saved to your collection</span>
+</div>
+
+<script>
+    // Safe initialization
+    let likedIds = new Set();
+    let savedCount = 0;
+    try {
+        const rawIds = '{{ (liked_ids | default([])) | list | tojson | safe }}';
+        if (rawIds && rawIds !== 'null') {
+            likedIds = new Set(JSON.parse(rawIds));
+        }
+        const rawCount = '{{ liked_count | default(0) }}';
+        if (rawCount && rawCount !== 'None') {
+            savedCount = parseInt(rawCount, 10);
+        }
+    } catch (e) {
+        console.error("Error parsing gallery data:", e);
+    }
+
+    let currentTab = 'all';
+
+    window.toggleLike = function (e, galleryId) {
+        e.stopPropagation();
+        const btn = document.getElementById('likeBtn-' + galleryId);
+        if (!btn) return;
+        btn.classList.remove('pop');
+        void btn.offsetWidth;
+        btn.classList.add('pop');
+
+        const wasLiked = likedIds.has(galleryId);
+        if (wasLiked) {
+            likedIds.delete(galleryId);
+            btn.classList.remove('liked');
+            savedCount = Math.max(0, savedCount - 1);
+        } else {
+            likedIds.add(galleryId);
+            btn.classList.add('liked');
+            savedCount++;
+        }
+
+        const badge = document.getElementById('savedBadge');
+        if (badge) badge.textContent = savedCount;
+        showToast(!wasLiked);
+
+        if (currentTab === 'saved' && wasLiked) {
+            const card = document.querySelector(`#savedItemsGrid [data-id="${galleryId}"]`);
+            if (card) {
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    card.remove();
+                    if (document.querySelectorAll('#savedItemsGrid .gallery-item').length === 0) {
+                        document.getElementById('savedItemsGrid').style.display = 'none';
+                        document.getElementById('savedEmpty').style.display = 'block';
+                    }
+                }, 300);
+            }
+        }
+
+        fetch(`/customer/gallery/like/${galleryId}`, { method: 'POST' }).catch(err => console.log(err));
+    };
+
+    window.openLb = function (item) {
+        if (!item) return;
+        const lb = document.getElementById('lb');
+        if (!lb) return;
+
+        try {
+            document.getElementById('lbImg').src = item.dataset.img || '';
+            document.getElementById('lbTitle').textContent = item.dataset.title || 'Untitled';
+            const sub = [];
+            if (item.dataset.artist && item.dataset.artist !== 'None') sub.push('Artist: ' + item.dataset.artist);
+            if (item.dataset.style && item.dataset.style !== 'None') sub.push('Style: ' + item.dataset.style);
+            document.getElementById('lbSub').textContent = sub.join('  •  ');
+
+            lb.style.display = 'flex';
+            setTimeout(() => { lb.style.opacity = '1'; }, 10);
+        } catch (e) {
+            console.error("Error opening lightbox:", e);
+        }
+    };
+
+    window.closeLb = function () {
+        const lb = document.getElementById('lb');
+        if (lb) {
+            lb.style.opacity = '0';
+            setTimeout(() => { lb.style.display = 'none'; }, 300);
+        }
+    };
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeLb();
+    });
+
+    const lbElement = document.getElementById('lb');
+    if (lbElement) {
+        lbElement.addEventListener('click', function (e) {
+            if (e.target === this) closeLb();
+        });
+    }
+
+    window.switchGalTab = function (tab, btn) {
+        currentTab = tab;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        if (tab === 'all') {
+            document.getElementById('galleryGrid').style.display = 'grid';
+            document.getElementById('savedGrid').style.display = 'none';
+            document.getElementById('galNoResult').style.display = 'none';
+            document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => i.style.display = '');
+        } else {
+            document.getElementById('galleryGrid').style.display = 'none';
+            document.getElementById('galNoResult').style.display = 'none';
+            document.getElementById('savedGrid').style.display = 'block';
+            loadSavedItems();
+        }
+    };
+
+    function loadSavedItems() {
+        fetch('/customer/gallery/liked')
+            .then(r => r.json())
+            .then(data => {
+                const grid = document.getElementById('savedItemsGrid');
+                const empty = document.getElementById('savedEmpty');
+                if (!grid || !empty) return;
+
+                grid.innerHTML = '';
+                if (!data || !data.success || !data.items || data.items.length === 0) {
+                    grid.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+                empty.style.display = 'none';
+                grid.style.display = 'grid';
+                data.items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'gallery-item';
+                    card.dataset.id = item.gallery_id;
+                    card.dataset.img = `/static/${item.image_path || ''}`;
+                    card.dataset.title = item.caption || 'Untitled';
+                    card.dataset.artist = item.artist_name || '';
+                    card.dataset.style = item.style || '';
+                    card.style.cursor = 'pointer';
+                    card.onclick = function () { openLb(this); };
+
+                    card.innerHTML = `
+                        <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>
+                        <div class="gallery-img-wrapper">
+                            <img src="/static/${item.image_path || ''}" class="gallery-img">
+                            <div class="gallery-overlay"><div><i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="font-weight: 600;">View Details</p></div></div>
+                        </div>
+                        <div class="gallery-info">
+                            <p class="gallery-title">${item.caption || 'Untitled'}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span class="gallery-artist">by ${item.artist_name || 'Unknown'}</span>
+                                ${item.style ? `<span class="badge" style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo); font-size: 0.6rem;">${item.style}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            })
+            .catch(err => console.error("Error loading saved items", err));
+    }
+
+    window.filterGallery = function (cat, btn) {
+        currentTab = 'all';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        document.getElementById('galleryGrid').style.display = 'grid';
+        document.getElementById('savedGrid').style.display = 'none';
+
+        let visible = 0;
+        const targetCat = cat ? cat.toString().toLowerCase().trim() : '';
+        document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => {
+            const itemCat = (i.dataset.category || '').toLowerCase().trim();
+            const show = (itemCat === targetCat);
+            i.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        document.getElementById('galNoResult').style.display = visible === 0 ? 'block' : 'none';
+    };
+
+    function showToast(isLiked) {
+        const t = document.getElementById('likeToast');
+        if (!t) return;
+        document.getElementById('likeToastMsg').textContent = isLiked ? 'Artwork saved!' : 'Removed from collection';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+</script>

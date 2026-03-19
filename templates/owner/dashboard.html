@@ -5,648 +5,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Owner Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Premium Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owner_dashboard.css') }}">
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
-                    colors: {
-                        studio: {
-                            bg: 'var(--bg)',
-                            card: 'var(--card)',
-                            border: 'var(--border)',
-                            dark: 'var(--dark)',
-                            muted: 'var(--muted)',
-                            light: 'var(--light)',
-                            gold: 'var(--gold)',
-                            gold_glow: 'var(--gold-glow)',
-                            text: 'var(--text)'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        :root {
-            /* NOIR THEME (Default) */
-            --bg: #0a0a0f;
-            --card: #11111d;
-            --border: #222235;
-            --dark: #1a1a2e;
-            --muted: #8b8b9f;
-            --light: #f5f5f5;
-            --gold: #c8a040;
-            --gold-glow: rgba(200, 160, 64, 0.15);
-            --text: #e0e0e6;
-            --topbar: rgba(10, 10, 15, 0.8);
-            --sidebar: #1a1a2e;
-            --sidebar-text: #aaaaaa;
-            --sidebar-active-bg: rgba(200, 160, 64, 0.08);
-            --table-head: #0a0a0f;
-            --input-bg: #07070a;
-        }
-
-        [data-theme="light"] {
-            /* IVORY & GOLD THEME */
-            --bg: #f7f7f0;
-            --card: #ffffff;
-            --border: #d8d8c0;
-            --dark: #1a1a2e;
-            --muted: #555566;
-            --light: #fdfdfa;
-            --gold: #b68d2a;
-            --gold-glow: rgba(182, 141, 42, 0.08);
-            --text: #1a1a2e;
-            --topbar: rgba(247, 247, 240, 0.9);
-            --sidebar: #1a1a2e;
-            /* Sidebar stays dark for premium high-contrast look */
-            --sidebar-text: #aaaaaa;
-            --sidebar-active-bg: rgba(200, 160, 64, 0.08);
-            --table-head: #f0f0e8;
-            --input-bg: #ffffff;
-        }
-
-        body {
-            background: var(--bg);
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            overflow-x: hidden;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        /* ── SIDEBAR (KEEP UNCHANGED STRUCTURE) ── */
-        .sidebar {
-            width: 240px;
-            min-height: 100vh;
-            background: var(--sidebar);
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-logo {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 1rem 0;
-            overflow-y: auto;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            color: var(--sidebar-text);
-            font-size: 0.82rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-            text-decoration: none;
-            width: 100%;
-            background: none;
-            border-right: none;
-            border-top: none;
-            border-bottom: none;
-            text-align: left;
-        }
-
-        .nav-item:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-item.active {
-            color: var(--gold);
-            border-left-color: var(--gold);
-            background: var(--sidebar-active-bg);
-        }
-
-        .nav-item i {
-            width: 16px;
-            text-align: center;
-        }
-
-        .nav-section {
-            padding: 0.5rem 1.5rem;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #555;
-            letter-spacing: 0.1em;
-            margin-top: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        /* ── MAIN (DETACHED LAYOUT) ── */
-        .main {
-            margin-left: 240px;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        .topbar {
-            background: var(--topbar);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            transition: all 0.3s ease;
-        }
-
-        /* ── CARDS (NEO-BRUTALIST) ── */
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            padding: 1.75rem;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--gold);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px var(--gold-glow);
-        }
-
-        .content-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        /* ── BADGES (HIGH CONTRAST) ── */
-        .badge {
-            font-size: 0.68rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1px;
-        }
-
-        .badge-pending {
-            background: rgba(200, 160, 64, 0.1);
-            color: var(--gold);
-            border: 1px solid var(--gold-glow);
-        }
-
-        .badge-approved {
-            background: rgba(34, 197, 94, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .badge-done {
-            background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .badge-rejected {
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .badge-cancelled {
-            background: rgba(107, 114, 128, 0.1);
-            color: #9ca3af;
-            border: 1px solid rgba(107, 114, 128, 0.2);
-        }
-
-        .badge-paid {
-            background: rgba(34, 197, 94, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .badge-unpaid {
-            background: rgba(249, 115, 22, 0.1);
-            color: #fb923c;
-            border: 1px solid rgba(249, 115, 22, 0.2);
-        }
-
-        .badge-low {
-            background: rgba(239, 68, 68, 0.1);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .badge-ok {
-            background: rgba(34, 197, 94, 0.1);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .section {
-            display: none;
-            opacity: 0;
-        }
-
-        .section.active {
-            display: block;
-            opacity: 1;
-        }
-
-        @keyframes inkReveal {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.98);
-                filter: blur(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
-
-        .animate-ink {
-            animation: inkReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        /* ── TABLE ── */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        th {
-            background: var(--table-head);
-            color: var(--muted);
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 1rem 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        td {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text);
-            vertical-align: middle;
-            transition: all 0.2s;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: rgba(200, 160, 64, 0.03);
-            color: var(--gold);
-        }
-
-        /* ── FORMS ── */
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            outline: none;
-            font-size: 0.88rem;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px var(--gold-glow);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.75rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .report-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            padding: 1.5rem;
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gold);
-            border-radius: 2px;
-            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg)
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px
-        }
-    </style>
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
-
-    <!-- ── SIDEBAR ───────────────────────────────────────────────── -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-white/10 overflow-hidden flex-shrink-0">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="w-full h-full object-contain">
+    <div class="dashboard-container">
+        <!-- SIDEBAR -->
+        <aside class="studio-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-text">
+                    <div class="logo-icon"><i class="fas fa-dragon"></i></div>
+                    DRAGON TATTOOS
                 </div>
-                <div>
-                    <p class="font-display text-white text-xs tracking-widest">DRAGON</p>
-                    <p class="text-gray-500 text-xs">Owner Portal</p>
-                </div>
+                <p
+                    style="font-size: 0.6rem; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-top: 4px;">
+                    Owner Portal</p>
             </div>
-        </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-section">Main</div>
-            <button class="nav-item active" onclick="showSection('overview', this)">
-                <i class="fa-solid fa-gauge"></i> Overview
-            </button>
-
-            <div class="nav-section">Appointments</div>
-            <button class="nav-item" onclick="showSection('appointments', this)">
-                <i class="fa-solid fa-calendar-check"></i> Manage Appointments
-            </button>
-
-            <div class="nav-section">Artists</div>
-            <button class="nav-item" onclick="showSection('artists', this)">
-                <i class="fa-solid fa-users"></i> Manage Artists
-            </button>
-
-            <div class="nav-section">Finance</div>
-            <button class="nav-item" onclick="showSection('invoice', this)">
-                <i class="fa-solid fa-file-invoice"></i> Generate Invoice
-            </button>
-            <button class="nav-item" onclick="showSection('payment', this)">
-                <i class="fa-solid fa-indian-rupee-sign"></i> Record Payment
-            </button>
-
-            <div class="nav-section">Stock</div>
-            <button class="nav-item" onclick="showSection('inventory', this)">
-                <i class="fa-solid fa-boxes-stacked"></i> Inventory View
-            </button>
-
-            <div class="nav-section">Analytics</div>
-            <button class="nav-item" onclick="showSection('reports', this)">
-                <i class="fa-solid fa-chart-line"></i> View Reports
-            </button>
-
-            <div class="nav-section">Account</div>
-            <a class="nav-item" href="/logout">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
-        </nav>
-
-        <div style="padding:1rem 1.5rem; border-top:1px solid rgba(255,255,255,0.08);">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                    <i class="fa-solid fa-crown text-yellow-400 text-sm"></i>
+            <nav class="sidebar-nav">
+                <div
+                    style="padding: 0 1.5rem 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">
+                    Main</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard')" class="nav-link active"
+                        data-section="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
                 </div>
-                <div>
-                    <p class="text-white text-xs font-semibold">{{ name }}</p>
-                    <p class="text-gray-500 text-xs">Studio Owner</p>
+
+                <div
+                    style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">
+                    Management</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('artists')" class="nav-link" data-section="artists">
+                        <i class="fas fa-users"></i> Artists
+                    </a>
                 </div>
-            </div>
-        </div>
-    </aside>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('bookings')" class="nav-link"
+                        data-section="bookings">
+                        <i class="fas fa-calendar-alt"></i> Bookings
+                        {% if pending_count > 0 %}<span
+                            style="background: #ef4444; color: white; border-radius: 10px; padding: 2px 6px; font-size: 0.6rem; margin-left: auto;">{{
+                            pending_count }}</span>{% endif %}
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('inventory')" class="nav-link"
+                        data-section="inventory">
+                        <i class="fas fa-box"></i> Inventory
+                    </a>
+                </div>
 
-    <!-- ── MAIN ──────────────────────────────────────────────────── -->
-    <main class="main">
+                <div
+                    style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">
+                    Finance</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('invoice')" class="nav-link" data-section="invoice">
+                        <i class="fas fa-file-invoice-dollar"></i> Invoicing
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('payment')" class="nav-link" data-section="payment">
+                        <i class="fas fa-hand-holding-usd"></i> Payments
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('reports')" class="nav-link" data-section="reports">
+                        <i class="fas fa-file-contract"></i> Reports
+                    </a>
+                </div>
 
-        <div class="topbar">
-            <div>
-                <h1 class="font-display text-white text-lg" id="pageTitle">Overview</h1>
-                <p class="text-studio-muted text-xs font-bold uppercase tracking-widest mt-1" id="pageSubtitle">System
-                    Integrity: Optimal</p>
-            </div>
-            <div class="flex items-center gap-6">
-                <!-- Theme Toggle -->
-                <button id="themeToggle"
-                    class="w-10 h-10 flex items-center justify-center border border-studio-border hover:border-studio-gold text-studio-muted hover:text-studio-gold transition-all duration-300 group">
-                    <i class="fa-solid fa-moon text-xs group-hover:rotate-[360deg] transition-transform duration-500"
-                        id="themeIcon"></i>
-                </button>
+                <div
+                    style="padding: 1.5rem 1.5rem 0.5rem; font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.1em;">
+                    System</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('profile')" class="nav-link" data-section="profile">
+                        <i class="fas fa-user-shield"></i> Profile
+                    </a>
+                </div>
+                <div class="nav-item" style="margin-top: auto;">
+                    <a href="/logout" class="nav-link" style="color: #ef4444;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
 
-                <div class="flex items-center gap-3">
-                    <div
-                        class="flex items-center gap-2 px-3 py-1.5 bg-studio-gold/10 border border-studio-gold/20 rounded-sm">
-                        <i class="fa-solid fa-crown text-studio-gold text-xs"></i>
-                        <span class="text-studio-gold text-[10px] font-black uppercase tracking-widest">Master
-                            Access</span>
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="welcome-msg">
+                    <h1 id="pageTitle">Good Morning, Boss</h1>
+                    <p id="pageSubtitle">Welcome back, {{ name }}! Here's what's happening today.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-bell">
+                        <i class="far fa-bell"></i>
                     </div>
-                    <div
-                        class="w-10 h-10 bg-studio-card border border-studio-border flex items-center justify-center relative group cursor-pointer hover:border-studio-gold transition-all">
-                        <i class="fa-solid fa-user-shield text-studio-gold text-xs"></i>
-                        <div
-                            class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-500 border-2 border-studio-bg rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]">
-                        </div>
+                    <div class="profile-avatar">
+                        {{ name[0] | upper }}
                     </div>
                 </div>
+            </header>
+
+            <!-- FLASH MESSAGES -->
+            <div class="flash-container" id="flashContainer">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-msg {{ category }}" onclick="this.remove()">
+                    <i
+                        class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
+                    <i class="fas fa-times" style="margin-left:auto; font-size: 0.7rem; opacity: 0.5;"></i>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
             </div>
-        </div>
 
-        <div class="p-6">
-
-            <div id="sec-overview" class="section active">
+            <!-- DASHBOARD OVERVIEW -->
+            <section id="section-dashboard" class="content-section">
                 {% include 'owner/sections/overview.html' %}
-            </div>
+            </section>
 
-            <div id="sec-appointments" class="section">
-                {% include 'owner/sections/appointments.html' %}
-            </div>
-
-            <div id="sec-artists" class="section">
+            <!-- OTHER SECTIONS -->
+            <section id="section-artists" class="content-section" style="display: none;">
                 {% include 'owner/sections/artists.html' %}
-            </div>
-
-            <div id="sec-invoice" class="section">
-                {% include 'owner/sections/invoice.html' %}
-            </div>
-
-            <div id="sec-payment" class="section">
-                {% include 'owner/sections/payment.html' %}
-            </div>
-
-            <div id="sec-inventory" class="section">
+            </section>
+            <section id="section-bookings" class="content-section" style="display: none;">
+                {% include 'owner/sections/appointments.html' %}
+            </section>
+            <section id="section-inventory" class="content-section" style="display: none;">
                 {% include 'owner/sections/inventory.html' %}
-            </div>
-
-            <div id="sec-reports" class="section">
+            </section>
+            <section id="section-reports" class="content-section" style="display: none;">
                 {% include 'owner/sections/reports.html' %}
-            </div>
+            </section>
+            <section id="section-invoice" class="content-section" style="display: none;">
+                {% include 'owner/sections/invoice.html' %}
+            </section>
+            <section id="section-payment" class="content-section" style="display: none;">
+                {% include 'owner/sections/payment.html' %}
+            </section>
+            <section id="section-profile" class="content-section" style="display: none;">
+                {% include 'owner/sections/profile.html' %}
+            </section>
+        </main>
+    </div>
 
-        </div>
-    </main>
-
+    <!-- SCRIPTS -->
     <script>
-        const sections = {
-            'overview': { title: 'Overview', subtitle: 'Studio at a glance' },
-            'appointments': { title: 'Manage Appointments', subtitle: 'All bookings and sessions' },
-            'artists': { title: 'Manage Artists', subtitle: 'Your team management' },
-            'invoice': { title: 'Generate Invoice', subtitle: 'Create and view invoices' },
-            'payment': { title: 'Record Payment', subtitle: 'Payment collection' },
-            'inventory': { title: 'Inventory View', subtitle: 'Stock overview' },
-            'reports': { title: 'View Reports', subtitle: 'Analytics and insights' },
+        const meta = {
+            'dashboard': { title: 'Good Morning, Boss', subtitle: "Here's what's happening today." },
+            'artists': { title: 'Creative Team', subtitle: 'Manage your studio talent' },
+            'bookings': { title: 'Studio Sessions', subtitle: 'Global appointment overview' },
+            'inventory': { title: 'Supply Chain', subtitle: 'Track studio stock and reorder levels' },
+            'reports': { title: 'Financial Analytics', subtitle: 'Deep dive into studio performance' },
+            'invoice': { title: 'Client Billing', subtitle: 'Generate and send professional invoices' },
+            'payment': { title: 'Cash Flow', subtitle: 'Record and track incoming payments' },
+            'profile': { title: 'Master Security', subtitle: 'Owner account and system credentials' }
         };
 
-        function showSection(name, btn) {
-            document.querySelectorAll('.section').forEach(s => {
-                s.classList.remove('active', 'animate-ink');
-            });
-            const target = document.getElementById('sec-' + name);
-            target.classList.add('active');
-            // Trigger animation reflow
-            void target.offsetWidth;
-            target.classList.add('animate-ink');
+        function switchTab(name) {
+            // Hide sections
+            document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+            const target = document.getElementById('section-' + name);
+            if (target) target.style.display = 'block';
 
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            const info = sections[name];
+            // Update Nav
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const link = document.querySelector(`.nav-link[data-section="${name}"]`);
+            if (link) link.classList.add('active');
+
+            // Update Header
+            const info = meta[name];
             if (info) {
                 document.getElementById('pageTitle').textContent = info.title;
                 document.getElementById('pageSubtitle').textContent = info.subtitle;
             }
+
+            localStorage.setItem('onTab', name);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function filterTable(rowClass, status, btn) {
-            const filterClass = rowClass === 'appt-row' ? 'appt-f' : 'inv-f';
-            document.querySelectorAll('.' + filterClass).forEach(b => {
-                b.className = 'px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-bg/10 border border-studio-border text-studio-muted transition-all ' + filterClass;
+        // Init
+        const last = localStorage.getItem('onTab') || 'dashboard';
+        switchTab(last);
+
+        // Flash Auto-dismiss
+        setTimeout(() => {
+            document.querySelectorAll('.flash-msg').forEach(f => {
+                f.style.opacity = '0';
+                setTimeout(() => f.remove(), 500);
             });
-            btn.className = 'px-4 py-2 text-[10px] uppercase font-black tracking-widest bg-studio-gold text-black border border-studio-gold ' + filterClass;
-            document.querySelectorAll('.' + rowClass).forEach(row => {
-                row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
-            });
-        }
-
-        function prefillInvoice(apptId) {
-            showSection('invoice', document.querySelectorAll('.nav-item')[3]);
-            setTimeout(() => {
-                const sel = document.getElementById('apptSelect');
-                if (sel) {
-                    for (let opt of sel.options) {
-                        if (opt.value == apptId) { sel.value = apptId; break; }
-                    }
-                }
-            }, 100);
-        }
-
-        function prefillPayment(invoiceId, amount) {
-            showSection('payment', document.querySelectorAll('.nav-item')[4]);
-            setTimeout(() => {
-                const sel = document.getElementById('invoiceSelect');
-                const amt = document.getElementById('amountPaid');
-                if (sel) sel.value = invoiceId;
-                if (amt) amt.value = amount;
-            }, 100);
-        }
-
-        const today = new Date().toISOString().split('T')[0];
-        document.querySelectorAll('input[type="date"]').forEach(d => d.value = today);
-
-        document.querySelectorAll('.progress-fill').forEach(el => {
-            if (el.dataset.progress) {
-                setTimeout(() => el.style.width = el.dataset.progress + '%', 100);
-            }
-        });
-
-        // ── THEME SWITCHER ──
-        const themeBtn = document.getElementById('themeToggle');
-        const htmlEl = document.documentElement;
-        const themeIcon = document.getElementById('themeIcon');
-
-        function setTheme(theme) {
-            if (theme === 'light') {
-                htmlEl.setAttribute('data-theme', 'light');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                localStorage.setItem('studio-theme', 'light');
-            } else {
-                htmlEl.removeAttribute('data-theme');
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                localStorage.setItem('studio-theme', 'dark');
-            }
-        }
-
-        themeBtn.addEventListener('click', () => {
-            const isLight = htmlEl.getAttribute('data-theme') === 'light';
-            setTheme(isLight ? 'dark' : 'light');
-        });
-
-        // Persistent check
-        const savedTheme = localStorage.getItem('studio-theme') || 'dark';
-        setTheme(savedTheme);
-
-        // ── DYNAMIC INPUT STABILITY ──
-        // Ensures fields don't "stick" at 0 or flip decimals unexpectedly
-        const stabilizeInput = (id) => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.addEventListener('input', (e) => {
-                // Remove hardcoded value if user starts typing a non-zero value
-                if (e.target.value !== "" && e.target.value !== "0") {
-                    e.target.setAttribute('value', e.target.value);
-                }
-            });
-        };
-
-        ['totalAmt', 'amountPaid'].forEach(stabilizeInput);
+        }, 5000);
     </script>
 </body>
 

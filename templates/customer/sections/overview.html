@@ -1,146 +1,141 @@
 <!-- ═══════════════════════════════════════
-     SECTION: OVERVIEW  (sec-overview)
-     File: templates/customer/sections/overview.html
+     SECTION: OVERVIEW (sec-overview)
 ═══════════════════════════════════════ -->
-<div id="sec-overview" class="section active">
+<div id="sec-overview" class="content-section active">
 
     <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="mb-4 p-3 rounded-xl text-sm {% if category=='error' %}bg-red-50 border border-red-200 text-red-700{% else %}bg-green-50 border border-green-200 text-green-700{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    <div style="margin-bottom: 2rem;">
+        {% for category, message in messages %}
+        <div class="badge {% if category=='error' %}badge-danger{% else %}badge-success{% endif %}"
+            style="width: 100%; padding: 1rem; margin-bottom: 0.5rem; text-align: left; border-radius: 8px;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
 
-    <!-- Welcome banner -->
-    <div class="bg-studio-dark rounded-2xl p-6 mb-6 relative overflow-hidden">
-        <div style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;border-radius:50%;background:rgba(200,160,64,0.08);"></div>
-        <div style="position:absolute;bottom:-20px;right:80px;width:100px;height:100px;border-radius:50%;background:rgba(200,160,64,0.05);"></div>
-        <div class="relative z-10">
-            <p class="text-yellow-400 text-xs uppercase tracking-widest mb-2">Welcome Back</p>
-            <h2 class="font-display text-white text-2xl mb-2">Hello, {{ name }}! 🐉</h2>
-            <p class="text-gray-400 text-sm mb-4">Ready for your next tattoo? Book an appointment with our artists!</p>
-            <button onclick="nav('book', document.querySelectorAll('.nav-item')[1])"
-                class="px-5 py-2.5 bg-yellow-500 text-studio-dark text-sm font-bold rounded-xl hover:bg-yellow-400 transition-all">
-                <i class="fa-solid fa-calendar-plus mr-2"></i>Book Appointment
-            </button>
-        </div>
-    </div>
+    <!-- 1. Hero Card: Upcoming Session -->
+    <div class="studio-card"
+        style="border-left: 4px solid #4834D4; margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div style="position: relative; z-index: 2;">
+                <p
+                    style="font-size: 0.75rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-bolt"></i> Upcoming Session
+                </p>
+                {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
+                {% set next_appt = appointments[0] %}
+                <h2
+                    style="font-size: 2.2rem; font-weight: 800; color: #2D3436; margin-bottom: 0.25rem; line-height: 1.1;">
+                    {{ next_appt.appointment_date }}
+                </h2>
+                <p style="color: #636E72; font-size: 1.05rem; font-weight: 500; max-width: 500px;">
+                    with Artist <strong style="color: #4834D4;">{{ next_appt.artist_name }}</strong> &mdash; "{{
+                    next_appt.tattoo_concept }}"
+                </p>
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <span class="badge {{ 'badge-paid' if next_appt.status == 'Approved' else 'badge-pending' }}"
+                        style="padding: 8px 14px; font-size: 0.75rem;">
+                        {{ next_appt.status }}
+                    </span>
+                    <span style="font-size: 0.85rem; color: #636E72; font-weight: 600;">
+                        <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
+                    </span>
+                </div>
+                {% else %}
+                <h2
+                    style="font-size: 2.2rem; font-weight: 800; color: #2D3436; margin-bottom: 0.5rem; line-height: 1.1;">
+                    No upcoming sessions
+                </h2>
+                <p style="color: #636E72; font-size: 1rem; max-width: 500px;">
+                    Your skin is a waiting canvas. Book your next masterpiece with one of our world-class artists today.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <button onclick="switchTab('book', document.querySelector('[data-section=book]'))"
+                        class="btn-studio btn-primary" style="padding: 12px 24px;">
+                        <i class="fas fa-calendar-plus" style="margin-right: 6px;"></i> Schedule Now
+                    </button>
+                </div>
+                {% endif %}
+            </div>
 
-    <!-- Stats row -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="stat-card">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-yellow-50 flex items-center justify-center">
-                    <i class="fa-solid fa-calendar text-yellow-600"></i>
-                </div>
-                <span class="badge-approved">Total</span>
+            {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
+            <div
+                style="background: rgba(72, 52, 212, 0.05); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4834D4; font-size: 2rem; position: relative; z-index: 2;">
+                <i class="fas fa-calendar-day"></i>
             </div>
-            <p class="font-display text-2xl text-studio-dark">{{ total_appointments|default(0) }}</p>
-            <p class="text-studio-muted text-xs mt-1">Total Bookings</p>
-        </div>
-        <div class="stat-card">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                    <i class="fa-solid fa-clock text-orange-500"></i>
-                </div>
-                <span class="badge-pending">Pending</span>
-            </div>
-            <p class="font-display text-2xl text-studio-dark">{{ pending_count|default(0) }}</p>
-            <p class="text-studio-muted text-xs mt-1">Awaiting Approval</p>
-        </div>
-        <div class="stat-card">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <i class="fa-solid fa-check-circle text-blue-500"></i>
-                </div>
-                <span class="badge-done">Done</span>
-            </div>
-            <p class="font-display text-2xl text-studio-dark">{{ done_count|default(0) }}</p>
-            <p class="text-studio-muted text-xs mt-1">Completed Sessions</p>
-        </div>
-        <div class="stat-card">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                    <i class="fa-solid fa-file-invoice text-green-500"></i>
-                </div>
-                <span class="badge-paid">Invoices</span>
-            </div>
-            <p class="font-display text-2xl text-studio-dark">{{ total_invoices|default(0) }}</p>
-            <p class="text-studio-muted text-xs mt-1">Total Invoices</p>
-        </div>
-    </div>
-
-    <!-- Recent appointments table -->
-    <div class="content-card mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-display text-studio-dark text-base">Recent Appointments</h3>
-            <button onclick="nav('appointments', document.querySelectorAll('.nav-item')[2])"
-                class="text-xs text-studio-muted hover:text-studio-dark">View All →</button>
-        </div>
-        <table>
-            <thead>
-                <tr><th>Artist</th><th>Concept</th><th>Date</th><th>Time</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-            {% if appointments %}
-                {% for a in appointments[:4] %}
-                <tr>
-                    <td class="font-medium">{{ a.artist_name }}</td>
-                    <td>{{ a.tattoo_concept }}</td>
-                    <td>{{ a.appointment_date }}</td>
-                    <td>{{ a.appointment_time }}</td>
-                    <td>
-                        {% if a.status=='Pending' %}<span class="badge-pending">Pending</span>
-                        {% elif a.status=='Approved' %}<span class="badge-approved">Approved</span>
-                        {% elif a.status=='Done' %}<span class="badge-done">Done</span>
-                        {% elif a.status=='Rejected' %}<span class="badge-rejected">Rejected</span>
-                        {% else %}<span class="badge-cancelled">Cancelled</span>{% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="5" class="text-center text-studio-muted py-8">
-                        No appointments yet!
-                        <button onclick="nav('book', document.querySelectorAll('.nav-item')[1])"
-                            class="ml-2 text-studio-dark font-semibold underline">Book one now!</button>
-                    </td>
-                </tr>
             {% endif %}
-            </tbody>
-        </table>
+        </div>
+
+        <!-- Subtle decorative background blob -->
+        <div
+            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(72, 52, 212, 0.03); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
+        </div>
     </div>
 
-    <!-- Quick links -->
-    <div class="grid md:grid-cols-3 gap-4">
-        <button onclick="nav('aftercare', document.querySelectorAll('.nav-item')[5])"
-            class="content-card text-left hover:border-studio-dark transition-all group">
-            <div class="w-10 h-10 rounded-xl bg-studio-light group-hover:bg-studio-dark flex items-center justify-center mb-3 transition-all">
-                <i class="fa-solid fa-heart-pulse text-studio-dark group-hover:text-yellow-400 transition-all"></i>
-            </div>
-            <p class="font-semibold text-studio-dark text-sm mb-1">Aftercare Guide</p>
-            <p class="text-studio-muted text-xs">Learn how to care for your new tattoo</p>
-        </button>
-        <button onclick="nav('gallery', document.querySelectorAll('.nav-item')[4])"
-            class="content-card text-left hover:border-studio-dark transition-all group">
-            <div class="w-10 h-10 rounded-xl bg-studio-light group-hover:bg-studio-dark flex items-center justify-center mb-3 transition-all">
-                <i class="fa-solid fa-images text-studio-dark group-hover:text-yellow-400 transition-all"></i>
-            </div>
-            <p class="font-semibold text-studio-dark text-sm mb-1">View Gallery</p>
-            <p class="text-studio-muted text-xs">Browse our portfolio — {{ gallery|length if gallery else 0 }} artworks</p>
-        </button>
-        <button onclick="nav('invoices', document.querySelectorAll('.nav-item')[3])"
-            class="content-card text-left hover:border-studio-dark transition-all group">
-            <div class="w-10 h-10 rounded-xl bg-studio-light group-hover:bg-studio-dark flex items-center justify-center mb-3 transition-all">
-                <i class="fa-solid fa-file-invoice text-studio-dark group-hover:text-yellow-400 transition-all"></i>
-            </div>
-            <p class="font-semibold text-studio-dark text-sm mb-1">My Invoices</p>
-            <p class="text-studio-muted text-xs">View your billing and payment details</p>
-        </button>
-    </div>
+    <!-- 2. Secondary Content Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
+        <!-- Card 1: Past Tattoos -->
+        <div class="studio-card" style="display: flex; flex-direction: column; cursor: pointer;"
+            onclick="switchTab('gallery', document.querySelector('[data-section=gallery]'))">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.25rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 12px; background: #F8F9FA; display: flex; align-items: center; justify-content: center; color: #2D3436; font-size: 1.25rem; border: 1px solid #E9ECEF;">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #2D3436; margin: 0;">Past Tattoos</h3>
+            </div>
+            <p style="color: #636E72; font-size: 0.9rem; flex: 1; margin-bottom: 1.5rem;">
+                Review your completed masterpieces and session history. Build your personal art portfolio.
+            </p>
+            <div
+                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                View History <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+            </div>
+        </div>
+
+        <!-- Card 2: Favorite Artists -->
+        <div class="studio-card" style="display: flex; flex-direction: column; cursor: pointer;"
+            onclick="switchTab('book', document.querySelector('[data-section=book]'))">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.25rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 12px; background: #F8F9FA; display: flex; align-items: center; justify-content: center; color: #2D3436; font-size: 1.25rem; border: 1px solid #E9ECEF;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #2D3436; margin: 0;">Favorite Artists</h3>
+            </div>
+            <p style="color: #636E72; font-size: 0.9rem; flex: 1; margin-bottom: 1.5rem;">
+                Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.
+            </p>
+            <div
+                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                Explore Team <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+            </div>
+        </div>
+
+        <!-- Card 3: Aftercare Notes -->
+        <div class="studio-card" style="display: flex; flex-direction: column; cursor: pointer;"
+            onclick="switchTab('aftercare', document.querySelector('[data-section=aftercare]'))">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.25rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 12px; background: #F8F9FA; display: flex; align-items: center; justify-content: center; color: #2D3436; font-size: 1.25rem; border: 1px solid #E9ECEF;">
+                    <i class="fas fa-hand-holding-medical"></i>
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #2D3436; margin: 0;">Aftercare Notes</h3>
+            </div>
+            <p style="color: #636E72; font-size: 0.9rem; flex: 1; margin-bottom: 1.5rem;">
+                Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
+            </p>
+            <div
+                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                Read Guide <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+            </div>
+        </div>
+
+    </div>
 </div>

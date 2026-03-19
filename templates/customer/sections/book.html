@@ -1,280 +1,53 @@
 <!-- ═══════════════════════════════════════
-     SECTION: BOOK APPOINTMENT  (sec-book)
-     File: templates/customer/sections/book.html
-     Services: Tattoo Making / Art & Sketching / Tattoo Removal
+     SECTION: BOOK APPOINTMENT (sec-book)
 ═══════════════════════════════════════ -->
-<div id="sec-book" class="section">
+<div id="sec-book" class="content-section">
 
-    <style>
-        /* ── Service Selector Cards ── */
-        .svc-card {
-            flex: 1;
-            border: 2px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 1.1rem 1rem;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.22s;
-            background: #fafafa;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .svc-card:hover {
-            border-color: #1a1a2e;
-            background: #f5f5f5;
-            transform: translateY(-2px);
-        }
-
-        .svc-card.selected {
-            border-color: #c8a040;
-            background: #fffbf0;
-            box-shadow: 0 4px 18px rgba(200, 160, 64, 0.15);
-        }
-
-        .svc-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 7px;
-            right: 10px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #c8a040;
-        }
-
-        .svc-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            background: #1a1a2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.6rem;
-        }
-
-        .svc-card.selected .svc-icon {
-            background: #c8a040;
-        }
-
-        /* ── Dynamic Section Blocks ── */
-        .dyn-block {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .dyn-block.show {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ── Sketch Type Pills ── */
-        .sketch-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.42rem 0.9rem;
-            border-radius: 20px;
-            border: 1.5px solid #e5e7eb;
-            background: #f9f9f9;
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.18s;
-            user-select: none;
-        }
-
-        .sketch-pill:hover {
-            border-color: #1a1a2e;
-            color: #1a1a2e;
-            background: #f0f0f0;
-        }
-
-        .sketch-pill.active {
-            border-color: #c8a040;
-            background: #fffbf0;
-            color: #92680a;
-            font-weight: 600;
-        }
-
-        .sketch-pill input[type=radio] {
-            display: none;
-        }
-
-        /* ── Drop Zone ── */
-        .drop-zone {
-            border: 2px dashed #d1c4a0;
-            border-radius: 14px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            background: #faf8f3;
-            transition: all 0.25s;
-            position: relative;
-        }
-
-        .drop-zone:hover,
-        .drop-zone.dz-on {
-            border-color: #8a7a50;
-            background: #f5f0e4;
-        }
-
-        .dz-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: #f0ead8;
-            border: 1px solid #d1c4a0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.75rem;
-        }
-
-        /* ── Info Pill Row ── */
-        .info-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .info-row.cols3 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        @media(max-width:600px) {
-
-            .info-row,
-            .info-row.cols3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ── Section Divider ── */
-        .form-divider {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin: 1.5rem 0 1rem;
-        }
-
-        .form-divider span {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #999;
-            white-space: nowrap;
-        }
-
-        .form-divider::before,
-        .form-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        /* ── Removal steps visual ── */
-        .removal-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            background: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 10px;
-        }
-
-        .removal-step-num {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #1a1a2e;
-            color: #c8a040;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        /* reuse .lbl shorthand */
-        .lbl {
-            display: block;
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #777;
-            margin-bottom: 0.4rem;
-        }
-    </style>
-
-    <div class="content-card" style="max-width:720px;">
+    <div class="studio-card" style="max-width: 800px; margin: 0 auto;">
 
         <!-- Header -->
-        <div class="mb-6">
-            <h3 class="font-display text-studio-dark text-xl mb-1">Book an Appointment</h3>
-            <p class="text-studio-muted text-sm">Select a service and fill in the details — our artist will confirm your
-                booking!</p>
+        <div style="margin-bottom: 2rem;">
+            <h3 class="card-title" style="margin-bottom: 0.5rem;">Book an Appointment</h3>
+            <p style="color: var(--studio-text-secondary); font-size: 0.95rem;">Select a service and fill in the details
+                — our artist will confirm your booking!</p>
         </div>
 
         <form method="POST" action="/customer/book" enctype="multipart/form-data" id="bookingForm">
 
-            <!-- ══════════════════════════════════════
-             STEP 1 — SERVICE SELECTOR
-        ══════════════════════════════════════ -->
+            <!-- STEP 1 — SERVICE SELECTOR -->
             <div class="form-divider"><span>Step 1 — Choose Service</span></div>
-            <div style="display:flex;gap:0.75rem;margin-bottom:0.5rem;" class="svc-selector">
-                <!-- Tattoo Making -->
-                <div class="svc-card" onclick="selectService('tattoo',this)" data-svc="tattoo">
-                    <div class="svc-icon"><i class="fa-solid fa-pen-nib" style="color:white;font-size:1rem;"></i></div>
-                    <p style="font-size:0.82rem;font-weight:700;color:#1a1a2e;margin-bottom:0.2rem;">Tattoo Making</p>
-                    <p style="font-size:0.65rem;color:#777;">Custom ink on skin</p>
+            <div class="svc-selector">
+                <div class="svc-card" onclick="selectService('tattoo', this)" data-svc="tattoo">
+                    <div class="svc-icon"><i class="fas fa-pen-nib"></i></div>
+                    <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">Tattoo
+                        Making</p>
+                    <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">Custom ink on skin</p>
                 </div>
-                <!-- Art / Sketching -->
-                <div class="svc-card" onclick="selectService('art',this)" data-svc="art">
-                    <div class="svc-icon"><i class="fa-solid fa-palette" style="color:white;font-size:1rem;"></i></div>
-                    <p style="font-size:0.82rem;font-weight:700;color:#1a1a2e;margin-bottom:0.2rem;">Art / Sketching</p>
-                    <p style="font-size:0.65rem;color:#777;">Painting &amp; illustration</p>
+                <div class="svc-card" onclick="selectService('art', this)" data-svc="art">
+                    <div class="svc-icon"><i class="fas fa-palette"></i></div>
+                    <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">Art /
+                        Sketching</p>
+                    <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">Painting & illustration</p>
                 </div>
-                <!-- Tattoo Removal -->
-                <div class="svc-card" onclick="selectService('removal',this)" data-svc="removal">
-                    <div class="svc-icon"><i class="fa-solid fa-eraser" style="color:white;font-size:1rem;"></i></div>
-                    <p style="font-size:0.82rem;font-weight:700;color:#1a1a2e;margin-bottom:0.2rem;">Tattoo Removal</p>
-                    <p style="font-size:0.65rem;color:#777;">Safe laser removal</p>
+                <div class="svc-card" onclick="selectService('removal', this)" data-svc="removal">
+                    <div class="svc-icon"><i class="fas fa-eraser"></i></div>
+                    <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">Tattoo
+                        Removal</p>
+                    <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">Safe laser removal</p>
                 </div>
             </div>
-            <!-- Hidden service type -->
             <input type="hidden" name="service_type" id="serviceType" value="">
-            <p id="svcErr" style="display:none;color:#c0392b;font-size:0.7rem;margin-bottom:0.5rem;font-weight:500;">⚠
-                Please select a service to continue.</p>
+            <p id="svcErr" class="badge badge-danger" style="display: none; width: 100%; margin-bottom: 1rem;">
+                ⚠ Please select a service to continue.
+            </p>
 
 
-            <!-- ══════════════════════════════════════
-             STEP 2 — COMMON FIELDS
-        ══════════════════════════════════════ -->
+            <!-- STEP 2 — COMMON FIELDS -->
             <div id="commonFields" style="display:none;">
 
-                <div class="form-divider"><span>Step 2 — Artist &amp; Scheduling</span></div>
+                <div class="form-divider"><span>Step 2 — Artist & Scheduling</span></div>
 
-                <!-- Artist — filtered by service -->
-                <div style="margin-bottom:1rem;">
+                <div style="margin-bottom: 1.5rem;">
                     <label class="lbl">Choose Artist</label>
                     <select name="artist_id" id="artistSelect" required>
                         <option value="">Select an artist...</option>
@@ -285,14 +58,12 @@
                         </option>
                         {% endfor %}{% endif %}
                     </select>
-                    <p id="noArtistMsg"
-                        style="display:none;font-size:0.7rem;color:#e53e3e;margin-top:0.35rem;font-weight:500;">
+                    <p id="noArtistMsg" class="badge badge-danger" style="display: none; margin-top: 0.5rem;">
                         ⚠ No artists available for this service right now.
                     </p>
                 </div>
 
-                <!-- Date & Time -->
-                <div class="info-row" style="margin-bottom:1rem;">
+                <div class="info-row">
                     <div>
                         <label class="lbl">Preferred Date</label>
                         <input type="date" name="appointment_date" id="apptDate" required>
@@ -315,22 +86,17 @@
                     </div>
                 </div>
 
-
-                <!-- ══════════════════════════════════════
-                 TATTOO MAKING FIELDS
-            ══════════════════════════════════════ -->
+                <!-- STEP 3 — TATTOO MAKING FIELDS -->
                 <div id="block-tattoo" class="dyn-block">
                     <div class="form-divider"><span>Step 3 — Tattoo Details</span></div>
 
-                    <!-- Concept -->
-                    <div style="margin-bottom:1rem;">
-                        <label class="lbl">Tattoo Concept <span style="color:#e53e3e;">*</span></label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Tattoo Concept <span style="color: #D63031;">*</span></label>
                         <input type="text" name="tattoo_concept" id="tc-tattoo"
-                            placeholder="e.g. Dragon wrapped around forearm, black &amp; grey style">
+                            placeholder="e.g. Dragon wrapped around forearm, black & grey style">
                     </div>
 
-                    <!-- Size & Placement -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
                             <label class="lbl">Tattoo Size</label>
                             <select name="tattoo_size">
@@ -363,13 +129,12 @@
                         </div>
                     </div>
 
-                    <!-- Style & Colour -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
                             <label class="lbl">Tattoo Style</label>
                             <select name="tattoo_style">
                                 <option value="">Select style...</option>
-                                <option>Black &amp; Grey</option>
+                                <option>Black & Grey</option>
                                 <option>Traditional</option>
                                 <option>Neo-Traditional</option>
                                 <option>Realism</option>
@@ -386,7 +151,7 @@
                             <label class="lbl">Colour Preference</label>
                             <select name="colour_preference">
                                 <option value="">Select...</option>
-                                <option value="Black & Grey only">Black &amp; Grey only</option>
+                                <option value="Black & Grey only">Black & Grey only</option>
                                 <option value="Full Color">Full Colour</option>
                                 <option value="Limited Color (2-3 colors)">Limited Colour (2–3 colours)</option>
                                 <option value="Artist's choice">Artist's choice</option>
@@ -394,94 +159,81 @@
                         </div>
                     </div>
 
-                    <!-- Reference image (tattoo) -->
-                    <div style="margin-bottom:1rem;">
-                        <label class="lbl">Reference Image <span
-                                style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa;">(optional — JPG
-                                / PNG, max 5 MB)</span></label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Reference Image (Optional)</label>
                         <div class="drop-zone" id="dz-tattoo" onclick="document.getElementById('ref-tattoo').click()"
                             ondragover="event.preventDefault();this.classList.add('dz-on')"
                             ondragleave="this.classList.remove('dz-on')" ondrop="handleDrop(event,'tattoo')">
                             <div id="dzPh-tattoo">
-                                <div class="dz-icon"><i class="fa-solid fa-image"
-                                        style="color:#8a7a50;font-size:1.1rem;"></i></div>
-                                <p style="font-size:0.8rem;font-weight:600;color:#4a3f28;margin-bottom:0.25rem;">Click
-                                    to upload or drag &amp; drop</p>
-                                <p style="font-size:0.68rem;color:#a09070;">JPG, PNG · Max 5 MB</p>
+                                <div class="dz-icon"><i class="fas fa-image"></i></div>
+                                <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
+                                    Click to upload or drag & drop</p>
+                                <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">JPG, PNG · Max 5 MB
+                                </p>
                             </div>
                             <div id="dzPv-tattoo" style="display:none;">
                                 <img id="dzImg-tattoo" src="" alt=""
-                                    style="max-height:140px;max-width:100%;border-radius:10px;object-fit:contain;border:1px solid #d1c4a0;margin:0 auto;display:block;">
-                                <p id="dzName-tattoo"
-                                    style="font-size:0.7rem;color:#8a7a50;margin-top:0.6rem;font-weight:500;"></p>
-                                <button type="button" onclick="clearDz(event,'tattoo')"
-                                    style="margin-top:0.5rem;background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;border-radius:8px;padding:0.22rem 0.75rem;font-size:0.68rem;font-weight:600;cursor:pointer;"><i
-                                        class="fa-solid fa-trash-can mr-1"></i>Remove</button>
+                                    style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
+                                <p id="dzName-tattoo" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <button type="button" onclick="clearDz(event,'tattoo')" class="btn-studio btn-outline"
+                                    style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
                             </div>
                         </div>
                         <input type="file" id="ref-tattoo" name="reference_image" accept=".jpg,.jpeg,.png"
                             style="display:none;" onchange="previewDz(this,'tattoo')">
-                        <p id="dzErr-tattoo"
-                            style="display:none;color:#c0392b;font-size:0.7rem;margin-top:0.3rem;font-weight:500;"></p>
                     </div>
 
-                    <!-- Additional notes -->
-                    <div>
-                        <label class="lbl">Additional Notes for Artist</label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Additional Notes</label>
                         <textarea name="tattoo_notes" rows="3"
-                            placeholder="Any extra details — skin tone, inspiration, things to avoid, etc."
-                            style="resize:vertical;"></textarea>
+                            placeholder="Any extra details — skin tone, inspiration, things to avoid, etc."></textarea>
                     </div>
                 </div>
                 <!-- END TATTOO BLOCK -->
 
 
-                <!-- ══════════════════════════════════════
-                 ART / SKETCHING FIELDS
-            ══════════════════════════════════════ -->
+                <!-- STEP 3 — ART / SKETCHING FIELDS -->
                 <div id="block-art" class="dyn-block">
-                    <div class="form-divider"><span>Step 3 — Art &amp; Sketching Details</span></div>
+                    <div class="form-divider"><span>Step 3 — Art & Sketching Details</span></div>
 
-                    <!-- Art type pills -->
-                    <div style="margin-bottom:1rem;">
-                        <label class="lbl">Art Type <span style="color:#e53e3e;">*</span></label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Art Type <span style="color: #D63031;">*</span></label>
                         <input type="hidden" name="tattoo_concept" id="tc-art" value="">
-                        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" id="artPills">
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;" id="artPills">
                             <label class="sketch-pill" onclick="setArtType(this,'Neon Painting')">
                                 <input type="radio" name="art_type_radio" value="Neon Painting">
-                                <i class="fa-solid fa-wand-sparkles" style="font-size:0.72rem;"></i> Neon Painting
+                                <i class="fas fa-wand-sparkles"></i> Neon Painting
                             </label>
                             <label class="sketch-pill" onclick="setArtType(this,'Blood Art')">
                                 <input type="radio" name="art_type_radio" value="Blood Art">
-                                <i class="fa-solid fa-droplet" style="font-size:0.72rem;"></i> Blood Art
+                                <i class="fas fa-droplet"></i> Blood Art
                             </label>
                             <label class="sketch-pill" onclick="setArtType(this,'Pencil Sketching')">
                                 <input type="radio" name="art_type_radio" value="Pencil Sketching">
-                                <i class="fa-solid fa-pencil" style="font-size:0.72rem;"></i> Pencil Sketching
+                                <i class="fas fa-pencil-alt"></i> Pencil Sketching
                             </label>
                             <label class="sketch-pill" onclick="setArtType(this,'Watercolor Painting')">
                                 <input type="radio" name="art_type_radio" value="Watercolor Painting">
-                                <i class="fa-solid fa-fill-drip" style="font-size:0.72rem;"></i> Watercolor Painting
+                                <i class="fas fa-fill-drip"></i> Watercolor Painting
                             </label>
                             <label class="sketch-pill" onclick="setArtType(this,'Digital Sketch')">
                                 <input type="radio" name="art_type_radio" value="Digital Sketch">
-                                <i class="fa-solid fa-tablet-screen-button" style="font-size:0.72rem;"></i> Digital
-                                Sketch
+                                <i class="fas fa-tablet-alt"></i> Digital Sketch
                             </label>
                             <label class="sketch-pill" onclick="setArtType(this,'Black & White Sketch')">
                                 <input type="radio" name="art_type_radio" value="Black & White Sketch">
-                                <i class="fa-solid fa-moon" style="font-size:0.72rem;"></i> B&amp;W Sketch
+                                <i class="fas fa-moon"></i> B&W Sketch
                             </label>
                         </div>
-                        <p id="artTypeErr"
-                            style="display:none;color:#c0392b;font-size:0.7rem;margin-top:0.35rem;font-weight:500;">⚠
+                        <p id="artTypeErr" class="badge badge-danger" style="display: none; margin-top: 0.5rem;">⚠
                             Please select an art type.</p>
                     </div>
 
-                    <!-- Art Size & Colour Preference -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
-                            <label class="lbl">Art Size <span style="color:#e53e3e;">*</span></label>
+                            <label class="lbl">Art Size <span style="color: #D63031;">*</span></label>
                             <select name="art_size">
                                 <option value="">Select size...</option>
                                 <option value="A5 (148×210 mm)">A5 — 148 × 210 mm</option>
@@ -499,7 +251,7 @@
                             <select name="art_color_preference">
                                 <option value="">Select...</option>
                                 <option value="Full Color">Full Colour</option>
-                                <option value="Black & White only">Black &amp; White only</option>
+                                <option value="Black & White only">Black & White only</option>
                                 <option value="Pastel tones">Pastel Tones</option>
                                 <option value="Neon / Vibrant">Neon / Vibrant</option>
                                 <option value="Monochrome">Monochrome</option>
@@ -508,82 +260,68 @@
                         </div>
                     </div>
 
-                    <!-- Deadline -->
-                    <div style="margin-bottom:1rem;">
+                    <div style="margin-bottom: 1.5rem;">
                         <label class="lbl">Deadline / Delivery By</label>
                         <input type="date" name="art_deadline" id="artDeadline">
-                        <p style="font-size:0.65rem;color:#aaa;margin-top:0.25rem;">Leave blank if no specific deadline
-                        </p>
+                        <p style="font-size: 0.75rem; color: var(--studio-text-secondary); margin-top: 0.5rem;">Leave
+                            blank if no specific deadline</p>
                     </div>
 
-                    <!-- Reference Image (art) -->
-                    <div style="margin-bottom:1rem;">
-                        <label class="lbl">Reference Image <span
-                                style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa;">(optional — JPG
-                                / PNG, max 5 MB)</span></label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Reference Image (Optional)</label>
                         <div class="drop-zone" id="dz-art" onclick="document.getElementById('ref-art').click()"
                             ondragover="event.preventDefault();this.classList.add('dz-on')"
                             ondragleave="this.classList.remove('dz-on')" ondrop="handleDrop(event,'art')">
                             <div id="dzPh-art">
-                                <div class="dz-icon"><i class="fa-solid fa-image"
-                                        style="color:#8a7a50;font-size:1.1rem;"></i></div>
-                                <p style="font-size:0.8rem;font-weight:600;color:#4a3f28;margin-bottom:0.25rem;">Click
-                                    to upload or drag &amp; drop</p>
-                                <p style="font-size:0.68rem;color:#a09070;">JPG, PNG · Max 5 MB</p>
+                                <div class="dz-icon"><i class="fas fa-image"></i></div>
+                                <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
+                                    Click to upload or drag & drop</p>
+                                <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">JPG, PNG · Max 5 MB
+                                </p>
                             </div>
                             <div id="dzPv-art" style="display:none;">
                                 <img id="dzImg-art" src="" alt=""
-                                    style="max-height:140px;max-width:100%;border-radius:10px;object-fit:contain;border:1px solid #d1c4a0;margin:0 auto;display:block;">
-                                <p id="dzName-art"
-                                    style="font-size:0.7rem;color:#8a7a50;margin-top:0.6rem;font-weight:500;"></p>
-                                <button type="button" onclick="clearDz(event,'art')"
-                                    style="margin-top:0.5rem;background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;border-radius:8px;padding:0.22rem 0.75rem;font-size:0.68rem;font-weight:600;cursor:pointer;"><i
-                                        class="fa-solid fa-trash-can mr-1"></i>Remove</button>
+                                    style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
+                                <p id="dzName-art" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <button type="button" onclick="clearDz(event,'art')" class="btn-studio btn-outline"
+                                    style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
                             </div>
                         </div>
                         <input type="file" id="ref-art" name="reference_image" accept=".jpg,.jpeg,.png"
                             style="display:none;" onchange="previewDz(this,'art')">
-                        <p id="dzErr-art"
-                            style="display:none;color:#c0392b;font-size:0.7rem;margin-top:0.3rem;font-weight:500;"></p>
                     </div>
 
-                    <!-- Additional Notes -->
-                    <div>
-                        <label class="lbl">Additional Notes for Artist</label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Additional Notes</label>
                         <textarea name="art_notes" rows="3"
-                            placeholder="Describe your vision — mood, theme, subjects, any inspirations or specific elements to include..."
-                            style="resize:vertical;"></textarea>
+                            placeholder="Describe your vision — mood, theme, subjects, any inspirations or specific elements to include..."></textarea>
                     </div>
                 </div>
-                <!-- END ART BLOCK -->
 
 
-                <!-- ══════════════════════════════════════
-                 TATTOO REMOVAL FIELDS
-            ══════════════════════════════════════ -->
+                <!-- STEP 3 — TATTOO REMOVAL FIELDS -->
                 <div id="block-removal" class="dyn-block">
                     <div class="form-divider"><span>Step 3 — Removal Details</span></div>
 
-                    <!-- Info box -->
                     <div
-                        style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:0.85rem 1rem;display:flex;gap:0.75rem;margin-bottom:1.25rem;">
-                        <i class="fa-solid fa-circle-info" style="color:#3b82f6;margin-top:1px;flex-shrink:0;"></i>
+                        style="background: rgba(72, 52, 212, 0.05); border-radius: 12px; padding: 1.25rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        <i class="fas fa-circle-info" style="color: var(--studio-indigo); margin-top: 0.2rem;"></i>
                         <div>
-                            <p style="font-size:0.75rem;font-weight:600;color:#1e40af;margin-bottom:0.2rem;">About
-                                Tattoo Removal</p>
-                            <p style="font-size:0.68rem;color:#3b82f6;line-height:1.5;">Laser removal typically requires
-                                multiple sessions. Our specialist will assess your tattoo at the consultation and
-                                recommend the best removal plan.</p>
+                            <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
+                                About Tattoo Removal</p>
+                            <p style="font-size: 0.85rem; color: var(--studio-text-secondary); line-height: 1.5;">Laser
+                                removal typically requires multiple sessions. Our specialist will assess your tattoo at
+                                the consultation and recommend the best removal plan.</p>
                         </div>
                     </div>
 
-                    <!-- Hidden concept field for removal -->
                     <input type="hidden" name="tattoo_concept" id="tc-removal" value="Tattoo Removal">
 
-                    <!-- Size & Colour of existing tattoo -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
-                            <label class="lbl">Tattoo Size <span style="color:#e53e3e;">*</span></label>
+                            <label class="lbl">Tattoo Size <span style="color: #D63031;">*</span></label>
                             <select name="removal_tattoo_size">
                                 <option value="">Select size...</option>
                                 <option value="Very Small (coin-sized)">Very Small — coin-sized</option>
@@ -594,21 +332,20 @@
                             </select>
                         </div>
                         <div>
-                            <label class="lbl">Tattoo Colour <span style="color:#e53e3e;">*</span></label>
+                            <label class="lbl">Tattoo Colour <span style="color: #D63031;">*</span></label>
                             <select name="removal_tattoo_color">
                                 <option value="">Select...</option>
                                 <option value="Black only">Black Only</option>
-                                <option value="Black & Grey">Black &amp; Grey</option>
+                                <option value="Black & Grey">Black & Grey</option>
                                 <option value="Colored (single color)">Coloured — Single Colour</option>
                                 <option value="Colored (multi-color)">Coloured — Multi Colour</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Body Location & Age of tattoo -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
-                            <label class="lbl">Body Location <span style="color:#e53e3e;">*</span></label>
+                            <label class="lbl">Body Location <span style="color: #D63031;">*</span></label>
                             <select name="removal_body_location">
                                 <option value="">Select location...</option>
                                 <option>Forearm</option>
@@ -638,8 +375,7 @@
                         </div>
                     </div>
 
-                    <!-- Sessions & Skin Sensitivity -->
-                    <div class="info-row" style="margin-bottom:1rem;">
+                    <div class="info-row">
                         <div>
                             <label class="lbl">Expected Sessions</label>
                             <select name="removal_sessions">
@@ -664,130 +400,106 @@
                         </div>
                     </div>
 
-                    <!-- Reference Image (removal) -->
-                    <div style="margin-bottom:1rem;">
-                        <label class="lbl">Photo of Tattoo to be Removed <span style="color:#e53e3e;">*</span> <span
-                                style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa;">JPG / PNG, max
-                                5 MB</span></label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Photo of Tattoo to be Removed <span style="color: #D63031;">*</span></label>
                         <div class="drop-zone" id="dz-removal" onclick="document.getElementById('ref-removal').click()"
                             ondragover="event.preventDefault();this.classList.add('dz-on')"
                             ondragleave="this.classList.remove('dz-on')" ondrop="handleDrop(event,'removal')">
                             <div id="dzPh-removal">
-                                <div class="dz-icon"><i class="fa-solid fa-camera"
-                                        style="color:#8a7a50;font-size:1.1rem;"></i></div>
-                                <p style="font-size:0.8rem;font-weight:600;color:#4a3f28;margin-bottom:0.25rem;">Upload
-                                    a clear photo of the tattoo</p>
-                                <p style="font-size:0.68rem;color:#a09070;">JPG, PNG · Max 5 MB</p>
+                                <div class="dz-icon"><i class="fas fa-camera"></i></div>
+                                <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
+                                    Upload a clear photo</p>
+                                <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">JPG, PNG · Max 5 MB
+                                </p>
                             </div>
                             <div id="dzPv-removal" style="display:none;">
                                 <img id="dzImg-removal" src="" alt=""
-                                    style="max-height:140px;max-width:100%;border-radius:10px;object-fit:contain;border:1px solid #d1c4a0;margin:0 auto;display:block;">
-                                <p id="dzName-removal"
-                                    style="font-size:0.7rem;color:#8a7a50;margin-top:0.6rem;font-weight:500;"></p>
-                                <button type="button" onclick="clearDz(event,'removal')"
-                                    style="margin-top:0.5rem;background:#fde8e8;color:#c0392b;border:1px solid #f5c6c6;border-radius:8px;padding:0.22rem 0.75rem;font-size:0.68rem;font-weight:600;cursor:pointer;"><i
-                                        class="fa-solid fa-trash-can mr-1"></i>Remove</button>
+                                    style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
+                                <p id="dzName-removal" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <button type="button" onclick="clearDz(event,'removal')" class="btn-studio btn-outline"
+                                    style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
                             </div>
                         </div>
                         <input type="file" id="ref-removal" name="reference_image" accept=".jpg,.jpeg,.png"
                             style="display:none;" onchange="previewDz(this,'removal')">
-                        <p id="dzErr-removal"
-                            style="display:none;color:#c0392b;font-size:0.7rem;margin-top:0.3rem;font-weight:500;"></p>
                     </div>
 
-                    <!-- Skin sensitivity notes -->
-                    <div>
-                        <label class="lbl">Additional Details / Medical Notes</label>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="lbl">Medical Notes</label>
                         <textarea name="removal_notes" rows="3"
-                            placeholder="Any allergies, past laser treatments, medications, skin conditions or anything the specialist should know..."
-                            style="resize:vertical;"></textarea>
+                            placeholder="Any allergies, medications, or skin conditions..."></textarea>
                     </div>
                 </div>
                 <!-- END REMOVAL BLOCK -->
 
 
-                <!-- ══════════════════════════════════════
-                 STEP 4 — SUBMIT
-            ══════════════════════════════════════ -->
-                <div class="form-divider"><span>Step 4 — Confirm &amp; Submit</span></div>
+                <!-- STEP 4 — SUBMIT -->
+                <div class="form-divider"><span>Step 4 — Confirm & Submit</span></div>
 
-                <!-- Dynamic tip -->
-                <div id="tipTattoo" class="tip-box" style="display:none;margin-bottom:1rem;">
-                    <i class="fa-solid fa-circle-info text-green-500 mt-0.5 flex-shrink:0;"></i>
+                <div id="tipTattoo" class="tip-box" style="display: none; margin-bottom: 1.5rem;">
+                    <i class="fas fa-circle-info"></i>
                     <div>
-                        <p class="text-green-700 text-xs font-semibold mb-1">What happens next?</p>
-                        <p class="text-green-600 text-xs leading-relaxed">Your artist will review your concept and
+                        <p style="font-weight: 700; margin-bottom: 0.25rem;">What happens next?</p>
+                        <p style="font-size: 0.85rem; line-height: 1.5;">Your artist will review your concept and
                             reference image, then approve or suggest changes. You'll see the status update in My
                             Appointments!</p>
                     </div>
                 </div>
-                <div id="tipArt" class="tip-box" style="display:none;margin-bottom:1rem;">
-                    <i class="fa-solid fa-circle-info text-green-500 mt-0.5 flex-shrink:0;"></i>
+
+                <div id="tipArt" class="tip-box" style="display: none; margin-bottom: 1.5rem;">
+                    <i class="fas fa-circle-info"></i>
                     <div>
-                        <p class="text-green-700 text-xs font-semibold mb-1">What happens next?</p>
-                        <p class="text-green-600 text-xs leading-relaxed">Your artist will review the art type, size,
-                            and references, then confirm the booking and estimated delivery timeline.</p>
-                    </div>
-                </div>
-                <div id="tipRemoval"
-                    style="display:none;margin-bottom:1rem;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:1rem;display:none;gap:0.75rem;align-items:flex-start;">
-                    <i class="fa-solid fa-circle-info" style="color:#3b82f6;flex-shrink:0;margin-top:1px;"></i>
-                    <div>
-                        <p style="font-size:0.75rem;font-weight:600;color:#1e40af;margin-bottom:0.2rem;">What happens
-                            next?</p>
-                        <p style="font-size:0.68rem;color:#3b82f6;line-height:1.5;">Our specialist will review your
-                            tattoo photo and details, then schedule a consultation to plan the removal sessions.</p>
+                        <p style="font-weight: 700; margin-bottom: 0.25rem;">What happens next?</p>
+                        <p style="font-size: 0.85rem; line-height: 1.5;">Your artist will review the art type, size, and
+                            references, then confirm the booking and estimated delivery timeline.</p>
                     </div>
                 </div>
 
-                <!-- Submit button -->
-                <button type="button" onclick="submitBooking()" id="submitBtn"
-                    class="w-full py-3 bg-studio-dark text-white font-semibold text-sm uppercase tracking-widest rounded-xl hover:opacity-80 transition-all">
-                    <i class="fa-solid fa-calendar-plus mr-2"></i>Submit Booking Request
+                <div id="tipRemoval" class="tip-box" style="display: none; margin-bottom: 1.5rem;">
+                    <i class="fas fa-circle-info"></i>
+                    <div>
+                        <p style="font-weight: 700; margin-bottom: 0.25rem;">What happens next?</p>
+                        <p style="font-size: 0.85rem; line-height: 1.5;">Our specialist will review your tattoo photo
+                            and details, then schedule a consultation to plan the removal sessions.</p>
+                    </div>
+                </div>
+
+                <button type="button" onclick="submitBooking()" id="submitBtn" class="btn-studio"
+                    style="width: 100%; padding: 1rem; justify-content: center;">
+                    <i class="fas fa-calendar-check mr-2"></i> Submit Booking Request
                 </button>
 
-            </div>
-            <!-- END COMMON FIELDS -->
+            </div><!-- /commonFields -->
 
         </form>
-    </div><!-- /content-card -->
+    </div><!-- /studio-card -->
 
-
-    <!-- ══════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════ -->
     <script>
         (function () {
-
             let currentService = '';
 
-            /* ── Service selector ── */
             window.selectService = function (svc, card) {
                 currentService = svc;
                 document.getElementById('serviceType').value = svc;
 
-                // Highlight selected card
                 document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
 
-                // Show common fields
                 document.getElementById('commonFields').style.display = 'block';
                 document.getElementById('svcErr').style.display = 'none';
 
-                // Show/hide dynamic blocks
                 ['tattoo', 'art', 'removal'].forEach(s => {
                     const b = document.getElementById('block-' + s);
                     if (s === svc) { b.classList.add('show'); }
                     else { b.classList.remove('show'); }
                 });
 
-                // Show correct tip
                 document.getElementById('tipTattoo').style.display = svc === 'tattoo' ? 'flex' : 'none';
                 document.getElementById('tipArt').style.display = svc === 'art' ? 'flex' : 'none';
-                const tr = document.getElementById('tipRemoval');
-                tr.style.display = svc === 'removal' ? 'flex' : 'none';
+                document.getElementById('tipRemoval').style.display = svc === 'removal' ? 'flex' : 'none';
 
-                // ── Filter artist dropdown by service specialisation ──
                 const svcKeywords = {
                     tattoo: ['tattoo', 'ink', 'body art', 'piercing'],
                     art: ['art', 'sketch', 'paint', 'illustrat', 'digital', 'watercolor', 'watercolour', 'neon', 'drawing'],
@@ -805,10 +517,8 @@
                     let match = false;
 
                     if (svc === 'art') {
-                        // Only Priya Sharma for Art/Sketching
                         match = name.includes('priya sharma');
                     } else {
-                        // Keyword-based filtering for other services
                         match = keywords.some(kw => spec.includes(kw));
                     }
 
@@ -817,31 +527,20 @@
                     if (match) visible++;
                 });
 
-                // Reset if chosen artist is now disabled
-                const chosen = sel.options[sel.selectedIndex];
-                if (chosen && chosen.value && chosen.disabled) sel.value = '';
-
-                // Warning if no artists match
+                if (sel.options[sel.selectedIndex]?.disabled) sel.value = '';
                 document.getElementById('noArtistMsg').style.display = visible === 0 ? 'block' : 'none';
-
-                // Auto-select if only 1 artist matches
                 if (visible === 1) {
                     opts.forEach(opt => { if (opt.value && !opt.disabled) sel.value = opt.value; });
                 }
 
-                // Set date min
                 const d = document.getElementById('apptDate');
                 if (d) d.min = new Date().toISOString().split('T')[0];
-
-                // Set deadline min
                 const dl = document.getElementById('artDeadline');
                 if (dl) dl.min = new Date().toISOString().split('T')[0];
 
-                // Scroll to form
                 document.getElementById('commonFields').scrollIntoView({ behavior: 'smooth', block: 'start' });
             };
 
-            /* ── Art type pill selection ── */
             window.setArtType = function (lbl, val) {
                 document.querySelectorAll('.sketch-pill').forEach(p => p.classList.remove('active'));
                 lbl.classList.add('active');
@@ -849,42 +548,33 @@
                 document.getElementById('artTypeErr').style.display = 'none';
             };
 
-            /* ── Drop zone handlers ── */
             window.handleDrop = function (e, id) {
                 e.preventDefault();
                 document.getElementById('dz-' + id).classList.remove('dz-on');
                 const f = e.dataTransfer.files[0];
-                if (!f) return;
-                const dt = new DataTransfer(); dt.items.add(f);
-                document.getElementById('ref-' + id).files = dt.files;
-                validateAndPreview(f, id);
+                if (f) validateAndPreview(f, id);
             };
 
             window.previewDz = function (input, id) {
-                if (input.files && input.files[0]) validateAndPreview(input.files[0], id);
+                if (input.files?.[0]) validateAndPreview(input.files[0], id);
             };
 
             function validateAndPreview(f, id) {
-                const err = document.getElementById('dzErr-' + id);
-                err.style.display = 'none';
-                if (!['image/jpeg', 'image/jpg', 'image/png'].includes(f.type)) {
-                    err.textContent = '⚠ Only JPG and PNG files are allowed.';
-                    err.style.display = 'block';
-                    document.getElementById('ref-' + id).value = '';
-                    return;
-                }
+                const dzImg = document.getElementById('dzImg-' + id);
+                const dzName = document.getElementById('dzName-' + id);
+                const dzPh = document.getElementById('dzPh-' + id);
+                const dzPv = document.getElementById('dzPv-' + id);
+
                 if (f.size > 5 * 1024 * 1024) {
-                    err.textContent = '⚠ File must be under 5 MB.';
-                    err.style.display = 'block';
-                    document.getElementById('ref-' + id).value = '';
+                    alert('File too large (max 5MB)');
                     return;
                 }
                 const r = new FileReader();
                 r.onload = ev => {
-                    document.getElementById('dzImg-' + id).src = ev.target.result;
-                    document.getElementById('dzName-' + id).textContent = '📎 ' + f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)';
-                    document.getElementById('dzPh-' + id).style.display = 'none';
-                    document.getElementById('dzPv-' + id).style.display = 'block';
+                    dzImg.src = ev.target.result;
+                    dzName.textContent = f.name;
+                    dzPh.style.display = 'none';
+                    dzPv.style.display = 'block';
                 };
                 r.readAsDataURL(f);
             }
@@ -895,42 +585,33 @@
                 document.getElementById('dzImg-' + id).src = '';
                 document.getElementById('dzPh-' + id).style.display = 'block';
                 document.getElementById('dzPv-' + id).style.display = 'none';
-                document.getElementById('dzErr-' + id).style.display = 'none';
             };
 
-            /* ── Form submit validation ── */
             window.submitBooking = function () {
-                // Must pick a service
-                if (!currentService) {
+                const form = document.getElementById('bookingForm');
+                const btn = document.getElementById('submitBtn');
+                const svc = document.getElementById('serviceType').value;
+
+                if (!svc) {
                     document.getElementById('svcErr').style.display = 'block';
-                    document.querySelector('.svc-selector').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     return;
                 }
 
-                // Art type pill required
-                if (currentService === 'art') {
-                    if (!document.getElementById('tc-art').value) {
-                        document.getElementById('artTypeErr').style.display = 'block';
-                        document.getElementById('artTypeErr').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        return;
-                    }
+                if (svc === 'art' && !document.getElementById('tc-art').value) {
+                    document.getElementById('artTypeErr').style.display = 'block';
+                    return;
                 }
 
-                // Sync hidden concept field for tattoo
-                if (currentService === 'tattoo') {
-                    const c = document.querySelector('[name="tattoo_concept"]');
-                    if (c && !c.value.trim()) {
-                        c.focus(); c.style.borderColor = '#e53e3e';
-                        c.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        return;
-                    }
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
                 }
 
-                // All good — submit
-                document.getElementById('bookingForm').submit();
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                form.submit();
             };
-
         })();
     </script>
-
 </div><!-- /sec-book -->

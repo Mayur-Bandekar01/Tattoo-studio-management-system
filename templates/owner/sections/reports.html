@@ -1,180 +1,337 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER REPORTS
-     File: templates/owner/sections/reports.html
-═══════════════════════════════════════ -->
-<div class="grid md:grid-cols-2 gap-8 mb-10">
-    <!-- Yield Analytics -->
-    <div class="content-card">
-        <div class="flex items-center gap-4 mb-10">
-            <div
-                class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
-                <i class="fa-solid fa-chart-line text-xl"></i>
-            </div>
-            <div>
-                <h4 class="font-display text-studio-text text-lg uppercase tracking-wider">Yield Analytics</h4>
-                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Financial performance
-                    metrics</p>
-            </div>
-        </div>
+     Refactored: Vanilla CSS Shell + Premium Analytics
+     ═══════════════════════════════════════ -->
 
-        <div class="space-y-4">
-            <div
-                class="flex justify-between items-center p-4 bg-white/5 border border-studio-border group hover:border-studio-gold transition-all">
-                <span class="text-studio-muted text-[10px] font-black uppercase tracking-widest">Total Gross
-                    Yield</span>
-                <span class="text-studio-text text-lg font-bold">₹{{ total_revenue | default(0) }}</span>
-            </div>
-            <div
-                class="flex justify-between items-center p-4 bg-green-500/5 border border-green-500/20 group hover:border-green-500/50 transition-all">
-                <span class="text-green-400 text-[10px] font-black uppercase tracking-widest">Verified
-                    Settlements</span>
-                <span class="text-green-400 text-lg font-bold">₹{{ paid_revenue | default(0) }}</span>
-            </div>
-            <div
-                class="flex justify-between items-center p-4 bg-orange-500/5 border border-orange-500/20 group hover:border-orange-500/50 transition-all">
-                <span class="text-orange-400 text-[10px] font-black uppercase tracking-widest">Awaiting Clearance</span>
-                <span class="text-orange-400 text-lg font-bold">₹{{ pending_revenue | default(0) }}</span>
-            </div>
-            <div class="flex justify-between items-center p-4 bg-studio-card border border-studio-border">
-                <span class="text-studio-muted text-[10px] font-black uppercase tracking-widest">Document Count</span>
-                <span class="text-studio-text text-lg font-bold">{{ total_invoices | default(0) }}</span>
-            </div>
-        </div>
+<style>
+    /* --- Report Specific Enhancements --- */
+    .ranking-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .ranking-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: #FAFBFF;
+        border: 1px solid var(--studio-border);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .ranking-item:hover {
+        transform: translateX(5px);
+        border-color: var(--studio-indigo);
+    }
+
+    .rank-num {
+        width: 24px;
+        height: 24px;
+        background: var(--studio-border);
+        color: var(--studio-text-secondary);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 900;
+        margin-right: 1rem;
+    }
+
+    .rank-num.active {
+        background: var(--studio-indigo);
+        color: #FFF;
+        box-shadow: 0 4px 10px rgba(72, 52, 212, 0.3);
+    }
+
+    .analytics-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #F1F5F9;
+        padding: 5px;
+        border-radius: 12px;
+    }
+
+    .filter-btn {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        background: transparent;
+        color: var(--studio-text-secondary);
+    }
+
+    .filter-btn.active {
+        background: #FFF;
+        color: var(--studio-indigo);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    #monthSelect {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        border: 1px solid var(--studio-border);
+        background: #FFF;
+        color: var(--studio-text-primary);
+        cursor: pointer;
+        display: none;
+    }
+</style>
+
+<div class="summary-grid">
+    <div class="summary-card">
+        <span class="card-label">Global Revenue</span>
+        <div class="card-value" id="disp-total-rev">₹0</div>
+        <div class="card-trend trend-up"><i class="fas fa-chart-line"></i> Lifetime Yield</div>
     </div>
+    <div class="summary-card">
+        <span class="card-label">Total Sessions</span>
+        <div class="card-value" id="disp-total-appts">0</div>
+        <div class="card-trend trend-up"><i class="fas fa-calendar-check"></i> Processed</div>
+    </div>
+    <div class="summary-card">
+        <span class="card-label">Top Performer</span>
+        <div class="card-value" style="font-size: 1.1rem; margin: 5px 0;" id="disp-top-artist">Artist</div>
+        <div class="card-trend trend-up" style="color: var(--studio-indigo);" id="disp-top-stat">0 Sessions</div>
+    </div>
+</div>
 
-    <!-- Operational Matrix -->
-    <div class="content-card">
-        <div class="flex items-center gap-4 mb-10">
-            <div
-                class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                <i class="fa-solid fa-microchip text-xl"></i>
-            </div>
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+
+    <!-- Main Revenue Analytics -->
+    <div class="studio-card">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h4 class="font-display text-studio-text text-lg uppercase tracking-wider">Operations Matrix</h4>
-                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Session status
-                    distribution</p>
+                <h3 class="studio-title" style="margin: 0;">Financial Performance</h3>
+                <p
+                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                    Revenue Flow Control</p>
             </div>
-        </div>
 
-        <div class="space-y-6">
-            {% set statuses =
-            [('Done','badge-done',done_count),('Approved','badge-approved',approved_count),('Pending','badge-pending',pending_count),('Rejected','badge-rejected',rejected_count)]
-            %}
-            {% for label, badge, count in statuses %}
-            <div class="group">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-studio-muted text-[10px] font-black uppercase tracking-[0.2em]">{{ label }}</span>
-                    <span class="badge {{ badge }}">{{ count | default(0) }}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <select id="monthSelect" onchange="dispatchAction('SET_MONTH', this.value)"></select>
+                <div class="analytics-toolbar">
+                    <button id="btn-week" class="filter-btn"
+                        onclick="dispatchAction('SET_VIEW', 'weekly')">Week</button>
+                    <button id="btn-month" class="filter-btn"
+                        onclick="dispatchAction('SET_VIEW', 'monthly')">Month</button>
+                    <button id="btn-year" class="filter-btn"
+                        onclick="dispatchAction('SET_VIEW', 'yearly')">Year</button>
                 </div>
-                <div class="progress-bar">
-                    {% set pct = ((count | default(0)) / total_appointments * 100)|int if total_appointments and
-                    total_appointments > 0 else 0 %}
-                    <div class="progress-fill {% if label == 'Done' %}bg-blue-400{% elif label == 'Approved' %}bg-green-400{% elif label == 'Pending' %}bg-studio-gold{% else %}bg-red-500{% endif %}"
-                        data-progress="{{ pct }}"></div>
+            </div>
+        </div>
+
+        <div style="height: 350px; position: relative;">
+            <canvas id="revenueChartCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Artist Distribution -->
+    <div class="studio-card">
+        <h3 class="studio-title" style="margin-bottom: 0.5rem;">Artist Benchmarks</h3>
+        <p
+            style="color: var(--studio-text-secondary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem;">
+            Performance Distribution</p>
+
+        <div style="height: 250px; margin-bottom: 2rem;">
+            <canvas id="artistChartCanvas"></canvas>
+        </div>
+
+        <div class="ranking-list" id="artistRankingList">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- ════════════ ANALYTICS STATE ENGINE ════════════ -->
+<script id="reports-raw-data" type="application/json">
+{{ {
+    "daily_revenue": (daily_revenue or []),
+    "total_revenue": (total_revenue | default(0)),
+    "total_appointments": (total_appointments | default(0)),
+    "artist_performance": (artist_performance or [])
+} | tojson | safe }}
+</script>
+
+<script>
+    (function () {
+        const rawDataElement = document.getElementById('reports-raw-data');
+        if (!rawDataElement) return;
+
+        const raw = JSON.parse(rawDataElement.textContent);
+
+        let state = {
+            view: 'monthly',
+            selectedMonth: '', // YYYY-MM
+            revenueChart: null,
+            artistChart: null
+        };
+
+        // --- Data Aggregation Logic ---
+        function getRevenueData(view, selectedMonth) {
+            const dataMap = {};
+            raw.daily_revenue.forEach(d => { dataMap[d.date_key] = parseFloat(d.total_revenue) || 0; });
+
+            const today = new Date();
+            let results = [];
+
+            if (view === 'weekly') {
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(today.getDate() - i);
+                    const key = d.toISOString().split('T')[0];
+                    results.push({ label: d.toLocaleString('en-US', { weekday: 'short' }), val: dataMap[key] || 0 });
+                }
+            } else if (view === 'monthly') {
+                const target = selectedMonth || today.toISOString().substring(0, 7);
+                const [y, m] = target.split('-').map(Number);
+                const days = new Date(y, m, 0).getDate();
+                for (let i = 1; i <= days; i++) {
+                    const key = `${y}-${String(m).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    results.push({ label: `${new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'short' })} ${i}`, val: dataMap[key] || 0 });
+                }
+            } else {
+                const monthlySum = {};
+                raw.daily_revenue.forEach(d => {
+                    const mk = d.date_key.substring(0, 7);
+                    if (!monthlySum[mk]) monthlySum[mk] = { label: new Date(d.date_key).toLocaleString('en-US', { month: 'short', year: '2-digit' }), val: 0 };
+                    monthlySum[mk].val += parseFloat(d.total_revenue) || 0;
+                });
+                results = Object.values(monthlySum);
+            }
+
+            return { labels: results.map(r => r.label), values: results.map(r => r.val) };
+        }
+
+        // --- State Dispatcher ---
+        window.dispatchAction = function (type, payload) {
+            if (type === 'SET_VIEW') state.view = payload;
+            if (type === 'SET_MONTH') { state.selectedMonth = payload; state.view = 'monthly'; }
+            useEffect();
+        };
+
+        // --- Side Effects & UI Sync ---
+        function useEffect() {
+            // Sync Buttons
+            document.getElementById('btn-week').classList.toggle('active', state.view === 'weekly');
+            document.getElementById('btn-month').classList.toggle('active', state.view === 'monthly');
+            document.getElementById('btn-year').classList.toggle('active', state.view === 'yearly');
+
+            // Sync Select
+            const mSelect = document.getElementById('monthSelect');
+            mSelect.style.display = (state.view === 'monthly') ? 'block' : 'none';
+            if (state.view === 'monthly' && !mSelect.options.length) populateMonths();
+
+            // Update Summary Row
+            document.getElementById('disp-total-rev').textContent = `₹${raw.total_revenue.toLocaleString('en-IN')}`;
+            document.getElementById('disp-total-appts').textContent = raw.total_appointments;
+
+            renderCharts();
+            updateRankings();
+        }
+
+        function populateMonths() {
+            const select = document.getElementById('monthSelect');
+            const months = [...new Set(raw.daily_revenue.map(d => d.date_key.substring(0, 7)))];
+            if (!months.includes(new Date().toISOString().substring(0, 7))) months.push(new Date().toISOString().substring(0, 7));
+
+            const sorted = months.sort().reverse();
+            select.innerHTML = sorted.map(m => {
+                const [y, mm] = m.split('-');
+                const label = new Date(y, mm - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+                return `<option value="${m}" ${m === state.selectedMonth ? 'selected' : ''}>${label}</option>`;
+            }).join('');
+
+            if (!state.selectedMonth) state.selectedMonth = sorted[0];
+        }
+
+        function renderCharts() {
+            // 1. Revenue Chart
+            const revCtx = document.getElementById('revenueChartCanvas').getContext('2d');
+            const revData = getRevenueData(state.view, state.selectedMonth);
+            if (state.revenueChart) state.revenueChart.destroy();
+            state.revenueChart = new Chart(revCtx, {
+                type: 'bar',
+                data: {
+                    labels: revData.labels,
+                    datasets: [{
+                        data: revData.values,
+                        backgroundColor: '#4834D4',
+                        borderRadius: 8,
+                        maxBarThickness: 32
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 600 }, color: '#94A3B8' } },
+                        y: { border: { display: false }, grid: { color: '#F1F5F9' }, ticks: { callback: v => '₹' + (v >= 1000 ? v / 1000 + 'k' : v) } }
+                    }
+                }
+            });
+
+            // 2. Artist Distribution Chart
+            const artCtx = document.getElementById('artistChartCanvas').getContext('2d');
+            const sorted = [...raw.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
+            if (state.artistChart) state.artistChart.destroy();
+            state.artistChart = new Chart(artCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: sorted.map(a => a.artist_name),
+                    datasets: [{
+                        data: sorted.map(a => a.done_appts),
+                        backgroundColor: ['#4834D4', '#22C55E', '#F59E0B', '#3B82F6', '#EF4444'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15, font: { size: 10, weight: 700 } } }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function updateRankings() {
+            const list = document.getElementById('artistRankingList');
+            const sorted = [...raw.artist_performance].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
+
+            if (sorted.length > 0) {
+                document.getElementById('disp-top-artist').textContent = sorted[0].artist_name;
+                document.getElementById('disp-top-stat').textContent = `${sorted[0].done_appts} Sessions Met`;
+            }
+
+            list.innerHTML = sorted.map((a, i) => `
+            <div class="ranking-item">
+                <div class="rank-num ${i === 0 ? 'active' : ''}">${i + 1}</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 800; color: var(--studio-text-primary); font-size: 0.85rem;">${a.artist_name}</div>
+                    <div style="font-size: 0.65rem; color: var(--studio-text-secondary); font-weight: 700; text-transform: uppercase;">${a.specialisation || 'Resident Artist'}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 900; color: var(--studio-indigo); font-size: 0.85rem;">₹${(a.total_revenue || 0).toLocaleString()}</div>
+                    <div style="font-size: 0.6rem; color: #22c55e; font-weight: 800;">${a.done_appts} Done</div>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
+        `).join('');
+        }
 
-<!-- Artist Efficiency Ledger -->
-<div class="content-card mb-10">
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                <i class="fa-solid fa-users-gear text-xl"></i>
-            </div>
-            <div>
-                <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Efficiency Ledger</h3>
-                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Individual artist
-                    performance analytics</p>
-            </div>
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table>
-            <thead>
-                <tr>
-                    <th>Identity</th>
-                    <th>Discipline</th>
-                    <th>Session Count</th>
-                    <th>Verified</th>
-                    <th>Awaiting</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if artist_performance %}
-                {% for ap in artist_performance %}
-                <tr class="group">
-                    <td class="font-bold text-studio-text uppercase tracking-wide">{{ ap.artist_name }}</td>
-                    <td>
-                        <span
-                            class="px-2 py-1 bg-studio-gold/10 border border-studio-gold/20 text-studio-gold text-[10px] font-black uppercase tracking-widest">{{
-                            ap.specialisation }}</span>
-                    </td>
-                    <td class="text-studio-text font-mono font-bold">{{ ap.total_appts | default(0) }}</td>
-                    <td class="text-green-400 font-bold font-mono">{{ ap.done_appts | default(0) }}</td>
-                    <td class="text-orange-400 font-bold font-mono">{{ ap.pending_appts | default(0) }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="5" class="text-center text-studio-muted py-12">
-                        <i class="fa-solid fa-user-slash text-4xl mb-4 block opacity-20"></i>
-                        No performance data recorded.
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Settlement Protocols -->
-<div class="content-card">
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 bg-studio-gold/10 border border-studio-gold/20 flex items-center justify-center text-studio-gold">
-                <i class="fa-solid fa-receipt text-xl"></i>
-            </div>
-            <div>
-                <h3 class="font-display text-studio-text text-xl uppercase tracking-wider">Settlement Protocols</h3>
-                <p class="text-studio-muted text-[10px] uppercase tracking-[0.2em] font-black">Distribution of payment
-                    methods</p>
-            </div>
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table>
-            <thead>
-                <tr>
-                    <th>Protocol Identity</th>
-                    <th>Usage Frequency</th>
-                    <th>Total Valuation</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if payment_methods %}
-                {% for pm in payment_methods %}
-                <tr class="group">
-                    <td class="font-bold text-studio-text uppercase tracking-widest text-xs">{{ pm.payment_method }}
-                    </td>
-                    <td class="text-studio-gold font-black font-mono">{{ pm.count }}</td>
-                    <td class="text-green-400 font-bold text-lg">₹{{ pm.total }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="3" class="text-center text-studio-muted py-12">
-                        <i class="fa-solid fa-credit-card text-4xl mb-4 block opacity-20"></i>
-                        No protocol usage data available.
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
+        // --- Init ---
+        useEffect();
+    })();
+</script>

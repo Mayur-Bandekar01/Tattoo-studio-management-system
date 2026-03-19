@@ -1,24 +1,23 @@
-<!-- ════════ SESSION HISTORY ════════ -->
 <div id="sec-history" class="section">
-    <div class="mb-8">
-        <h2 class="text-xl font-bold" style="color: var(--text);">Archive & History</h2>
-        <p class="text-sm text-studio-muted mt-1">A comprehensive record of all your completed artistic sessions</p>
+    <div style="margin-bottom: 2.5rem;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Archive &
+            History</h2>
+        <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">A comprehensive record of all your completed
+            artistic sessions</p>
     </div>
 
-    <div class="card" style="background: #FFFFFF; border: 1px solid #E9ECEF; border-radius: 24px;">
-        <div class="card-head" style="background: #F8F9FA; border-bottom: 1px solid #E9ECEF;">
-            <h3 class="text-sm font-bold tracking-wide" style="color: #2F3640;">COMPLETED WORK LOG</h3>
-        </div>
-        <div class="tbl-wrap">
-            <table class="tbl">
+    <div class="studio-card">
+        <h3 class="card-title" style="margin-bottom: 2rem;">COMPLETED WORK LOG</h3>
+        <div class="studio-table-container">
+            <table class="studio-table">
                 <thead>
                     <tr>
-                        <th style="width: 80px;">Ref ID</th>
+                        <th style="width: 100px;">Ref ID</th>
                         <th>Client</th>
                         <th>Project Details</th>
                         <th>Date Completed</th>
-                        <th>Duration</th>
-                        <th style="width: 100px;">Status</th>
+                        <th style="width: 120px;">Duration</th>
+                        <th style="width: 120px;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,46 +26,39 @@
                     {% if done_list %}
                     {% for appt in done_list %}
                     <tr>
-                        <td class="mono" style="color: var(--text-dim); font-size: 0.8rem; font-weight: 600;">#{{
-                            appt.appointment_id }}</td>
+                        <td
+                            style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: var(--studio-text-secondary);">
+                            #{{ appt.appointment_id }}</td>
+                        <td style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name }}</td>
+                        <td style="font-size: 0.85rem; font-style: italic; color: var(--studio-text-secondary);">"{{
+                            appt.tattoo_concept }}"</td>
+                        <td style="font-size: 0.85rem; font-weight: 600;">{{ appt.appointment_date }}</td>
                         <td>
-                            <div style="font-weight: 700; color: var(--text);">{{ appt.customer_name }}</div>
+                            <div style="font-family: monospace; font-weight: 800; color: var(--studio-indigo);">
+                                {{ appt.duration_hours }} <span style="font-size: 0.65rem; opacity: 0.6;">HRS</span>
+                            </div>
                         </td>
                         <td>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">"{{
-                                appt.tattoo_concept }}"</div>
-                        </td>
-                        <td>
-                            <div style="font-size: 0.85rem; font-weight: 500; color: var(--text);">{{
-                                appt.appointment_date }}</div>
-                        </td>
-                        <td class="mono">
-                            <span style="font-weight: 700; color: var(--primary);">{{ appt.duration_hours }}</span>
-                            <small style="color: var(--text-dim);">HRS</small>
-                        </td>
-                        <td>
-                            <span class="badge bd"
-                                style="font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;">ARCHIVED</span>
+                            <span class="badge"
+                                style="background: var(--studio-secondary); color: var(--studio-text-secondary); font-size: 0.65rem; font-weight: 800;">ARCHIVED</span>
                         </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="6" class="empty" style="padding: 5rem 1rem;">
-                            <i class="fa-solid fa-clock-rotate-left"
-                                style="font-size: 2.5rem; opacity: 0.3; margin-bottom: 1.5rem;"></i>
-                            <p style="font-size: 1rem; color: var(--text-muted);">No completed sessions found in
-                                history.</p>
+                        <td colspan="6" style="text-align: center; padding: 5rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-history"
+                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1.5rem; display: block;"></i>
+                            No completed sessions found in history.
                         </td>
                     </tr>
                     {% endif %}
                     {% else %}
                     <tr>
-                        <td colspan="6" class="empty" style="padding: 5rem 1rem;">
-                            <i class="fa-solid fa-folder-open"
-                                style="font-size: 2.5rem; opacity: 0.3; margin-bottom: 1.5rem;"></i>
-                            <p style="font-size: 1rem; color: var(--text-muted);">Appointment records are currently
-                                empty.</p>
+                        <td colspan="6" style="text-align: center; padding: 5rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-folder-open"
+                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1.5rem; display: block;"></i>
+                            Appointment records are currently empty.
                         </td>
                     </tr>
                     {% endif %}

@@ -1,63 +1,65 @@
-<!-- ════════ TODAY'S SCHEDULE ════════ -->
 <div id="sec-schedule" class="section">
-    <div class="mb-8">
-        <h2 class="text-xl font-bold" style="color: var(--text);">Today's Schedule</h2>
-        <p id="todayStr" class="text-sm font-semibold mt-1" style="color: var(--primary);"></p>
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Today's Schedule
+        </h2>
+        <p id="todayStr"
+            style="color: var(--studio-indigo); font-size: 0.85rem; font-weight: 700; margin-top: 0.25rem;"></p>
     </div>
 
-    <div class="card card-pad">
-        <div class="flex items-center gap-4 mb-8 pb-6 border-b" style="border-color: var(--border);">
-            <div class="w-12 h-12 rounded-xl bg-primary-dim flex items-center justify-center border border-primary-dim"
-                style="color: var(--primary);">
-                <i class="fa-solid fa-clock text-xl"></i>
+    <div class="studio-card">
+        <div
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--studio-border);">
+            <div
+                style="width: 48px; height: 48px; border-radius: 12px; background: rgba(72, 52, 212, 0.1); display: flex; align-items: center; justify-content: center; color: var(--studio-indigo);">
+                <i class="fas fa-clock" style="font-size: 1.2rem;"></i>
             </div>
             <div>
-                <p class="text-base font-bold" style="color: var(--text);">Dynamic Daily View</p>
-                <p id="slotCount" class="text-xs text-studio-muted mt-0.5">Calculating sessions...</p>
+                <h3 style="font-size: 1rem; font-weight: 800; color: var(--studio-text-primary);">Dynamic Daily View
+                </h3>
+                <p id="slotCount" style="font-size: 0.75rem; color: var(--studio-text-secondary);">Calculating
+                    sessions...</p>
             </div>
         </div>
 
         {% if today_appointments %}
-        <div class="relative pl-5">
-            <!-- Timeline line -->
-            <div class="absolute left-0 top-0 bottom-0 w-0.5 rounded-full" style="background: var(--border);"></div>
-
+        <div class="timeline-card">
             {% for appt in today_appointments %}
-            <div class="tl-item">
+            <div class="tl-item" style="display: flex; align-items: center; gap: 1.5rem;">
                 <div
-                    style="position: absolute; left: -24px; top: 18px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--primary-dim);">
+                    style="background: var(--studio-white); border: 1px solid var(--studio-border); padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: var(--studio-text-secondary); white-space: nowrap; font-family: monospace;">
+                    {{ appt.appointment_time }}
                 </div>
-
-                <div class="tl-time" style="min-width: 80px;">{{ appt.appointment_time }}</div>
                 <div style="flex: 1;">
-                    <p style="font-weight: 700; font-size: 1rem; color: var(--text);">{{ appt.customer_name }}</p>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; line-height: 1.4;">{{
+                    <p style="font-weight: 700; color: var(--studio-text-primary); font-size: 1rem;">{{
+                        appt.customer_name }}</p>
+                    <p style="font-size: 0.85rem; color: var(--studio-text-secondary); margin-top: 0.25rem;">{{
                         appt.tattoo_concept }}</p>
                 </div>
-                <div style="text-align: right; flex-shrink: 0;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;"
-                        class="mono">
+                <div style="text-align: right;">
+                    <div
+                        style="font-weight: 700; color: var(--studio-text-primary); font-size: 0.85rem; margin-bottom: 0.5rem;">
                         {{ appt.duration_hours if appt.duration_hours else '?' }} hrs
                     </div>
                     {% if appt.status=='Approved' %}
-                    <span class="badge ba" style="font-size: 0.65rem;">ACTIVE</span>
+                    <span class="badge badge-success">ACTIVE</span>
                     {% elif appt.status=='Done' %}
-                    <span class="badge bd" style="font-size: 0.65rem;">SUCCESS</span>
+                    <span class="badge badge-info">SUCCESS</span>
                     {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="empty" style="padding: 5rem 1rem;">
+        <div style="text-align: center; padding: 5rem 2rem;">
             <div
-                style="width: 70px; height: 70px; border-radius: 50%; background: var(--surface-raised); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 1px solid var(--border);">
-                <i class="fa-regular fa-sun" style="font-size: 2rem; color: var(--primary); opacity: 0.5;"></i>
+                style="width: 80px; height: 80px; border-radius: 50%; background: var(--studio-secondary); border: 1px solid var(--studio-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                <i class="far fa-sun" style="font-size: 2.5rem; color: var(--studio-indigo); opacity: 0.3;"></i>
             </div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">No Sessions
-                Today</h3>
-            <p style="color: var(--text-muted); max-width: 280px; margin: 0 auto;">No appointments scheduled for today.
-                Take some time to sketch or manage your portfolio!</p>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--studio-text-primary); margin-bottom: 0.5rem;">
+                No Sessions Today</h3>
+            <p style="color: var(--studio-text-secondary); max-width: 320px; margin: 0 auto; line-height: 1.6;">
+                No appointments scheduled for today. Take some time to sketch or manage your portfolio!
+            </p>
         </div>
         {% endif %}
     </div>
