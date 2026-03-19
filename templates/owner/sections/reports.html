@@ -1,337 +1,946 @@
-<!-- ═══════════════════════════════════════
-     SECTION: OWNER REPORTS
-     Refactored: Vanilla CSS Shell + Premium Analytics
-     ═══════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION: OWNER REPORTS — ENHANCED ANALYTICS SUITE v2
+═══════════════════════════════════════════════════════════ -->
 
 <style>
-    /* --- Report Specific Enhancements --- */
-    .ranking-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
+    /* ─── Color palette ─────────────────────────────────────── */
+    :root {
+        --c-indigo  : #6366F1;
+        --c-emerald : #10B981;
+        --c-amber   : #F59E0B;
+        --c-blue    : #3B82F6;
+        --c-pink    : #EC4899;
+        --c-violet  : #8B5CF6;
+        --c-cyan    : #06B6D4;
+        --c-orange  : #F97316;
+        --c-slate   : #94A3B8;
+        --c-red     : #EF4444;
     }
 
-    .ranking-item {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        background: #FAFBFF;
-        border: 1px solid var(--studio-border);
-        border-radius: 12px;
-        transition: all 0.2s ease;
-    }
-
-    .ranking-item:hover {
-        transform: translateX(5px);
-        border-color: var(--studio-indigo);
-    }
-
-    .rank-num {
-        width: 24px;
-        height: 24px;
-        background: var(--studio-border);
-        color: var(--studio-text-secondary);
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.7rem;
+    /* ─── Section heading ───────────────────────────────────── */
+    .r-heading {
+        font-size: 0.6rem;
         font-weight: 900;
-        margin-right: 1rem;
-    }
-
-    .rank-num.active {
-        background: var(--studio-indigo);
-        color: #FFF;
-        box-shadow: 0 4px 10px rgba(72, 52, 212, 0.3);
-    }
-
-    .analytics-toolbar {
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--studio-text-secondary);
+        margin: 2rem 0 1.1rem;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 0.6rem;
+    }
+    .r-heading::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--studio-border);
+    }
+
+    /* ─── KPI row ────────────────────────────────────────────── */
+    .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.9rem;
+        margin-bottom: 2rem;
+    }
+    @media (max-width: 1300px) { .kpi-row { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 750px)  { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
+    .kpi {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 14px;
+        padding: 1.1rem 1.25rem 1rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform .18s, box-shadow .18s;
+    }
+    .kpi:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.07); }
+    .kpi-accent {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        border-radius: 14px 14px 0 0;
+    }
+    .kpi-icon-wrap {
+        width: 34px; height: 34px;
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.88rem;
+        margin-bottom: 0.85rem;
+    }
+    .kpi-lbl  { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; margin-bottom: .25rem; }
+    .kpi-val  { font-size: 1.45rem; font-weight: 800; color: #1E293B; line-height: 1; margin-bottom: .35rem; }
+    .kpi-foot { font-size: 0.64rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+    /* ─── Chart grid layouts ─────────────────────────────────── */
+    .r-row        { display: grid; gap: 1.25rem; margin-bottom: 1.25rem; }
+    .r-row-3-2    { grid-template-columns: 3fr 2fr; }
+    .r-row-3col   { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 1050px) {
+        .r-row-3-2  { grid-template-columns: 1fr; }
+        .r-row-3col { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Chart card ─────────────────────────────────────────── */
+    .r-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 16px;
+        padding: 1.4rem 1.5rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+    .r-card-title { font-size: 0.9rem; font-weight: 800; color: #1E293B; margin-bottom: 2px; }
+    .r-card-sub   {
+        font-size: 0.62rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .08em;
+        color: #94A3B8; margin-bottom: 1.1rem;
+    }
+
+    /* ─── Period pills ───────────────────────────────────────── */
+    .r-pills {
+        display: flex; gap: 3px;
         background: #F1F5F9;
-        padding: 5px;
-        border-radius: 12px;
+        border-radius: 9px; padding: 3px;
     }
-
-    .filter-btn {
-        padding: 6px 14px;
-        border-radius: 8px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s;
-        border: none;
-        background: transparent;
-        color: var(--studio-text-secondary);
+    .r-pill {
+        padding: 5px 11px;
+        border-radius: 6px; font-size: .67rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .06em;
+        border: none; background: transparent;
+        color: #94A3B8; cursor: pointer; transition: all .18s;
     }
+    .r-pill.on { background: #fff; color: var(--c-indigo); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
 
-    .filter-btn.active {
-        background: #FFF;
-        color: var(--studio-indigo);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    /* ─── Legend ─────────────────────────────────────────────── */
+    .r-legend { display: flex; flex-direction: column; gap: 7px; margin-top: 1rem; }
+    .r-legend-row {
+        display: flex; align-items: center;
+        justify-content: space-between; font-size: .72rem;
     }
+    .r-legend-left  { display: flex; align-items: center; gap: 7px; }
+    .r-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .r-legend-name  { font-weight: 600; color: #475569; }
+    .r-legend-val   { font-weight: 800; color: #1E293B; }
+    .r-legend-pct   { font-weight: 600; color: #94A3B8; font-size: .65rem; }
 
-    #monthSelect {
-        padding: 5px 10px;
-        border-radius: 8px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        border: 1px solid var(--studio-border);
-        background: #FFF;
-        color: var(--studio-text-primary);
-        cursor: pointer;
-        display: none;
+    /* ─── Donut center text ──────────────────────────────────── */
+    .r-donut-wrap { position: relative; }
+    .r-donut-center {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        pointer-events: none;
+    }
+    .r-donut-center-val  { font-size: 1.3rem; font-weight: 800; color: #1E293B; line-height: 1; }
+    .r-donut-center-lbl  { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; margin-top: 2px; }
+
+    /* ─── Period stats bar ───────────────────────────────────── */
+    .r-stats-bar {
+        display: flex; gap: 1.75rem;
+        padding: 0.9rem 0 0;
+        border-top: 1px solid #F1F5F9;
+        margin-top: 1rem;
+    }
+    .r-stat-item-lbl { font-size: .58rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; }
+    .r-stat-item-val { font-size: .88rem; font-weight: 800; margin-top: 2px; }
+
+    /* ─── Rankings ───────────────────────────────────────────── */
+    .r-rank-list { display: flex; flex-direction: column; gap: 8px; }
+    .r-rank-row  {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 12px; border-radius: 10px;
+        border: 1px solid #F1F5F9; background: #FAFBFF;
+        transition: border-color .18s, transform .18s;
+    }
+    .r-rank-row:hover { border-color: var(--c-indigo); transform: translateX(4px); }
+    .r-rank-badge {
+        width: 26px; height: 26px; border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .75rem; font-weight: 900; flex-shrink: 0;
+    }
+    .r-rank-badge.g1 { background: #FEF9C3; color: #A16207; }
+    .r-rank-badge.g2 { background: #F1F5F9; color: #475569; }
+    .r-rank-badge.g3 { background: #FFF1F2; color: #BE123C; }
+    .r-rank-badge.gn { background: #F8FAFC; color: #94A3B8; }
+
+    /* ─── Performance table ──────────────────────────────────── */
+    .r-table-wrap { overflow-x: auto; }
+    .r-table { width: 100%; border-collapse: collapse; }
+    .r-table th {
+        background: #F8FAFC; padding: .75rem 1rem;
+        font-size: .6rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: .08em;
+        color: #94A3B8; border-bottom: 1px solid #E9ECEF;
+        white-space: nowrap; text-align: left;
+    }
+    .r-table th:not(:first-child) { text-align: center; }
+    .r-table td {
+        padding: .85rem 1rem; font-size: .8rem;
+        border-bottom: 1px solid #F1F5F9; color: #1E293B;
+    }
+    .r-table td:not(:first-child) { text-align: center; }
+    .r-table tbody tr:last-child td { border-bottom: none; }
+    .r-table tbody tr:hover td { background: #FAFBFF; }
+
+    .r-prog-wrap { display: flex; align-items: center; gap: 7px; justify-content: center; }
+    .r-prog-bg   { width: 54px; height: 7px; background: #E9ECEF; border-radius: 4px; overflow: hidden; }
+    .r-prog-fill { height: 100%; border-radius: 4px; }
+
+    /* ─── Print ──────────────────────────────────────────────── */
+    .r-print-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 14px; font-size: .72rem; font-weight: 700;
+        letter-spacing: .06em; text-transform: uppercase;
+        border: 1px solid #E9ECEF; border-radius: 8px;
+        background: #fff; color: #475569; cursor: pointer;
+        transition: all .18s;
+    }
+    .r-print-btn:hover { border-color: var(--c-indigo); color: var(--c-indigo); }
+
+    @media print {
+        .r-print-btn, .r-pills, select { display: none !important; }
+        .r-card { break-inside: avoid; }
     }
 </style>
 
-<div class="summary-grid">
-    <div class="summary-card">
-        <span class="card-label">Global Revenue</span>
-        <div class="card-value" id="disp-total-rev">₹0</div>
-        <div class="card-trend trend-up"><i class="fas fa-chart-line"></i> Lifetime Yield</div>
-    </div>
-    <div class="summary-card">
-        <span class="card-label">Total Sessions</span>
-        <div class="card-value" id="disp-total-appts">0</div>
-        <div class="card-trend trend-up"><i class="fas fa-calendar-check"></i> Processed</div>
-    </div>
-    <div class="summary-card">
-        <span class="card-label">Top Performer</span>
-        <div class="card-value" style="font-size: 1.1rem; margin: 5px 0;" id="disp-top-artist">Artist</div>
-        <div class="card-trend trend-up" style="color: var(--studio-indigo);" id="disp-top-stat">0 Sessions</div>
-    </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
-
-    <!-- Main Revenue Analytics -->
-    <div class="studio-card">
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h3 class="studio-title" style="margin: 0;">Financial Performance</h3>
-                <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                    Revenue Flow Control</p>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <select id="monthSelect" onchange="dispatchAction('SET_MONTH', this.value)"></select>
-                <div class="analytics-toolbar">
-                    <button id="btn-week" class="filter-btn"
-                        onclick="dispatchAction('SET_VIEW', 'weekly')">Week</button>
-                    <button id="btn-month" class="filter-btn"
-                        onclick="dispatchAction('SET_VIEW', 'monthly')">Month</button>
-                    <button id="btn-year" class="filter-btn"
-                        onclick="dispatchAction('SET_VIEW', 'yearly')">Year</button>
-                </div>
-            </div>
-        </div>
-
-        <div style="height: 350px; position: relative;">
-            <canvas id="revenueChartCanvas"></canvas>
-        </div>
-    </div>
-
-    <!-- Artist Distribution -->
-    <div class="studio-card">
-        <h3 class="studio-title" style="margin-bottom: 0.5rem;">Artist Benchmarks</h3>
-        <p
-            style="color: var(--studio-text-secondary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1.5rem;">
-            Performance Distribution</p>
-
-        <div style="height: 250px; margin-bottom: 2rem;">
-            <canvas id="artistChartCanvas"></canvas>
-        </div>
-
-        <div class="ranking-list" id="artistRankingList">
-            <!-- Populated by JS -->
-        </div>
-    </div>
-</div>
-
-<!-- ════════════ ANALYTICS STATE ENGINE ════════════ -->
-<script id="reports-raw-data" type="application/json">
+<!-- ── Raw data injection ── -->
+<script id="rep-data" type="application/json">
 {{ {
-    "daily_revenue": (daily_revenue or []),
-    "total_revenue": (total_revenue | default(0)),
-    "total_appointments": (total_appointments | default(0)),
-    "artist_performance": (artist_performance or [])
+    "daily_revenue"      : (daily_revenue or []),
+    "artist_performance" : (artist_performance or []),
+    "payment_methods"    : (payment_methods or []),
+    "total_revenue"      : (total_revenue | default(0)),
+    "paid_revenue"       : (paid_revenue | default(0)),
+    "pending_revenue"    : (pending_revenue | default(0)),
+    "total_appointments" : (total_appointments | default(0)),
+    "done_count"         : (done_count | default(0)),
+    "pending_count"      : (pending_count | default(0)),
+    "approved_count"     : (approved_count | default(0)),
+    "rejected_count"     : (rejected_count | default(0)),
+    "cancelled_count"    : (cancelled_count | default(0)),
+    "total_customers"    : (total_customers | default(0)),
+    "total_artists"      : (total_artists | default(0))
 } | tojson | safe }}
 </script>
 
-<script>
-    (function () {
-        const rawDataElement = document.getElementById('reports-raw-data');
-        if (!rawDataElement) return;
+<!-- ══════════════════════════════════
+     TOP BAR
+══════════════════════════════════════ -->
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem;">
+    <div>
+        <h2 style="font-size:1.3rem;font-weight:800;color:#1E293B;margin-bottom:3px;">Studio Analytics</h2>
+        <p style="font-size:.72rem;color:#94A3B8;font-weight:600;">All-time performance overview</p>
+    </div>
+    <button class="r-print-btn" onclick="window.print()">
+        <i class="fas fa-print"></i> Print Report
+    </button>
+</div>
 
-        const raw = JSON.parse(rawDataElement.textContent);
+<!-- ══════════════════════════════════
+     KPI CARDS
+══════════════════════════════════════ -->
+<p class="r-heading"><i class="fas fa-bolt"></i> Key Metrics</p>
+<div class="kpi-row">
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-indigo);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(99,102,241,.1);color:var(--c-indigo);"><i class="fas fa-indian-rupee-sign"></i></div>
+        <div class="kpi-lbl">Total Revenue</div>
+        <div class="kpi-val" id="kv-total">₹0</div>
+        <div class="kpi-foot" style="color:var(--c-indigo);"><i class="fas fa-circle" style="font-size:5px;"></i> All-time yield</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-emerald);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(16,185,129,.1);color:var(--c-emerald);"><i class="fas fa-circle-check"></i></div>
+        <div class="kpi-lbl">Paid Revenue</div>
+        <div class="kpi-val" id="kv-paid">₹0</div>
+        <div class="kpi-foot" style="color:var(--c-emerald);"><i class="fas fa-arrow-up"></i> <span id="kv-paid-pct">0%</span> collected</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-amber);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(245,158,11,.1);color:var(--c-amber);"><i class="fas fa-hourglass-half"></i></div>
+        <div class="kpi-lbl">Outstanding</div>
+        <div class="kpi-val" id="kv-pend">₹0</div>
+        <div class="kpi-foot" style="color:var(--c-amber);"><i class="fas fa-clock"></i> Pending balance</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-blue);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(59,130,246,.1);color:var(--c-blue);"><i class="fas fa-calendar-check"></i></div>
+        <div class="kpi-lbl">Total Sessions</div>
+        <div class="kpi-val" id="kv-apts">0</div>
+        <div class="kpi-foot" style="color:var(--c-blue);"><i class="fas fa-check-double"></i> <span id="kv-done">0</span> completed</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-violet);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(139,92,246,.1);color:var(--c-violet);"><i class="fas fa-chart-pie"></i></div>
+        <div class="kpi-lbl">Completion Rate</div>
+        <div class="kpi-val" id="kv-rate">0%</div>
+        <div class="kpi-foot" style="color:var(--c-violet);"><i class="fas fa-star"></i> Session success</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-accent" style="background:var(--c-pink);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(236,72,153,.1);color:var(--c-pink);"><i class="fas fa-calculator"></i></div>
+        <div class="kpi-lbl">Avg per Session</div>
+        <div class="kpi-val" id="kv-avg">₹0</div>
+        <div class="kpi-foot" style="color:var(--c-pink);"><i class="fas fa-divide"></i> Revenue per booking</div>
+    </div>
+</div>
 
-        let state = {
-            view: 'monthly',
-            selectedMonth: '', // YYYY-MM
-            revenueChart: null,
-            artistChart: null
-        };
+<!-- ══════════════════════════════════
+     ROW 1 — Revenue trend + Rankings
+══════════════════════════════════════ -->
+<p class="r-heading"><i class="fas fa-chart-bar"></i> Revenue Trend</p>
+<div class="r-row r-row-3-2">
 
-        // --- Data Aggregation Logic ---
-        function getRevenueData(view, selectedMonth) {
-            const dataMap = {};
-            raw.daily_revenue.forEach(d => { dataMap[d.date_key] = parseFloat(d.total_revenue) || 0; });
-
-            const today = new Date();
-            let results = [];
-
-            if (view === 'weekly') {
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date();
-                    d.setDate(today.getDate() - i);
-                    const key = d.toISOString().split('T')[0];
-                    results.push({ label: d.toLocaleString('en-US', { weekday: 'short' }), val: dataMap[key] || 0 });
-                }
-            } else if (view === 'monthly') {
-                const target = selectedMonth || today.toISOString().substring(0, 7);
-                const [y, m] = target.split('-').map(Number);
-                const days = new Date(y, m, 0).getDate();
-                for (let i = 1; i <= days; i++) {
-                    const key = `${y}-${String(m).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                    results.push({ label: `${new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'short' })} ${i}`, val: dataMap[key] || 0 });
-                }
-            } else {
-                const monthlySum = {};
-                raw.daily_revenue.forEach(d => {
-                    const mk = d.date_key.substring(0, 7);
-                    if (!monthlySum[mk]) monthlySum[mk] = { label: new Date(d.date_key).toLocaleString('en-US', { month: 'short', year: '2-digit' }), val: 0 };
-                    monthlySum[mk].val += parseFloat(d.total_revenue) || 0;
-                });
-                results = Object.values(monthlySum);
-            }
-
-            return { labels: results.map(r => r.label), values: results.map(r => r.val) };
-        }
-
-        // --- State Dispatcher ---
-        window.dispatchAction = function (type, payload) {
-            if (type === 'SET_VIEW') state.view = payload;
-            if (type === 'SET_MONTH') { state.selectedMonth = payload; state.view = 'monthly'; }
-            useEffect();
-        };
-
-        // --- Side Effects & UI Sync ---
-        function useEffect() {
-            // Sync Buttons
-            document.getElementById('btn-week').classList.toggle('active', state.view === 'weekly');
-            document.getElementById('btn-month').classList.toggle('active', state.view === 'monthly');
-            document.getElementById('btn-year').classList.toggle('active', state.view === 'yearly');
-
-            // Sync Select
-            const mSelect = document.getElementById('monthSelect');
-            mSelect.style.display = (state.view === 'monthly') ? 'block' : 'none';
-            if (state.view === 'monthly' && !mSelect.options.length) populateMonths();
-
-            // Update Summary Row
-            document.getElementById('disp-total-rev').textContent = `₹${raw.total_revenue.toLocaleString('en-IN')}`;
-            document.getElementById('disp-total-appts').textContent = raw.total_appointments;
-
-            renderCharts();
-            updateRankings();
-        }
-
-        function populateMonths() {
-            const select = document.getElementById('monthSelect');
-            const months = [...new Set(raw.daily_revenue.map(d => d.date_key.substring(0, 7)))];
-            if (!months.includes(new Date().toISOString().substring(0, 7))) months.push(new Date().toISOString().substring(0, 7));
-
-            const sorted = months.sort().reverse();
-            select.innerHTML = sorted.map(m => {
-                const [y, mm] = m.split('-');
-                const label = new Date(y, mm - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
-                return `<option value="${m}" ${m === state.selectedMonth ? 'selected' : ''}>${label}</option>`;
-            }).join('');
-
-            if (!state.selectedMonth) state.selectedMonth = sorted[0];
-        }
-
-        function renderCharts() {
-            // 1. Revenue Chart
-            const revCtx = document.getElementById('revenueChartCanvas').getContext('2d');
-            const revData = getRevenueData(state.view, state.selectedMonth);
-            if (state.revenueChart) state.revenueChart.destroy();
-            state.revenueChart = new Chart(revCtx, {
-                type: 'bar',
-                data: {
-                    labels: revData.labels,
-                    datasets: [{
-                        data: revData.values,
-                        backgroundColor: '#4834D4',
-                        borderRadius: 8,
-                        maxBarThickness: 32
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 600 }, color: '#94A3B8' } },
-                        y: { border: { display: false }, grid: { color: '#F1F5F9' }, ticks: { callback: v => '₹' + (v >= 1000 ? v / 1000 + 'k' : v) } }
-                    }
-                }
-            });
-
-            // 2. Artist Distribution Chart
-            const artCtx = document.getElementById('artistChartCanvas').getContext('2d');
-            const sorted = [...raw.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
-            if (state.artistChart) state.artistChart.destroy();
-            state.artistChart = new Chart(artCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: sorted.map(a => a.artist_name),
-                    datasets: [{
-                        data: sorted.map(a => a.done_appts),
-                        backgroundColor: ['#4834D4', '#22C55E', '#F59E0B', '#3B82F6', '#EF4444'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15, font: { size: 10, weight: 700 } } }
-                    },
-                    cutout: '70%'
-                }
-            });
-        }
-
-        function updateRankings() {
-            const list = document.getElementById('artistRankingList');
-            const sorted = [...raw.artist_performance].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
-
-            if (sorted.length > 0) {
-                document.getElementById('disp-top-artist').textContent = sorted[0].artist_name;
-                document.getElementById('disp-top-stat').textContent = `${sorted[0].done_appts} Sessions Met`;
-            }
-
-            list.innerHTML = sorted.map((a, i) => `
-            <div class="ranking-item">
-                <div class="rank-num ${i === 0 ? 'active' : ''}">${i + 1}</div>
-                <div style="flex: 1;">
-                    <div style="font-weight: 800; color: var(--studio-text-primary); font-size: 0.85rem;">${a.artist_name}</div>
-                    <div style="font-size: 0.65rem; color: var(--studio-text-secondary); font-weight: 700; text-transform: uppercase;">${a.specialisation || 'Resident Artist'}</div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-weight: 900; color: var(--studio-indigo); font-size: 0.85rem;">₹${(a.total_revenue || 0).toLocaleString()}</div>
-                    <div style="font-size: 0.6rem; color: #22c55e; font-weight: 800;">${a.done_appts} Done</div>
+    <div class="r-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.1rem;">
+            <div>
+                <div class="r-card-title">Revenue over Time</div>
+                <div class="r-card-sub">Paid revenue · switchable time window</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
+                <select id="r-month-sel"
+                    style="display:none;padding:5px 9px;border-radius:8px;font-size:.68rem;font-weight:700;border:1px solid #E9ECEF;background:#fff;color:#475569;cursor:pointer;"
+                    onchange="rDispatch('SET_MONTH',this.value)"></select>
+                <div class="r-pills">
+                    <button class="r-pill" id="rpill-week"  onclick="rDispatch('SET_VIEW','weekly')">Week</button>
+                    <button class="r-pill on" id="rpill-month" onclick="rDispatch('SET_VIEW','monthly')">Month</button>
+                    <button class="r-pill" id="rpill-year"  onclick="rDispatch('SET_VIEW','yearly')">Year</button>
                 </div>
             </div>
-        `).join('');
+        </div>
+        <div style="height:310px;position:relative;">
+            <canvas id="rc-revenue"></canvas>
+        </div>
+        <div class="r-stats-bar">
+            <div>
+                <div class="r-stat-item-lbl">Period Total</div>
+                <div class="r-stat-item-val" id="rs-total" style="color:var(--c-indigo);">₹0</div>
+            </div>
+            <div>
+                <div class="r-stat-item-lbl">Highest</div>
+                <div class="r-stat-item-val" id="rs-high" style="color:var(--c-emerald);">₹0</div>
+            </div>
+            <div>
+                <div class="r-stat-item-lbl">Active Periods</div>
+                <div class="r-stat-item-val" id="rs-pts" style="color:#475569;">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="r-card">
+        <div class="r-card-title">Artist Leaderboard</div>
+        <div class="r-card-sub">Ranked by revenue generated</div>
+        <div class="r-rank-list" id="r-rank-list">
+            <div style="text-align:center;padding:2rem;color:#94A3B8;font-size:.8rem;">No data yet.</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════════════════════════════
+     ROW 2 — Three equal charts
+══════════════════════════════════════ -->
+<p class="r-heading"><i class="fas fa-chart-pie"></i> Distribution Breakdown</p>
+<div class="r-row r-row-3col">
+
+    <!-- Status donut -->
+    <div class="r-card">
+        <div class="r-card-title">Session Outcomes</div>
+        <div class="r-card-sub">Appointment status breakdown</div>
+        <div class="r-donut-wrap" style="height:210px;position:relative;">
+            <canvas id="rc-status"></canvas>
+            <div class="r-donut-center">
+                <div class="r-donut-center-val" id="status-center-val">0</div>
+                <div class="r-donut-center-lbl">Total</div>
+            </div>
+        </div>
+        <div class="r-legend" id="rl-status"></div>
+    </div>
+
+    <!-- Payment methods horizontal bar -->
+    <div class="r-card">
+        <div class="r-card-title">Payment Channels</div>
+        <div class="r-card-sub">Revenue by payment method</div>
+        <div style="height:210px;position:relative;" id="rc-payment-wrap">
+            <canvas id="rc-payment"></canvas>
+        </div>
+        <div class="r-legend" id="rl-payment"></div>
+    </div>
+
+    <!-- Artist sessions grouped bar -->
+    <div class="r-card">
+        <div class="r-card-title">Artist Output</div>
+        <div class="r-card-sub">Completed vs total sessions per artist</div>
+        <div style="height:210px;position:relative;">
+            <canvas id="rc-artist"></canvas>
+        </div>
+        <div style="font-size:.62rem;color:#94A3B8;text-align:center;margin-top:.75rem;">
+            Green = Done &nbsp;·&nbsp; Purple = All sessions
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════════════════════════════
+     ROW 3 — Performance table
+══════════════════════════════════════ -->
+<p class="r-heading"><i class="fas fa-table"></i> Full Performance Matrix</p>
+<div class="r-card" style="padding:0;overflow:hidden;">
+    <div style="padding:1.1rem 1.4rem;border-bottom:1px solid #F1F5F9;">
+        <div class="r-card-title">Artist Performance Detail</div>
+        <div class="r-card-sub" style="margin-bottom:0;">All artists · all statuses · revenue</div>
+    </div>
+    <div class="r-table-wrap">
+        <table class="r-table">
+            <thead>
+                <tr>
+                    <th>Artist</th>
+                    <th>Total</th>
+                    <th>Done ✅</th>
+                    <th>Approved 🔵</th>
+                    <th>Pending 🟡</th>
+                    <th>Rejected 🔴</th>
+                    <th>Cancelled</th>
+                    <th>Completion</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody id="r-perf-tbody">
+                <tr><td colspan="9" style="text-align:center;padding:3rem;color:#94A3B8;">No data available.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     JS ENGINE
+══════════════════════════════════════ -->
+<script>
+(function () {
+    const D = JSON.parse(document.getElementById('rep-data').textContent);
+
+    /* ── Palette ── */
+    const C = {
+        indigo  : '#6366F1', emerald : '#10B981',
+        amber   : '#F59E0B', blue    : '#3B82F6',
+        pink    : '#EC4899', violet  : '#8B5CF6',
+        cyan    : '#06B6D4', orange  : '#F97316',
+        slate   : '#94A3B8', red     : '#EF4444',
+    };
+    const MULTI = [C.indigo, C.emerald, C.amber, C.blue, C.pink, C.violet, C.cyan, C.orange];
+
+    /* ── Chart.js defaults ── */
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    Chart.defaults.font.size   = 11;
+    Chart.defaults.color       = '#94A3B8';
+    Chart.defaults.plugins.tooltip.backgroundColor = '#1E293B';
+    Chart.defaults.plugins.tooltip.titleColor      = '#F8FAFC';
+    Chart.defaults.plugins.tooltip.bodyColor       = '#CBD5E1';
+    Chart.defaults.plugins.tooltip.cornerRadius    = 8;
+    Chart.defaults.plugins.tooltip.padding         = 10;
+    Chart.defaults.plugins.tooltip.boxPadding      = 4;
+
+    /* ── Helpers ── */
+    const fmt = v  => '₹' + Number(v || 0).toLocaleString('en-IN');
+    const pct = (n,d) => d ? Math.round((n / d) * 100) : 0;
+
+    /* ── State ── */
+    const S = { view: 'monthly', month: '', charts: {} };
+
+    /* ════════════════════════════════
+       KPI cards
+    ════════════════════════════════ */
+    function renderKPIs() {
+        const { total_revenue:tr, paid_revenue:pr, pending_revenue:pe,
+                total_appointments:ta, done_count:dc } = D;
+        document.getElementById('kv-total').textContent    = fmt(tr);
+        document.getElementById('kv-paid').textContent     = fmt(pr);
+        document.getElementById('kv-pend').textContent     = fmt(pe);
+        document.getElementById('kv-apts').textContent     = ta;
+        document.getElementById('kv-done').textContent     = dc;
+        document.getElementById('kv-paid-pct').textContent = pct(pr, tr) + '%';
+        document.getElementById('kv-rate').textContent     = pct(dc, ta) + '%';
+        document.getElementById('kv-avg').textContent      = ta ? fmt(Math.round(tr / ta)) : '₹0';
+    }
+
+    /* ════════════════════════════════
+       Revenue data builder
+    ════════════════════════════════ */
+    function getRevData() {
+        const map = {};
+        D.daily_revenue.forEach(d => { map[d.date_key] = parseFloat(d.total_revenue) || 0; });
+        const today = new Date();
+        let rows = [];
+
+        if (S.view === 'weekly') {
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                const key = d.toISOString().split('T')[0];
+                rows.push({
+                    label: d.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+                    val: map[key] || 0
+                });
+            }
+        } else if (S.view === 'monthly') {
+            const tgt  = S.month || today.toISOString().substring(0, 7);
+            const [y, m] = tgt.split('-').map(Number);
+            const days   = new Date(y, m, 0).getDate();
+            const mn     = new Date(y, m - 1).toLocaleString('en-US', { month: 'short' });
+            for (let i = 1; i <= days; i++) {
+                const key = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                rows.push({ label: `${mn} ${i}`, val: map[key] || 0 });
+            }
+        } else {
+            const monthly = {};
+            D.daily_revenue.forEach(d => {
+                const mk = d.date_key.substring(0, 7);
+                if (!monthly[mk]) {
+                    const [y, mm] = mk.split('-');
+                    monthly[mk] = { label: new Date(y, mm - 1).toLocaleString('en-US', { month: 'short', year: '2-digit' }), val: 0 };
+                }
+                monthly[mk].val += parseFloat(d.total_revenue) || 0;
+            });
+            rows = Object.values(monthly);
+        }
+        return rows;
+    }
+
+    /* ════════════════════════════════
+       Revenue bar chart
+    ════════════════════════════════ */
+    function renderRevChart() {
+        const rows   = getRevData();
+        const vals   = rows.map(r => r.val);
+        const labels = rows.map(r => r.label);
+        const maxVal = Math.max(...vals, 1);
+        const total  = vals.reduce((a, b) => a + b, 0);
+        const nonZ   = vals.filter(v => v > 0).length;
+
+        document.getElementById('rs-total').textContent = fmt(total);
+        document.getElementById('rs-high').textContent  = fmt(Math.max(...vals));
+        document.getElementById('rs-pts').textContent   = nonZ;
+
+        /* Colour each bar: max = solid indigo, zeros = very faint, others = medium */
+        const bgColors = vals.map(v => {
+            if (v === 0) return 'rgba(99,102,241,0.06)';
+            if (v === maxVal) return C.indigo;
+            return 'rgba(99,102,241,0.30)';
+        });
+
+        const ctx = document.getElementById('rc-revenue').getContext('2d');
+        if (S.charts.rev) S.charts.rev.destroy();
+        S.charts.rev = new Chart(ctx, {
+            type : 'bar',
+            data : {
+                labels,
+                datasets: [{
+                    label                : 'Revenue',
+                    data                 : vals,
+                    backgroundColor      : bgColors,
+                    hoverBackgroundColor : vals.map(() => C.indigo),
+                    borderRadius         : 7,
+                    borderSkipped        : 'bottom',
+                    maxBarThickness      : 36,
+                }]
+            },
+            options: {
+                responsive         : true,
+                maintainAspectRatio: false,
+                interaction        : { mode: 'index', intersect: false },
+                plugins: {
+                    legend : { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title : items => items[0].label,
+                            label : item  => '  ' + fmt(item.parsed.y),
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid  : { display: false },
+                        border: { display: false },
+                        ticks : {
+                            maxRotation  : 0,
+                            autoSkip     : true,
+                            maxTicksLimit: 13,
+                            color        : '#94A3B8',
+                            font         : { weight: '600', size: 10 },
+                        }
+                    },
+                    y: {
+                        border     : { display: false },
+                        grid       : { color: '#F1F5F9' },
+                        beginAtZero: true,
+                        ticks: {
+                            color   : '#94A3B8',
+                            font    : { weight: '600', size: 10 },
+                            callback: v => v >= 1000 ? '₹' + (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + 'k' : '₹' + v,
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ════════════════════════════════
+       Appointment status donut
+    ════════════════════════════════ */
+    function renderStatusChart() {
+        const entries = [
+            { label: 'Completed', val: D.done_count,      color: C.emerald },
+            { label: 'Approved',  val: D.approved_count,  color: C.blue    },
+            { label: 'Pending',   val: D.pending_count,   color: C.amber   },
+            { label: 'Rejected',  val: D.rejected_count,  color: C.red     },
+            { label: 'Cancelled', val: D.cancelled_count, color: C.slate   },
+        ];
+        const total = entries.reduce((s, e) => s + e.val, 0);
+        document.getElementById('status-center-val').textContent = total;
+
+        const ctx = document.getElementById('rc-status').getContext('2d');
+        if (S.charts.status) S.charts.status.destroy();
+        S.charts.status = new Chart(ctx, {
+            type : 'doughnut',
+            data : {
+                labels  : entries.map(e => e.label),
+                datasets: [{
+                    data           : entries.map(e => e.val),
+                    backgroundColor: entries.map(e => e.color),
+                    borderColor    : '#fff',
+                    borderWidth    : 3,
+                    hoverOffset    : 6,
+                }]
+            },
+            options: {
+                responsive         : true,
+                maintainAspectRatio: false,
+                cutout             : '65%',
+                plugins: {
+                    legend : { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: item => {
+                                const p = total ? Math.round((item.parsed / total) * 100) : 0;
+                                return `  ${item.label}: ${item.parsed}  (${p}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('rl-status').innerHTML = entries.map(e => {
+            const p = total ? Math.round((e.val / total) * 100) : 0;
+            return `
+            <div class="r-legend-row">
+                <div class="r-legend-left">
+                    <div class="r-dot" style="background:${e.color};"></div>
+                    <span class="r-legend-name">${e.label}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="r-legend-pct">${p}%</span>
+                    <span class="r-legend-val">${e.val}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ════════════════════════════════
+       Payment channels — horizontal bar
+       (much easier to read than donut)
+    ════════════════════════════════ */
+    function renderPaymentChart() {
+        const methods = D.payment_methods;
+        const wrap    = document.getElementById('rc-payment-wrap');
+        const canvas  = document.getElementById('rc-payment');
+        if (S.charts.pay) S.charts.pay.destroy();
+
+        if (!methods.length) {
+            wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;">No payment data yet.</div>';
+            document.getElementById('rl-payment').innerHTML = '';
+            return;
         }
 
-        // --- Init ---
-        useEffect();
-    })();
+        const sorted = [...methods].sort((a, b) => (b.total || 0) - (a.total || 0));
+        const labels = sorted.map(m => m.payment_method);
+        const vals   = sorted.map(m => parseFloat(m.total) || 0);
+        const total  = vals.reduce((a, b) => a + b, 0);
+        const colors = MULTI.slice(0, labels.length);
+
+        S.charts.pay = new Chart(canvas.getContext('2d'), {
+            type : 'bar',
+            data : {
+                labels,
+                datasets: [{
+                    data           : vals,
+                    backgroundColor: colors,
+                    borderRadius   : 7,
+                    borderSkipped  : 'left',
+                    maxBarThickness: 32,
+                }]
+            },
+            options: {
+                indexAxis          : 'y',
+                responsive         : true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend : { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: item => {
+                                const p = total ? Math.round((item.parsed.x / total) * 100) : 0;
+                                return `  ${fmt(item.parsed.x)}  (${p}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        border: { display: false },
+                        grid  : { color: '#F1F5F9' },
+                        ticks : {
+                            color   : '#94A3B8',
+                            font    : { size: 10 },
+                            callback: v => v >= 1000 ? '₹' + Math.round(v / 1000) + 'k' : '₹' + v,
+                        }
+                    },
+                    y: {
+                        grid  : { display: false },
+                        border: { display: false },
+                        ticks : { color: '#475569', font: { weight: '700', size: 11 } }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('rl-payment').innerHTML = sorted.map((m, i) => {
+            const p = total ? Math.round((parseFloat(m.total) / total) * 100) : 0;
+            return `
+            <div class="r-legend-row">
+                <div class="r-legend-left">
+                    <div class="r-dot" style="background:${colors[i]};"></div>
+                    <span class="r-legend-name">${m.payment_method}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="r-legend-pct">${p}%</span>
+                    <span class="r-legend-val">${fmt(m.total)}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ════════════════════════════════
+       Artist sessions — grouped bar
+    ════════════════════════════════ */
+    function renderArtistChart() {
+        const sorted = [...D.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
+        const labels = sorted.map(a => a.artist_name.split(' ')[0]);
+        const done   = sorted.map(a => a.done_appts  || 0);
+        const total  = sorted.map(a => a.total_appts || 0);
+
+        const ctx = document.getElementById('rc-artist').getContext('2d');
+        if (S.charts.artist) S.charts.artist.destroy();
+        S.charts.artist = new Chart(ctx, {
+            type : 'bar',
+            data : {
+                labels,
+                datasets: [
+                    {
+                        label          : 'Completed',
+                        data           : done,
+                        backgroundColor: C.emerald,
+                        borderRadius   : { topLeft: 7, topRight: 7 },
+                        maxBarThickness: 40,
+                    },
+                    {
+                        label          : 'All Sessions',
+                        data           : total,
+                        backgroundColor: 'rgba(99,102,241,0.18)',
+                        borderRadius   : { topLeft: 7, topRight: 7 },
+                        maxBarThickness: 40,
+                    }
+                ]
+            },
+            options: {
+                responsive         : true,
+                maintainAspectRatio: false,
+                interaction        : { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        display : true,
+                        position: 'top',
+                        labels  : {
+                            boxWidth        : 10,
+                            boxHeight       : 10,
+                            borderRadius    : 5,
+                            useBorderRadius : true,
+                            font            : { size: 10, weight: '700' },
+                            color           : '#475569',
+                            padding         : 12,
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: item => `  ${item.dataset.label}: ${item.parsed.y}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid  : { display: false },
+                        border: { display: false },
+                        ticks : { color: '#475569', font: { weight: '700', size: 11 } }
+                    },
+                    y: {
+                        border     : { display: false },
+                        grid       : { color: '#F1F5F9' },
+                        beginAtZero: true,
+                        ticks      : { color: '#94A3B8', stepSize: 1, font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ════════════════════════════════
+       Rankings
+    ════════════════════════════════ */
+    function renderRankings() {
+        const sorted = [...D.artist_performance].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
+        const list   = document.getElementById('r-rank-list');
+
+        if (!sorted.length) {
+            list.innerHTML = '<div style="text-align:center;padding:2.5rem;color:#94A3B8;font-size:.8rem;">No artist data yet.</div>';
+            return;
+        }
+
+        const badgeCls = i => ['g1','g2','g3','gn'][Math.min(i, 3)];
+        const medal    = i => ['🥇','🥈','🥉'][i] ?? (i + 1);
+
+        list.innerHTML = sorted.map((a, i) => {
+            const cp   = pct(a.done_appts, a.total_appts);
+            const barC = cp >= 70 ? C.emerald : cp >= 40 ? C.amber : C.red;
+            return `
+            <div class="r-rank-row">
+                <div class="r-rank-badge ${badgeCls(i)}">${medal(i)}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:.82rem;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.artist_name}</div>
+                    <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:#94A3B8;">${a.specialisation || 'Artist'}</div>
+                    <div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
+                        <div style="flex:1;height:4px;background:#E9ECEF;border-radius:3px;overflow:hidden;">
+                            <div style="height:100%;width:${cp}%;background:${barC};border-radius:3px;"></div>
+                        </div>
+                        <span style="font-size:.6rem;font-weight:800;color:${barC};min-width:28px;">${cp}%</span>
+                    </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;padding-left:8px;">
+                    <div style="font-weight:900;font-size:.85rem;color:${C.indigo};">${fmt(a.total_revenue)}</div>
+                    <div style="font-size:.62rem;font-weight:700;color:${C.emerald};">${a.done_appts} done</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ════════════════════════════════
+       Performance table
+    ════════════════════════════════ */
+    function renderPerfTable() {
+        const tbody  = document.getElementById('r-perf-tbody');
+        const sorted = [...D.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
+
+        if (!sorted.length) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:3rem;color:#94A3B8;">No data available.</td></tr>`;
+            return;
+        }
+
+        const badge = (n, bg, fg) => n
+            ? `<span style="background:${bg};color:${fg};padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:800;">${n}</span>`
+            : `<span style="color:#CBD5E1;">—</span>`;
+
+        tbody.innerHTML = sorted.map(a => {
+            const cp   = pct(a.done_appts, a.total_appts);
+            const barC = cp >= 70 ? C.emerald : cp >= 40 ? C.amber : C.red;
+            return `<tr>
+                <td>
+                    <div style="font-weight:800;color:#1E293B;">${a.artist_name}</div>
+                    <div style="font-size:.6rem;color:#94A3B8;font-weight:700;text-transform:uppercase;">${a.specialisation || '—'}</div>
+                </td>
+                <td><strong style="font-size:.85rem;">${a.total_appts || 0}</strong></td>
+                <td>${badge(a.done_appts,     'rgba(16,185,129,.12)',  '#059669')}</td>
+                <td>${badge(a.approved_appts, 'rgba(59,130,246,.12)',  '#2563EB')}</td>
+                <td>${badge(a.pending_appts,  'rgba(245,158,11,.12)',  '#D97706')}</td>
+                <td>${badge(a.rejected_count, 'rgba(239,68,68,.12)',   '#DC2626')}</td>
+                <td>${badge(a.cancelled_appts,'rgba(148,163,184,.12)', '#64748B')}</td>
+                <td>
+                    <div class="r-prog-wrap">
+                        <div class="r-prog-bg">
+                            <div class="r-prog-fill" style="width:${cp}%;background:${barC};"></div>
+                        </div>
+                        <span style="font-size:.72rem;font-weight:800;color:${barC};min-width:30px;">${cp}%</span>
+                    </div>
+                </td>
+                <td style="font-weight:900;color:${C.indigo};">${fmt(a.total_revenue)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    /* ════════════════════════════════
+       Month select
+    ════════════════════════════════ */
+    function populateMonthSel() {
+        const sel    = document.getElementById('r-month-sel');
+        const months = [...new Set(D.daily_revenue.map(d => d.date_key.substring(0, 7)))];
+        const curr   = new Date().toISOString().substring(0, 7);
+        if (!months.includes(curr)) months.push(curr);
+        months.sort().reverse();
+
+        sel.innerHTML = months.map(m => {
+            const [y, mm] = m.split('-');
+            const lbl     = new Date(y, mm - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+            return `<option value="${m}" ${m === S.month ? 'selected' : ''}>${lbl}</option>`;
+        }).join('');
+
+        if (!S.month) S.month = months[0] || curr;
+    }
+
+    /* ════════════════════════════════
+       Pill sync
+    ════════════════════════════════ */
+    function syncPills() {
+        document.getElementById('rpill-week').classList.toggle('on',  S.view === 'weekly');
+        document.getElementById('rpill-month').classList.toggle('on', S.view === 'monthly');
+        document.getElementById('rpill-year').classList.toggle('on',  S.view === 'yearly');
+        const mSel = document.getElementById('r-month-sel');
+        mSel.style.display = S.view === 'monthly' ? 'block' : 'none';
+        if (S.view === 'monthly' && !mSel.options.length) populateMonthSel();
+    }
+
+    /* ════════════════════════════════
+       Public dispatcher
+    ════════════════════════════════ */
+    window.rDispatch = function (type, payload) {
+        if (type === 'SET_VIEW')  S.view  = payload;
+        if (type === 'SET_MONTH') { S.month = payload; S.view = 'monthly'; }
+        syncPills();
+        renderRevChart();
+    };
+
+    /* ════════════════════════════════
+       Init
+    ════════════════════════════════ */
+    renderKPIs();
+    syncPills();
+    populateMonthSel();
+    renderRevChart();
+    renderStatusChart();
+    renderPaymentChart();
+    renderArtistChart();
+    renderRankings();
+    renderPerfTable();
+
+})();
 </script>

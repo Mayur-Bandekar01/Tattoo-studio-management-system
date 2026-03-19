@@ -5,34 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Artist Dashboard</title>
-    <!-- Premium Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/artist_dashboard.css') }}">
-    <!-- Fonts & Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="{% if session.get('theme') == 'light' %}light{% endif %}">
+<body>
 
-    <!-- SIDEBAR -->
+    <!-- ── SIDEBAR ─────────────────────────────────────────── -->
     <aside class="sidebar">
         <div class="sidebar-logo"
-            style="padding: 2rem 1.5rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--studio-border);">
+            style="padding:2rem 1.5rem;display:flex;align-items:center;gap:1rem;
+                   border-bottom:1px solid var(--studio-border);">
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--studio-indigo);">
+                style="width:40px;height:40px;border-radius:50%;border:2px solid var(--studio-indigo);">
             <div>
-                <p
-                    style="font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: var(--studio-text-primary); line-height: 1;">
-                    DRAGON</p>
-                <p
-                    style="font-size: 0.6rem; color: var(--studio-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">
-                    Artist Portal</p>
+                <p style="font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;
+                           letter-spacing:0.1em;color:var(--studio-text-primary);line-height:1;">DRAGON</p>
+                <p style="font-size:0.6rem;color:var(--studio-text-secondary);
+                           text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Artist Portal</p>
             </div>
         </div>
 
-        <nav style="flex: 1; overflow-y: auto; padding-top: 1rem;">
+        <nav style="flex:1;overflow-y:auto;padding-top:1rem;">
             <div class="nav-section">Main</div>
             <button class="nav-item active" onclick="nav('overview', this)">
                 <i class="fas fa-chart-line"></i> Overview
@@ -45,8 +40,9 @@
             </button>
             <button class="nav-item" onclick="nav('schedule', this)">
                 <i class="fas fa-clock"></i> Today's Schedule
-                {% if today_count > 0 %}<span class="nav-badge" style="background: var(--studio-indigo);">{{ today_count
-                    }}</span>{% endif %}
+                {% if today_count > 0 %}
+                <span class="nav-badge" style="background:var(--studio-indigo);">{{ today_count }}</span>
+                {% endif %}
             </button>
 
             <div class="nav-section">Studio</div>
@@ -68,175 +64,242 @@
             <button class="nav-item" onclick="nav('profile', this)">
                 <i class="fas fa-user-circle"></i> Profile
             </button>
-            <a href="/logout" class="nav-item" style="text-decoration: none; color: var(--studio-danger);">
+            <a href="/logout" class="nav-item"
+               style="text-decoration:none;color:var(--studio-danger);">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </nav>
 
-        <div style="padding: 1.5rem; border-top: 1px solid var(--studio-border);">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div
-                    style="width: 36px; height: 36px; border-radius: 10px; background: rgba(72, 52, 212, 0.1); display: flex; align-items: center; justify-content: center; color: var(--studio-indigo);">
+        <div style="padding:1.5rem;border-top:1px solid var(--studio-border);">
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div style="width:36px;height:36px;border-radius:10px;
+                            background:rgba(72,52,212,0.1);display:flex;align-items:center;
+                            justify-content:center;color:var(--studio-indigo);">
                     <i class="fas fa-user-ninja"></i>
                 </div>
-                <div style="overflow: hidden;">
-                    <p
-                        style="font-size: 0.75rem; font-weight: 700; color: var(--studio-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        {{ name }}</p>
-                    <p style="font-size: 0.65rem; color: var(--studio-text-secondary);">Resident Artist</p>
+                <div style="overflow:hidden;">
+                    <p style="font-size:0.75rem;font-weight:700;color:var(--studio-text-primary);
+                               white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ name }}</p>
+                    <p style="font-size:0.65rem;color:var(--studio-text-secondary);">Resident Artist</p>
                 </div>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN -->
+    <!-- ── MAIN ────────────────────────────────────────────── -->
     <div class="main">
         <header class="topbar">
             <div>
-                <h2 id="pgT" style="font-family: 'Cinzel', serif; font-size: 1rem; color: var(--studio-text-primary);">
+                <h2 id="pgT"
+                    style="font-family:'Cinzel',serif;font-size:1rem;color:var(--studio-text-primary);">
                     Overview</h2>
-                <p id="pgS" style="font-size: 0.75rem; color: var(--studio-text-secondary);">Welcome back, {{ name }}!
-                </p>
+                <p id="pgS"
+                    style="font-size:0.75rem;color:var(--studio-text-secondary);">
+                    Welcome back, {{ name }}!</p>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div
-                    style="display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.75rem; border-radius: 20px; background: rgba(32, 191, 107, 0.1); color: var(--studio-success); border: 1px solid rgba(32, 191, 107, 0.2);">
-                    <div
-                        style="width: 6px; height: 6px; border-radius: 50%; background: var(--studio-success); box-shadow: 0 0 10px var(--studio-success);">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;padding:0.35rem 0.75rem;
+                            border-radius:20px;background:rgba(32,191,107,0.1);
+                            color:var(--studio-success);border:1px solid rgba(32,191,107,0.2);">
+                    <div style="width:6px;height:6px;border-radius:50%;
+                                background:var(--studio-success);box-shadow:0 0 10px var(--studio-success);">
                     </div>
-                    <span style="font-size: 0.7rem; font-weight: 700;">Artist Online</span>
+                    <span style="font-size:0.7rem;font-weight:700;">Artist Online</span>
                 </div>
 
-                <button onclick="toggleTheme()" class="btn-studio btn-outline"
-                    style="padding: 0.5rem; width: 40px; height: 40px; border-radius: 10px;">
-                    <i class="fas {% if session.get('theme') == 'light' %}fa-moon{% else %}fa-sun{% endif %}"
-                        style="font-size: 0.9rem;"></i>
-                </button>
-
-                <div
-                    style="width: 40px; height: 40px; border-radius: 10px; background: var(--studio-secondary); border: 1px solid var(--studio-border); display: flex; align-items: center; justify-content: center; color: var(--studio-indigo);">
+                <div style="width:40px;height:40px;border-radius:10px;
+                            background:var(--studio-secondary);border:1px solid var(--studio-border);
+                            display:flex;align-items:center;justify-content:center;
+                            color:var(--studio-indigo);">
                     <i class="fas fa-pen-nib"></i>
                 </div>
             </div>
         </header>
 
         <div class="content">
-            {% include 'artist/sections/overview.html' %}
+            {% include 'artist/sections/overview.html'     %}
             {% include 'artist/sections/appointments.html' %}
-            {% include 'artist/sections/schedule.html' %}
-            {% include 'artist/sections/inventory.html' %}
-            {% include 'artist/sections/logusage.html' %}
-            {% include 'artist/sections/gallery.html' %}
-            {% include 'artist/sections/history.html' %}
-            {% include 'artist/sections/profile.html' %}
+            {% include 'artist/sections/schedule.html'     %}
+            {% include 'artist/sections/inventory.html'    %}
+            {% include 'artist/sections/logusage.html'     %}
+            {% include 'artist/sections/gallery.html'      %}
+            {% include 'artist/sections/history.html'      %}
+            {% include 'artist/sections/profile.html'      %}
         </div>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- ════════════════════════════════════════════════════════
+         SCRIPTS
+    ════════════════════════════════════════════════════════ -->
     <script>
+
+        /* ── Section / header metadata ── */
         const PM = {
-            overview: ['Overview', 'Welcome back, {{ name }}!'],
-            appointments: ['My Appointments', 'Manage all your bookings'],
-            schedule: ["Today's Schedule", 'Your sessions for today'],
-            inventory: ['Inventory Control', 'Track studio supplies and stock'],
-            logusage: ['Log Usage', 'Record items used per session'],
-            gallery: ['My Portfolio', 'Upload and manage your artwork'],
-            history: ['Session History', 'All completed sessions'],
-            profile: ['My Profile', 'Your account and security details'],
+            overview     : ['Overview',            'Welcome back, {{ name }}!'],
+            appointments : ['My Appointments',     'Manage all your bookings'],
+            schedule     : ["Today's Schedule",    'Your sessions for today'],
+            inventory    : ['Inventory Control',   'Track studio supplies and stock'],
+            logusage     : ['Log Usage',            'Record items used per session'],
+            gallery      : ['My Portfolio',         'Upload and manage your artwork'],
+            history      : ['Session History',      'All completed sessions'],
+            profile      : ['My Profile',           'Your account and security details'],
         };
 
+        /* ────────────────────────────────────────────────────
+           nav() — switch the active section
+        ──────────────────────────────────────────────────── */
         function nav(name, el) {
+            /* hide all sections */
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
             const sec = document.getElementById('sec-' + name);
             if (sec) sec.classList.add('active');
 
+            /* update nav item highlight */
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (el) el.classList.add('active');
 
-            const [t, s] = PM[name] || ['', ''];
-            document.getElementById('pgT').textContent = t;
-            document.getElementById('pgS').textContent = s;
+            /* update topbar title / subtitle */
+            const meta = PM[name];
+            if (meta) {
+                document.getElementById('pgT').textContent = meta[0];
+                document.getElementById('pgS').textContent = meta[1];
+            }
+
+            /* refresh schedule date string every time we open that tab */
+            if (name === 'schedule') renderScheduleDate();
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function toggleTheme() {
-            // Placeholder: Backend handles theme usually, but we toggle class for instant feel
-            document.body.classList.toggle('light');
-            // Mock fetch to update session
-            fetch('/update-theme', { method: 'POST' });
-        }
-
-        // --- APPOINTMENTS FILTERING ---
+        /* ────────────────────────────────────────────────────
+           filt() — filter table rows by data-status
+           cls   : row class e.g. 'ar'
+           status: value to match or 'all'
+           btn   : clicked button (for active styling)
+        ──────────────────────────────────────────────────── */
         function filt(cls, status, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('active');
-            });
+            /* toggle active class within the same filter-group */
+            const group = btn.closest('.filter-group');
+            if (group) {
+                group.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            }
             btn.classList.add('active');
 
             document.querySelectorAll('.' + cls).forEach(row => {
-                row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+                row.style.display =
+                    (status === 'all' || row.dataset.status === status) ? '' : 'none';
             });
         }
 
-        // --- GALLERY FUNCTIONS ---
+        /* ────────────────────────────────────────────────────
+           Gallery helpers
+        ──────────────────────────────────────────────────── */
         function toggleUp() {
             const p = document.getElementById('upPanel');
-            p.style.display = p.style.display === 'none' ? 'block' : 'none';
+            if (p) p.style.display = p.style.display === 'none' ? 'block' : 'none';
         }
 
         function prevFile(input) {
-            const f = input.files[0];
+            const f   = input.files[0];
             const err = document.getElementById('fErr');
-            const ph = document.getElementById('dzPh');
-            const pv = document.getElementById('dzPv');
+            const ph  = document.getElementById('dzPh');
+            const pv  = document.getElementById('dzPv');
 
             if (f) {
                 if (f.size > 5 * 1024 * 1024) {
-                    err.textContent = 'File too large. Max 5MB allowed.';
-                    err.style.display = 'block';
+                    if (err) { err.textContent = 'File too large. Max 5 MB allowed.'; err.style.display = 'block'; }
                     input.value = '';
-                    ph.style.display = 'block';
-                    pv.style.display = 'none';
+                    if (ph) ph.style.display = 'block';
+                    if (pv) pv.style.display = 'none';
                     return;
                 }
-                err.style.display = 'none';
-                document.getElementById('dzI').src = URL.createObjectURL(f);
-                document.getElementById('dzN').textContent = f.name;
-                ph.style.display = 'none';
-                pv.style.display = 'block';
+                if (err) err.style.display = 'none';
+                const img = document.getElementById('dzI');
+                if (img) img.src = URL.createObjectURL(f);
+                const nm  = document.getElementById('dzN');
+                if (nm) nm.textContent = f.name;
+                if (ph) ph.style.display = 'none';
+                if (pv) pv.style.display = 'block';
             }
         }
 
         function clearDz(e) {
             if (e) e.stopPropagation();
             const input = document.getElementById('gf');
-            input.value = '';
-            document.getElementById('dzPh').style.display = 'block';
-            document.getElementById('dzPv').style.display = 'none';
-            document.getElementById('fErr').style.display = 'none';
+            if (input) input.value = '';
+            const ph = document.getElementById('dzPh');
+            const pv = document.getElementById('dzPv');
+            const er = document.getElementById('fErr');
+            if (ph) ph.style.display = 'block';
+            if (pv) pv.style.display = 'none';
+            if (er) er.style.display = 'none';
         }
 
         function doDrop(e) {
             e.preventDefault();
-            document.getElementById('dz').classList.remove('dov');
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            if (files.length > 0) {
+            const dz = document.getElementById('dz');
+            if (dz) dz.classList.remove('dov');
+            const files = e.dataTransfer && e.dataTransfer.files;
+            if (files && files.length > 0) {
                 const input = document.getElementById('gf');
-                input.files = files;
-                prevFile(input);
+                if (input) {
+                    input.files = files;
+                    prevFile(input);
+                }
             }
         }
 
-        // Initialize greeting
-        (function () {
-            const h = new Date().getHours();
-            const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
-            const gl = document.getElementById('greetLbl');
-            if (gl) gl.textContent = greet;
+        /* ────────────────────────────────────────────────────
+           renderScheduleDate() — fill the date string and
+           slot count in the Schedule section header
+        ──────────────────────────────────────────────────── */
+        function renderScheduleDate() {
+            const todayEl = document.getElementById('todayStr');
+            const slotEl  = document.getElementById('slotCount');
+
+            if (todayEl) {
+                const now = new Date();
+                const formatted = now.toLocaleDateString('en-IN', {
+                    weekday: 'long', year: 'numeric',
+                    month  : 'long', day  : 'numeric',
+                });
+                todayEl.textContent = formatted;
+            }
+
+            /* count visible tl-items (appointments showing today) */
+            if (slotEl) {
+                const items = document.querySelectorAll('#sec-schedule .tl-item');
+                const count = items.length;
+                slotEl.textContent = count === 0
+                    ? 'No sessions booked for today'
+                    : count + ' session' + (count === 1 ? '' : 's') + ' scheduled today';
+            }
+        }
+
+        /* ────────────────────────────────────────────────────
+           toggleTheme() — local class toggle only
+           (no backend call — route doesn't exist)
+        ──────────────────────────────────────────────────── */
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+        }
+
+        /* ────────────────────────────────────────────────────
+           Init
+        ──────────────────────────────────────────────────── */
+        (function init() {
+            /* greeting label */
+            const h      = new Date().getHours();
+            const greet  = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+            const greetEl = document.getElementById('greetLbl');
+            if (greetEl) greetEl.textContent = greet;
+
+            /* populate schedule date immediately in case section is visible */
+            renderScheduleDate();
         })();
+
     </script>
 </body>
-
 </html>
