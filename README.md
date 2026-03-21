@@ -2,7 +2,24 @@
 
 A premium, full-stack management portal designed for high-end tattoo studios. This system streamlines client bookings, artist scheduling, inventory tracking, and financial analytics within a unified, high-performance environment.
 
-## ✨ Key Features
+## Quick Start
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd TatooStudioProject
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Configure your database (ensure MySQL is running)
+# Update credentials in `db.py`
+
+# Run the Flask application
+python app.py
+```
+
+## Features
 
 - **Owner Dashboard**: Advanced analytics with two-tier filtering, revenue tracking, and artist performance metrics.
 - **Artist Portal**: Individual appointment management, inventory usage logging, and gallery portfolio control.
@@ -10,22 +27,32 @@ A premium, full-stack management portal designed for high-end tattoo studios. Th
 - **Premium Aesthetics**: Framework-free Vanilla CSS3 architecture optimized for clarity, precision, and a luxury studio feel.
 - **Financial Suite**: Consolidated invoicing and payment recording with automated billing states.
 
-## 🛠️ Technology Stack
+## Configuration
 
-- **Backend**: Python / Flask
-- **Database**: MySQL (optimized queries for granular analytics)
-- **Frontend**: Vanilla HTML5 / CSS3 (bespoke design system)
-- **Visualization**: Chart.js 4.4.0
-- **Communication**: Flask-Mail (OTP & Notifications)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_HOST` | MySQL Database Host | `localhost` |
+| `DB_USER` | MySQL Database User | `root` |
+| `DB_PASS` | MySQL Database Password | - |
+| `DB_NAME` | Database Name | `dragon_tattoos` |
+| `UPLOAD_FOLDER` | Path for gallery uploads | `static/uploads/references` |
 
-## 📁 Repository Structure
+*(Note: Currently database credentials are hardcoded in `db.py` and email credentials might be hardcoded in `app.py`. It's recommended to map these from the `.env` file.)*
 
-- `/templates`: Semantic Jinja2 templates (Role-based dashboards)
-- `/static/css`: Custom Vanilla CSS design tokens and component library
-- `/static/uploads`: Managed asset storage for gallery and references
-- `app.py`: Centralized application logic and stateful routing
-- `db.py`: Database connection and abstraction layer
+## Documentation
 
----
+- [API Reference](./docs/api.md)
+- [Architecture Details](./docs/architecture.md)
+- [Project Plan](./docs/PLAN.md)
 
-*Refined by Antigravity AI for Dragon Tattoos Studio.*
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+MIT

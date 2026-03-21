@@ -1,0 +1,15 @@
+# Dragon Tattoos - Studio Management System
+> A premium, full-stack management portal designed for high-end tattoo studios.
+
+## Core Files
+- [app.py](file:///e:/TatooStudioProject/app.py): Main Flask application entry point, route definitions, and unified business logic.
+- [db.py](file:///e:/TatooStudioProject/db.py): Database connection abstraction for MySQL.
+- [requirements.txt](file:///e:/TatooStudioProject/requirements.txt): Python dependencies including Flask and mysql-connector.
+- [docs/](file:///e:/TatooStudioProject/docs/): Architectural diagrams, plans, and API documentation.
+- [templates/](file:///e:/TatooStudioProject/templates/): Jinja2 HTML templates for the UI routing.
+- [static/](file:///e:/TatooStudioProject/static/): Static assets including custom Vanilla CSS under `static/css`.
+
+## Key Concepts
+- **Role-based Access**: Differentiates between Owner, Artist, and Customer portals (`customer_dashboard`, `owner_dashboard`, etc.).
+- **Vanilla Aesthetics**: Framework-free CSS architecture optimized for a luxury feel without React/Tailwind bloat.
+- **Studio Operations**: Integrates appointment scheduling, gallery management, and billing natively inside standard routes.
