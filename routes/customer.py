@@ -114,8 +114,9 @@ def customer_book():
             'colour_preference' : request.form.get('colour_preference', ''),
             'notes'             : request.form.get('tattoo_notes', ''),
         }
+
     elif service_type == 'art':
-        art_type = request.form.get('tattoo_concept', '').strip()
+        art_type = request.form.get('art_type_selected', '').strip()
         if not art_type:
             flash("Please select an art type.", "error")
             return redirect('/customer/dashboard')
@@ -128,6 +129,7 @@ def customer_book():
             'deadline'          : request.form.get('art_deadline', ''),
             'notes'             : request.form.get('art_notes', ''),
         }
+
     elif service_type == 'removal':
         tattoo_concept = 'Tattoo Removal'
         extra_details = {
@@ -144,9 +146,20 @@ def customer_book():
         flash("Invalid service type selected.", "error")
         return redirect('/customer/dashboard')
 
-    reference     = None
-    uploaded_file = request.files.get('reference_image')
-    if uploaded_file and uploaded_file.filename != '':
+    # ── FIX: Reference image ──────────────────────────────────────────────────
+    # The booking form has THREE file inputs all named 'reference_image'
+    # (one each for tattoo, art, removal blocks).
+    # request.files.get() always returns the FIRST match — which is the
+    # empty tattoo input when the customer is booking art or removal.
+    # getlist() returns ALL of them; we pick the first one that has a file.
+    uploaded_files = request.files.getlist('reference_image')
+    uploaded_file  = next(
+        (f for f in uploaded_files if f and f.filename.strip()), None
+    )
+    # ─────────────────────────────────────────────────────────────────────────
+
+    reference = None
+    if uploaded_file:
         if not allowed_file(uploaded_file.filename):
             flash("Only JPG and PNG files are allowed!", "error")
             return redirect('/customer/dashboard')

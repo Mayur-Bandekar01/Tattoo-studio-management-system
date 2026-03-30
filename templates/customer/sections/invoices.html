@@ -20,7 +20,7 @@
                     {% for inv in invoices %}
                     <tr>
                         <td style="color: var(--studio-text-secondary); font-size: 0.85rem;">#{{ inv.invoice_id }}</td>
-                        <td style="font-weight: 600;">#{{ inv.appointment_id }}</td>
+                        <td style="font-weight: 700;">#{{ inv.appointment_id }}</td>
                         <td>{{ inv.concept_type }}</td>
                         <td style="font-weight: 700; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
                         <td>{{ inv.generated_date }}</td>

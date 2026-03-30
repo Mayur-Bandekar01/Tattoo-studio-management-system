@@ -1,252 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Verify OTP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0f0f1a; min-height: 100vh; }
-        .cinzel { font-family: 'Cinzel', serif; }
-        .gold { color: #c8a040; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            min-height: 100vh;
+        }
+
+        .cinzel {
+            font-family: 'Cinzel', serif;
+        }
+
+        .gold {
+            color: #c8a040;
+        }
 
         /* OTP input boxes */
         .otp-input {
-            width: 52px; height: 58px;
-            text-align: center; font-size: 1.5rem; font-weight: 700;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; color: white; outline: none;
-            transition: all 0.2s; font-family: 'Cinzel', serif;
+            width: 52px;
+            height: 58px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: all 0.2s;
+            font-family: 'Cinzel', serif;
             caret-color: #c8a040;
         }
+
         .otp-input:focus {
             border-color: #c8a040;
-            box-shadow: 0 0 0 3px rgba(200,160,64,0.15);
-            background: rgba(200,160,64,0.05);
+            box-shadow: 0 0 0 3px rgba(200, 160, 64, 0.15);
+            background: rgba(200, 160, 64, 0.05);
         }
+
         .otp-input.filled {
-            border-color: rgba(200,160,64,0.5);
-            background: rgba(200,160,64,0.08);
+            border-color: rgba(200, 160, 64, 0.5);
+            background: rgba(200, 160, 64, 0.08);
         }
+
         .btn-gold {
-            width: 100%; padding: 0.85rem;
+            width: 100%;
+            padding: 0.85rem;
             background: linear-gradient(135deg, #c8a040, #e0bc58);
-            color: #1a1a2e; font-weight: 700; font-size: 0.875rem;
-            border: none; border-radius: 10px; cursor: pointer;
-            letter-spacing: 0.08em; text-transform: uppercase;
-            transition: all 0.2s; font-family: 'Cinzel', serif;
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 0.875rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            font-family: 'Cinzel', serif;
         }
-        .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(200,160,64,0.3); }
+
+        .btn-gold:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(200, 160, 64, 0.3);
+        }
+
         .btn-ghost {
-            width: 100%; padding: 0.75rem;
+            width: 100%;
+            padding: 0.75rem;
             background: transparent;
-            color: #c8a040; font-size: 0.8rem;
-            border: 1px solid rgba(200,160,64,0.3);
-            border-radius: 10px; cursor: pointer;
+            color: #c8a040;
+            font-size: 0.8rem;
+            border: 1px solid rgba(200, 160, 64, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .btn-ghost:hover { background: rgba(200,160,64,0.08); }
+
+        .btn-ghost:hover {
+            background: rgba(200, 160, 64, 0.08);
+        }
 
         /* Timer */
-        .timer-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-        .timer-text { position: absolute; font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; }
+        .timer-ring {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-text {
+            position: absolute;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
+
 <body>
 
-<div style="position:fixed;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(200,160,64,0.05) 0%,transparent 60%),#0f0f1a;z-index:0;"></div>
+    <div
+        style="position:fixed;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(200,160,64,0.05) 0%,transparent 60%),#0f0f1a;z-index:0;">
+    </div>
 
-<div class="relative z-10 min-h-screen flex items-center justify-center p-4">
-    <div style="width:100%;max-width:420px;">
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div style="width:100%;max-width:420px;">
 
-        <!-- Logo -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background:rgba(200,160,64,0.1);border:1px solid rgba(200,160,64,0.3);">
-                <i class="fa-solid fa-shield-halved text-2xl gold"></i>
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
+                    style="background:rgba(200,160,64,0.1);border:1px solid rgba(200,160,64,0.3);">
+                    <i class="fa-solid fa-shield-halved text-2xl gold"></i>
+                </div>
+                <h1 class="cinzel text-2xl font-bold text-white tracking-widest">DRAGON TATTOOS</h1>
+                <p class="text-xs gold tracking-widest mt-1 uppercase">OTP Verification</p>
             </div>
-            <h1 class="cinzel text-2xl font-bold text-white tracking-widest">DRAGON TATTOOS</h1>
-            <p class="text-xs gold tracking-widest mt-1 uppercase">OTP Verification</p>
-        </div>
 
-        <!-- Card -->
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;">
+            <!-- Card -->
+            <div
+                style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2rem;">
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    {% for category, message in messages %}
-                    <div class="mb-4 p-3 rounded-xl text-sm
+                {% for category, message in messages %}
+                <div class="mb-4 p-3 rounded-xl text-sm
                         {% if category == 'error' %}
                             bg-red-500/10 border border-red-500/30 text-red-400
                         {% else %}
                             bg-green-500/10 border border-green-500/30 text-green-400
                         {% endif %}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
+                    {{ message }}
+                </div>
+                {% endfor %}
                 {% endif %}
-            {% endwith %}
+                {% endwith %}
 
-            <!-- Email sent info -->
-            <div class="mb-5 p-3 rounded-xl" style="background:rgba(200,160,64,0.08);border:1px solid rgba(200,160,64,0.2);">
-                <p class="text-xs text-gray-400 text-center">
-                    OTP sent to <span class="gold font-semibold">{{ email }}</span>
-                </p>
-            </div>
+                <!-- Email sent info -->
+                <div class="mb-5 p-3 rounded-xl"
+                    style="background:rgba(200,160,64,0.08);border:1px solid rgba(200,160,64,0.2);">
+                    <p class="text-xs text-gray-400 text-center">
+                        OTP sent to <span class="gold font-semibold">{{ email }}</span>
+                    </p>
+                </div>
 
-            <h2 class="text-white font-semibold text-base mb-1 text-center">Enter 6-Digit OTP</h2>
-            <p class="text-gray-500 text-sm mb-6 text-center">Check your email inbox and enter the OTP below.</p>
+                <h2 class="text-white font-semibold text-base mb-1 text-center">Enter 6-Digit OTP</h2>
+                <p class="text-gray-500 text-sm mb-6 text-center">Check your email inbox and enter the OTP below.</p>
 
-            <!-- Timer -->
-            <div class="flex justify-center mb-6">
-                <div class="timer-ring">
-                    <svg width="80" height="80">
-                        <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"/>
-                        <circle cx="40" cy="40" r="34" fill="none" stroke="#c8a040" stroke-width="4"
-                            stroke-dasharray="213.6" stroke-dashoffset="0"
-                            stroke-linecap="round" transform="rotate(-90 40 40)"
-                            id="timerCircle"/>
-                    </svg>
-                    <div class="timer-text gold" id="timerText">10:00</div>
+                <!-- Timer -->
+                <div class="flex justify-center mb-6">
+                    <div class="timer-ring">
+                        <svg width="80" height="80">
+                            <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.05)"
+                                stroke-width="4" />
+                            <circle cx="40" cy="40" r="34" fill="none" stroke="#c8a040" stroke-width="4"
+                                stroke-dasharray="213.6" stroke-dashoffset="0" stroke-linecap="round"
+                                transform="rotate(-90 40 40)" id="timerCircle" />
+                        </svg>
+                        <div class="timer-text gold" id="timerText">10:00</div>
+                    </div>
+                </div>
+
+                <form method="POST" action="/verify-otp" id="otpForm">
+                    <!-- OTP Boxes -->
+                    <div class="flex justify-center gap-3 mb-6">
+                        <input type="text" maxlength="1" class="otp-input" id="otp1" name="otp1" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 1">
+                        <input type="text" maxlength="1" class="otp-input" id="otp2" name="otp2" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 2">
+                        <input type="text" maxlength="1" class="otp-input" id="otp3" name="otp3" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 3">
+                        <input type="text" maxlength="1" class="otp-input" id="otp4" name="otp4" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 4">
+                        <input type="text" maxlength="1" class="otp-input" id="otp5" name="otp5" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 5">
+                        <input type="text" maxlength="1" class="otp-input" id="otp6" name="otp6" inputmode="numeric"
+                            pattern="[0-9]" aria-label="Digit 6">
+                    </div>
+
+                    <!-- Hidden combined OTP field -->
+                    <input type="hidden" name="otp" id="combinedOtp">
+
+                    <button type="submit" class="btn-gold mb-3" id="verifyBtn">
+                        <i class="fa-solid fa-check mr-2"></i>Verify OTP
+                    </button>
+                </form>
+
+                <!-- Resend -->
+                <form method="POST" action="/forgot-password">
+                    <input type="hidden" name="email" value="{{ email }}">
+                    <input type="hidden" name="resend" value="true">
+                    <button type="submit" class="btn-ghost" id="resendBtn" disabled>
+                        <i class="fa-solid fa-rotate mr-1"></i>
+                        <span id="resendText">Resend OTP (wait for timer)</span>
+                    </button>
+                </form>
+
+                <!-- Back -->
+                <div class="text-center mt-4">
+                    <a href="/forgot-password" class="text-gray-600 text-xs hover:text-gray-400 transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i>Use different email
+                    </a>
                 </div>
             </div>
 
-            <form method="POST" action="/verify-otp" id="otpForm">
-                <!-- OTP Boxes -->
-                <div class="flex justify-center gap-3 mb-6">
-                    <input type="text" maxlength="1" class="otp-input" id="otp1" name="otp1" inputmode="numeric" pattern="[0-9]">
-                    <input type="text" maxlength="1" class="otp-input" id="otp2" name="otp2" inputmode="numeric" pattern="[0-9]">
-                    <input type="text" maxlength="1" class="otp-input" id="otp3" name="otp3" inputmode="numeric" pattern="[0-9]">
-                    <input type="text" maxlength="1" class="otp-input" id="otp4" name="otp4" inputmode="numeric" pattern="[0-9]">
-                    <input type="text" maxlength="1" class="otp-input" id="otp5" name="otp5" inputmode="numeric" pattern="[0-9]">
-                    <input type="text" maxlength="1" class="otp-input" id="otp6" name="otp6" inputmode="numeric" pattern="[0-9]">
-                </div>
-
-                <!-- Hidden combined OTP field -->
-                <input type="hidden" name="otp" id="combinedOtp">
-
-                <button type="submit" class="btn-gold mb-3" id="verifyBtn">
-                    <i class="fa-solid fa-check mr-2"></i>Verify OTP
-                </button>
-            </form>
-
-            <!-- Resend -->
-            <form method="POST" action="/forgot-password">
-                <input type="hidden" name="email" value="{{ email }}">
-                <input type="hidden" name="resend" value="true">
-                <button type="submit" class="btn-ghost" id="resendBtn" disabled>
-                    <i class="fa-solid fa-rotate mr-1"></i>
-                    <span id="resendText">Resend OTP (wait for timer)</span>
-                </button>
-            </form>
-
-            <!-- Back -->
-            <div class="text-center mt-4">
-                <a href="/forgot-password" class="text-gray-600 text-xs hover:text-gray-400 transition-colors">
-                    <i class="fa-solid fa-arrow-left mr-1"></i>Use different email
-                </a>
-            </div>
         </div>
-
     </div>
-</div>
 
-<script>
-    // ── OTP BOX AUTO ADVANCE ──────────────────────────────────
-    const inputs = document.querySelectorAll('.otp-input');
+    <script>
+        // ── OTP BOX AUTO ADVANCE ──────────────────────────────────
+        const inputs = document.querySelectorAll('.otp-input');
 
-    inputs.forEach((input, i) => {
-        input.addEventListener('input', (e) => {
-            const val = e.target.value.replace(/[^0-9]/g, '');
-            e.target.value = val;
-            if (val) {
-                input.classList.add('filled');
-                if (i < inputs.length - 1) inputs[i + 1].focus();
-            } else {
-                input.classList.remove('filled');
-            }
-            updateCombined();
-        });
+        inputs.forEach((input, i) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/[^0-9]/g, '');
+                e.target.value = val;
+                if (val) {
+                    input.classList.add('filled');
+                    if (i < inputs.length - 1) inputs[i + 1].focus();
+                } else {
+                    input.classList.remove('filled');
+                }
+                updateCombined();
+            });
 
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !input.value && i > 0) {
-                inputs[i - 1].focus();
-                inputs[i - 1].value = '';
-                inputs[i - 1].classList.remove('filled');
-            }
-        });
-
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const pasted = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
-            pasted.split('').forEach((char, j) => {
-                if (inputs[i + j]) {
-                    inputs[i + j].value = char;
-                    inputs[i + j].classList.add('filled');
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && i > 0) {
+                    inputs[i - 1].focus();
+                    inputs[i - 1].value = '';
+                    inputs[i - 1].classList.remove('filled');
                 }
             });
-            updateCombined();
-            const next = Math.min(i + pasted.length, inputs.length - 1);
-            inputs[next].focus();
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasted = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                pasted.split('').forEach((char, j) => {
+                    if (inputs[i + j]) {
+                        inputs[i + j].value = char;
+                        inputs[i + j].classList.add('filled');
+                    }
+                });
+                updateCombined();
+                const next = Math.min(i + pasted.length, inputs.length - 1);
+                inputs[next].focus();
+            });
         });
-    });
 
-    function updateCombined() {
-        let otp = '';
-        inputs.forEach(inp => otp += inp.value);
-        document.getElementById('combinedOtp').value = otp;
-    }
-
-    // ── COUNTDOWN TIMER ───────────────────────────────────────
-    let totalSeconds = 600; // 10 minutes
-    const circumference = 2 * Math.PI * 34; // 213.6
-
-    function updateTimer() {
-        const mins = Math.floor(totalSeconds / 60);
-        const secs = totalSeconds % 60;
-        document.getElementById('timerText').textContent =
-            `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-
-        const progress = totalSeconds / 600;
-        const offset = circumference * (1 - progress);
-        document.getElementById('timerCircle').style.strokeDashoffset = offset;
-
-        // Color change warning
-        if (totalSeconds <= 60) {
-            document.getElementById('timerCircle').style.stroke = '#dc3545';
-            document.getElementById('timerText').style.color = '#dc3545';
-        } else if (totalSeconds <= 180) {
-            document.getElementById('timerCircle').style.stroke = '#fd7e14';
-            document.getElementById('timerText').style.color = '#fd7e14';
+        function updateCombined() {
+            let otp = '';
+            inputs.forEach(inp => otp += inp.value);
+            document.getElementById('combinedOtp').value = otp;
         }
 
-        if (totalSeconds <= 0) {
-            document.getElementById('timerText').textContent = 'EXPIRED';
-            document.getElementById('verifyBtn').disabled = true;
-            document.getElementById('verifyBtn').style.opacity = '0.5';
-            document.getElementById('resendBtn').disabled = false;
-            document.getElementById('resendText').textContent = 'Resend OTP';
-            clearInterval(timer);
-            return;
+        // ── COUNTDOWN TIMER ───────────────────────────────────────
+        let totalSeconds = 600; // 10 minutes
+        const circumference = 2 * Math.PI * 34; // 213.6
+
+        function updateTimer() {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            document.getElementById('timerText').textContent =
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+            const progress = totalSeconds / 600;
+            const offset = circumference * (1 - progress);
+            document.getElementById('timerCircle').style.strokeDashoffset = offset;
+
+            // Color change warning
+            if (totalSeconds <= 60) {
+                document.getElementById('timerCircle').style.stroke = '#dc3545';
+                document.getElementById('timerText').style.color = '#dc3545';
+            } else if (totalSeconds <= 180) {
+                document.getElementById('timerCircle').style.stroke = '#fd7e14';
+                document.getElementById('timerText').style.color = '#fd7e14';
+            }
+
+            if (totalSeconds <= 0) {
+                document.getElementById('timerText').textContent = 'EXPIRED';
+                document.getElementById('verifyBtn').disabled = true;
+                document.getElementById('verifyBtn').style.opacity = '0.5';
+                document.getElementById('resendBtn').disabled = false;
+                document.getElementById('resendText').textContent = 'Resend OTP';
+                clearInterval(timer);
+                return;
+            }
+
+            // Enable resend after 60 seconds
+            if (totalSeconds <= 540) {
+                document.getElementById('resendBtn').disabled = false;
+                document.getElementById('resendText').textContent = 'Resend OTP';
+            }
+
+            totalSeconds--;
         }
 
-        // Enable resend after 60 seconds
-        if (totalSeconds <= 540) {
-            document.getElementById('resendBtn').disabled = false;
-            document.getElementById('resendText').textContent = 'Resend OTP';
-        }
+        updateTimer();
+        const timer = setInterval(updateTimer, 1000);
 
-        totalSeconds--;
-    }
-
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-
-    // Focus first input
-    inputs[0].focus();
-</script>
+        // Focus first input
+        inputs[0].focus();
+    </script>
 </body>
+
 </html>

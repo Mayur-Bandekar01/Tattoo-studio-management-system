@@ -51,7 +51,7 @@
                     <div class="gallery-overlay">
                         <div>
                             <i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                            <p style="font-weight: 600;">View Details</p>
+                            <p style="font-weight: 700;">View Details</p>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                         <span class="gallery-artist">by {{ item.artist_name }}</span>
                         {% if item.style %}
                         <span class="badge"
-                            style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo); font-size: 0.6rem;">{{
+                            style="background: rgba(123, 44, 191, 0.1); color: var(--studio-indigo); font-size: 0.6rem;">{{
                             item.style }}</span>
                         {% endif %}
                     </div>
@@ -110,7 +110,7 @@
                     style="font-family:'Cinzel',serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0 0 0.5rem 0; letter-spacing: 1px;">
                 </p>
                 <p id="lbSub"
-                    style="font-size: 0.9rem; color: #a1a1aa; margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">
+                    style="font-size: 0.9rem; color: #a1a1aa; margin: 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 400;">
                 </p>
             </div>
         </div>
@@ -271,7 +271,7 @@
                         <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>
                         <div class="gallery-img-wrapper">
                             <img src="/static/${item.image_path || ''}" class="gallery-img">
-                            <div class="gallery-overlay"><div><i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="font-weight: 600;">View Details</p></div></div>
+                            <div class="gallery-overlay"><div><i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="font-weight: 700;">View Details</p></div></div>
                         </div>
                         <div class="gallery-info">
                             <p class="gallery-title">${item.caption || 'Untitled'}</p>

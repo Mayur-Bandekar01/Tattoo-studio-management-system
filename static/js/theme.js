@@ -26,8 +26,8 @@ function applyThemeIcons(isLight) {
     const btn = document.getElementById('globalThemeBtn');
     if (!btn) return;
     btn.innerHTML = isLight
-        ? '<i class="fa-solid fa-moon"></i>'
-        : '<i class="fa-solid fa-sun"></i>';
+        ? '<i class="fa-regular fa-moon" style="font-size: 1.15rem;"></i>'
+        : '<i class="fa-regular fa-sun" style="font-size: 1.15rem;"></i>';
     btn.title = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
 
     if (isLight) {

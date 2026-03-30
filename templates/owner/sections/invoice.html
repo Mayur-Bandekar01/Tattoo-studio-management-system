@@ -13,7 +13,7 @@
         <div>
             <h3 class="studio-title" style="margin: 0;">Create Invoice</h3>
             <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                 Generate billing for completed sessions</p>
         </div>
     </div>
@@ -72,7 +72,7 @@
         <div>
             <h3 class="studio-title" style="margin: 0;">Invoice History</h3>
             <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                 Manage generated billing record</p>
         </div>
     </div>
@@ -98,9 +98,9 @@
                         inv.invoice_id }}</td>
                     <td style="font-weight: 700;">#APT-{{ inv.appointment_id }}</td>
                     <td
-                        style="font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: var(--studio-text-secondary);">
+                        style="font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--studio-text-secondary);">
                         {{ inv.concept_type }}</td>
-                    <td style="font-weight: 800; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
+                    <td style="font-weight: 700; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
                     <td style="font-size: 0.85rem;">{{ inv.generated_date }}</td>
                     <td>
                         <span class="badge {{ 'badge-paid' if inv.pay_status=='Paid' else 'badge-pending' }}">
@@ -114,7 +114,7 @@
                             <i class="fa-solid fa-hand-holding-dollar"></i> Record Pay
                         </button>
                         {% else %}
-                        <span style="font-size: 0.65rem; font-weight: 800; color: #22c55e;">SETTLED ✓</span>
+                        <span style="font-size: 0.65rem; font-weight: 700; color: #22c55e;">SETTLED ✓</span>
                         {% endif %}
                     </td>
                 </tr>

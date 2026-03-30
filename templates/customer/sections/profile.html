@@ -21,21 +21,21 @@
                     <span
                         style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Full
                         Name</span>
-                    <span style="font-size: 0.9rem; font-weight: 600;">{{ customer_profile.customer_name if
+                    <span style="font-size: 0.9rem; font-weight: 700;">{{ customer_profile.customer_name if
                         customer_profile else name }}</span>
                 </div>
                 <div
                     style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--studio-secondary); border-radius: var(--studio-radius-sm);">
                     <span
                         style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Email</span>
-                    <span style="font-size: 0.9rem; font-weight: 600;">{{ customer_profile.customer_email if
+                    <span style="font-size: 0.9rem; font-weight: 700;">{{ customer_profile.customer_email if
                         customer_profile else '—' }}</span>
                 </div>
                 <div
                     style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--studio-secondary); border-radius: var(--studio-radius-sm);">
                     <span
                         style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Phone</span>
-                    <span style="font-size: 0.9rem; font-weight: 600;">{{ customer_profile.phone if customer_profile
+                    <span style="font-size: 0.9rem; font-weight: 700;">{{ customer_profile.phone if customer_profile
                         else '—' }}</span>
                 </div>
                 <div
@@ -43,7 +43,7 @@
                     <span
                         style="font-size: 0.7rem; font-weight: 700; color: var(--studio-indigo); text-transform: uppercase;">Total
                         Bookings</span>
-                    <span style="font-size: 1rem; font-weight: 800; color: var(--studio-indigo);">{{
+                    <span style="font-size: 1rem; font-weight: 700; color: var(--studio-indigo);">{{
                         total_appointments|default(0) }}</span>
                 </div>
             </div>

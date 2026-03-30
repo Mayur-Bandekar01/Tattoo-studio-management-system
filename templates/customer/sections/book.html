@@ -174,7 +174,7 @@
                             <div id="dzPv-tattoo" style="display:none;">
                                 <img id="dzImg-tattoo" src="" alt=""
                                     style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
-                                <p id="dzName-tattoo" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <p id="dzName-tattoo" style="font-size: 0.8rem; font-weight: 700;"></p>
                                 <button type="button" onclick="clearDz(event,'tattoo')" class="btn-studio btn-outline"
                                     style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
                                     <i class="fas fa-trash"></i> Remove
@@ -200,7 +200,11 @@
 
                     <div style="margin-bottom: 1.5rem;">
                         <label class="lbl">Art Type <span style="color: #D63031;">*</span></label>
-                        <input type="hidden" name="tattoo_concept" id="tc-art" value="">
+
+                        <!-- FIX: Renamed from tattoo_concept to art_type_selected
+                             to avoid conflict with the tattoo text input above -->
+                        <input type="hidden" name="art_type_selected" id="tc-art" value="">
+
                         <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;" id="artPills">
                             <label class="sketch-pill" onclick="setArtType(this,'Neon Painting')">
                                 <input type="radio" name="art_type_radio" value="Neon Painting">
@@ -282,7 +286,7 @@
                             <div id="dzPv-art" style="display:none;">
                                 <img id="dzImg-art" src="" alt=""
                                     style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
-                                <p id="dzName-art" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <p id="dzName-art" style="font-size: 0.8rem; font-weight: 700;"></p>
                                 <button type="button" onclick="clearDz(event,'art')" class="btn-studio btn-outline"
                                     style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
                                     <i class="fas fa-trash"></i> Remove
@@ -306,7 +310,7 @@
                     <div class="form-divider"><span>Step 3 — Removal Details</span></div>
 
                     <div
-                        style="background: rgba(72, 52, 212, 0.05); border-radius: 12px; padding: 1.25rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
+                        style="background: rgba(123, 44, 191, 0.05); border-radius: 12px; padding: 1.25rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
                         <i class="fas fa-circle-info" style="color: var(--studio-indigo); margin-top: 0.2rem;"></i>
                         <div>
                             <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
@@ -316,8 +320,6 @@
                                 the consultation and recommend the best removal plan.</p>
                         </div>
                     </div>
-
-                    <input type="hidden" name="tattoo_concept" id="tc-removal" value="Tattoo Removal">
 
                     <div class="info-row">
                         <div>
@@ -415,7 +417,7 @@
                             <div id="dzPv-removal" style="display:none;">
                                 <img id="dzImg-removal" src="" alt=""
                                     style="max-height: 140px; border-radius: 12px; margin-bottom: 1rem;">
-                                <p id="dzName-removal" style="font-size: 0.8rem; font-weight: 600;"></p>
+                                <p id="dzName-removal" style="font-size: 0.8rem; font-weight: 700;"></p>
                                 <button type="button" onclick="clearDz(event,'removal')" class="btn-studio btn-outline"
                                     style="margin-top: 1rem; color: #D63031; border-color: #D63031;">
                                     <i class="fas fa-trash"></i> Remove
@@ -544,6 +546,7 @@
             window.setArtType = function (lbl, val) {
                 document.querySelectorAll('.sketch-pill').forEach(p => p.classList.remove('active'));
                 lbl.classList.add('active');
+                // FIX: Now targets the renamed art_type_selected hidden input
                 document.getElementById('tc-art').value = val;
                 document.getElementById('artTypeErr').style.display = 'none';
             };
@@ -598,6 +601,7 @@
                     return;
                 }
 
+                // FIX: Validate art type using the renamed field
                 if (svc === 'art' && !document.getElementById('tc-art').value) {
                     document.getElementById('artTypeErr').style.display = 'block';
                     return;

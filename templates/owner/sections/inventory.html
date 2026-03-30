@@ -13,7 +13,7 @@
             <div>
                 <h3 class="studio-title" style="margin: 0;">Stock Management</h3>
                 <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                     Monitor and restock supplies</p>
             </div>
         </div>
@@ -22,7 +22,7 @@
         <div
             style="display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 10px; color: #DC2626;">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 0.8rem;"></i>
-            <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">{{ low_stock }} Low Stock
+            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">{{ low_stock }} Low Stock
                 Alerts</span>
         </div>
         {% endif %}
@@ -55,8 +55,8 @@
                     </td>
                     <td style="font-family: monospace; color: var(--studio-text-secondary);">{{ item.reorder_level }}
                     </td>
-                    <td style="font-weight: 600;">₹{{ item.unit_cost }}</td>
-                    <td style="font-weight: 800; color: var(--studio-indigo);">₹{{ "%.2f"|format(item.quant_stock *
+                    <td style="font-weight: 700;">₹{{ item.unit_cost }}</td>
+                    <td style="font-weight: 700; color: var(--studio-indigo);">₹{{ "%.2f"|format(item.quant_stock *
                         item.unit_cost) }}</td>
                     <td>
                         <span

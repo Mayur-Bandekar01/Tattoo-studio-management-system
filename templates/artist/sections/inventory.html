@@ -96,13 +96,13 @@
                         </td>
                         <td>
                             <span
-                                style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: {% if item.quant_stock <= item.reorder_level %}#FF4757{% else %}#1DB954{% endif %};">
+                                style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: {% if item.quant_stock <= item.reorder_level %}#FF4757{% else %}#1DB954{% endif %};">
                                 {{ item.quant_stock }}
                             </span>
                         </td>
                         <td style="font-family: monospace; color: var(--studio-text-secondary);">{{ item.reorder_level
                             }}</td>
-                        <td style="font-family: monospace; font-weight: 800; color: #1DB954;">₹{{
+                        <td style="font-family: monospace; font-weight: 700; color: #1DB954;">₹{{
                             item.unit_cost|float|round(2) if item.unit_cost % 1 != 0 else item.unit_cost|int }}</td>
                         <td>
                             {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-danger"

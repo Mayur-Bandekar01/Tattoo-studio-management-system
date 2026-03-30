@@ -70,8 +70,8 @@
         margin-bottom: 0.85rem;
     }
     .kpi-lbl  { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; margin-bottom: .25rem; }
-    .kpi-val  { font-size: 1.45rem; font-weight: 800; color: #1E293B; line-height: 1; margin-bottom: .35rem; }
-    .kpi-foot { font-size: 0.64rem; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .kpi-val  { font-size: 1.45rem; font-weight: 700; color: #1E293B; line-height: 1; margin-bottom: .35rem; }
+    .kpi-foot { font-size: 0.64rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
 
     /* ─── Chart grid layouts ─────────────────────────────────── */
     .r-row        { display: grid; gap: 1.25rem; margin-bottom: 1.25rem; }
@@ -90,7 +90,7 @@
         padding: 1.4rem 1.5rem;
         box-shadow: 0 2px 12px rgba(0,0,0,.04);
     }
-    .r-card-title { font-size: 0.9rem; font-weight: 800; color: #1E293B; margin-bottom: 2px; }
+    .r-card-title { font-size: 0.9rem; font-weight: 700; color: #1E293B; margin-bottom: 2px; }
     .r-card-sub   {
         font-size: 0.62rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .08em;
@@ -120,9 +120,9 @@
     }
     .r-legend-left  { display: flex; align-items: center; gap: 7px; }
     .r-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .r-legend-name  { font-weight: 600; color: #475569; }
-    .r-legend-val   { font-weight: 800; color: #1E293B; }
-    .r-legend-pct   { font-weight: 600; color: #94A3B8; font-size: .65rem; }
+    .r-legend-name  { font-weight: 700; color: #475569; }
+    .r-legend-val   { font-weight: 700; color: #1E293B; }
+    .r-legend-pct   { font-weight: 700; color: #94A3B8; font-size: .65rem; }
 
     /* ─── Donut center text ──────────────────────────────────── */
     .r-donut-wrap { position: relative; }
@@ -133,7 +133,7 @@
         text-align: center;
         pointer-events: none;
     }
-    .r-donut-center-val  { font-size: 1.3rem; font-weight: 800; color: #1E293B; line-height: 1; }
+    .r-donut-center-val  { font-size: 1.3rem; font-weight: 700; color: #1E293B; line-height: 1; }
     .r-donut-center-lbl  { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; margin-top: 2px; }
 
     /* ─── Period stats bar ───────────────────────────────────── */
@@ -143,8 +143,8 @@
         border-top: 1px solid #F1F5F9;
         margin-top: 1rem;
     }
-    .r-stat-item-lbl { font-size: .58rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; }
-    .r-stat-item-val { font-size: .88rem; font-weight: 800; margin-top: 2px; }
+    .r-stat-item-lbl { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94A3B8; }
+    .r-stat-item-val { font-size: .88rem; font-weight: 700; margin-top: 2px; }
 
     /* ─── Rankings ───────────────────────────────────────────── */
     .r-rank-list { display: flex; flex-direction: column; gap: 8px; }
@@ -170,7 +170,7 @@
     .r-table { width: 100%; border-collapse: collapse; }
     .r-table th {
         background: #F8FAFC; padding: .75rem 1rem;
-        font-size: .6rem; font-weight: 800;
+        font-size: .6rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .08em;
         color: #94A3B8; border-bottom: 1px solid #E9ECEF;
         white-space: nowrap; text-align: left;
@@ -230,8 +230,8 @@
 ══════════════════════════════════════ -->
 <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem;">
     <div>
-        <h2 style="font-size:1.3rem;font-weight:800;color:#1E293B;margin-bottom:3px;">Studio Analytics</h2>
-        <p style="font-size:.72rem;color:#94A3B8;font-weight:600;">All-time performance overview</p>
+        <h2 style="font-size:1.3rem;font-weight:700;color:#1E293B;margin-bottom:3px;">Studio Analytics</h2>
+        <p style="font-size:.72rem;color:#94A3B8;font-weight:700;">All-time performance overview</p>
     </div>
     <button class="r-print-btn" onclick="window.print()">
         <i class="fas fa-print"></i> Print Report
@@ -828,13 +828,13 @@
             <div class="r-rank-row">
                 <div class="r-rank-badge ${badgeCls(i)}">${medal(i)}</div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-weight:800;font-size:.82rem;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.artist_name}</div>
+                    <div style="font-weight:700;font-size:.82rem;color:#1E293B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.artist_name}</div>
                     <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:#94A3B8;">${a.specialisation || 'Artist'}</div>
                     <div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
                         <div style="flex:1;height:4px;background:#E9ECEF;border-radius:3px;overflow:hidden;">
                             <div style="height:100%;width:${cp}%;background:${barC};border-radius:3px;"></div>
                         </div>
-                        <span style="font-size:.6rem;font-weight:800;color:${barC};min-width:28px;">${cp}%</span>
+                        <span style="font-size:.6rem;font-weight:700;color:${barC};min-width:28px;">${cp}%</span>
                     </div>
                 </div>
                 <div style="text-align:right;flex-shrink:0;padding-left:8px;">
@@ -858,7 +858,7 @@
         }
 
         const badge = (n, bg, fg) => n
-            ? `<span style="background:${bg};color:${fg};padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:800;">${n}</span>`
+            ? `<span style="background:${bg};color:${fg};padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:700;">${n}</span>`
             : `<span style="color:#CBD5E1;">—</span>`;
 
         tbody.innerHTML = sorted.map(a => {
@@ -866,7 +866,7 @@
             const barC = cp >= 70 ? C.emerald : cp >= 40 ? C.amber : C.red;
             return `<tr>
                 <td>
-                    <div style="font-weight:800;color:#1E293B;">${a.artist_name}</div>
+                    <div style="font-weight:700;color:#1E293B;">${a.artist_name}</div>
                     <div style="font-size:.6rem;color:#94A3B8;font-weight:700;text-transform:uppercase;">${a.specialisation || '—'}</div>
                 </td>
                 <td><strong style="font-size:.85rem;">${a.total_appts || 0}</strong></td>
@@ -880,7 +880,7 @@
                         <div class="r-prog-bg">
                             <div class="r-prog-fill" style="width:${cp}%;background:${barC};"></div>
                         </div>
-                        <span style="font-size:.72rem;font-weight:800;color:${barC};min-width:30px;">${cp}%</span>
+                        <span style="font-size:.72rem;font-weight:700;color:${barC};min-width:30px;">${cp}%</span>
                     </div>
                 </td>
                 <td style="font-weight:900;color:${C.indigo};">${fmt(a.total_revenue)}</td>

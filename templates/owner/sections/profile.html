@@ -14,7 +14,7 @@
             <div>
                 <h3 class="studio-title" style="margin: 0;">Owner Profile</h3>
                 <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                     Your Administrative Credentials</p>
             </div>
         </div>
@@ -23,38 +23,38 @@
             <div
                 style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
                 <span
-                    style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--studio-text-secondary);">Owner
+                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Owner
                     ID</span>
-                <span style="font-family: monospace; font-weight: 800; color: var(--studio-indigo);">#{{
+                <span style="font-family: monospace; font-weight: 700; color: var(--studio-indigo);">#{{
                     session.get('user_id') }}</span>
             </div>
             <div
                 style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
                 <span
-                    style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--studio-text-secondary);">Full
+                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Full
                     Name</span>
-                <span style="font-weight: 800; color: var(--studio-text-primary);">{{ name }}</span>
+                <span style="font-weight: 700; color: var(--studio-text-primary);">{{ name }}</span>
             </div>
             <div
                 style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
                 <span
-                    style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--studio-text-secondary);">Role
+                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Role
                     Access</span>
                 <span class="badge badge-paid">STUDIO OWNER</span>
             </div>
             <div
                 style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
                 <span
-                    style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--studio-text-secondary);">Team
+                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Team
                     Control</span>
-                <span style="font-weight: 800; color: var(--studio-text-primary);">{{ total_artists }} Artists</span>
+                <span style="font-weight: 700; color: var(--studio-text-primary);">{{ total_artists }} Artists</span>
             </div>
             <div
                 style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
                 <span
-                    style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--studio-text-secondary);">Global
+                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Global
                     Yield</span>
-                <span style="font-weight: 800; color: #166534;">₹{{ total_revenue | default(0) }}</span>
+                <span style="font-weight: 700; color: #166534;">₹{{ total_revenue | default(0) }}</span>
             </div>
         </div>
     </div>
@@ -69,7 +69,7 @@
             <div>
                 <h3 class="studio-title" style="margin: 0;">Security Settings</h3>
                 <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
                     Update Credentials</p>
             </div>
         </div>
@@ -126,7 +126,7 @@
                 <div
                     style="background: rgba(72, 52, 212, 0.05); border: 1px solid rgba(72, 52, 212, 0.1); padding: 1rem; border-radius: 12px;">
                     <p
-                        style="font-size: 0.65rem; color: var(--studio-text-secondary); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
+                        style="font-size: 0.65rem; color: var(--studio-text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
                         Password must contain:</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                         <p id="ownerRule_len"

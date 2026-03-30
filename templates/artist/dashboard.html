@@ -5,25 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Artist Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/artist_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/artist_dashboard.css') }}?v=6">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@600;700;800&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
 
     <!-- ── SIDEBAR ─────────────────────────────────────────── -->
     <aside class="sidebar">
-        <div class="sidebar-logo"
-            style="padding:2rem 1.5rem;display:flex;align-items:center;gap:1rem;
-                   border-bottom:1px solid var(--studio-border);">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                style="width:40px;height:40px;border-radius:50%;border:2px solid var(--studio-indigo);">
+        <div class="sidebar-logo" style="padding:2rem 1.5rem;display:flex;align-items:center;gap:1rem;
+                   border-bottom:1px solid rgba(255,255,255,0.08);">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" style="width:40px;height:40px;border-radius:50%;
+                       border:2px solid rgba(245,166,35,0.6);
+                       box-shadow:0 0 14px rgba(245,166,35,0.2);">
             <div>
-                <p style="font-family:'Cinzel',serif;font-size:0.75rem;font-weight:700;
-                           letter-spacing:0.1em;color:var(--studio-text-primary);line-height:1;">DRAGON</p>
-                <p style="font-size:0.6rem;color:var(--studio-text-secondary);
-                           text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Artist Portal</p>
+                <p style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;
+                           letter-spacing:0.08em;color:#FFFFFF;line-height:1;">DRAGON</p>
+                <p style="font-size:0.58rem;color:rgba(245,166,35,0.8);
+                           text-transform:uppercase;letter-spacing:0.12em;font-weight:600;
+                           margin-top:3px;">Artist Portal</p>
             </div>
         </div>
 
@@ -64,23 +67,25 @@
             <button class="nav-item" onclick="nav('profile', this)">
                 <i class="fas fa-user-circle"></i> Profile
             </button>
-            <a href="/logout" class="nav-item"
-               style="text-decoration:none;color:var(--studio-danger);">
+            <a href="/logout" class="nav-item" style="text-decoration:none;color:var(--studio-danger);">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </nav>
 
-        <div style="padding:1.5rem;border-top:1px solid var(--studio-border);">
+        <div style="padding:1.5rem;border-top:1px solid rgba(255,255,255,0.08);">
             <div style="display:flex;align-items:center;gap:0.75rem;">
                 <div style="width:36px;height:36px;border-radius:10px;
-                            background:rgba(72,52,212,0.1);display:flex;align-items:center;
-                            justify-content:center;color:var(--studio-indigo);">
+                            background:rgba(245,166,35,0.15);display:flex;align-items:center;
+                            justify-content:center;color:#F5A623;
+                            border:1px solid rgba(245,166,35,0.25);">
                     <i class="fas fa-user-ninja"></i>
                 </div>
                 <div style="overflow:hidden;">
-                    <p style="font-size:0.75rem;font-weight:700;color:var(--studio-text-primary);
+                    <p style="font-size:0.8rem;font-weight:600;color:#FFFFFF;
+                               font-family:'DM Sans',sans-serif;
                                white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ name }}</p>
-                    <p style="font-size:0.65rem;color:var(--studio-text-secondary);">Resident Artist</p>
+                    <p style="font-size:0.65rem;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;">
+                        Resident Artist</p>
                 </div>
             </div>
         </div>
@@ -91,10 +96,10 @@
         <header class="topbar">
             <div>
                 <h2 id="pgT"
-                    style="font-family:'Cinzel',serif;font-size:1rem;color:var(--studio-text-primary);">
+                    style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--studio-text-primary);">
                     Overview</h2>
                 <p id="pgS"
-                    style="font-size:0.75rem;color:var(--studio-text-secondary);">
+                    style="font-size:0.75rem;color:var(--studio-text-secondary);font-family:'DM Sans',sans-serif;">
                     Welcome back, {{ name }}!</p>
             </div>
 
@@ -118,14 +123,14 @@
         </header>
 
         <div class="content">
-            {% include 'artist/sections/overview.html'     %}
+            {% include 'artist/sections/overview.html' %}
             {% include 'artist/sections/appointments.html' %}
-            {% include 'artist/sections/schedule.html'     %}
-            {% include 'artist/sections/inventory.html'    %}
-            {% include 'artist/sections/logusage.html'     %}
-            {% include 'artist/sections/gallery.html'      %}
-            {% include 'artist/sections/history.html'      %}
-            {% include 'artist/sections/profile.html'      %}
+            {% include 'artist/sections/schedule.html' %}
+            {% include 'artist/sections/inventory.html' %}
+            {% include 'artist/sections/logusage.html' %}
+            {% include 'artist/sections/gallery.html' %}
+            {% include 'artist/sections/history.html' %}
+            {% include 'artist/sections/profile.html' %}
         </div>
     </div>
 
@@ -136,14 +141,14 @@
 
         /* ── Section / header metadata ── */
         const PM = {
-            overview     : ['Overview',            'Welcome back, {{ name }}!'],
-            appointments : ['My Appointments',     'Manage all your bookings'],
-            schedule     : ["Today's Schedule",    'Your sessions for today'],
-            inventory    : ['Inventory Control',   'Track studio supplies and stock'],
-            logusage     : ['Log Usage',            'Record items used per session'],
-            gallery      : ['My Portfolio',         'Upload and manage your artwork'],
-            history      : ['Session History',      'All completed sessions'],
-            profile      : ['My Profile',           'Your account and security details'],
+            overview: ['Overview', 'Welcome back, {{ name }}!'],
+            appointments: ['My Appointments', 'Manage all your bookings'],
+            schedule: ["Today's Schedule", 'Your sessions for today'],
+            inventory: ['Inventory Control', 'Track studio supplies and stock'],
+            logusage: ['Log Usage', 'Record items used per session'],
+            gallery: ['My Portfolio', 'Upload and manage your artwork'],
+            history: ['Session History', 'All completed sessions'],
+            profile: ['My Profile', 'Your account and security details'],
         };
 
         /* ────────────────────────────────────────────────────
@@ -202,10 +207,10 @@
         }
 
         function prevFile(input) {
-            const f   = input.files[0];
+            const f = input.files[0];
             const err = document.getElementById('fErr');
-            const ph  = document.getElementById('dzPh');
-            const pv  = document.getElementById('dzPv');
+            const ph = document.getElementById('dzPh');
+            const pv = document.getElementById('dzPv');
 
             if (f) {
                 if (f.size > 5 * 1024 * 1024) {
@@ -218,7 +223,7 @@
                 if (err) err.style.display = 'none';
                 const img = document.getElementById('dzI');
                 if (img) img.src = URL.createObjectURL(f);
-                const nm  = document.getElementById('dzN');
+                const nm = document.getElementById('dzN');
                 if (nm) nm.textContent = f.name;
                 if (ph) ph.style.display = 'none';
                 if (pv) pv.style.display = 'block';
@@ -257,13 +262,13 @@
         ──────────────────────────────────────────────────── */
         function renderScheduleDate() {
             const todayEl = document.getElementById('todayStr');
-            const slotEl  = document.getElementById('slotCount');
+            const slotEl = document.getElementById('slotCount');
 
             if (todayEl) {
                 const now = new Date();
                 const formatted = now.toLocaleDateString('en-IN', {
                     weekday: 'long', year: 'numeric',
-                    month  : 'long', day  : 'numeric',
+                    month: 'long', day: 'numeric',
                 });
                 todayEl.textContent = formatted;
             }
@@ -291,8 +296,8 @@
         ──────────────────────────────────────────────────── */
         (function init() {
             /* greeting label */
-            const h      = new Date().getHours();
-            const greet  = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+            const h = new Date().getHours();
+            const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
             const greetEl = document.getElementById('greetLbl');
             if (greetEl) greetEl.textContent = greet;
 
@@ -302,4 +307,5 @@
 
     </script>
 </body>
+
 </html>

@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Owner Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/owner_dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owner_dashboard.css') }}?v=3">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
@@ -19,24 +21,28 @@
             padding: 0.85rem 1.1rem;
             border-radius: 10px;
             font-size: 0.82rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 0.6rem;
             cursor: pointer;
             transition: opacity 0.3s;
         }
+
         .flash-msg.success {
-            background: rgba(34,197,94,0.1);
-            border: 1px solid rgba(34,197,94,0.25);
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
             color: #15803d;
         }
+
         .flash-msg.error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.25);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             color: #dc2626;
         }
-        .flash-msg.info, .flash-msg.message {
-            background: rgba(72,52,212,0.08);
-            border: 1px solid rgba(72,52,212,0.2);
+
+        .flash-msg.info,
+        .flash-msg.message {
+            background: rgba(72, 52, 212, 0.08);
+            border: 1px solid rgba(72, 52, 212, 0.2);
             color: var(--studio-indigo);
         }
 
@@ -44,9 +50,11 @@
         .pw-wrap {
             position: relative;
         }
+
         .pw-wrap input {
             padding-right: 2.75rem !important;
         }
+
         .pw-eye {
             position: absolute;
             right: 0.9rem;
@@ -60,335 +68,338 @@
             font-size: 0.9rem;
             transition: color 0.2s;
         }
-        .pw-eye:hover { color: var(--studio-indigo); }
+
+        .pw-eye:hover {
+            color: var(--studio-indigo);
+        }
 
         /* ── Content section base ── */
-        .content-section { display: none; }
+        .content-section {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-<div class="dashboard-container">
+    <div class="dashboard-container">
 
-    <!-- ── SIDEBAR ────────────────────────────────────────── -->
-    <aside class="studio-sidebar">
-        <div class="sidebar-header">
-            <div class="logo-text">
-                <div class="logo-icon"><i class="fas fa-dragon"></i></div>
-                DRAGON TATTOOS
-            </div>
-            <p style="font-size:0.6rem;color:var(--studio-text-secondary);text-transform:uppercase;
-                      letter-spacing:0.1em;font-weight:700;margin-top:4px;">Owner Portal</p>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div style="padding:0 1.5rem 0.5rem;font-size:0.65rem;font-weight:800;
-                        color:var(--studio-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">
-                Main</div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('dashboard')"
-                   class="nav-link active" data-section="dashboard">
-                    <i class="fas fa-chart-line"></i> Dashboard
-                </a>
+        <!-- ── SIDEBAR ────────────────────────────────────────── -->
+        <aside class="studio-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-text">
+                    <div class="logo-icon"><img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                            style="width: 28px; height: 28px; object-fit: cover; border-radius: 4px; display: block;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span
+                            style="line-height: 1; font-family:'Playfair Display',serif; color:#FFFFFF; font-size:0.95rem; font-weight:700;">DRAGON
+                            TATTOOS</span>
+                        <span style="font-size:0.58rem;color:rgba(201,168,76,0.8);text-transform:uppercase;
+                              letter-spacing:0.12em;font-weight:700;margin-top:3px;line-height:1;">Owner Portal</span>
+                    </div>
+                </div>
             </div>
 
-            <div style="padding:1.5rem 1.5rem 0.5rem;font-size:0.65rem;font-weight:800;
-                        color:var(--studio-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">
-                Management</div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('artists')"
-                   class="nav-link" data-section="artists">
-                    <i class="fas fa-users"></i> Artists
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('bookings')"
-                   class="nav-link" data-section="bookings">
-                    <i class="fas fa-calendar-alt"></i> Bookings
-                    {% if pending_count > 0 %}
-                    <span style="background:#ef4444;color:white;border-radius:10px;
+            <nav class="sidebar-nav">
+                <div style="padding:1.25rem 1.5rem 0.4rem;font-size:0.62rem;font-weight:700;
+                        color:rgba(201,168,76,0.65);text-transform:uppercase;letter-spacing:0.1em;">Main</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard')" class="nav-link active"
+                        data-section="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </div>
+
+                <div style="padding:1.25rem 1.5rem 0.4rem;font-size:0.62rem;font-weight:700;
+                        color:rgba(201,168,76,0.65);text-transform:uppercase;letter-spacing:0.1em;">Management</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('artists')" class="nav-link" data-section="artists">
+                        <i class="fas fa-users"></i> Artists
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('bookings')" class="nav-link"
+                        data-section="bookings">
+                        <i class="fas fa-calendar-alt"></i> Bookings
+                        {% if pending_count > 0 %}
+                        <span style="background:#ef4444;color:white;border-radius:10px;
                                  padding:2px 6px;font-size:0.6rem;margin-left:auto;">
-                        {{ pending_count }}
-                    </span>
-                    {% endif %}
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('inventory')"
-                   class="nav-link" data-section="inventory">
-                    <i class="fas fa-box"></i> Inventory
-                </a>
-            </div>
+                            {{ pending_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('inventory')" class="nav-link"
+                        data-section="inventory">
+                        <i class="fas fa-box"></i> Inventory
+                    </a>
+                </div>
 
-            <div style="padding:1.5rem 1.5rem 0.5rem;font-size:0.65rem;font-weight:800;
-                        color:var(--studio-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">
-                Finance</div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('invoice')"
-                   class="nav-link" data-section="invoice">
-                    <i class="fas fa-file-invoice-dollar"></i> Invoicing
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('payment')"
-                   class="nav-link" data-section="payment">
-                    <i class="fas fa-hand-holding-usd"></i> Payments
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('reports')"
-                   class="nav-link" data-section="reports">
-                    <i class="fas fa-file-contract"></i> Reports
-                </a>
-            </div>
+                <div style="padding:1.25rem 1.5rem 0.4rem;font-size:0.62rem;font-weight:700;
+                        color:rgba(201,168,76,0.65);text-transform:uppercase;letter-spacing:0.1em;">Finance</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('invoice')" class="nav-link" data-section="invoice">
+                        <i class="fas fa-file-invoice-dollar"></i> Invoicing
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('payment')" class="nav-link" data-section="payment">
+                        <i class="fas fa-hand-holding-usd"></i> Payments
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('reports')" class="nav-link" data-section="reports">
+                        <i class="fas fa-file-contract"></i> Reports
+                    </a>
+                </div>
 
-            <div style="padding:1.5rem 1.5rem 0.5rem;font-size:0.65rem;font-weight:800;
-                        color:var(--studio-text-secondary);text-transform:uppercase;letter-spacing:0.1em;">
-                System</div>
-            <div class="nav-item">
-                <a href="javascript:void(0)" onclick="switchTab('profile')"
-                   class="nav-link" data-section="profile">
-                    <i class="fas fa-user-shield"></i> Profile
-                </a>
-            </div>
-            <div class="nav-item" style="margin-top:auto;">
-                <a href="/logout" class="nav-link" style="color:#ef4444;">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </nav>
-    </aside>
+                <div style="padding:1.25rem 1.5rem 0.4rem;font-size:0.62rem;font-weight:700;
+                        color:rgba(201,168,76,0.65);text-transform:uppercase;letter-spacing:0.1em;">System</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('profile')" class="nav-link" data-section="profile">
+                        <i class="fas fa-user-shield"></i> Profile
+                    </a>
+                </div>
+                <div class="nav-item" style="margin-top:auto;">
+                    <a href="/logout" class="nav-link" style="color:rgba(252,165,165,0.8);">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
 
-    <!-- ── MAIN CONTENT ───────────────────────────────────── -->
-    <main class="main-content">
-        <header class="top-header">
-            <div class="welcome-msg">
-                <h1 id="pageTitle">Good Morning, Boss</h1>
-                <p id="pageSubtitle">Welcome back, {{ name }}! Here's what's happening today.</p>
-            </div>
-            <div class="header-actions">
-                <div class="notification-bell"><i class="far fa-bell"></i></div>
-                <div class="profile-avatar">{{ name[0] | upper }}</div>
-            </div>
-        </header>
+        <!-- ── MAIN CONTENT ───────────────────────────────────── -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="welcome-msg">
+                    <h1 id="pageTitle">Good Morning, Boss</h1>
+                    <p id="pageSubtitle">Welcome back, {{ name }}! Here's what's happening today.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-bell"><i class="far fa-bell"></i></div>
+                    <div class="profile-avatar">{{ name[0] | upper }}</div>
+                </div>
+            </header>
 
-        <!-- Flash messages -->
-        <div id="flashContainer">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="flash-msg {{ category }}" onclick="this.remove()">
-                <i class="fas {% if category == 'success' %}fa-check-circle
+            <!-- Flash messages -->
+            <div id="flashContainer">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-msg {{ category }}" onclick="this.remove()">
+                    <i class="fas {% if category == 'success' %}fa-check-circle
                               {% elif category == 'error' %}fa-exclamation-circle
                               {% else %}fa-info-circle{% endif %}"></i>
-                <span>{{ message }}</span>
-                <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
+                    <span>{{ message }}</span>
+                    <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
             </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
-        </div>
 
-        <!-- ── Sections ── -->
-        <section id="section-dashboard" class="content-section">
-            {% include 'owner/sections/overview.html' %}
-        </section>
-        <section id="section-artists" class="content-section">
-            {% include 'owner/sections/artists.html' %}
-        </section>
-        <section id="section-bookings" class="content-section">
-            {% include 'owner/sections/appointments.html' %}
-        </section>
-        <section id="section-inventory" class="content-section">
-            {% include 'owner/sections/inventory.html' %}
-        </section>
-        <section id="section-reports" class="content-section">
-            {% include 'owner/sections/reports.html' %}
-        </section>
-        <section id="section-invoice" class="content-section">
-            {% include 'owner/sections/invoice.html' %}
-        </section>
-        <section id="section-payment" class="content-section">
-            {% include 'owner/sections/payment.html' %}
-        </section>
-        <section id="section-profile" class="content-section">
-            {% include 'owner/sections/profile.html' %}
-        </section>
-    </main>
-</div>
+            <!-- ── Sections ── -->
+            <section id="section-dashboard" class="content-section">
+                {% include 'owner/sections/overview.html' %}
+            </section>
+            <section id="section-artists" class="content-section">
+                {% include 'owner/sections/artists.html' %}
+            </section>
+            <section id="section-bookings" class="content-section">
+                {% include 'owner/sections/appointments.html' %}
+            </section>
+            <section id="section-inventory" class="content-section">
+                {% include 'owner/sections/inventory.html' %}
+            </section>
+            <section id="section-reports" class="content-section">
+                {% include 'owner/sections/reports.html' %}
+            </section>
+            <section id="section-invoice" class="content-section">
+                {% include 'owner/sections/invoice.html' %}
+            </section>
+            <section id="section-payment" class="content-section">
+                {% include 'owner/sections/payment.html' %}
+            </section>
+            <section id="section-profile" class="content-section">
+                {% include 'owner/sections/profile.html' %}
+            </section>
+        </main>
+    </div>
 
-<!-- ════════════════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════════════
      SCRIPTS
 ════════════════════════════════════════════════════════ -->
-<script>
+    <script>
 
-    /* ── Tab metadata ── */
-    const TAB_META = {
-        dashboard : { title: 'Good Morning, Boss',    subtitle: "Here's what's happening today."         },
-        artists   : { title: 'Creative Team',         subtitle: 'Manage your studio talent'               },
-        bookings  : { title: 'Studio Sessions',        subtitle: 'Global appointment overview'             },
-        inventory : { title: 'Supply Chain',           subtitle: 'Track studio stock and reorder levels'   },
-        reports   : { title: 'Financial Analytics',    subtitle: 'Deep dive into studio performance'       },
-        invoice   : { title: 'Client Billing',         subtitle: 'Generate and send professional invoices' },
-        payment   : { title: 'Cash Flow',              subtitle: 'Record and track incoming payments'      },
-        profile   : { title: 'Master Security',        subtitle: 'Owner account and system credentials'    },
-    };
+        /* ── Tab metadata ── */
+        const TAB_META = {
+            dashboard: { title: 'Good Morning, Boss', subtitle: "Here's what's happening today." },
+            artists: { title: 'Creative Team', subtitle: 'Manage your studio talent' },
+            bookings: { title: 'Studio Sessions', subtitle: 'Global appointment overview' },
+            inventory: { title: 'Supply Chain', subtitle: 'Track studio stock and reorder levels' },
+            reports: { title: 'Financial Analytics', subtitle: 'Deep dive into studio performance' },
+            invoice: { title: 'Client Billing', subtitle: 'Generate and send professional invoices' },
+            payment: { title: 'Cash Flow', subtitle: 'Record and track incoming payments' },
+            profile: { title: 'Master Security', subtitle: 'Owner account and system credentials' },
+        };
 
-    /* ────────────────────────────────────────────────────────
-       switchTab — show the requested section, update nav+header
-    ──────────────────────────────────────────────────────── */
-    function switchTab(name) {
-        /* hide all sections */
-        document.querySelectorAll('.content-section').forEach(s => {
-            s.style.display = 'none';
-        });
-
-        /* show the target section */
-        const target = document.getElementById('section-' + name);
-        if (target) target.style.display = 'block';
-
-        /* update nav active state */
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const link = document.querySelector(`.nav-link[data-section="${name}"]`);
-        if (link) link.classList.add('active');
-
-        /* update header text */
-        const info = TAB_META[name];
-        if (info) {
-            document.getElementById('pageTitle').textContent    = info.title;
-            document.getElementById('pageSubtitle').textContent = info.subtitle;
-        }
-
-        localStorage.setItem('ownerTab', name);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    /* ────────────────────────────────────────────────────────
-       filterTable — generic row filter used in Bookings section
-       rowClass  : CSS class on each <tr>  e.g. 'appt-row'
-       status    : value to match against row's data-status attr
-       btn       : the clicked button (for active state)
-    ──────────────────────────────────────────────────────── */
-    function filterTable(rowClass, status, btn) {
-        /* update active button — only toggle buttons inside the same
-           parent container to avoid touching unrelated filter groups */
-        const container = btn.closest('div');
-        if (container) {
-            container.querySelectorAll('button').forEach(b => {
-                b.classList.remove('btn-primary');
-                b.classList.add('btn-secondary');
+        /* ────────────────────────────────────────────────────────
+           switchTab — show the requested section, update nav+header
+        ──────────────────────────────────────────────────────── */
+        function switchTab(name) {
+            /* hide all sections */
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.style.display = 'none';
             });
-            btn.classList.remove('btn-secondary');
-            btn.classList.add('btn-primary');
+
+            /* show the target section */
+            const target = document.getElementById('section-' + name);
+            if (target) target.style.display = 'block';
+
+            /* update nav active state */
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const link = document.querySelector(`.nav-link[data-section="${name}"]`);
+            if (link) link.classList.add('active');
+
+            /* update header text */
+            const info = TAB_META[name];
+            if (info) {
+                document.getElementById('pageTitle').textContent = info.title;
+                document.getElementById('pageSubtitle').textContent = info.subtitle;
+            }
+
+            localStorage.setItem('ownerTab', name);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* show/hide rows */
-        document.querySelectorAll('.' + rowClass).forEach(row => {
-            if (status === 'all') {
-                row.style.display = '';
+        /* ────────────────────────────────────────────────────────
+           filterTable — generic row filter used in Bookings section
+           rowClass  : CSS class on each <tr>  e.g. 'appt-row'
+           status    : value to match against row's data-status attr
+           btn       : the clicked button (for active state)
+        ──────────────────────────────────────────────────────── */
+        function filterTable(rowClass, status, btn) {
+            /* update active button — only toggle buttons inside the same
+               parent container to avoid touching unrelated filter groups */
+            const container = btn.closest('div');
+            if (container) {
+                container.querySelectorAll('button').forEach(b => {
+                    b.classList.remove('btn-primary');
+                    b.classList.add('btn-secondary');
+                });
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-primary');
+            }
+
+            /* show/hide rows */
+            document.querySelectorAll('.' + rowClass).forEach(row => {
+                if (status === 'all') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = (row.dataset.status === status) ? '' : 'none';
+                }
+            });
+        }
+
+        /* ────────────────────────────────────────────────────────
+           prefillInvoice — jump to Invoice tab and pre-select the
+           appointment in the dropdown
+        ──────────────────────────────────────────────────────── */
+        function prefillInvoice(appointmentId) {
+            switchTab('invoice');
+
+            /* wait one tick for the section to be visible before
+               trying to set the select value */
+            setTimeout(function () {
+                const sel = document.getElementById('apptSelect');
+                if (sel) {
+                    sel.value = appointmentId;
+                    /* highlight so the owner sees the pre-filled field */
+                    sel.style.borderColor = '#4834D4';
+                    sel.style.boxShadow = '0 0 0 3px rgba(72,52,212,0.1)';
+                    sel.focus();
+                    setTimeout(() => {
+                        sel.style.borderColor = '';
+                        sel.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 50);
+        }
+
+        /* ────────────────────────────────────────────────────────
+           prefillPayment — jump to Payment tab and pre-select the
+           invoice + fill in the amount
+        ──────────────────────────────────────────────────────── */
+        function prefillPayment(invoiceId, amount) {
+            switchTab('payment');
+
+            setTimeout(function () {
+                /* select the invoice */
+                const invSel = document.getElementById('invoiceSelect');
+                if (invSel) {
+                    invSel.value = invoiceId;
+                    invSel.style.borderColor = '#4834D4';
+                    invSel.style.boxShadow = '0 0 0 3px rgba(72,52,212,0.1)';
+                    setTimeout(() => {
+                        invSel.style.borderColor = '';
+                        invSel.style.boxShadow = '';
+                    }, 2000);
+                }
+
+                /* fill in the amount */
+                const amtInput = document.getElementById('amountPaid');
+                if (amtInput && amount) {
+                    amtInput.value = amount;
+                    amtInput.style.borderColor = '#22c55e';
+                    amtInput.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.1)';
+                    setTimeout(() => {
+                        amtInput.style.borderColor = '';
+                        amtInput.style.boxShadow = '';
+                    }, 2000);
+                }
+
+                /* focus the first unfilled field */
+                if (invSel) invSel.focus();
+            }, 50);
+        }
+
+        /* ────────────────────────────────────────────────────────
+           togglePw — show/hide password in profile section
+           (also defined locally inside profile.html but keeping
+            it here so it's always available from any section)
+        ──────────────────────────────────────────────────────── */
+        function togglePw(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (!input || !icon) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
             } else {
-                row.style.display = (row.dataset.status === status) ? '' : 'none';
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
             }
-        });
-    }
-
-    /* ────────────────────────────────────────────────────────
-       prefillInvoice — jump to Invoice tab and pre-select the
-       appointment in the dropdown
-    ──────────────────────────────────────────────────────── */
-    function prefillInvoice(appointmentId) {
-        switchTab('invoice');
-
-        /* wait one tick for the section to be visible before
-           trying to set the select value */
-        setTimeout(function () {
-            const sel = document.getElementById('apptSelect');
-            if (sel) {
-                sel.value = appointmentId;
-                /* highlight so the owner sees the pre-filled field */
-                sel.style.borderColor = '#4834D4';
-                sel.style.boxShadow   = '0 0 0 3px rgba(72,52,212,0.1)';
-                sel.focus();
-                setTimeout(() => {
-                    sel.style.borderColor = '';
-                    sel.style.boxShadow   = '';
-                }, 2000);
-            }
-        }, 50);
-    }
-
-    /* ────────────────────────────────────────────────────────
-       prefillPayment — jump to Payment tab and pre-select the
-       invoice + fill in the amount
-    ──────────────────────────────────────────────────────── */
-    function prefillPayment(invoiceId, amount) {
-        switchTab('payment');
-
-        setTimeout(function () {
-            /* select the invoice */
-            const invSel = document.getElementById('invoiceSelect');
-            if (invSel) {
-                invSel.value = invoiceId;
-                invSel.style.borderColor = '#4834D4';
-                invSel.style.boxShadow   = '0 0 0 3px rgba(72,52,212,0.1)';
-                setTimeout(() => {
-                    invSel.style.borderColor = '';
-                    invSel.style.boxShadow   = '';
-                }, 2000);
-            }
-
-            /* fill in the amount */
-            const amtInput = document.getElementById('amountPaid');
-            if (amtInput && amount) {
-                amtInput.value = amount;
-                amtInput.style.borderColor = '#22c55e';
-                amtInput.style.boxShadow   = '0 0 0 3px rgba(34,197,94,0.1)';
-                setTimeout(() => {
-                    amtInput.style.borderColor = '';
-                    amtInput.style.boxShadow   = '';
-                }, 2000);
-            }
-
-            /* focus the first unfilled field */
-            if (invSel) invSel.focus();
-        }, 50);
-    }
-
-    /* ────────────────────────────────────────────────────────
-       togglePw — show/hide password in profile section
-       (also defined locally inside profile.html but keeping
-        it here so it's always available from any section)
-    ──────────────────────────────────────────────────────── */
-    function togglePw(inputId, btn) {
-        const input = document.getElementById(inputId);
-        const icon  = btn.querySelector('i');
-        if (!input || !icon) return;
-        if (input.type === 'password') {
-            input.type    = 'text';
-            icon.className = 'fa-regular fa-eye-slash';
-        } else {
-            input.type    = 'password';
-            icon.className = 'fa-regular fa-eye';
         }
-    }
 
-    /* ────────────────────────────────────────────────────────
-       Init on page load
-    ──────────────────────────────────────────────────────── */
-    (function init() {
-        /* restore last active tab, or fall back to dashboard */
-        const last = localStorage.getItem('ownerTab') || 'dashboard';
-        switchTab(last);
+        /* ────────────────────────────────────────────────────────
+           Init on page load
+        ──────────────────────────────────────────────────────── */
+        (function init() {
+            /* restore last active tab, or fall back to dashboard */
+            const last = localStorage.getItem('ownerTab') || 'dashboard';
+            switchTab(last);
 
-        /* auto-dismiss flash messages after 5 s */
-        setTimeout(function () {
-            document.querySelectorAll('.flash-msg').forEach(f => {
-                f.style.opacity = '0';
-                setTimeout(() => f.remove(), 500);
-            });
-        }, 5000);
-    })();
+            /* auto-dismiss flash messages after 5 s */
+            setTimeout(function () {
+                document.querySelectorAll('.flash-msg').forEach(f => {
+                    f.style.opacity = '0';
+                    setTimeout(() => f.remove(), 500);
+                });
+            }, 5000);
+        })();
 
-</script>
+    </script>
 </body>
+
 </html>

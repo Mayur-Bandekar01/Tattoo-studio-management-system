@@ -24,14 +24,14 @@
                 <h3 class="studio-title" style="margin:0; color:#92400e;">
                     Pending Payment Approvals
                 </h3>
-                <p style="color:#B45309; font-size:0.72rem; font-weight:600;
+                <p style="color:#B45309; font-size:0.72rem; font-weight:700;
                            text-transform:uppercase; letter-spacing:0.05em; margin:0;">
                     {{ pending_approvals_list | length }} payment(s) awaiting your verification
                 </p>
             </div>
         </div>
         <span style="background:#FEF9C3; color:#B45309; border:1px solid #FDE68A;
-                     font-size:0.7rem; font-weight:800; padding:0.3rem 0.9rem;
+                     font-size:0.7rem; font-weight:700; padding:0.3rem 0.9rem;
                      border-radius:20px; letter-spacing:0.05em;">
             ACTION REQUIRED
         </span>
@@ -73,18 +73,18 @@
                         #{{ p.payment_id }}
                     </td>
                     <td>
-                        <span style="font-weight:800; color:var(--studio-gold);">
+                        <span style="font-weight:700; color:var(--studio-gold);">
                             #INV-{{ p.invoice_id }}
                         </span>
                     </td>
-                    <td style="font-weight:600;">{{ appt.customer_name if appt else '—' }}</td>
+                    <td style="font-weight:700;">{{ appt.customer_name if appt else '—' }}</td>
                     <td>
-                        <span style="font-weight:800; font-size:1rem; color:#166534; font-family:'Cinzel',serif;">
+                        <span style="font-weight:700; font-size:1rem; color:#166534; font-family:'Cinzel',serif;">
                             ₹{{ p.amount_paid }}
                         </span>
                     </td>
                     <td
-                        style="font-family:monospace; font-size:0.82rem; color:var(--studio-text-primary); font-weight:600; word-break:break-all;">
+                        style="font-family:monospace; font-size:0.82rem; color:var(--studio-text-primary); font-weight:700; word-break:break-all;">
                         {{ p.payment_method }}
                     </td>
                     <td style="font-size:0.82rem; color:var(--studio-text-secondary);">
@@ -136,7 +136,7 @@
         <div>
             <h3 class="studio-title" style="margin:0;">Record Payment Manually</h3>
             <p style="color:var(--studio-text-secondary); font-size:0.72rem;
-                      font-weight:600; text-transform:uppercase; margin:0;">
+                      font-weight:700; text-transform:uppercase; margin:0;">
                 For walk-in cash or offline payments not submitted by customer
             </p>
         </div>
@@ -213,7 +213,7 @@
             <div>
                 <h3 class="studio-title" style="margin:0;">Payment Ledger</h3>
                 <p style="color:var(--studio-text-secondary); font-size:0.72rem;
-                           font-weight:600; text-transform:uppercase; margin:0;">
+                           font-weight:700; text-transform:uppercase; margin:0;">
                     All payment records
                 </p>
             </div>
@@ -250,14 +250,14 @@
         </button>
 
         <button onclick="filtPay('Approved', this)" class="pay-filter-btn" data-active-color="#166534" style="padding:0.45rem 1.25rem; border-radius:24px; font-size:0.75rem;
-                   font-weight:600; cursor:pointer; border:none; outline:none;
+                   font-weight:700; cursor:pointer; border:none; outline:none;
                    background:transparent; color:#64748b; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                    font-family:inherit; box-shadow:none; transform:scale(1);">
             ✓ Approved
         </button>
 
         <button onclick="filtPay('Pending Approval', this)" class="pay-filter-btn" data-active-color="#b45309" style="padding:0.45rem 1.25rem; border-radius:24px; font-size:0.75rem;
-                   font-weight:600; cursor:pointer; border:none; outline:none;
+                   font-weight:700; cursor:pointer; border:none; outline:none;
                    background:transparent; color:#64748b; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                    font-family:inherit; box-shadow:none; transform:scale(1);">
             ⏳ Pending
@@ -287,13 +287,13 @@
                         #{{ p.payment_id }}
                     </td>
                     <td>
-                        <span style="font-weight:800; color:var(--studio-gold);">
+                        <span style="font-weight:700; color:var(--studio-gold);">
                             #INV-{{ p.invoice_id }}
                         </span>
                     </td>
                     <td style="font-weight:500;">{{ appt.customer_name if appt else '—' }}</td>
                     <td>
-                        <span style="font-weight:800; color:#166534; font-family:'Cinzel',serif;">
+                        <span style="font-weight:700; color:#166534; font-family:'Cinzel',serif;">
                             ₹{{ p.amount_paid }}
                         </span>
                     </td>
@@ -334,7 +334,7 @@
     {% else %}
     <div style="text-align:center; padding:3rem; color:var(--studio-text-secondary);">
         <div style="font-size:2.5rem; margin-bottom:1rem;">💳</div>
-        <p style="font-weight:600; margin-bottom:0.5rem;">No payments recorded yet</p>
+        <p style="font-weight:700; margin-bottom:0.5rem;">No payments recorded yet</p>
         <p style="font-size:0.82rem;">Payments will appear here once invoices are settled.</p>
     </div>
     {% endif %}

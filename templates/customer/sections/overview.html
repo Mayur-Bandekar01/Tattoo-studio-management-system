@@ -19,22 +19,23 @@
 
     <!-- 1. Hero Card: Upcoming Session -->
     <div class="studio-card"
-        style="border-left: 4px solid #4834D4; margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem;">
+        style="border-left: 4px solid var(--studio-indigo); margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem;">
         <div
             style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
             <div style="position: relative; z-index: 2;">
                 <p
-                    style="font-size: 0.75rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;">
+                    style="font-size: 0.75rem; font-weight: 700; color: var(--studio-indigo); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-bolt"></i> Upcoming Session
                 </p>
                 {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
                 {% set next_appt = appointments[0] %}
                 <h2
-                    style="font-size: 2.2rem; font-weight: 800; color: #2D3436; margin-bottom: 0.25rem; line-height: 1.1;">
+                    style="font-size: 2.2rem; font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.25rem; line-height: 1.1;">
                     {{ next_appt.appointment_date }}
                 </h2>
-                <p style="color: #636E72; font-size: 1.05rem; font-weight: 500; max-width: 500px;">
-                    with Artist <strong style="color: #4834D4;">{{ next_appt.artist_name }}</strong> &mdash; "{{
+                <p style="color: var(--studio-text-secondary); font-size: 1.05rem; font-weight: 400; max-width: 500px;">
+                    with Artist <strong style="color: var(--studio-indigo);">{{ next_appt.artist_name }}</strong>
+                    &mdash; "{{
                     next_appt.tattoo_concept }}"
                 </p>
                 <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
@@ -42,16 +43,16 @@
                         style="padding: 8px 14px; font-size: 0.75rem;">
                         {{ next_appt.status }}
                     </span>
-                    <span style="font-size: 0.85rem; color: #636E72; font-weight: 600;">
+                    <span style="font-size: 0.85rem; color: var(--studio-text-secondary); font-weight: 700;">
                         <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
                     </span>
                 </div>
                 {% else %}
                 <h2
-                    style="font-size: 2.2rem; font-weight: 800; color: #2D3436; margin-bottom: 0.5rem; line-height: 1.1;">
+                    style="font-size: 2.2rem; font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.5rem; line-height: 1.1;">
                     No upcoming sessions
                 </h2>
-                <p style="color: #636E72; font-size: 1rem; max-width: 500px;">
+                <p style="color: var(--studio-text-secondary); font-size: 1rem; max-width: 500px;">
                     Your skin is a waiting canvas. Book your next masterpiece with one of our world-class artists today.
                 </p>
                 <div style="margin-top: 2rem;">
@@ -65,7 +66,7 @@
 
             {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
             <div
-                style="background: rgba(72, 52, 212, 0.05); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4834D4; font-size: 2rem; position: relative; z-index: 2;">
+                style="background: rgba(123, 44, 191, 0.08); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--studio-indigo); font-size: 2rem; position: relative; z-index: 2;">
                 <i class="fas fa-calendar-day"></i>
             </div>
             {% endif %}
@@ -73,7 +74,7 @@
 
         <!-- Subtle decorative background blob -->
         <div
-            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(72, 52, 212, 0.03); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
+            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(157, 78, 221, 0.05); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
         </div>
     </div>
 
@@ -94,7 +95,7 @@
                 Review your completed masterpieces and session history. Build your personal art portfolio.
             </p>
             <div
-                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                style="font-size: 0.8rem; font-weight: 700; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
                 View History <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
             </div>
         </div>
@@ -113,7 +114,7 @@
                 Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.
             </p>
             <div
-                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                style="font-size: 0.8rem; font-weight: 700; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
                 Explore Team <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
             </div>
         </div>
@@ -132,7 +133,7 @@
                 Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
             </p>
             <div
-                style="font-size: 0.8rem; font-weight: 800; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
+                style="font-size: 0.8rem; font-weight: 700; color: #4834D4; text-transform: uppercase; letter-spacing: 0.5px;">
                 Read Guide <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
             </div>
         </div>

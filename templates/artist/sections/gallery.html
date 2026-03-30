@@ -72,6 +72,38 @@
                     <div class="form-group">
                         <label class="form-label">Style <span
                                 style="font-weight: 400; text-transform: none; opacity: 0.6;">(Optional)</span></label>
+
+                        <!-- FIX: Show style options based on artist specialisation -->
+                        {% set spec = (artist_profile.specialisation or '') | lower %}
+
+                        {% if 'art' in spec or 'sketch' in spec or 'paint' in spec
+                              or 'digital' in spec or 'illustrat' in spec %}
+
+                        <!-- Sketch / Art artist style options -->
+                        <select class="studio-input" name="style">
+                            <option value="">Select a style category...</option>
+                            <option>Pencil Sketch</option>
+                            <option>Charcoal Drawing</option>
+                            <option>Ink Drawing</option>
+                            <option>Black & White Sketch</option>
+                            <option>Watercolor Painting</option>
+                            <option>Acrylic Painting</option>
+                            <option>Oil Painting</option>
+                            <option>Digital Art</option>
+                            <option>Digital Sketch</option>
+                            <option>Neon Painting</option>
+                            <option>Blood Art</option>
+                            <option>Portrait</option>
+                            <option>Landscape</option>
+                            <option>Abstract</option>
+                            <option>Illustration</option>
+                            <option>Concept Art</option>
+                            <option>Other</option>
+                        </select>
+
+                        {% else %}
+
+                        <!-- Tattoo artist style options -->
                         <select class="studio-input" name="style">
                             <option value="">Select a style category...</option>
                             <option>Blackwork</option>
@@ -84,8 +116,14 @@
                             <option>Tribal</option>
                             <option>Minimalist</option>
                             <option>Traditional</option>
+                            <option>Dotwork</option>
+                            <option>New School</option>
+                            <option>Biomechanical</option>
                             <option>Other</option>
                         </select>
+
+                        {% endif %}
+
                     </div>
                 </div>
 
@@ -111,7 +149,7 @@
     <div class="gal-grid">
         {% for item in my_gallery %}
         <div class="gal-item">
-            <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Tattoo' }}"
+            <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork' }}"
                 loading="lazy">
             <div class="gal-ov">
                 <div style="width: 100%;">
@@ -138,6 +176,7 @@
         </div>
         {% endfor %}
     </div>
+
     {% else %}
     <div
         style="text-align: center; padding: 6rem 2rem; background: var(--studio-secondary); border: 2px dashed var(--studio-border); border-radius: 24px;">
