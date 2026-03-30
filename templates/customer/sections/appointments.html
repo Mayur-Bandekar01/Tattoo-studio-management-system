@@ -1,28 +1,28 @@
 <div id="sec-appointments" class="content-section">
 
     <div class="studio-card">
-        <div
-            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
             <h3 class="card-title" style="margin-bottom: 0;">My Appointments</h3>
             <div class="filter-group">
-                <button onclick="filterAppts('all', this)" class="filter-btn active">All</button>
-                <button onclick="filterAppts('Pending', this)" class="filter-btn">Pending</button>
-                <button onclick="filterAppts('Approved', this)" class="filter-btn">Approved</button>
-                <button onclick="filterAppts('Done', this)" class="filter-btn">Done</button>
+                <button onclick="filterAppts('all', this)"       class="filter-btn active">All</button>
+                <button onclick="filterAppts('Pending', this)"   class="filter-btn">Pending</button>
+                <button onclick="filterAppts('Approved', this)"  class="filter-btn">Approved</button>
+                <button onclick="filterAppts('Done', this)"      class="filter-btn">Done</button>
                 <button onclick="filterAppts('Cancelled', this)" class="filter-btn">Cancelled</button>
-                <button onclick="filterAppts('Rejected', this)" class="filter-btn">Rejected</button>
+                <button onclick="filterAppts('Rejected', this)"  class="filter-btn">Rejected</button>
             </div>
         </div>
 
-        <!-- Info note about delete -->
+        <!-- Info note -->
         <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.9rem 1.1rem;
-                    background: rgba(123, 44, 191, 0.05); border: 1px solid rgba(123, 44, 191, 0.15);
+                    background: rgba(72,52,212,0.04); border: 1px solid rgba(72,52,212,0.12);
                     border-radius: 10px; margin-bottom: 1.75rem;">
             <i class="fas fa-circle-info" style="color: var(--studio-indigo); margin-top: 2px; flex-shrink: 0;"></i>
             <p style="font-size: 0.78rem; color: var(--studio-text-secondary); line-height: 1.5; margin: 0;">
                 You can <strong style="color: var(--studio-text-primary);">cancel</strong> a Pending appointment
                 to stop it going ahead. Once it is Cancelled or Rejected you can
                 <strong style="color: #DC2626;">permanently delete</strong> the record from your history.
+                Use the <i class="fas fa-comment-dots" style="color:var(--studio-indigo);"></i> icon to chat with your artist about any appointment.
             </p>
         </div>
 
@@ -46,91 +46,98 @@
                     {% for a in appointments %}
                     <tr class="appt-row" data-status="{{ a.status }}">
 
-                        <!-- ID -->
                         <td style="color: var(--studio-text-secondary); font-size: 0.85rem; font-family: monospace;">
                             #{{ a.appointment_id }}
                         </td>
 
-                        <!-- Artist -->
-                        <td style="font-weight: 700;">{{ a.artist_name }}</td>
+                        <td style="font-weight: 600;">{{ a.artist_name }}</td>
 
-                        <!-- Concept -->
                         <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
                             title="{{ a.tattoo_concept }}">
                             {{ a.tattoo_concept }}
                         </td>
 
-                        <!-- Reference image -->
                         <td>
                             {% if a.reference %}
-                            <img src="{{ url_for('static', filename=a.reference) }}" alt="Reference" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;
+                            <img src="{{ url_for('static', filename=a.reference) }}"
+                                 alt="Reference"
+                                 style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;
                                         border: 1px solid var(--studio-border); cursor: pointer;"
-                                onclick="openRefLb(this.src)" title="View full image">
+                                 onclick="openRefLb(this.src)"
+                                 title="View full image">
                             {% else %}
                             <span style="color: var(--studio-text-secondary);">—</span>
                             {% endif %}
                         </td>
 
-                        <!-- Date -->
                         <td>{{ a.appointment_date }}</td>
-
-                        <!-- Time -->
                         <td>{{ a.appointment_time }}</td>
 
-                        <!-- Duration -->
                         <td>
                             {% if a.duration_hours %}
-                            {{ a.duration_hours }} hrs
+                                {{ a.duration_hours }} hrs
                             {% else %}
-                            <span style="color: var(--studio-text-secondary);">—</span>
+                                <span style="color: var(--studio-text-secondary);">—</span>
                             {% endif %}
                         </td>
 
-                        <!-- Status badge -->
                         <td>
                             {% if a.status == 'Pending' %}
-                            <span class="badge badge-pending">Pending</span>
+                                <span class="badge badge-pending">Pending</span>
                             {% elif a.status == 'Approved' %}
-                            <span class="badge badge-approved">Approved</span>
+                                <span class="badge badge-approved">Approved</span>
                             {% elif a.status == 'Done' %}
-                            <span class="badge badge-done">Completed</span>
+                                <span class="badge badge-done">Completed</span>
                             {% elif a.status == 'Rejected' %}
-                            <span class="badge badge-rejected">Rejected</span>
+                                <span class="badge badge-rejected">Rejected</span>
                             {% else %}
-                            <span class="badge badge-cancelled">Cancelled</span>
+                                <span class="badge badge-cancelled">Cancelled</span>
                             {% endif %}
                         </td>
 
                         <!-- Action column -->
                         <td>
-                            {% if a.status == 'Pending' %}
-                            <!-- ── CANCEL: changes status to Cancelled ── -->
-                            <form method="POST" action="/customer/cancel/{{ a.appointment_id }}"
-                                style="display: inline;">
-                                <button type="submit"
-                                    onclick="return confirm('Are you sure you want to cancel this appointment?')"
-                                    class="btn-studio btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.72rem;
-                                               color: #D97706; border-color: #FDE68A; background: #FFFBEB;">
-                                    <i class="fas fa-ban" style="margin-right: 4px;"></i>Cancel
-                                </button>
-                            </form>
+                            <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
 
-                            {% elif a.status == 'Cancelled' or a.status == 'Rejected' %}
-                            <!-- ── DELETE: removes the record permanently ── -->
-                            <form method="POST" action="/customer/delete/{{ a.appointment_id }}"
-                                style="display: inline;">
-                                <button type="submit"
-                                    onclick="return confirm('Permanently delete this appointment?\n\nThis cannot be undone.')"
-                                    class="btn-studio btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.72rem;
-                                               color: #DC2626; border-color: #FECACA; background: #FFF5F5;">
-                                    <i class="fas fa-trash-alt" style="margin-right: 4px;"></i>Delete
-                                </button>
-                            </form>
+                                {% if a.status == 'Pending' %}
+                                <form method="POST" action="/customer/cancel/{{ a.appointment_id }}"
+                                      style="display: inline;">
+                                    <button type="submit"
+                                            onclick="return confirm('Are you sure you want to cancel this appointment?')"
+                                            class="btn-studio btn-outline"
+                                            style="padding: 0.4rem 0.85rem; font-size: 0.72rem;
+                                                   color: #D97706; border-color: #FDE68A; background: #FFFBEB;">
+                                        <i class="fas fa-ban" style="margin-right: 4px;"></i>Cancel
+                                    </button>
+                                </form>
 
-                            {% else %}
-                            <!-- Approved / Done — no action available -->
-                            <span style="color: var(--studio-text-secondary); font-size: 0.75rem;">—</span>
-                            {% endif %}
+                                {% elif a.status == 'Cancelled' or a.status == 'Rejected' %}
+                                <form method="POST" action="/customer/delete/{{ a.appointment_id }}"
+                                      style="display: inline;">
+                                    <button type="submit"
+                                            onclick="return confirm('Permanently delete this appointment?\n\nThis cannot be undone.')"
+                                            class="btn-studio btn-outline"
+                                            style="padding: 0.4rem 0.85rem; font-size: 0.72rem;
+                                                   color: #DC2626; border-color: #FECACA; background: #FFF5F5;">
+                                        <i class="fas fa-trash-alt" style="margin-right: 4px;"></i>Delete
+                                    </button>
+                                </form>
+                                {% endif %}
+
+                                <!-- Chat button — always visible -->
+                                <button onclick="custOpenChatFromAppt('{{ a.artist_id }}','{{ a.artist_name }}','{{ a.appointment_id }}')"
+                                        title="Chat about appointment #{{ a.appointment_id }}"
+                                        style="width:32px;height:32px;border-radius:8px;
+                                               background:rgba(72,52,212,0.1);color:var(--studio-indigo);
+                                               border:1px solid rgba(72,52,212,0.2);cursor:pointer;
+                                               display:flex;align-items:center;justify-content:center;
+                                               transition:background 0.15s;"
+                                        onmouseover="this.style.background='rgba(72,52,212,0.18)'"
+                                        onmouseout="this.style.background='rgba(72,52,212,0.1)'">
+                                    <i class="fas fa-comment-dots" style="font-size:0.75rem;"></i>
+                                </button>
+
+                            </div>
                         </td>
 
                     </tr>
@@ -139,11 +146,13 @@
                     <tr>
                         <td colspan="9" style="text-align: center; padding: 4rem;
                                                color: var(--studio-text-secondary);">
-                            <i class="fas fa-calendar-times" style="font-size: 2rem; display: block;
+                            <i class="fas fa-calendar-times"
+                               style="font-size: 2rem; display: block;
                                       margin-bottom: 1rem; opacity: 0.3;"></i>
                             No appointments yet.
                             <a href="javascript:void(0)"
-                                onclick="switchTab('book', document.querySelector('[data-section=book]'))" style="color: var(--studio-indigo); font-weight: 700;
+                               onclick="switchTab('book', document.querySelector('[data-section=book]'))"
+                               style="color: var(--studio-indigo); font-weight: 600;
                                       text-decoration: none; margin-left: 0.5rem;">
                                 Book your first session →
                             </a>
@@ -155,11 +164,14 @@
         </div>
     </div>
 
-    <!-- ── Reference image lightbox ── -->
-    <div id="refLb" onclick="closeRefLb()" style="display: none; position: fixed; inset: 0; z-index: 9999;
+    <!-- Reference image lightbox -->
+    <div id="refLb"
+         onclick="closeRefLb()"
+         style="display: none; position: fixed; inset: 0; z-index: 9999;
                 background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
                 align-items: center; justify-content: center;">
-        <img id="refLbImg" src="" style="max-height: 85vh; max-width: 90vw; border-radius: 12px;
+        <img id="refLbImg" src=""
+             style="max-height: 85vh; max-width: 90vw; border-radius: 12px;
                     box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
         <div style="position: absolute; top: 2rem; right: 2rem;
                     color: white; font-size: 1.5rem; cursor: pointer;">
