@@ -1,7 +1,7 @@
 <div id="sec-gallery" class="section">
     <!-- Header Section -->
     <div class="studio-card"
-        style="margin-bottom: 2.5rem; background: var(--studio-indigo-soft); border-color: rgba(72, 52, 212, 0.1);">
+        style="margin-bottom: 2.5rem; background: var(--studio-indigo-soft); border: 1px solid var(--studio-indigo-soft) !important;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
             <div>
                 <h2
@@ -50,7 +50,7 @@
                                 <p id="dzN" style="font-weight: 700; color: var(--studio-indigo); font-size: 0.8rem;">
                                 </p>
                                 <button type="button" onclick="clearDz(event)" class="btn-studio"
-                                    style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background: #FFEEF0; color: #FF4757;">✕
+                                    style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background: rgba(255, 71, 87, 0.1); color: #FF4757; border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 8px;">✕
                                     Remove</button>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                         {% set spec = (artist_profile.specialisation or '') | lower %}
 
                         {% if 'art' in spec or 'sketch' in spec or 'paint' in spec
-                              or 'digital' in spec or 'illustrat' in spec %}
+                        or 'digital' in spec or 'illustrat' in spec %}
 
                         <!-- Sketch / Art artist style options -->
                         <select class="studio-input" name="style">
@@ -181,7 +181,7 @@
     <div
         style="text-align: center; padding: 6rem 2rem; background: var(--studio-secondary); border: 2px dashed var(--studio-border); border-radius: 24px;">
         <div
-            style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-white); border: 1px solid var(--studio-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; transform: rotate(-5deg); box-shadow: var(--studio-shadow);">
+            style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-secondary); border: 1px solid var(--studio-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; transform: rotate(-5deg); box-shadow: var(--studio-shadow);">
             <i class="fas fa-images" style="font-size: 2rem; color: var(--studio-indigo); opacity: 0.4;"></i>
         </div>
         <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--studio-text-primary); margin-bottom: 0.75rem;">

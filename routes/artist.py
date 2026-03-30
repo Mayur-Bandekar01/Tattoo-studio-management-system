@@ -60,6 +60,7 @@ def artist_dashboard():
     today_count   = len(today_appointments)
     done_count    = sum(1 for a in appointments if a['status'] == 'Done')
     low_stock     = sum(1 for i in inventory if i['quant_stock'] <= i['reorder_level'])
+    total_count   = len(appointments)
     conn.close()
 
     return render_template('artist/dashboard.html',
@@ -73,7 +74,8 @@ def artist_dashboard():
         pending_count      = pending_count,
         today_count        = today_count,
         done_count         = done_count,
-        low_stock          = low_stock
+        low_stock          = low_stock,
+        total_count        = total_count
     )
 
 @artist_bp.route('/artist/approve/<int:appointment_id>', methods=['POST'])

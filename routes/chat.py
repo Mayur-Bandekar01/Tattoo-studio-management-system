@@ -23,47 +23,25 @@ def chat_get_messages():
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
 
-    if appt_id:
-        cursor.execute("""
-            SELECT * FROM messages
-            WHERE appointment_id = %s
-              AND (
-                    (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-                 OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-              )
-            ORDER BY sent_at ASC LIMIT 200
-        """, (appt_id,
-              user_id, role, other_id, other_role,
-              other_id, other_role, user_id, role))
-    else:
-        cursor.execute("""
-            SELECT * FROM messages
-            WHERE appointment_id IS NULL
-              AND (
-                    (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-                 OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-              )
-            ORDER BY sent_at ASC LIMIT 200
-        """, (user_id, role, other_id, other_role,
-              other_id, other_role, user_id, role))
+    cursor.execute("""
+        SELECT * FROM messages
+        WHERE (
+                (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+             OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+          )
+        ORDER BY sent_at ASC LIMIT 300
+    """, (user_id, role, other_id, other_role,
+          other_id, other_role, user_id, role))
 
     rows = cursor.fetchall()
 
     # Mark incoming messages in this thread as read
-    if appt_id:
-        cursor.execute("""
-            UPDATE messages SET is_read = 1
-            WHERE receiver_id=%s AND receiver_role=%s
-              AND sender_id=%s AND sender_role=%s
-              AND appointment_id=%s AND is_read=0
-        """, (user_id, role, other_id, other_role, appt_id))
-    else:
-        cursor.execute("""
-            UPDATE messages SET is_read = 1
-            WHERE receiver_id=%s AND receiver_role=%s
-              AND sender_id=%s AND sender_role=%s
-              AND appointment_id IS NULL AND is_read=0
-        """, (user_id, role, other_id, other_role))
+    cursor.execute("""
+        UPDATE messages SET is_read = 1
+        WHERE receiver_id=%s AND receiver_role=%s
+          AND sender_id=%s AND sender_role=%s
+          AND is_read=0
+    """, (user_id, role, other_id, other_role))
 
     conn.commit()
     conn.close()
@@ -137,10 +115,10 @@ def chat_unread_threads():
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-        SELECT sender_id, appointment_id, COUNT(*) AS cnt
+        SELECT sender_id, COUNT(*) AS cnt
         FROM messages
         WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
-        GROUP BY sender_id, appointment_id
+        GROUP BY sender_id
     """, (str(session['user_id']), role))
     rows = cursor.fetchall()
     conn.close()
@@ -148,8 +126,35 @@ def chat_unread_threads():
     return jsonify({'threads': [
         {
             'sender_id'     : r['sender_id'],
-            'appointment_id': r['appointment_id'],
             'count'         : int(r['cnt']),
         }
         for r in rows
     ]})
+
+
+# ── DELETE a message ──────────────────────────────────────────
+@chat_bp.route('/chat/message/<int:message_id>', methods=['DELETE'])
+def chat_delete_msg(message_id):
+    role = session.get('role')
+    if role not in ('customer', 'artist'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    conn   = get_db()
+    cursor = conn.cursor()
+    
+    # Only allow deleting your own messages
+    cursor.execute("""
+        DELETE FROM messages 
+        WHERE message_id = %s 
+          AND sender_id = %s 
+          AND sender_role = %s
+    """, (message_id, str(session['user_id']), role))
+    
+    deleted = cursor.rowcount
+    conn.commit()
+    conn.close()
+    
+    if deleted > 0:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Message not found or unauthorized'}), 404

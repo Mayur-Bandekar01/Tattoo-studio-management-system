@@ -1,299 +1,215 @@
 <div id="sec-overview" class="section active">
-
-    {% with messages = get_flashed_messages() %}
+    <!-- Flashed Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    {% for msg in messages %}
-    <div style="background:rgba(32,191,107,0.1);border:1px solid rgba(32,191,107,0.2);
-                color:var(--studio-success);padding:1rem;border-radius:var(--studio-radius-sm);
-                margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;">
-        <i class="fas fa-check-circle"></i>
-        <span style="font-size:0.9rem;font-weight:600;">{{ msg }}</span>
+    <div style="margin-bottom: 2rem;">
+        {% for category, message in messages %}
+        <div class="studio-alert studio-alert-{{ 'error' if category == 'error' else 'success' }}">
+            <i class="fas {{ 'fa-exclamation-circle' if category == 'error' else 'fa-check-circle' }}"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
     {% endif %}
     {% endwith %}
 
-    <!-- Welcome Hero -->
-    <div class="studio-card" style="padding:3rem;background:var(--studio-white);border:1px solid var(--studio-border);
-               position:relative;overflow:hidden;margin-bottom:2rem;">
-        <div style="position:relative;z-index:2;">
-            <p style="font-size:0.7rem;font-weight:800;color:var(--studio-indigo);
-                      text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.75rem;">
-                Artist Workspace</p>
-            <h1 style="font-family:'Cinzel',serif;font-size:2rem;color:var(--studio-text-primary);
-                        margin-bottom:1rem;">
-                Welcome back, <span style="color:var(--studio-indigo);">{{ name }}</span>
-            </h1>
-            <p style="color:var(--studio-text-secondary);font-size:0.95rem;line-height:1.6;
-                       max-width:500px;margin-bottom:2rem;">
-                You have
-                <span style="font-weight:700;color:var(--studio-text-primary);">{{ pending_count }}</span>
-                pending approvals and
-                <span style="font-weight:700;color:var(--studio-success);">{{ today_count }}</span>
-                sessions scheduled for today.
-            </p>
-            <div style="display:flex;gap:1rem;">
-                <button onclick="nav('appointments', document.querySelector('[onclick*=appointments]'))"
-                    class="btn-studio btn-primary" style="padding:0.85rem 2rem;">
-                    <i class="fas fa-calendar-check"></i> View Schedule
-                </button>
-                <button onclick="nav('gallery', document.querySelector('[onclick*=gallery]'))"
-                    class="btn-studio btn-outline" style="padding:0.85rem 2rem;">
-                    <i class="fas fa-images"></i> My Portfolio
-                </button>
-            </div>
-        </div>
-        <div style="position:absolute;right:-5%;top:-10%;width:40%;height:120%;
-                    background:radial-gradient(circle,rgba(72,52,212,0.04) 0%,transparent 70%);
-                    pointer-events:none;"></div>
+    <!-- Welcome Header -->
+    <div style="margin-bottom: 2.5rem;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 1.75rem; color: var(--studio-text-primary); margin: 0;">
+            Artist Console ⚡</h2>
+        <p style="color: var(--studio-text-secondary); font-size: 0.9rem; margin-top: 0.25rem; font-weight: 500;">
+            Manage your sanctuary, appointments, and creative portfolio</p>
     </div>
 
-    <!-- Stats -->
-    <div class="stat-grid">
-
-        <div class="stat-card">
-            <div class="stat-icon" style="background:rgba(247,183,49,0.1);color:var(--studio-warning);">
-                <i class="fas fa-hourglass-half"></i>
+    <!-- Top Stats Row -->
+    <div class="summary-grid">
+        <div class="summary-card" style="border-left: 4px solid var(--studio-indigo);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box bg-indigo-soft text-indigo">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <span class="badge bg-indigo-soft text-indigo">Appointments</span>
             </div>
-            <div class="stat-value">{{ pending_count|default(0) }}</div>
-            <div class="stat-label">Pending Approvals</div>
-            <div
-                style="height:4px;background:var(--studio-secondary);border-radius:10px;margin-top:1rem;overflow:hidden;">
-                {% set pw = [[pending_count|default(0), 10]|min * 10, 100]|min %}
-                {{ ('<div sty' ~ 'le="height:100%;background:var(--studio-warning);width:' ~ pw ~ '%;"></div>' ) | safe
-                    }} </div>
+            <p class="card-label">Total Volume</p>
+            <div class="card-value">{{ total_count }}</div>
+        </div>
+
+        <div class="summary-card" style="border-left: 4px solid var(--studio-warning);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box bg-warning-soft text-warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <span class="badge bg-warning-soft text-warning">Pending</span>
+            </div>
+            <p class="card-label">Requires Action</p>
+            <div class="card-value">{{ pending_count }}</div>
+        </div>
+
+        <div class="summary-card" style="border-left: 4px solid var(--studio-success);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box bg-success-soft text-success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <span class="badge bg-success-soft text-success">Completed</span>
+            </div>
+            <p class="card-label">Finished Sessions</p>
+            <div class="card-value">{{ done_count }}</div>
+        </div>
+
+        <div class="summary-card" style="border-left: 4px solid var(--studio-danger);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box bg-danger-soft text-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <span class="badge bg-danger-soft text-danger">Inventory</span>
+            </div>
+            <p class="card-label">Low Stock Alerts</p>
+            <div class="card-value">{{ low_stock }}</div>
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.75rem; margin-bottom: 2.5rem;">
+
+        <!-- Left: Pending Requests -->
+        <div class="studio-card" style="border-left: 4px solid var(--studio-warning);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <div>
+                    <h3 class="card-title" style="margin-bottom: 0.25rem;">NEW BOOKING REQUESTS</h3>
+                    <p style="font-size: 0.75rem; color: var(--studio-text-secondary); font-weight: 500;">Please review
+                        and set session durations</p>
+                </div>
+                <span class="badge badge-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">{{ pending_count }}
+                    PENDING</span>
+            </div>
+
+            <div class="studio-table-container">
+                <table class="studio-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Concept</th>
+                            <th>Date/Time</th>
+                            <th style="width: 250px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in appointments if appt.status == 'Pending' %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name
+                                    }}
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--studio-text-secondary);">
+                                    Reference Attached</div>
+                            </td>
+                            <td>
+                                <div
+                                    style="padding: 0.5rem 0.75rem; background: var(--studio-secondary); border-radius: 8px; font-size: 0.8rem; color: var(--studio-text-primary); border: 1px solid var(--studio-border); font-weight: 500;">
+                                    {{ appt.tattoo_concept }}
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 700; color: var(--studio-text-primary); font-size: 0.85rem;">{{
+                                    appt.appointment_date }}</div>
+                                <div style="font-size: 0.75rem; color: var(--studio-indigo); font-weight: 600;">{{
+                                    appt.appointment_time }}</div>
+                            </td>
+                            <td>
+                                <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
+                                    style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="position: relative; flex: 1;">
+                                        <input class="studio-input" type="number" name="duration_hours"
+                                            placeholder="Hrs" required
+                                            style="padding-right: 2.5rem; font-size: 0.8rem;">
+                                        <span
+                                            style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary);">HRS</span>
+                                    </div>
+                                    <button type="submit" class="btn-studio btn-primary"
+                                        style="padding: 0.5rem 1rem; font-size: 0.75rem;">Accept</button>
+                                </form>
+
+                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}"
+                                    style="margin-top: 0.5rem;">
+                                    <button type="submit" class="btn-studio btn-outline"
+                                        style="width: 100%; font-size: 0.7rem; padding: 0.4rem; border-color: rgba(239, 68, 68, 0.2); color: var(--studio-danger); background: var(--studio-danger-soft);">
+                                        <i class="fas fa-times-circle"></i> Reject Request
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4"
+                                style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 2rem; opacity: 0.1; margin-bottom: 1rem; display: block;"></i>
+                                No new booking requests found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right: Recent Gallery & Quick Tools -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+
+            <!-- Quick Actions -->
+            <div class="studio-card" style="border-left: 4px solid var(--studio-indigo);">
+                <h3 class="card-title" style="margin-bottom: 1.5rem;">QUICK ACTIONS</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="qa-card"
+                        onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Upload Art</span>
+                    </div>
+                    <div class="qa-card"
+                        onclick="nav('inventory', document.querySelector('button[onclick*=\'inventory\']'))">
+                        <i class="fas fa-boxes"></i>
+                        <span>Manage Stock</span>
+                    </div>
+                    <div class="qa-card"
+                        onclick="nav('schedule', document.querySelector('button[onclick*=\'schedule\']'))">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>Today's List</span>
+                    </div>
+                    <div class="qa-card"
+                        onclick="nav('profile', document.querySelector('button[onclick*=\'profile\']'))">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Glimpse -->
+            <div class="studio-card" style="border-left: 4px solid var(--studio-success);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <h3 class="card-title" style="margin-bottom: 0;">MY PORTFOLIO</h3>
+                    <button class="btn-studio btn-outline"
+                        onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))"
+                        style="padding: 0.4rem 0.8rem; font-size: 0.65rem;">View All</button>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon" style="background:rgba(32,191,107,0.1);color:var(--studio-success);">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div class="stat-value">{{ today_count|default(0) }}</div>
-                    <div class="stat-label">Sessions Today</div>
+                {% if my_gallery %}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    {% for item in my_gallery[:4] %}
                     <div
-                        style="height:4px;background:var(--studio-secondary);border-radius:10px;margin-top:1rem;overflow:hidden;">
-                        {% set tw = [[today_count|default(0), 8]|min * 12, 100]|min %}
-                        {{ ('<div sty' ~ 'le="height:100%;background:var(--studio-success);width:' ~ tw ~ '%;"></div>' )
-                            | safe }} </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(9,132,227,0.1);color:var(--studio-info);">
-                                <i class="fas fa-check-double"></i>
-                            </div>
-                            <div class="stat-value">{{ done_count|default(0) }}</div>
-                            <div class="stat-label">Completed Sessions</div>
-                            <div
-                                style="height:4px;background:var(--studio-secondary);border-radius:10px;margin-top:1rem;overflow:hidden;">
-                                {% set dw = [[done_count|default(0), 50]|min * 2, 100]|min %}
-                                {{ ('<div sty' ~ 'le="height:100%;background:var(--studio-info);width:' ~ dw
-                                    ~ '%;"></div>' ) | safe }} </div>
-                                </div>
-
-                                <div class="stat-card">
-                                    <div class="stat-icon"
-                                        style="background:rgba(214,48,49,0.1);color:var(--studio-danger);">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="stat-value">{{ low_stock|default(0) }}</div>
-                                    <div class="stat-label">Low Stock Alerts</div>
-                                    <div
-                                        style="height:4px;background:var(--studio-secondary);border-radius:10px;margin-top:1rem;overflow:hidden;">
-                                        {% set lw = [[low_stock|default(0), 10]|min * 10, 100]|min %}
-                                        {{ ('<div sty' ~ 'le="height:100%;background:var(--studio-danger);width:' ~ lw
-                                            ~ '%;"></div>' ) | safe }} </div>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- Quick Actions -->
-                                    <div style="margin-top:3rem;margin-bottom:1.5rem;">
-                                        <h3 style="font-size:1.1rem;font-weight:800;color:var(--studio-text-primary);
-                   text-transform:uppercase;letter-spacing:0.05em;">Quick Actions</h3>
-                                    </div>
-                                    <div class="qa-grid">
-                                        <button class="qa-card"
-                                            onclick="nav('appointments', document.querySelector('[onclick*=appointments]'))">
-                                            <div class="qa-icon"
-                                                style="background:rgba(72,52,212,0.1);color:var(--studio-indigo);">
-                                                <i class="fas fa-calendar-alt"></i>
-                                            </div>
-                                            <div class="qa-info">
-                                                <h4>My Appointments</h4>
-                                                <p>Review and confirm bookings</p>
-                                            </div>
-                                            <i class="fas fa-chevron-right qa-arr"></i>
-                                        </button>
-
-                                        <button class="qa-card"
-                                            onclick="nav('schedule', document.querySelector('[onclick*=schedule]'))">
-                                            <div class="qa-icon"
-                                                style="background:rgba(32,191,107,0.1);color:var(--studio-success);">
-                                                <i class="fas fa-clock"></i>
-                                            </div>
-                                            <div class="qa-info">
-                                                <h4>Today's Schedule</h4>
-                                                <p>{{ today_count }} sessions for today</p>
-                                            </div>
-                                            <i class="fas fa-chevron-right qa-arr"></i>
-                                        </button>
-
-                                        <button class="qa-card"
-                                            onclick="nav('gallery', document.querySelector('[onclick*=gallery]'))">
-                                            <div class="qa-icon"
-                                                style="background:rgba(9,132,227,0.1);color:var(--studio-info);">
-                                                <i class="fas fa-images"></i>
-                                            </div>
-                                            <div class="qa-info">
-                                                <h4>Portfolio Management</h4>
-                                                <p>Update your online gallery</p>
-                                            </div>
-                                            <i class="fas fa-chevron-right qa-arr"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Recent Appointments -->
-                                    <div class="studio-card" style="margin-top:3rem;">
-                                        <div
-                                            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
-                                            <h3 class="card-title" style="margin-bottom:0;">Recent Appointments</h3>
-                                            <button class="btn-studio btn-outline"
-                                                style="padding:0.5rem 1rem;font-size:0.75rem;"
-                                                onclick="nav('appointments', document.querySelector('[onclick*=appointments]'))">
-                                                View All <i class="fas fa-arrow-right" style="margin-left:0.25rem;"></i>
-                                            </button>
-                                        </div>
-
-                                        <div class="studio-table-container">
-                                            <table class="studio-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Customer</th>
-                                                        <th>Service Details</th>
-                                                        <th>Reference</th>
-                                                        <th>Date &amp; Time</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% if appointments %}
-                                                    {% for appt in appointments[:5] %}
-                                                    <tr>
-                                                        <td style="font-weight:700;color:var(--studio-text-primary);">
-                                                            {{ appt.customer_name }}
-                                                        </td>
-                                                        <td style="font-size:0.85rem;">{{ appt.tattoo_concept }}</td>
-
-                                                        <!-- FIX: Show reference image thumbnail in overview too -->
-                                                        <td>
-                                                            {% if appt.reference %}
-                                                            <img src="{{ url_for('static', filename=appt.reference) }}"
-                                                                alt="Reference" title="Click to view full image"
-                                                                onclick="openArtistRefLb(this.src)" style="width: 40px; height: 40px; object-fit: cover;
-                                       border-radius: 8px; border: 1px solid var(--studio-border);
-                                       cursor: pointer; transition: transform 0.2s;"
-                                                                onmouseover="this.style.transform='scale(1.1)'"
-                                                                onmouseout="this.style.transform='scale(1)'">
-                                                            {% else %}
-                                                            <span
-                                                                style="color:var(--studio-text-secondary);font-size:0.75rem;">—</span>
-                                                            {% endif %}
-                                                        </td>
-
-                                                        <td>
-                                                            <div style="font-weight:600;font-size:0.85rem;">
-                                                                {{ appt.appointment_date }}
-                                                            </div>
-                                                            <div
-                                                                style="font-size:0.75rem;color:var(--studio-text-secondary);">
-                                                                at {{ appt.appointment_time }}
-                                                            </div>
-                                                        </td>
-
-                                                        <td>
-                                                            <span class="badge
-                                {% if appt.status=='Pending'   %}badge-warning
-                                {% elif appt.status=='Approved'%}badge-success
-                                {% elif appt.status=='Done'    %}badge-info
-                                {% elif appt.status=='Rejected'%}badge-danger
-                                {% else %}badge-muted{% endif %}">
-                                                                {{ appt.status }}
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            {% if appt.status == 'Pending' %}
-
-                                                            {% set is_art = 'Art / Sketching' in appt.tattoo_concept %}
-
-                                                            <div style="display:flex;gap:0.5rem;align-items:center;">
-
-                                                                {% if is_art %}
-                                                                <!-- FIX: Art — no duration input -->
-                                                                <form method="POST"
-                                                                    action="/artist/approve/{{ appt.appointment_id }}">
-                                                                    <input type="hidden" name="duration_hours"
-                                                                        value="1">
-                                                                    <button type="submit" class="btn-studio btn-primary"
-                                                                        style="padding:0.4rem 0.75rem;font-size:0.75rem;">
-                                                                        <i class="fas fa-check"></i> Approve
-                                                                    </button>
-                                                                </form>
-
-                                                                {% else %}
-                                                                <!-- Tattoo / Removal — duration required -->
-                                                                <form method="POST"
-                                                                    action="/artist/approve/{{ appt.appointment_id }}"
-                                                                    style="display:flex;gap:0.5rem;align-items:center;">
-                                                                    <input type="number" name="duration_hours"
-                                                                        placeholder="Hrs" min="1" max="12" style="width:60px;padding:0.4rem;border:1px solid var(--studio-border);
-                                                   border-radius:8px;font-size:0.8rem;" required>
-                                                                    <button type="submit" class="btn-studio btn-primary"
-                                                                        style="padding:0.4rem 0.75rem;font-size:0.75rem;">
-                                                                        Approve
-                                                                    </button>
-                                                                </form>
-                                                                {% endif %}
-
-                                                                <form method="POST"
-                                                                    action="/artist/reject/{{ appt.appointment_id }}">
-                                                                    <button type="submit" class="btn-studio" style="padding:0.4rem;background:#FFEEF0;color:#FF4757;
-                                                   border:1px solid #FECACA;border-radius:8px;cursor:pointer;">
-                                                                        <i class="fas fa-times"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-
-                                                            {% elif appt.status == 'Approved' %}
-                                                            <form method="POST"
-                                                                action="/artist/done/{{ appt.appointment_id }}">
-                                                                <button type="submit" class="btn-studio btn-primary"
-                                                                    style="padding:0.4rem 0.75rem;font-size:0.75rem;">
-                                                                    <i class="fas fa-flag-checkered"></i> Mark Done
-                                                                </button>
-                                                            </form>
-
-                                                            {% else %}
-                                                            <span
-                                                                style="color:var(--studio-text-secondary);font-size:0.75rem;">—</span>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                    {% else %}
-                                                    <tr>
-                                                        <td colspan="6"
-                                                            style="text-align:center;padding:4rem;color:var(--studio-text-secondary);">
-                                                            <i class="fas fa-calendar-times"
-                                                                style="font-size:2.5rem;opacity:0.2;margin-bottom:1rem;display:block;"></i>
-                                                            No recent appointments found.
-                                                        </td>
-                                                    </tr>
-                                                    {% endif %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                </div>
+                        style="aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 1px solid var(--studio-border);">
+                        <img src="{{ url_for('static', filename=item.image_path) }}"
+                            style="width: 100%; height: 100%; object-fit: cover;" alt="Artwork" loading="lazy">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div
+                    style="text-align: center; padding: 2rem; border: 1px dashed var(--studio-border); border-radius: 16px; 
+                            background: var(--studio-secondary); color: var(--studio-text-secondary); font-size: 0.8rem;">
+                    No artwork uploaded yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -38,3 +38,11 @@ def gallery():
 @public_bp.route('/contact')
 def contact():
     return render_template('landing/contact.html')
+
+@public_bp.route('/update-theme', methods=['POST'])
+def update_theme():
+    from flask import session, request
+    current_theme = session.get('theme', 'dark')
+    new_theme = 'light' if current_theme == 'dark' else 'dark'
+    session['theme'] = new_theme
+    return {'success': True, 'theme': new_theme}

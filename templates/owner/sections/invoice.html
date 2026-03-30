@@ -1,20 +1,20 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER INVOICE
-     Refactored: Vanilla CSS Shell
+     Refactored: Vibrant Obsidian Alignment
      ═══════════════════════════════════════ -->
 
 <!-- Invoice Creation Portal -->
-<div class="studio-card">
+<div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-        <div
-            style="width: 45px; height: 45px; background: rgba(72, 52, 212, 0.1); color: var(--studio-indigo); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        <div class="bg-indigo-soft text-indigo"
+            style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
             <i class="fa-solid fa-file-invoice-dollar"></i>
         </div>
         <div>
             <h3 class="studio-title" style="margin: 0;">Create Invoice</h3>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                Generate billing for completed sessions</p>
+            <p class="text-secondary"
+                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Generate
+                billing for completed sessions</p>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
             <div>
                 <label>Select Appointment</label>
-                <select name="appointment_id" id="apptSelect" required>
+                <select class="studio-input" name="appointment_id" id="apptSelect" required>
                     <option value="">Select completed session...</option>
                     {% if appointments %}
                     {% for a in appointments %}
@@ -38,7 +38,7 @@
             </div>
             <div>
                 <label>Service Category</label>
-                <select name="concept_type" required>
+                <select class="studio-input" name="concept_type" required>
                     <option value="">Select...</option>
                     <option>Tattoo</option>
                     <option>Touch-up</option>
@@ -50,30 +50,30 @@
                 <label>Amount (₹)</label>
                 <div style="position: relative;">
                     <span
-                        style="position: absolute; left: 15px; top: 12px; font-weight: 700; color: var(--studio-indigo);">₹</span>
-                    <input type="number" name="total_amt" id="totalAmt" placeholder="0.00" step="any" min="0" required
-                        style="padding-left: 2.5rem;">
+                        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--studio-indigo);">₹</span>
+                    <input class="studio-input" type="number" name="total_amt" id="totalAmt" placeholder="0.00"
+                        step="any" min="0" required style="padding-left: 2.5rem;">
                 </div>
             </div>
             <div>
                 <label>Invoice Date</label>
-                <input type="date" name="generated_date" required>
+                <input class="studio-input" type="date" name="generated_date" required>
             </div>
         </div>
-        <button type="submit" class="btn-studio btn-primary" style="padding: 14px 30px;">
+        <button type="submit" class="btn-studio btn-primary">
             <i class="fa-solid fa-file-signature"></i> Create Invoice
         </button>
     </form>
 </div>
 
 <!-- Invoice History -->
-<div class="studio-card">
+<div class="studio-card" style="border-left: 6px solid var(--studio-success);">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
         <div>
             <h3 class="studio-title" style="margin: 0;">Invoice History</h3>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                Manage generated billing record</p>
+            <p class="text-secondary"
+                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Manage
+                generated billing records</p>
         </div>
     </div>
 
@@ -81,48 +81,52 @@
         <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Invoice#</th>
-                    <th>Sess#</th>
+                    <th style="width: 120px;">Invoice ID</th>
+                    <th style="width: 100px;">Session ID</th>
                     <th>Category</th>
-                    <th>Total Price</th>
+                    <th>Total Yield</th>
                     <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th style="width: 140px;">Status</th>
+                    <th style="width: 120px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% if invoices %}
                 {% for inv in invoices %}
                 <tr>
-                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--studio-text-secondary);">#INV-{{
-                        inv.invoice_id }}</td>
-                    <td style="font-weight: 700;">#APT-{{ inv.appointment_id }}</td>
-                    <td
-                        style="font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--studio-text-secondary);">
-                        {{ inv.concept_type }}</td>
-                    <td style="font-weight: 700; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
-                    <td style="font-size: 0.85rem;">{{ inv.generated_date }}</td>
+                    <td class="font-mono text-indigo" style="font-weight: 800;">#INV-{{ inv.invoice_id }}</td>
+                    <td class="font-bold">#{{ inv.appointment_id }}</td>
+                    <td class="font-bold text-secondary"
+                        style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">{{
+                        inv.concept_type }}</td>
+                    <td class="font-bold">₹{{ inv.total_amt }}</td>
+                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ inv.generated_date }}
+                    </td>
                     <td>
-                        <span class="badge {{ 'badge-paid' if inv.pay_status=='Paid' else 'badge-pending' }}">
-                            {{ inv.pay_status }}
-                        </span>
+                        {% if inv.pay_status=='Paid' %}
+                        <span class="badge bg-success-soft text-success">Paid</span>
+                        {% else %}
+                        <span class="badge bg-warning-soft text-warning">Pending</span>
+                        {% endif %}
                     </td>
                     <td>
                         {% if inv.pay_status == 'Pending' %}
                         <button onclick="prefillPayment('{{ inv.invoice_id }}', '{{ inv.total_amt }}')"
-                            class="btn-studio btn-secondary" style="padding: 6px 12px; font-size: 0.65rem;">
-                            <i class="fa-solid fa-hand-holding-dollar"></i> Record Pay
+                            class="btn-studio btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.7rem;">
+                            <i class="fa-solid fa-hand-holding-dollar"></i> Record
                         </button>
                         {% else %}
-                        <span style="font-size: 0.65rem; font-weight: 700; color: #22c55e;">SETTLED ✓</span>
+                        <span class="text-success" style="font-size: 0.75rem; font-weight: 800;">Settled ✓</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; color: var(--studio-text-secondary); padding: 3rem;">
-                        No history found.
+                    <td colspan="7" style="text-align: center; padding: 5rem 2rem;">
+                        <i class="fas fa-ghost text-muted"
+                            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
+                        <p class="text-secondary" style="font-weight: 500;">No history found in billing archive.</p>
                     </td>
                 </tr>
                 {% endif %}

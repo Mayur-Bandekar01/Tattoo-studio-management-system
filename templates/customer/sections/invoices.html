@@ -1,34 +1,51 @@
 <div id="sec-invoices" class="content-section">
     <div class="studio-card">
-        <h3 class="card-title">My Invoices</h3>
+        <h3 class="card-title" style="font-weight: 800; letter-spacing: -0.01em; margin-bottom: 2rem;">My Invoices</h3>
 
         <div class="studio-table-container">
             <table class="studio-table">
                 <thead>
                     <tr>
-                        <th>Invoice ID</th>
-                        <th>Appointment ID</th>
-                        <th>Service</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Invoice ID</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Appointment ID</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Service</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Amount</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Date</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Status</th>
+                        <th
+                            style="color: var(--studio-text-primary); font-weight: 800; border-bottom: 2px solid var(--studio-border);">
+                            Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% if invoices %}
                     {% for inv in invoices %}
                     <tr>
-                        <td style="color: var(--studio-text-secondary); font-size: 0.85rem;">#{{ inv.invoice_id }}</td>
-                        <td style="font-weight: 700;">#{{ inv.appointment_id }}</td>
-                        <td>{{ inv.concept_type }}</td>
-                        <td style="font-weight: 700; color: var(--studio-text-primary);">₹{{ inv.total_amt }}</td>
-                        <td>{{ inv.generated_date }}</td>
+                        <td
+                            style="color: var(--studio-text-secondary); font-size: 0.85rem; font-family: monospace; opacity: 0.8;">
+                            #{{ inv.invoice_id }}</td>
+                        <td style="font-weight: 700; color: var(--studio-text-primary);">#{{ inv.appointment_id }}</td>
+                        <td style="color: var(--studio-text-secondary);">{{ inv.concept_type }}</td>
+                        <td style="font-weight: 800; color: var(--studio-text-primary); font-size: 1.1rem;">₹{{
+                            inv.total_amt }}</td>
+                        <td style="font-weight: 500;">{{ inv.generated_date }}</td>
                         <td>
                             {% if inv.pay_status=='Paid' %}
-                            <span class="badge badge-paid">Paid</span>
+                            <span class="badge badge-success">Paid</span>
                             {% else %}
-                            <span class="badge badge-unpaid">Pending</span>
+                            <span class="badge badge-pending">Pending</span>
                             {% endif %}
                         </td>
                         <td>
@@ -41,11 +58,15 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                        <td colspan="7"
+                            style="text-align: center; padding: 6rem 4rem; color: var(--studio-text-secondary);">
                             <i class="fas fa-file-invoice-dollar"
-                                style="font-size: 2.5rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
-                            No invoices generated yet.
-                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Once your appointment is completed, your
+                                style="font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.2; color: var(--studio-accent);"></i>
+                            <div
+                                style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--studio-text-primary);">
+                                No invoices generated yet.</div>
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Once your appointment is
+                                completed, your
                                 invoice will appear here.</p>
                         </td>
                     </tr>

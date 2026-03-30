@@ -1,154 +1,154 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER PROFILE
-     Refactored: Vanilla CSS Shell
+     Refactored: Vibrant Obsidian Alignment
      ═══════════════════════════════════════ -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
 
     <!-- ── Profile Info Card ── -->
-    <div class="studio-card">
+    <div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-            <div
-                style="width: 45px; height: 45px; background: rgba(72, 52, 212, 0.1); color: var(--studio-indigo); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <div class="bg-indigo-soft text-indigo"
+                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
                 <i class="fa-solid fa-crown"></i>
             </div>
             <div>
                 <h3 class="studio-title" style="margin: 0;">Owner Profile</h3>
-                <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                    Your Administrative Credentials</p>
+                <p class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">
+                    Administrative Credentials</p>
             </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 1rem;">
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Owner
+                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
+                <span class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Owner
                     ID</span>
-                <span style="font-family: monospace; font-weight: 700; color: var(--studio-indigo);">#{{
-                    session.get('user_id') }}</span>
+                <span class="font-mono text-indigo" style="font-weight: 800;">#{{ session.get('user_id') }}</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Full
+                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
+                <span class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Full
                     Name</span>
-                <span style="font-weight: 700; color: var(--studio-text-primary);">{{ name }}</span>
+                <span class="font-bold text-primary">{{ name }}</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Role
+                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
+                <span class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Role
                     Access</span>
-                <span class="badge badge-paid">STUDIO OWNER</span>
+                <span class="badge bg-indigo-soft text-indigo">STUDIO OWNER</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Team
-                    Control</span>
-                <span style="font-weight: 700; color: var(--studio-text-primary);">{{ total_artists }} Artists</span>
+                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
+                <span class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Team
+                    Size</span>
+                <span class="font-bold text-primary">{{ total_artists }} Artists Active</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: 12px;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--studio-text-secondary);">Global
+                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
+                <span class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Global
                     Yield</span>
-                <span style="font-weight: 700; color: #166534;">₹{{ total_revenue | default(0) }}</span>
+                <span class="font-bold text-success">₹{{ total_revenue | default(0) }}</span>
             </div>
         </div>
     </div>
 
     <!-- ── Security Settings ── -->
-    <div class="studio-card">
+    <div class="studio-card" style="border-left: 6px solid var(--studio-danger);">
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-            <div
-                style="width: 45px; height: 45px; background: #FEF2F2; color: #DC2626; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+            <div class="bg-danger-soft text-danger"
+                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div>
                 <h3 class="studio-title" style="margin: 0;">Security Settings</h3>
-                <p
-                    style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                    Update Credentials</p>
+                <p class="text-secondary"
+                    style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Cipher &
+                    Password Management</p>
             </div>
         </div>
 
         <form method="POST" action="/owner/change-password">
             <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
-
-                <!-- Current Password -->
                 <div>
                     <label>Current Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" name="current_password" id="ownerCurrPw" placeholder="••••••••" required>
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerCurrPw', this)">
+                    <div class="pw-wrap" style="position: relative;">
+                        <input class="studio-input" type="password" name="current_password" id="ownerCurrPw"
+                            placeholder="••••••••" required>
+                        <button type="button" class="pw-eye" onclick="togglePw('ownerCurrPw', this)"
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- New Password -->
                 <div>
                     <label>New Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" name="new_password" id="ownerNewPw" placeholder="Minimal 8 characters"
-                            required oninput="checkOwnerPwStrength()">
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerNewPw', this)">
+                    <div class="pw-wrap" style="position: relative;">
+                        <input class="studio-input" type="password" name="new_password" id="ownerNewPw"
+                            placeholder="Minimal 8 characters" required oninput="checkOwnerPwStrength()">
+                        <button type="button" class="pw-eye" onclick="togglePw('ownerNewPw', this)"
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
-                    <!-- Strength bar -->
                     <div
-                        style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
-                        <div id="ownerPwBar"
-                            style="height: 100%; width:0%; transition: width 0.3s ease, background 0.3s ease;"></div>
+                        style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; margin-top: 0.6rem; overflow: hidden;">
+                        <div id="ownerPwBar" style="height: 100%; width:0%; transition: all 0.3s ease;"></div>
                     </div>
                     <p id="ownerPwLabel"
-                        style="font-size: 0.65rem; color: var(--studio-text-secondary); margin-top: 0.25rem; font-weight: 700;">
+                        style="font-size: 0.65rem; margin-top: 0.4rem; font-weight: 800; text-transform: uppercase;">
                     </p>
                 </div>
 
-                <!-- Confirm Password -->
                 <div>
                     <label>Confirm New Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" name="confirm_password" id="ownerConfPw" placeholder="Re-enter password"
-                            required oninput="checkOwnerPwMatch()">
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerConfPw', this)">
+                    <div class="pw-wrap" style="position: relative;">
+                        <input class="studio-input" type="password" name="confirm_password" id="ownerConfPw"
+                            placeholder="Re-enter password" required oninput="checkOwnerPwMatch()">
+                        <button type="button" class="pw-eye" onclick="togglePw('ownerConfPw', this)"
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
-                    <p id="ownerMatchLabel" style="font-size: 0.65rem; font-weight: 700; margin-top: 0.25rem;"></p>
+                    <p id="ownerMatchLabel"
+                        style="font-size: 0.65rem; font-weight: 800; margin-top: 0.4rem; text-transform: uppercase;">
+                    </p>
                 </div>
 
-                <!-- Password rules -->
-                <div
-                    style="background: rgba(72, 52, 212, 0.05); border: 1px solid rgba(72, 52, 212, 0.1); padding: 1rem; border-radius: 12px;">
-                    <p
-                        style="font-size: 0.65rem; color: var(--studio-text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
+                <div class="bg-indigo-soft"
+                    style="border: 1px solid var(--studio-border); padding: 1rem; border-radius: var(--studio-radius-sm);">
+                    <p class="text-secondary"
+                        style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
                         Password must contain:</p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                         <p id="ownerRule_len"
-                            style="font-size: 0.7rem; color: var(--studio-text-secondary); margin: 0;">✗ At least 8
-                            characters</p>
+                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
+                            8+ characters</p>
                         <p id="ownerRule_upper"
-                            style="font-size: 0.7rem; color: var(--studio-text-secondary); margin: 0;">✗ One uppercase
-                            letter</p>
+                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
+                            Uppercase</p>
                         <p id="ownerRule_num"
-                            style="font-size: 0.7rem; color: var(--studio-text-secondary); margin: 0;">✗ One number</p>
+                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
+                            Number</p>
                         <p id="ownerRule_spec"
-                            style="font-size: 0.7rem; color: var(--studio-text-secondary); margin: 0;">✗ One special
-                            character</p>
+                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
+                            Special char</p>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-studio btn-primary" style="width: 100%; padding: 16px; font-size: 0.8rem;">
-                <i class="fa-solid fa-shield-halved"></i> Update Password
+            <button type="submit" class="btn-studio btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-shield-halved"></i> Update Cipher
             </button>
         </form>
     </div>
+
 
 </div>
 
@@ -170,11 +170,11 @@
             if (!el) return;
             const text = el.textContent.slice(2);
             el.textContent = (pass ? '✓ ' : '✗ ') + text;
-            el.style.color = pass ? '#4ade80' : 'var(--muted)';
+            el.style.color = pass ? 'var(--studio-success)' : 'var(--studio-text-muted)';
         });
 
         const score = Object.values(rules).filter(Boolean).length;
-        const colors = ['transparent', '#ef4444', '#f97316', '#eab308', '#22c55e'];
+        const colors = ['transparent', 'var(--studio-danger)', '#f97316', '#eab308', 'var(--studio-success)'];
         const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
 
         bar.style.width = (score * 25) + '%';
@@ -190,10 +190,10 @@
         if (!pw2) { lbl.textContent = ''; return; }
         if (pw1 === pw2) {
             lbl.textContent = '✓ Passwords match';
-            lbl.style.color = '#4ade80';
+            lbl.style.color = 'var(--studio-success)';
         } else {
-            lbl.textContent = '✗ Passwords do not match';
-            lbl.style.color = '#f87171';
+            lbl.textContent = '✗ Passwords mismatch';
+            lbl.style.color = 'var(--studio-danger)';
         }
     }
 </script>

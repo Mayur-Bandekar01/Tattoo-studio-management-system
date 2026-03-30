@@ -1,20 +1,20 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER ARTISTS
-     Refactored: Vanilla CSS Shell
+     Refactored: Vibrant Obsidian Alignment
      ═══════════════════════════════════════ -->
 
 <!-- Add New Artist Section -->
-<div class="studio-card">
+<div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-        <div
-            style="width: 45px; height: 45px; background: rgba(72, 52, 212, 0.1); color: var(--studio-indigo); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+        <div class="bg-indigo-soft text-indigo"
+            style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
             <i class="fa-solid fa-user-plus"></i>
         </div>
         <div>
             <h3 class="studio-title" style="margin: 0;">Add New Artist</h3>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                Register new studio talent</p>
+            <p class="text-secondary"
+                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Register new
+                studio talent</p>
         </div>
     </div>
 
@@ -23,23 +23,23 @@
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
             <div>
                 <label>Artist ID</label>
-                <input type="text" name="artist_id" placeholder="DRAG-ART-003" required>
+                <input class="studio-input" type="text" name="artist_id" placeholder="DRAG-ART-003" required>
             </div>
             <div>
                 <label>Full Name</label>
-                <input type="text" name="artist_name" placeholder="Artist Name" required>
+                <input class="studio-input" type="text" name="artist_name" placeholder="Artist Name" required>
             </div>
             <div>
                 <label>Email Address</label>
-                <input type="email" name="artist_email" placeholder="artist@email.com" required>
+                <input class="studio-input" type="email" name="artist_email" placeholder="artist@email.com" required>
             </div>
             <div>
                 <label>Phone Number</label>
-                <input type="text" name="phone" placeholder="Contact number" required>
+                <input class="studio-input" type="text" name="phone" placeholder="Contact number" required>
             </div>
             <div>
                 <label>Specialty</label>
-                <select name="specialisation" required>
+                <select class="studio-input" name="specialisation" required>
                     <option value="">Select Specialty...</option>
                     <option>Blackwork</option>
                     <option>Fine Line</option>
@@ -50,23 +50,23 @@
             </div>
             <div>
                 <label>Password</label>
-                <input type="text" name="password" placeholder="Artist entry password" required>
+                <input class="studio-input" type="text" name="password" placeholder="Artist entry password" required>
             </div>
         </div>
-        <button type="submit" class="btn-studio btn-primary" style="padding: 14px 30px;">
+        <button type="submit" class="btn-studio btn-primary">
             <i class="fa-solid fa-user-plus"></i> Register Artist
         </button>
     </form>
 </div>
 
 <!-- Artist Team Table -->
-<div class="studio-card">
+<div class="studio-card" style="border-left: 6px solid var(--studio-success);">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
         <div>
             <h3 class="studio-title" style="margin: 0;">Studio Team</h3>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
-                Manage active artists</p>
+            <p class="text-secondary"
+                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Manage active
+                artists</p>
         </div>
     </div>
 
@@ -74,32 +74,30 @@
         <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Ref</th>
+                    <th style="width: 100px;">Ref ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Specialty</th>
-                    <th>Actions</th>
+                    <th style="width: 120px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% if artists %}
                 {% for artist in artists %}
                 <tr>
-                    <td style="font-family: monospace; font-size: 0.75rem; color: var(--studio-text-secondary);">#{{
-                        artist.artist_id }}</td>
-                    <td style="font-weight: 700;">{{ artist.artist_name }}</td>
-                    <td style="font-size: 0.85rem; color: var(--studio-text-secondary);">{{ artist.artist_email }}</td>
+                    <td class="font-mono text-indigo" style="font-weight: 800;">#{{ artist.artist_id }}</td>
+                    <td class="font-bold">{{ artist.artist_name }}</td>
+                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 500;">{{ artist.artist_email }}
+                    </td>
                     <td>
-                        <span class="badge" style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo);">
-                            {{ artist.specialisation }}
-                        </span>
+                        <span class="badge bg-indigo-soft text-indigo">{{ artist.specialisation }}</span>
                     </td>
                     <td>
                         <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}"
                             style="display: inline;">
                             <button type="submit" onclick="return confirm('Remove this artist from the team?')"
-                                class="btn-studio"
-                                style="padding: 6px 12px; font-size: 0.65rem; color: #ef4444; border: 1px solid #fee2e2;">
+                                class="btn-studio btn-secondary text-danger bg-danger-soft"
+                                style="padding: 0.4rem 0.85rem; font-size: 0.7rem; border-color: var(--studio-danger);">
                                 <i class="fa-solid fa-trash-can"></i> Remove
                             </button>
                         </form>
@@ -108,8 +106,10 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--studio-text-secondary); padding: 3rem;">
-                        No artists registered yet.
+                    <td colspan="5" style="text-align: center; padding: 5rem 2rem;">
+                        <i class="fas fa-ghost text-muted"
+                            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
+                        <p class="text-secondary" style="font-weight: 500;">No artists registered yet.</p>
                     </td>
                 </tr>
                 {% endif %}

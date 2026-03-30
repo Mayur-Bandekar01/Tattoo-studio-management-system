@@ -1,31 +1,32 @@
-# Orchestration Plan: CSS Relocation and Dashboard Fixes
+# Orchestration Plan: Dashboard Synchronization
+**Goal:** Achieve 100% visual and functional parity across Owner, Artist, and Customer dashboards, adhering precisely to the "Vibrant Obsidian" (Dark) and "Studio White" (Light) design system.
 
-## 1. Goal
-Remove CSS files from the combined `static/css/` folder and relocate them to their "respective folders" natively attached to each dashboard, while ensuring the dashboards remain fully functional.
+## 1. Scope of Work
+The user requested that the Artist Dashboard and Customer Dashboard have the **exact same interface** as the Owner Dashboard. This includes:
+- **Text & Typography:** Consistent use of Cinzel (Logo), Outfit (Headings), and Inter (Body text), including font sizes, weights, and letter spacing.
+- **Colors & Alignment:** Identical color palette (Red-Orange accent, dark navy sidebar, etc.), card layouts, border radii, and internal padding.
+- **Visual Concepts:** Exact replication of the stat card colored left-lines, clean inner buttons, and soft glow effects.
+- **Theme Engine:** Implementation of the robust `data-theme` switching concept (Dark/White modes) with local storage persistence across all three portals.
 
-## 2. Proposed Architecture
-Currently, files are stored as:
-- `static/css/owner_dashboard.css`
-- `static/css/artist_dashboard.css`
-- `static/css/customer_dashboard.css`
+## 2. Target Files
+### Frontend & UI (`frontend-specialist`)
+*   `static/css/artist_dashboard.css`: Copy/adapt the precise layout grid, sidebar, and theme tokens from `owner_dashboard.css`.
+*   `static/css/customer_dashboard.css`: Overhaul completely to match `owner_dashboard.css`.
+*   `templates/artist/*.html`: Update HTML structural classes, inline styles, and grid layouts to identically match the owner templates.
+*   `templates/customer/*.html`: Overhaul HTML structural classes, sidebar, and theme toggling logic.
 
-**Proposed Changes:**
-1. **Relocate CSS Files:** Delete the shared `static/css/` directory files and recreate them inside role-specific static folders:
-   - `static/owner/css/dashboard.css`
-   - `static/artist/css/dashboard.css`
-   - `static/customer/css/dashboard.css`
-   *(If you prefer the CSS to be embedded directly into the HTML `<style>` tags instead, please let me know during approval!)*
-   
-2. **Update HTML Templates:** 
-   - Update `templates/owner/dashboard.html`
-   - Update `templates/artist/dashboard.html`
-   - Update `templates/customer/dashboard.html`
-   - Point the `<link>` tags to the new respective paths.
+### Logic & Scripting (`frontend-specialist`, `test-engineer`)
+*   Theme switching JavaScript logic (`setTheme`, local storage handling) must be unified across `artist/dashboard.html` and `customer/dashboard.html`.
 
-3. **Validate the Dashboard:** Ensure that the CSS seamlessly applies to the layout and no regressions occur in the visual hierarchy.
+## 3. Execution Phases (Post-Approval)
+Once this plan is approved, we will invoke the following agents in parallel:
 
-## 3. Agents to be Invoked (Phase 2)
-Upon your approval, we will orchestrate the following specialists in parallel to implement the changes flawlessly:
-1. **`frontend-specialist`**: Handles the physical relocation of the CSS assets and audits the styling rules.
-2. **`backend-specialist`**: Verifies pathing issues in Flask's `url_for('static')` logic and correctly routes the specific folder structures.
-3. **`test-engineer`**: Runs end-to-end and layout checks to verify that the dashboard structure applies the theme accurately.
+**Phase 2: Core Implementation**
+- **`frontend-specialist`**: Will rewrite the CSS files (`artist_dashboard.css`, `customer_dashboard.css`) and refactor the HTML templates to guarantee 1:1 parity with the Owner Dashboard. Theme toggle buttons and JavaScript logic will be injected to ensure the "Studio White" concept works perfectly everywhere.
+- **`explorer-agent`**: Will map out any unique customer/artist features to ensure they fit correctly into the new uniform layout without breaking functionality.
+
+**Phase 3: Polish & Verification**
+- **`test-engineer`**: Will verify that all layouts render correctly, responsive grids hold up, and theme switching persists across page reloads.
+
+## 4. Required Action
+Review this plan. Do you approve the synchronization of the Artist and Customer dashboards to exactly match the Owner Dashboard's layout and theme engine?

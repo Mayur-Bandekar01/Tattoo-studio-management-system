@@ -5,23 +5,21 @@
             Today's Schedule
         </h2>
         <!-- FIX: todayStr and slotCount are now filled by renderScheduleDate() in dashboard.html -->
-        <p id="todayStr"
-           style="color:var(--studio-indigo);font-size:0.85rem;font-weight:700;margin-top:0.25rem;"></p>
+        <p id="todayStr" style="color:var(--studio-indigo);font-size:0.85rem;font-weight:700;margin-top:0.25rem;"></p>
     </div>
 
     <div class="studio-card">
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;
                     padding-bottom:1.5rem;border-bottom:1px solid var(--studio-border);">
-            <div style="width:48px;height:48px;border-radius:12px;
-                        background:rgba(72,52,212,0.1);display:flex;align-items:center;
-                        justify-content:center;color:var(--studio-indigo);">
+            <div class="bg-indigo-soft text-indigo" style="width:48px;height:48px;border-radius:12px;
+                        display:flex;align-items:center;
+                        justify-content:center;">
                 <i class="fas fa-clock" style="font-size:1.2rem;"></i>
             </div>
             <div>
                 <h3 style="font-size:1rem;font-weight:700;color:var(--studio-text-primary);">
                     Daily Schedule View</h3>
-                <p id="slotCount"
-                   style="font-size:0.75rem;color:var(--studio-text-secondary);">
+                <p id="slotCount" style="font-size:0.75rem;color:var(--studio-text-secondary);">
                     Loading sessions…
                 </p>
             </div>
@@ -32,7 +30,7 @@
             {% for appt in today_appointments %}
             <div class="tl-item" style="display:flex;align-items:center;gap:1.5rem;">
                 <!-- Time chip -->
-                <div style="background:var(--studio-white);border:1px solid var(--studio-border);
+                <div style="background:var(--studio-secondary);border:1px solid var(--studio-border);
                             padding:0.35rem 0.75rem;border-radius:8px;font-size:0.75rem;font-weight:700;
                             color:var(--studio-text-secondary);white-space:nowrap;font-family:monospace;">
                     {{ appt.appointment_time }}
@@ -61,8 +59,7 @@
 
                 <!-- Mark Done button for Approved sessions -->
                 {% if appt.status == 'Approved' %}
-                <form method="POST" action="/artist/done/{{ appt.appointment_id }}"
-                      style="flex-shrink:0;">
+                <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="flex-shrink:0;">
                     <button type="submit" class="btn-studio btn-primary"
                         style="padding:0.4rem 0.85rem;font-size:0.72rem;"
                         onclick="return confirm('Mark this session as done?')">

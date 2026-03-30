@@ -1,7 +1,7 @@
 <!-- ════════════════════════════════════════════════════════
      OWNER — PAYMENTS SECTION
-     templates/owner/sections/payment.html
-════════════════════════════════════════════════════════ -->
+     Refactored: Vibrant Obsidian Alignment
+     ════════════════════════════════════════════════════════ -->
 
 {% set pending_approvals_list = payments | selectattr('status', 'equalto', 'Pending Approval') | list %}
 {% set approved_payments = payments | selectattr('status', 'equalto', 'Approved') | list %}
@@ -9,58 +9,46 @@
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 1 — PENDING APPROVALS
      Only visible when customers have submitted payments
-══════════════════════════════════════════════════════════ -->
+     ══════════════════════════════════════════════════════════ -->
 {% if pending_approvals_list %}
-<div class="studio-card" style="border: 2px solid #fde68a; margin-bottom: 2rem;">
-
+<div class="studio-card" style="border-left: 6px solid var(--studio-warning); background: var(--studio-warning-soft);">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
         <div style="display:flex; align-items:center; gap:15px;">
-            <div style="width:45px; height:45px; background:#FEF9C3; color:#B45309;
-                        border-radius:12px; display:flex; align-items:center;
-                        justify-content:center; font-size:1.2rem;">
+            <div class="bg-warning-soft text-warning"
+                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
                 <i class="fa-solid fa-clock"></i>
             </div>
             <div>
-                <h3 class="studio-title" style="margin:0; color:#92400e;">
-                    Pending Payment Approvals
-                </h3>
-                <p style="color:#B45309; font-size:0.72rem; font-weight:700;
-                           text-transform:uppercase; letter-spacing:0.05em; margin:0;">
-                    {{ pending_approvals_list | length }} payment(s) awaiting your verification
+                <h3 class="studio-title" style="margin:0;">Pending Approvals</h3>
+                <p class="text-warning"
+                    style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin:0;">
+                    {{ pending_approvals_list | length }} verification(s) required
                 </p>
             </div>
         </div>
-        <span style="background:#FEF9C3; color:#B45309; border:1px solid #FDE68A;
-                     font-size:0.7rem; font-weight:700; padding:0.3rem 0.9rem;
-                     border-radius:20px; letter-spacing:0.05em;">
-            ACTION REQUIRED
-        </span>
+        <span class="badge" style="background:var(--studio-warning); color:white; padding:6px 16px;">URGENT</span>
     </div>
 
-    <!-- Notice banner -->
-    <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:10px;
-                padding:0.85rem 1.1rem; margin-bottom:1.25rem; font-size:0.78rem;
-                color:#92400e; display:flex; align-items:flex-start; gap:0.6rem;">
-        <span style="font-size:1rem; margin-top:1px;">💡</span>
-        <span>
-            Verify each payment by checking your UPI app or bank statement using
-            the UTR number below. Click <strong>Approve</strong> only after confirming
-            the amount has been received. Click <strong>Reject</strong> if the
-            payment cannot be verified — the invoice will return to Pending.
-        </span>
+    <div class="bg-indigo-soft text-primary"
+        style="border: 1px solid var(--studio-warning); border-radius: var(--studio-radius-sm); padding: 1rem; margin-bottom: 2rem; font-size: 0.9rem; display: flex; gap: 1rem; align-items: flex-start;">
+        <span style="font-size:1.2rem;">💡</span>
+        <p style="margin:0; line-height:1.5; font-weight: 500;">
+            Confirm receipts via UPI/Bank before approving. <strong>Approve</strong> marks as Paid.
+            <strong>Reject</strong> resets the invoice.
+        </p>
     </div>
 
     <div class="studio-table-container">
         <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Pay ID</th>
+                    <th style="width: 100px;">Pay ID</th>
                     <th>Invoice</th>
                     <th>Customer</th>
                     <th>Amount</th>
-                    <th>Method / UTR Reference</th>
+                    <th>UTR Reference</th>
                     <th>Submitted</th>
-                    <th>Action</th>
+                    <th style="width: 200px;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,48 +57,25 @@
                 {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
                 else none %}
                 <tr>
-                    <td style="font-family:monospace; color:var(--studio-text-secondary); font-size:0.8rem;">
-                        #{{ p.payment_id }}
-                    </td>
+                    <td class="font-mono text-indigo" style="font-weight: 800;">#{{ p.payment_id }}</td>
+                    <td class="font-bold text-primary">#INV-{{ p.invoice_id }}</td>
+                    <td class="font-bold">{{ appt.customer_name if appt else '—' }}</td>
+                    <td class="font-bold text-success" style="font-size: 1rem;">₹{{ p.amount_paid }}</td>
+                    <td class="font-mono text-primary" style="font-size:0.85rem; word-break:break-all;">{{
+                        p.payment_method }}</td>
+                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ p.payment_date }}</td>
                     <td>
-                        <span style="font-weight:700; color:var(--studio-gold);">
-                            #INV-{{ p.invoice_id }}
-                        </span>
-                    </td>
-                    <td style="font-weight:700;">{{ appt.customer_name if appt else '—' }}</td>
-                    <td>
-                        <span style="font-weight:700; font-size:1rem; color:#166534; font-family:'Cinzel',serif;">
-                            ₹{{ p.amount_paid }}
-                        </span>
-                    </td>
-                    <td
-                        style="font-family:monospace; font-size:0.82rem; color:var(--studio-text-primary); font-weight:700; word-break:break-all;">
-                        {{ p.payment_method }}
-                    </td>
-                    <td style="font-size:0.82rem; color:var(--studio-text-secondary);">
-                        {{ p.payment_date }}
-                    </td>
-                    <td>
-                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                            <!-- Approve -->
+                        <div style="display:flex; gap:0.5rem;">
                             <form method="POST" action="/owner/payment/approve/{{ p.payment_id }}">
                                 <button type="submit"
-                                    onclick="return confirm('Confirm you have received ₹{{ p.amount_paid }} in your account?')"
-                                    style="padding:6px 14px; font-size:0.72rem; font-weight:700;
-                                               background:#DCFCE7; color:#166534; border:1px solid #BBF7D0;
-                                               border-radius:8px; cursor:pointer; transition:all 0.2s;">
-                                    <i class="fas fa-check"></i> Approve
-                                </button>
+                                    onclick="return confirm('Confirm receipt of ₹{{ p.amount_paid }}?')"
+                                    class="btn-studio btn-primary"
+                                    style="padding:0.4rem 0.85rem; font-size:0.7rem;">Approve</button>
                             </form>
-                            <!-- Reject -->
                             <form method="POST" action="/owner/payment/reject/{{ p.payment_id }}">
-                                <button type="submit"
-                                    onclick="return confirm('Reject this payment? Invoice will return to Pending.')"
-                                    style="padding:6px 14px; font-size:0.72rem; font-weight:700;
-                                               background:#FEE2E2; color:#DC2626; border:1px solid #FECACA;
-                                               border-radius:8px; cursor:pointer; transition:all 0.2s;">
-                                    <i class="fas fa-times"></i> Reject
-                                </button>
+                                <button type="submit" onclick="return confirm('Reject this payment?')"
+                                    class="btn-studio btn-secondary text-danger bg-danger-soft"
+                                    style="padding:0.4rem 0.85rem; font-size:0.7rem; border-color: var(--studio-danger);">Reject</button>
                             </form>
                         </div>
                     </td>
@@ -122,159 +87,108 @@
 </div>
 {% endif %}
 
-
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 2 — RECORD PAYMENT MANUALLY
-══════════════════════════════════════════════════════════ -->
-<div class="studio-card" style="margin-bottom:2rem;">
-    <div style="display:flex; align-items:center; gap:15px; margin-bottom:1.5rem;">
-        <div style="width:45px; height:45px; background:rgba(200,160,64,0.1); color:var(--studio-gold);
-                    border-radius:12px; display:flex; align-items:center;
-                    justify-content:center; font-size:1.2rem;">
+     ══════════════════════════════════════════════════════════ -->
+<div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
+    <div style="display:flex; align-items:center; gap:15px; margin-bottom:2rem;">
+        <div class="bg-indigo-soft text-indigo"
+            style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
             <i class="fa-solid fa-pen-to-square"></i>
         </div>
         <div>
-            <h3 class="studio-title" style="margin:0;">Record Payment Manually</h3>
-            <p style="color:var(--studio-text-secondary); font-size:0.72rem;
-                      font-weight:700; text-transform:uppercase; margin:0;">
-                For walk-in cash or offline payments not submitted by customer
-            </p>
+            <h3 class="studio-title" style="margin:0;">Manual Entry</h3>
+            <p class="text-secondary"
+                style="font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-top: 4px;">For offline or
+                cash transactions</p>
         </div>
     </div>
 
     <form method="POST" action="/owner/payment/record">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-
+        <div
+            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem; margin-bottom:2rem;">
             <div>
-                <label class="studio-label">Invoice *</label>
+                <label>Select Invoice</label>
                 <select name="invoice_id" id="invoiceSelect" class="studio-input" required>
                     <option value="">— Select Invoice —</option>
                     {% for inv in invoices %}
                     {% if inv.pay_status in ('Pending', 'Under Review') %}
                     {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first %}
                     <option value="{{ inv.invoice_id }}">
-                        #INV-{{ inv.invoice_id }} —
-                        {{ appt.customer_name if appt else 'Unknown' }} —
-                        ₹{{ inv.total_amt }}
-                        {% if inv.pay_status == 'Under Review' %} (Under Review){% endif %}
+                        #INV-{{ inv.invoice_id }} — {{ appt.customer_name if appt else 'Unknown' }} — ₹{{ inv.total_amt
+                        }}
                     </option>
                     {% endif %}
                     {% endfor %}
                 </select>
             </div>
-
             <div>
-                <label class="studio-label">Amount Paid (₹) *</label>
-                <input type="number" name="amount_paid" id="amountPaid" class="studio-input" step="0.01" min="1"
-                    placeholder="e.g. 5000" required>
+                <label>Amount (₹)</label>
+                <div style="position: relative;">
+                    <span
+                        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--studio-indigo);">₹</span>
+                    <input type="number" name="amount_paid" id="amountPaid" class="studio-input" step="0.01" min="1"
+                        placeholder="0.00" required style="padding-left: 2.5rem;">
+                </div>
             </div>
-
             <div>
-                <label class="studio-label">Payment Method *</label>
+                <label>Payment Method</label>
                 <select name="payment_method" class="studio-input" required>
-                    <option value="">— Select Method —</option>
                     <option value="Cash">Cash</option>
                     <option value="UPI">UPI</option>
                     <option value="Card">Card</option>
                     <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Cheque">Cheque</option>
                 </select>
             </div>
-
             <div>
-                <label class="studio-label">Payment Date *</label>
+                <label>Date</label>
                 <input type="date" name="payment_date" class="studio-input" required>
             </div>
-
         </div>
-
-        <button type="submit" onclick="return confirm('Record this payment and mark the invoice as Paid?')"
-            class="btn-studio btn-studio-primary">
-            <i class="fas fa-check-circle"></i> &nbsp;Record Payment
+        <button type="submit" class="btn-studio btn-primary">
+            <i class="fas fa-check-circle"></i> Record Transaction
         </button>
     </form>
 </div>
 
-
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 3 — PAYMENT LEDGER
-══════════════════════════════════════════════════════════ -->
-<div class="studio-card">
-
-    <div style="display:flex; align-items:center; justify-content:space-between;
-                margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-
+     ══════════════════════════════════════════════════════════ -->
+<div class="studio-card" style="border-left: 6px solid var(--studio-success);">
+    <div
+        style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; flex-wrap:wrap; gap:1.5rem;">
         <div style="display:flex; align-items:center; gap:15px;">
-            <div style="width:45px; height:45px; background:rgba(200,160,64,0.1);
-                        color:var(--studio-gold); border-radius:12px;
-                        display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+            <div class="bg-success-soft text-success"
+                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
                 <i class="fa-solid fa-list-ul"></i>
             </div>
             <div>
                 <h3 class="studio-title" style="margin:0;">Payment Ledger</h3>
-                <p style="color:var(--studio-text-secondary); font-size:0.72rem;
-                           font-weight:700; text-transform:uppercase; margin:0;">
-                    All payment records
-                </p>
+                <p class="text-secondary"
+                    style="font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-top: 4px;">Master
+                    transaction archive</p>
             </div>
         </div>
-
-        <!-- Summary pills -->
-        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-            <span style="background:#DCFCE7; color:#166534; border:1px solid #BBF7D0;
-                         font-size:0.72rem; font-weight:700; padding:0.3rem 0.85rem;
-                         border-radius:20px;">
-                ✓ {{ approved_payments | length }} Approved
-            </span>
+        <div style="display:flex; gap:1rem;">
+            <span class="badge bg-success-soft text-success">✓ {{ approved_payments | length }} Approved</span>
             {% if pending_approvals_list %}
-            <span style="background:#FEF9C3; color:#B45309; border:1px solid #FDE68A;
-                         font-size:0.72rem; font-weight:700; padding:0.3rem 0.85rem;
-                         border-radius:20px;">
-                ⏳ {{ pending_approvals_list | length }} Pending
-            </span>
+            <span class="badge bg-warning-soft text-warning">⏳ {{ pending_approvals_list | length }} Pending</span>
             {% endif %}
         </div>
     </div>
 
     {% if payments %}
-
-    <!-- ── Filter buttons — redesigned as elegant segmented control ── -->
-    <div class="pay-filter-group"
-        style="display:inline-flex; background:#f1f5f9; padding:0.35rem; border-radius:30px; margin-bottom:1.5rem; gap:0.25rem; align-items:center;">
-
-        <button onclick="filtPay('all', this)" class="pay-filter-btn" data-active-color="#0f172a" style="padding:0.45rem 1.25rem; border-radius:24px; font-size:0.75rem;
-                   font-weight:700; cursor:pointer; border:none; outline:none;
-                   background:#ffffff; color:#0f172a; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                   font-family:inherit; box-shadow:0 2px 8px rgba(0,0,0,0.06); transform:scale(1.02);">
-            All
-        </button>
-
-        <button onclick="filtPay('Approved', this)" class="pay-filter-btn" data-active-color="#166534" style="padding:0.45rem 1.25rem; border-radius:24px; font-size:0.75rem;
-                   font-weight:700; cursor:pointer; border:none; outline:none;
-                   background:transparent; color:#64748b; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                   font-family:inherit; box-shadow:none; transform:scale(1);">
-            ✓ Approved
-        </button>
-
-        <button onclick="filtPay('Pending Approval', this)" class="pay-filter-btn" data-active-color="#b45309" style="padding:0.45rem 1.25rem; border-radius:24px; font-size:0.75rem;
-                   font-weight:700; cursor:pointer; border:none; outline:none;
-                   background:transparent; color:#64748b; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                   font-family:inherit; box-shadow:none; transform:scale(1);">
-            ⏳ Pending
-        </button>
-    </div>
-
     <div class="studio-table-container">
         <table class="studio-table">
             <thead>
                 <tr>
-                    <th>Pay ID</th>
+                    <th style="width: 100px;">Pay ID</th>
                     <th>Invoice</th>
                     <th>Customer</th>
                     <th>Amount</th>
-                    <th>Method / Reference</th>
+                    <th>Reference</th>
                     <th>Date</th>
-                    <th>Status</th>
+                    <th style="width: 140px;">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -282,47 +196,22 @@
                 {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
                 {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
                 else none %}
-                <tr class="pay-ledger-row" data-status="{{ p.status }}">
-                    <td style="font-family:monospace; color:var(--studio-text-secondary); font-size:0.8rem;">
-                        #{{ p.payment_id }}
-                    </td>
-                    <td>
-                        <span style="font-weight:700; color:var(--studio-gold);">
-                            #INV-{{ p.invoice_id }}
-                        </span>
-                    </td>
-                    <td style="font-weight:500;">{{ appt.customer_name if appt else '—' }}</td>
-                    <td>
-                        <span style="font-weight:700; color:#166534; font-family:'Cinzel',serif;">
-                            ₹{{ p.amount_paid }}
-                        </span>
-                    </td>
-                    <td style="font-family:monospace; font-size:0.8rem; max-width:220px;
-                               word-break:break-all; color:var(--studio-text-primary);">
-                        {{ p.payment_method }}
-                    </td>
-                    <td style="font-size:0.82rem; color:var(--studio-text-secondary);">
-                        {{ p.payment_date }}
-                    </td>
+                <tr>
+                    <td class="font-mono text-indigo" style="font-weight: 800;">#{{ p.payment_id }}</td>
+                    <td class="font-bold text-primary">#INV-{{ p.invoice_id }}</td>
+                    <td class="font-bold">{{ appt.customer_name if appt else '—' }}</td>
+                    <td class="font-bold text-success">₹{{ p.amount_paid }}</td>
+                    <td class="font-mono text-secondary" style="font-size:0.85rem;">{{ p.payment_method }}</td>
+                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ p.payment_date }}</td>
                     <td>
                         {% if p.status == 'Approved' %}
-                        <span style="background:#DCFCE7; color:#166534; border:1px solid #BBF7D0;
-                                     font-size:0.68rem; font-weight:700; padding:0.25rem 0.8rem;
-                                     border-radius:20px; white-space:nowrap; display:inline-block;">
-                            ✓ Approved
-                        </span>
+                        <span class="badge bg-success-soft text-success">Approved</span>
                         {% elif p.status == 'Pending Approval' %}
-                        <span style="background:#FEF9C3; color:#B45309; border:1px solid #FDE68A;
-                                     font-size:0.68rem; font-weight:700; padding:0.25rem 0.8rem;
-                                     border-radius:20px; white-space:nowrap; display:inline-block;">
-                            ⏳ Pending
-                        </span>
+                        <span class="badge bg-warning-soft text-warning">Pending</span>
                         {% else %}
-                        <span style="background:#F1F2F6; color:#718093;
-                                     font-size:0.68rem; font-weight:700; padding:0.25rem 0.8rem;
-                                     border-radius:20px; display:inline-block;">
-                            {{ p.status }}
-                        </span>
+                        <span class="badge"
+                            style="background:var(--studio-border-light); color:var(--studio-text-muted);">{{ p.status
+                            }}</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -330,65 +219,11 @@
             </tbody>
         </table>
     </div>
-
     {% else %}
-    <div style="text-align:center; padding:3rem; color:var(--studio-text-secondary);">
-        <div style="font-size:2.5rem; margin-bottom:1rem;">💳</div>
-        <p style="font-weight:700; margin-bottom:0.5rem;">No payments recorded yet</p>
-        <p style="font-size:0.82rem;">Payments will appear here once invoices are settled.</p>
+    <div style="text-align:center; padding:5rem 2rem;">
+        <i class="fas fa-ghost text-muted"
+            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
+        <p class="text-secondary" style="font-weight: 500;">No payments recorded in ledger.</p>
     </div>
     {% endif %}
-
 </div>
-
-
-<script>
-    /*
-     * filtPay — filter payment ledger rows
-     * UX Principle: Segmented control style. Inactive tabs are transparent, active tab gets a white pill background with colored text.
-     */
-    function filtPay(status, btn) {
-        /* 1. Reset all buttons to neutral transparent state */
-        document.querySelectorAll('.pay-filter-btn').forEach(b => {
-            b.style.background = 'transparent';
-            b.style.color = '#64748b';
-            b.style.fontWeight = '600';
-            b.style.boxShadow = 'none';
-            b.style.transform = 'scale(1)';
-        });
-
-        /* 2. Apply active styling using the clicked button's data attributes */
-        if (btn) {
-            btn.style.background = '#ffffff';
-            btn.style.color = btn.dataset.activeColor || '#0f172a';
-            btn.style.fontWeight = '700';
-            btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
-            btn.style.transform = 'scale(1.02)';
-        }
-
-        /* 3. Show/hide rows */
-        document.querySelectorAll('.pay-ledger-row').forEach(row => {
-            if (status === 'all') {
-                row.style.display = '';
-            } else {
-                row.style.display = (row.dataset.status === status) ? '' : 'none';
-            }
-        });
-    }
-
-    /* Pre-fill invoice select when owner clicks quick-action from another tab */
-    function prefillPayment(invoiceId, amount) {
-        const sel = document.getElementById('invoiceSelect');
-        const amt = document.getElementById('amountPaid');
-        if (sel) {
-            sel.value = invoiceId;
-            sel.style.borderColor = '#10b981';
-            setTimeout(() => { sel.style.borderColor = ''; }, 1500);
-        }
-        if (amt && amount) {
-            amt.value = amount;
-            amt.style.borderColor = '#10b981';
-            setTimeout(() => { amt.style.borderColor = ''; }, 1500);
-        }
-    }
-</script>
