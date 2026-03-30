@@ -90,13 +90,18 @@
 }
 .ch-row { display: flex; }
 .ch-row.mine { justify-content: flex-end; }
+
+/* ── FIX: bubble text was rendering vertically ── */
 .ch-bubble {
     max-width: 68%;
+    min-width: 48px;
     padding: 0.6rem 0.9rem;
     border-radius: 16px;
     font-size: 0.84rem;
     line-height: 1.55;
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
+    white-space: pre-wrap;
 }
 .ch-bubble.mine {
     background: var(--studio-indigo);
@@ -255,7 +260,6 @@
         _artistName = artistName;
         _apptId = apptId || null;
 
-        // Highlight active thread item
         document.querySelectorAll('#cust-thread-list .ch-item').forEach(function (el) {
             el.classList.remove('active');
         });
@@ -263,19 +267,16 @@
         var threadEl = document.getElementById('cthread-' + key);
         if (threadEl) threadEl.classList.add('active');
 
-        // Show the chat window
         document.getElementById('cust-chat-empty').style.display = 'none';
         var active = document.getElementById('cust-chat-active');
         active.style.display = 'flex';
 
-        // Update header
         document.getElementById('cust-chat-av').textContent = artistName[0].toUpperCase();
         document.getElementById('cust-chat-name').textContent = artistName;
         document.getElementById('cust-chat-tag').innerHTML = apptId
             ? '<span class="ch-tag"><i class="fas fa-calendar-check"></i>&nbsp;Appointment #' + apptId + '</span>'
             : '<span class="ch-tag"><i class="fas fa-comment-dots"></i>&nbsp;General</span>';
 
-        // Start polling
         clearInterval(_poll);
         fetchMsgs();
         _poll = setInterval(fetchMsgs, 4000);
@@ -289,7 +290,7 @@
         setTimeout(function () { custOpenThread(String(artistId), artistName, String(apptId)); }, 80);
     };
 
-    /* ── Fetch messages (polling) ───────────────────────── */
+    /* ── Fetch messages ─────────────────────────────────── */
     function fetchMsgs() {
         if (!_artistId) return;
         var url = '/chat/messages?other_id=' + encodeURIComponent(_artistId) + '&other_role=artist';
@@ -314,7 +315,6 @@
 
                 if (atBottom) area.scrollTop = area.scrollHeight;
 
-                // Clear the unread dot for this thread
                 var dotKey = _apptId ? _artistId + '-' + _apptId : _artistId + '-gen';
                 var dot = document.getElementById('cdot-' + dotKey);
                 if (dot) dot.style.display = 'none';
@@ -367,7 +367,6 @@
                     var dot = document.getElementById('cdot-' + key);
                     if (dot && t.count > 0) dot.style.display = 'block';
                 });
-                // Update nav badge
                 var badge = document.getElementById('cust-msgs-badge');
                 if (badge) {
                     badge.textContent = total > 9 ? '9+' : total;
@@ -377,11 +376,9 @@
             .catch(function () {});
     }
 
-    // Run immediately and every 8 s (lighter than message poll)
     pollUnreadDots();
     setInterval(pollUnreadDots, 8000);
 
-    // Stop message polling when user switches away from Messages tab
     document.querySelectorAll('.nav-item[data-section]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             if (btn.getAttribute('data-section') !== 'messages') clearInterval(_poll);

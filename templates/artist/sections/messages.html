@@ -1,7 +1,6 @@
 <div id="sec-messages" class="section">
 
 <style>
-/* Reuse same ch-* classes if already loaded, otherwise define here */
 .ch-layout {
     display: grid;
     grid-template-columns: 275px 1fr;
@@ -75,9 +74,18 @@
 }
 .ch-row { display: flex; }
 .ch-row.mine { justify-content: flex-end; }
+
+/* ── FIX: bubble text was rendering vertically ── */
 .ch-bubble {
-    max-width: 68%; padding: 0.6rem 0.9rem; border-radius: 16px;
-    font-size: 0.84rem; line-height: 1.55; word-break: break-word;
+    max-width: 68%;
+    min-width: 48px;
+    padding: 0.6rem 0.9rem;
+    border-radius: 16px;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    overflow-wrap: break-word;
+    word-break: normal;
+    white-space: pre-wrap;
 }
 .ch-bubble.mine {
     background: var(--studio-indigo); color: #fff; border-bottom-right-radius: 4px;
@@ -345,7 +353,6 @@
     pollUnreadDots();
     setInterval(pollUnreadDots, 8000);
 
-    // Stop message polling when leaving messages section
     document.querySelectorAll('.nav-item').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var oc = btn.getAttribute('onclick') || '';
