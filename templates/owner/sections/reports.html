@@ -470,6 +470,30 @@
             break-inside: avoid;
         }
     }
+
+    /* ─── Theme Overrides ───────────────────────────────────── */
+    [data-theme="ivory"] .r-pills {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="ivory"] .r-rank-row {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="ivory"] .r-table th {
+        background: rgba(0, 0, 0, 0.03);
+        border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="ivory"] .r-prog-bg {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="ivory"] .r-stats-bar {
+        border-top-color: rgba(0, 0, 0, 0.08);
+    }
 </style>
 
 <!-- ── Raw data injection ── -->
@@ -722,7 +746,7 @@
         Chart.defaults.font.weight = '600';
 
         function updateChartDefaults() {
-            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
 
             const textColor = isLight ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.45)';
             const tooltipBg = isLight ? 'rgba(255, 255, 255, 0.98)' : 'rgba(10, 10, 10, 0.96)';
@@ -754,7 +778,7 @@
         Chart.defaults.plugins.tooltip.titleFont = { weight: '800', size: 11 };
 
         /* ── Helpers ── */
-        const fmt = v => '₹' + Number(v || 0).toLocaleString('en-IN');
+        const fmt = v => '₹' + Number(Math.round(v || 0)).toLocaleString('en-IN');
         const pct = (n, d) => d ? Math.round((n / d) * 100) : 0;
 
         /* ── State ── */
@@ -889,7 +913,7 @@
                             ticks: {
                                 color: window.chartTextC,
                                 font: { weight: '600', size: 10, family: "'Outfit', sans-serif" },
-                                callback: v => v >= 1000 ? '₹' + (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + 'k' : '₹' + v,
+                                callback: v => v >= 1000 ? '₹' + Math.round(v / 1000) + 'k' : '₹' + v,
                             }
                         }
                     }

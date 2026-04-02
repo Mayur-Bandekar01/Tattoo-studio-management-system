@@ -1,539 +1,534 @@
-<div id="sec-messages" class="section">
-
-    <style>
-        .ch-layout {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            height: calc(100vh - 120px);
-            min-height: 600px;
-            background: var(--studio-card);
-            border: 1px solid var(--studio-border);
-            border-radius: var(--studio-radius-sm);
-            overflow: hidden;
-        }
-
-        .ch-sidebar {
-            border-right: 1px solid var(--studio-border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .ch-sidebar-hd {
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--studio-border);
-            font-size: 0.65rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--studio-text-secondary);
-            flex-shrink: 0;
-        }
-
-        .ch-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .ch-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.25rem;
-            cursor: pointer;
-            border-bottom: 1px solid var(--studio-border);
-            transition: background 0.15s;
-            position: relative;
-        }
-
-        .ch-item:hover {
-            background: var(--studio-indigo-soft);
-        }
-
-        .ch-item.active {
-            background: var(--studio-indigo-soft);
-            border-left: 3px solid var(--studio-indigo);
-        }
-
-        .ch-item.sub {
-            padding-left: 2rem;
-            background: var(--studio-bg);
-        }
-
-        .ch-item.sub:hover {
-            background: var(--studio-indigo-soft);
-        }
-
-        .ch-item.sub.active {
-            background: var(--studio-indigo-soft);
-        }
-
-        .ch-av {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--studio-indigo);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .ch-av.sm {
-            width: 28px;
-            height: 28px;
-            font-size: 0.6rem;
-            font-weight: 800;
-            background: var(--studio-indigo-soft);
-            color: var(--studio-indigo);
-            border-radius: 8px;
-        }
-
-        .ch-item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .ch-item-name {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--studio-text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 2px;
-        }
-
-        .ch-item-sub {
-            font-size: 0.68rem;
-            color: var(--studio-text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
-        }
-
-        .ch-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--studio-indigo);
-            flex-shrink: 0;
-        }
-
-        .ch-main {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .ch-main-hd {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--studio-border);
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            min-height: 64px;
-            flex-shrink: 0;
-        }
-
-        .ch-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.2rem 0.65rem;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: var(--studio-indigo-soft);
-            color: var(--studio-indigo);
-        }
-
-        .ch-msgs {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            background: var(--studio-bg);
-        }
-
-        .ch-row {
-            display: flex;
-        }
-
-        .ch-row.mine {
-            justify-content: flex-end;
-        }
-
-        /* ── FIX: bubble text was rendering vertically ── */
-        .ch-bubble {
-            max-width: 75%;
-            min-width: 60px;
-            padding: 0.85rem 1.25rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            overflow-wrap: break-word;
-            word-break: normal;
-            white-space: pre-wrap;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-        }
-
-        .ch-bubble.mine {
-            background: var(--studio-indigo);
-            color: #fff;
-            border-bottom-right-radius: 6px;
-        }
-
-        .ch-bubble.theirs {
-            background: var(--studio-card);
-            color: var(--studio-text-primary);
-            border: 1px solid var(--studio-border);
-            border-bottom-left-radius: 6px;
-        }
-
-        .ch-time {
-            font-size: 0.62rem;
-            color: var(--studio-text-secondary);
-            margin-top: 3px;
-            padding: 0 2px;
-        }
-
-        .ch-row.mine .ch-time {
-            text-align: right;
-        }
-
-        .ch-input-bar {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--studio-border);
-            display: flex;
-            gap: 0.75rem;
-            align-items: flex-end;
-            flex-shrink: 0;
-        }
-
-        .ch-textarea {
-            flex: 1;
-            resize: none;
-            border: 1px solid var(--studio-border);
-            border-radius: 12px;
-            padding: 0.6rem 0.9rem;
-            font-size: 0.85rem;
-            font-family: inherit;
-            color: var(--studio-text-primary);
-            background: var(--studio-card);
-            outline: none;
-            min-height: 40px;
-            max-height: 120px;
-            line-height: 1.5;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .ch-textarea:focus {
-            border-color: var(--studio-indigo);
-            box-shadow: 0 0 0 3px rgba(255, 0, 60, 0.08);
-        }
-
-        .ch-send-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--studio-indigo);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.2s, transform 0.15s;
-        }
-
-        .ch-del-btn {
-            opacity: 0;
-            color: var(--studio-danger, #EF4444);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.4rem;
-            transition: opacity 0.2s, transform 0.2s;
-            align-self: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .ch-row.mine:hover .ch-del-btn {
-            opacity: 0.7;
-        }
-
-        .ch-del-btn:hover {
-            opacity: 1 !important;
-            transform: scale(1.1);
-        }
-
-        .ch-send-btn:hover {
-            background: #3c2bb3;
-            transform: scale(1.06);
-        }
-
-        .ch-send-btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .ch-empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            color: var(--studio-text-secondary);
-            gap: 0.75rem;
-            text-align: center;
-            padding: 2rem;
-        }
-    </style>
-
-    <!-- Section header -->
-    <div style="margin-bottom:2rem;">
-        <h2 style="font-family:'Cinzel',serif;font-size:1.5rem;color:var(--studio-text-primary);">Messages</h2>
-        <p style="color:var(--studio-text-secondary);font-size:0.85rem;">Chat with your customers about their bookings
-        </p>
-    </div>
-
-    <div class="ch-layout">
-
-        <!-- ── Thread list ─────────────────────────────────── -->
-        <div class="ch-sidebar">
-            <div class="ch-sidebar-hd">Conversations</div>
-            <div class="ch-list" id="art-thread-list">
-
-                {% if appointments %}
-                {% for customer_id, appts in appointments | groupby('customer_id') %}
-                {% set first = appts | first %}
-
-                <!-- Unified thread per customer -->
-                <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
-                    id="athread-{{ customer_id }}-gen">
-                    <div class="ch-av">{{ first.customer_name[0] | upper }}</div>
-                    <div class="ch-item-info">
-                        <div class="ch-item-name">{{ first.customer_name }}</div>
-                        <div class="ch-item-sub">Conversation</div>
-                    </div>
-                    <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
-                </div>
-
-                {% endfor %}
-                {% else %}
-                <div style="padding:3rem 1.5rem;text-align:center;color:var(--studio-text-secondary);">
-                    <i class="fas fa-user-clock"
-                        style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>
-                    <p style="font-size:0.82rem;">No appointments yet. Conversations will appear here once bookings come
-                        in.</p>
-                </div>
-                {% endif %}
-
-            </div>
-        </div>
-
-        <!-- ── Chat window ─────────────────────────────────── -->
-        <div class="ch-main">
-
-            <div class="ch-empty-state" id="art-chat-empty">
-                <i class="fas fa-comments" style="font-size:3rem;opacity:0.12;"></i>
-                <p style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);">Select a conversation</p>
-                <p style="font-size:0.78rem;">Click any thread on the left to start chatting</p>
-            </div>
-
-            <div id="art-chat-active" style="display:none;flex-direction:column;height:100%;overflow:hidden;">
-                <div class="ch-main-hd">
-                    <div class="ch-av" id="art-chat-av" style="width:36px;height:36px;font-size:0.82rem;">C</div>
-                    <div>
-                        <div style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);"
-                            id="art-chat-name">—</div>
-                        <div id="art-chat-tag"></div>
-                    </div>
-                </div>
-                <div class="ch-msgs" id="art-msgs-area"></div>
-                <div class="ch-input-bar">
-                    <textarea class="ch-textarea" id="art-chat-input" placeholder="Type a message…" rows="1"
-                        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
-                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'">
-                </textarea>
-                    <button class="ch-send-btn" id="art-send-btn" onclick="artSend()" title="Send">
-                        <i class="fas fa-paper-plane" style="font-size:0.8rem;margin-left:2px;"></i>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        (function () {
-            var _custId = null, _custName = null, _apptId = null, _poll = null;
-
-            function escHtml(s) {
-                return String(s)
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/\n/g, '<br>');
-            }
-
-            /* ── Open a thread ──────────────────────────────────── */
-            window.artOpenThread = function (custId, custName, apptId) {
-                _custId = custId;
-                _custName = custName;
-                _apptId = apptId || null;
-
-                document.querySelectorAll('#art-thread-list .ch-item').forEach(function (el) {
-                    el.classList.remove('active');
-                });
-                var key = apptId ? custId + '-' + apptId : custId + '-gen';
-                var threadEl = document.getElementById('athread-' + key);
-                if (threadEl) threadEl.classList.add('active');
-
-                document.getElementById('art-chat-empty').style.display = 'none';
-                var active = document.getElementById('art-chat-active');
-                active.style.display = 'flex';
-
-                document.getElementById('art-chat-av').textContent = custName[0].toUpperCase();
-                document.getElementById('art-chat-name').textContent = custName;
-                document.getElementById('art-chat-tag').innerHTML = '<span class="ch-tag"><i class="fas fa-comment-dots"></i>&nbsp;Active Chat</span>';
-
-                clearInterval(_poll);
-                artFetchMsgs();
-                _poll = setInterval(artFetchMsgs, 4000);
-
-                document.getElementById('art-chat-input').focus();
-            };
-
-            /* ── Open thread from Appointments table ────────────── */
-            window.artOpenChatFromAppt = function (custId, custName, apptId) {
-                nav('messages', document.getElementById('nav-messages-artist'));
-                setTimeout(function () { artOpenThread(String(custId), custName, String(apptId)); }, 80);
-            };
-
-            /* ── Delete a message ───────────────────────────────── */
-            window.artDeleteMsg = function (msgId) {
-                if (!confirm('Are you sure you want to delete this message?')) return;
-                fetch('/chat/message/' + msgId, { method: 'DELETE' })
-                    .then(function (r) { return r.json(); })
-                    .then(function (d) {
-                        if (d.success) artFetchMsgs();
-                    });
-            };
-
-            /* ── Fetch messages ─────────────────────────────────── */
-            function artFetchMsgs() {
-                if (!_custId) return;
-                var url = '/chat/messages?other_id=' + encodeURIComponent(_custId) + '&other_role=customer';
-                if (_apptId) url += '&appointment_id=' + encodeURIComponent(_apptId);
-
-                fetch(url)
-                    .then(function (r) { return r.json(); })
-                    .then(function (data) {
-                        var area = document.getElementById('art-msgs-area');
-                        var atBottom = area.scrollHeight - area.clientHeight <= area.scrollTop + 60;
-
-                        if (!data.messages || !data.messages.length) {
-                            area.innerHTML = '<div style="text-align:center;color:var(--studio-text-secondary);font-size:0.82rem;padding:3rem;opacity:0.7;">No messages yet — say hello! 👋</div>';
-                        } else {
-                            area.innerHTML = data.messages.map(function (m) {
-                                var cls = m.is_mine ? 'mine' : 'theirs';
-                                var delBtn = m.is_mine ? '<button class="ch-del-btn" onclick="artDeleteMsg(' + m.message_id + ')" title="Delete"><i class="fas fa-trash-alt"></i></button>' : '';
-                                var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + _custName[0].toUpperCase() + '</div>' : '';
-
-                                return '<div class="ch-row ' + cls + '" style="display:flex; align-items:flex-start;">' +
-                                    avatar +
-                                    '<div style="flex:1; display:flex; flex-direction:column; align-items:' + (m.is_mine ? 'flex-end' : 'flex-start') + ';">' +
-                                    '<div style="display:flex; align-items:flex-end; gap:8px;">' +
-                                    (m.is_mine ? delBtn : '') +
-                                    '<div class="ch-bubble ' + cls + '">' + escHtml(m.content) + '</div>' +
-                                    '</div>' +
-                                    '<div class="ch-time">' + escHtml(m.sent_at) + '</div></div></div>';
-                            }).join('');
-                        }
-
-                        if (atBottom) area.scrollTop = area.scrollHeight;
-
-                        var dotKey = _custId + '-gen';
-                        var dot = document.getElementById('adot-' + dotKey);
-                        if (dot) dot.style.display = 'none';
-                    })
-                    .catch(function () { });
-            }
-
-            /* ── Send ───────────────────────────────────────────── */
-            window.artSend = function () {
-                var input = document.getElementById('art-chat-input');
-                var content = input.value.trim();
-                if (!content || !_custId) return;
-
-                var btn = document.getElementById('art-send-btn');
-                btn.disabled = true;
-
-                fetch('/chat/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: content,
-                        other_id: _custId,
-                        other_role: 'customer',
-                        appointment_id: _apptId
-                    })
-                })
-                    .then(function (r) { return r.json(); })
-                    .then(function (d) {
-                        if (d.success) {
-                            input.value = '';
-                            input.style.height = 'auto';
-                            artFetchMsgs();
-                        }
-                    })
-                    .finally(function () { btn.disabled = false; input.focus(); });
-            };
-
-            /* ── Poll unread dots + nav badge ───────────────────── */
-            function pollUnreadDots() {
-                fetch('/chat/unread-threads')
-                    .then(function (r) { return r.json(); })
-                    .then(function (data) {
-                        if (!data.threads) return;
-                        var total = 0;
-                        data.threads.forEach(function (t) {
-                            total += t.count;
-                            var key = t.sender_id + '-gen';
-                            var dot = document.getElementById('adot-' + key);
-                            if (dot && t.count > 0) dot.style.display = 'block';
-                        });
-                        var badge = document.getElementById('artist-msgs-badge');
-                        if (badge) {
-                            badge.textContent = total > 9 ? '9+' : total;
-                            badge.style.display = total > 0 ? 'flex' : 'none';
-                        }
-                    })
-                    .catch(function () { });
-            }
-
-            pollUnreadDots();
-            setInterval(pollUnreadDots, 8000);
-
-            document.querySelectorAll('.nav-item').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var oc = btn.getAttribute('onclick') || '';
-                    if (oc.indexOf("'messages'") === -1) clearInterval(_poll);
-                });
-            });
-        })();
-    </script>
-
+<style>
+    .ch-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        height: calc(100vh - 120px);
+        min-height: 600px;
+        background: var(--studio-card);
+        border: 1px solid var(--studio-border);
+        border-radius: var(--studio-radius-sm);
+        overflow: hidden;
+    }
+
+    .ch-sidebar {
+        border-right: 1px solid var(--studio-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .ch-sidebar-hd {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--studio-border);
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--studio-text-secondary);
+        flex-shrink: 0;
+    }
+
+    .ch-list {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .ch-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1.25rem;
+        cursor: pointer;
+        border-bottom: 1px solid var(--studio-border);
+        transition: background 0.15s;
+        position: relative;
+    }
+
+    .ch-item:hover {
+        background: var(--studio-indigo-soft);
+    }
+
+    .ch-item.active {
+        background: var(--studio-indigo-soft);
+        border-left: 3px solid var(--studio-indigo);
+    }
+
+    .ch-item.sub {
+        padding-left: 2rem;
+        background: var(--studio-bg);
+    }
+
+    .ch-item.sub:hover {
+        background: var(--studio-indigo-soft);
+    }
+
+    .ch-item.sub.active {
+        background: var(--studio-indigo-soft);
+    }
+
+    .ch-av {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--studio-indigo);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .ch-av.sm {
+        width: 28px;
+        height: 28px;
+        font-size: 0.6rem;
+        font-weight: 800;
+        background: var(--studio-indigo-soft);
+        color: var(--studio-indigo);
+        border-radius: 8px;
+    }
+
+    .ch-item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ch-item-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--studio-text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+    }
+
+    .ch-item-sub {
+        font-size: 0.68rem;
+        color: var(--studio-text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+    }
+
+    .ch-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--studio-indigo);
+        flex-shrink: 0;
+    }
+
+    .ch-main {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .ch-main-hd {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--studio-border);
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        min-height: 64px;
+        flex-shrink: 0;
+    }
+
+    .ch-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.2rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        background: var(--studio-indigo-soft);
+        color: var(--studio-indigo);
+    }
+
+    .ch-msgs {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        background: var(--studio-bg);
+    }
+
+    .ch-row {
+        display: flex;
+    }
+
+    .ch-row.mine {
+        justify-content: flex-end;
+    }
+
+    /* ── FIX: bubble text was rendering vertically ── */
+    .ch-bubble {
+        max-width: 75%;
+        min-width: 60px;
+        padding: 0.85rem 1.25rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        overflow-wrap: break-word;
+        word-break: normal;
+        white-space: pre-wrap;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .ch-bubble.mine {
+        background: var(--studio-indigo);
+        color: #fff;
+        border-bottom-right-radius: 6px;
+    }
+
+    .ch-bubble.theirs {
+        background: var(--studio-card);
+        color: var(--studio-text-primary);
+        border: 1px solid var(--studio-border);
+        border-bottom-left-radius: 6px;
+    }
+
+    .ch-time {
+        font-size: 0.62rem;
+        color: var(--studio-text-secondary);
+        margin-top: 3px;
+        padding: 0 2px;
+    }
+
+    .ch-row.mine .ch-time {
+        text-align: right;
+    }
+
+    .ch-input-bar {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--studio-border);
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-end;
+        flex-shrink: 0;
+    }
+
+    .ch-textarea {
+        flex: 1;
+        resize: none;
+        border: 1px solid var(--studio-border);
+        border-radius: 12px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.85rem;
+        font-family: inherit;
+        color: var(--studio-text-primary);
+        background: var(--studio-card);
+        outline: none;
+        min-height: 40px;
+        max-height: 120px;
+        line-height: 1.5;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .ch-textarea:focus {
+        border-color: var(--studio-indigo);
+        box-shadow: 0 0 0 3px rgba(255, 0, 60, 0.08);
+    }
+
+    .ch-send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--studio-indigo);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .ch-del-btn {
+        opacity: 0;
+        color: var(--studio-danger, #EF4444);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 0.8rem;
+        padding: 0.4rem;
+        transition: opacity 0.2s, transform 0.2s;
+        align-self: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .ch-row.mine:hover .ch-del-btn {
+        opacity: 0.7;
+    }
+
+    .ch-del-btn:hover {
+        opacity: 1 !important;
+        transform: scale(1.1);
+    }
+
+    .ch-send-btn:hover {
+        background: #3c2bb3;
+        transform: scale(1.06);
+    }
+
+    .ch-send-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .ch-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        color: var(--studio-text-secondary);
+        gap: 0.75rem;
+        text-align: center;
+        padding: 2rem;
+    }
+</style>
+
+<!-- Section header -->
+<div style="margin-bottom:2rem;">
+    <h2 style="font-family:'Cinzel',serif;font-size:1.5rem;color:var(--studio-text-primary);">Messages</h2>
+    <p style="color:var(--studio-text-secondary);font-size:0.85rem;">Chat with your customers about their bookings
+    </p>
 </div>
+
+<div class="ch-layout">
+
+    <!-- ── Thread list ─────────────────────────────────── -->
+    <div class="ch-sidebar">
+        <div class="ch-sidebar-hd">Conversations</div>
+        <div class="ch-list" id="art-thread-list">
+
+            {% if appointments %}
+            {% for customer_id, appts in appointments | groupby('customer_id') %}
+            {% set first = appts | first %}
+
+            <!-- Unified thread per customer -->
+            <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
+                id="athread-{{ customer_id }}-gen">
+                <div class="ch-av">{{ first.customer_name[0] | upper }}</div>
+                <div class="ch-item-info">
+                    <div class="ch-item-name">{{ first.customer_name }}</div>
+                    <div class="ch-item-sub">Conversation</div>
+                </div>
+                <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
+            </div>
+
+            {% endfor %}
+            {% else %}
+            <div style="padding:3rem 1.5rem;text-align:center;color:var(--studio-text-secondary);">
+                <i class="fas fa-user-clock" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>
+                <p style="font-size:0.82rem;">No appointments yet. Conversations will appear here once bookings come
+                    in.</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ── Chat window ─────────────────────────────────── -->
+    <div class="ch-main">
+
+        <div class="ch-empty-state" id="art-chat-empty">
+            <i class="fas fa-comments" style="font-size:3rem;opacity:0.12;"></i>
+            <p style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);">Select a conversation</p>
+            <p style="font-size:0.78rem;">Click any thread on the left to start chatting</p>
+        </div>
+
+        <div id="art-chat-active" style="display:none;flex-direction:column;height:100%;overflow:hidden;">
+            <div class="ch-main-hd">
+                <div class="ch-av" id="art-chat-av" style="width:36px;height:36px;font-size:0.82rem;">C</div>
+                <div>
+                    <div style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);" id="art-chat-name">—
+                    </div>
+                    <div id="art-chat-tag"></div>
+                </div>
+            </div>
+            <div class="ch-msgs" id="art-msgs-area"></div>
+            <div class="ch-input-bar">
+                <textarea class="ch-textarea" id="art-chat-input" placeholder="Type a message…" rows="1"
+                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
+                    oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'">
+                </textarea>
+                <button class="ch-send-btn" id="art-send-btn" onclick="artSend()" title="Send">
+                    <i class="fas fa-paper-plane" style="font-size:0.8rem;margin-left:2px;"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    (function () {
+        var _custId = null, _custName = null, _apptId = null, _poll = null;
+
+        function escHtml(s) {
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
+        }
+
+        /* ── Open a thread ──────────────────────────────────── */
+        window.artOpenThread = function (custId, custName, apptId) {
+            _custId = custId;
+            _custName = custName;
+            _apptId = apptId || null;
+
+            document.querySelectorAll('#art-thread-list .ch-item').forEach(function (el) {
+                el.classList.remove('active');
+            });
+            var key = apptId ? custId + '-' + apptId : custId + '-gen';
+            var threadEl = document.getElementById('athread-' + key);
+            if (threadEl) threadEl.classList.add('active');
+
+            document.getElementById('art-chat-empty').style.display = 'none';
+            var active = document.getElementById('art-chat-active');
+            active.style.display = 'flex';
+
+            document.getElementById('art-chat-av').textContent = custName[0].toUpperCase();
+            document.getElementById('art-chat-name').textContent = custName;
+            document.getElementById('art-chat-tag').innerHTML = '<span class="ch-tag"><i class="fas fa-comment-dots"></i>&nbsp;Active Chat</span>';
+
+            clearInterval(_poll);
+            artFetchMsgs();
+            _poll = setInterval(artFetchMsgs, 4000);
+
+            document.getElementById('art-chat-input').focus();
+        };
+
+        /* ── Open thread from Appointments table ────────────── */
+        window.artOpenChatFromAppt = function (custId, custName, apptId) {
+            nav('messages', document.getElementById('nav-messages-artist'));
+            setTimeout(function () { artOpenThread(String(custId), custName, String(apptId)); }, 80);
+        };
+
+        /* ── Delete a message ───────────────────────────────── */
+        window.artDeleteMsg = function (msgId) {
+            if (!confirm('Are you sure you want to delete this message?')) return;
+            fetch('/chat/message/' + msgId, { method: 'DELETE' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (d.success) artFetchMsgs();
+                });
+        };
+
+        /* ── Fetch messages ─────────────────────────────────── */
+        function artFetchMsgs() {
+            if (!_custId) return;
+            var url = '/chat/messages?other_id=' + encodeURIComponent(_custId) + '&other_role=customer';
+            if (_apptId) url += '&appointment_id=' + encodeURIComponent(_apptId);
+
+            fetch(url)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var area = document.getElementById('art-msgs-area');
+                    var atBottom = area.scrollHeight - area.clientHeight <= area.scrollTop + 60;
+
+                    if (!data.messages || !data.messages.length) {
+                        area.innerHTML = '<div style="text-align:center;color:var(--studio-text-secondary);font-size:0.82rem;padding:3rem;opacity:0.7;">No messages yet — say hello! 👋</div>';
+                    } else {
+                        area.innerHTML = data.messages.map(function (m) {
+                            var cls = m.is_mine ? 'mine' : 'theirs';
+                            var delBtn = m.is_mine ? '<button class="ch-del-btn" onclick="artDeleteMsg(' + m.message_id + ')" title="Delete"><i class="fas fa-trash-alt"></i></button>' : '';
+                            var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + _custName[0].toUpperCase() + '</div>' : '';
+
+                            return '<div class="ch-row ' + cls + '" style="display:flex; align-items:flex-start;">' +
+                                avatar +
+                                '<div style="flex:1; display:flex; flex-direction:column; align-items:' + (m.is_mine ? 'flex-end' : 'flex-start') + ';">' +
+                                '<div style="display:flex; align-items:flex-end; gap:8px;">' +
+                                (m.is_mine ? delBtn : '') +
+                                '<div class="ch-bubble ' + cls + '">' + escHtml(m.content) + '</div>' +
+                                '</div>' +
+                                '<div class="ch-time">' + escHtml(m.sent_at) + '</div></div></div>';
+                        }).join('');
+                    }
+
+                    if (atBottom) area.scrollTop = area.scrollHeight;
+
+                    var dotKey = _custId + '-gen';
+                    var dot = document.getElementById('adot-' + dotKey);
+                    if (dot) dot.style.display = 'none';
+                })
+                .catch(function () { });
+        }
+
+        /* ── Send ───────────────────────────────────────────── */
+        window.artSend = function () {
+            var input = document.getElementById('art-chat-input');
+            var content = input.value.trim();
+            if (!content || !_custId) return;
+
+            var btn = document.getElementById('art-send-btn');
+            btn.disabled = true;
+
+            fetch('/chat/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: content,
+                    other_id: _custId,
+                    other_role: 'customer',
+                    appointment_id: _apptId
+                })
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (d.success) {
+                        input.value = '';
+                        input.style.height = 'auto';
+                        artFetchMsgs();
+                    }
+                })
+                .finally(function () { btn.disabled = false; input.focus(); });
+        };
+
+        /* ── Poll unread dots + nav badge ───────────────────── */
+        function pollUnreadDots() {
+            fetch('/chat/unread-threads')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (!data.threads) return;
+                    var total = 0;
+                    data.threads.forEach(function (t) {
+                        total += t.count;
+                        var key = t.sender_id + '-gen';
+                        var dot = document.getElementById('adot-' + key);
+                        if (dot && t.count > 0) dot.style.display = 'block';
+                    });
+                    var badge = document.getElementById('artist-msgs-badge');
+                    if (badge) {
+                        badge.textContent = total > 9 ? '9+' : total;
+                        badge.style.display = total > 0 ? 'flex' : 'none';
+                    }
+                })
+                .catch(function () { });
+        }
+
+        pollUnreadDots();
+        setInterval(pollUnreadDots, 8000);
+
+        document.querySelectorAll('.nav-item').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var oc = btn.getAttribute('onclick') || '';
+                if (oc.indexOf("'messages'") === -1) clearInterval(_poll);
+            });
+        });
+    })();
+</script>

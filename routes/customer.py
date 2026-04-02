@@ -13,10 +13,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
 
+import secrets
+
 @customer_bp.route('/customer/dashboard')
 def customer_dashboard():
     if session.get('role') != 'customer':
         return redirect('/login')
+
+    # Generate CSRF token for the session if it doesn't exist
+    if 'csrf_token' not in session:
+        session['csrf_token'] = secrets.token_hex(16)
 
     customer_id = session['user_id']
     conn        = get_db()
@@ -77,13 +83,20 @@ def customer_dashboard():
         total_appointments = total_appointments,
         pending_count      = pending_count,
         done_count         = done_count,
-        total_invoices     = total_invoices
+        total_invoices     = total_invoices,
+        csrf_token         = session.get('csrf_token')
     )
 
 @customer_bp.route('/customer/book', methods=['POST'])
 def customer_book():
     if session.get('role') != 'customer':
         return redirect('/login')
+
+    # Verify CSRF Token
+    form_csrf = request.form.get('csrf_token')
+    if not form_csrf or form_csrf != session.get('csrf_token'):
+        flash("Invalid security token. Please try again.", "error")
+        return redirect('/customer/dashboard')
 
     service_type = request.form.get('service_type', '').strip()
     artist_id    = request.form.get('artist_id', '').strip()

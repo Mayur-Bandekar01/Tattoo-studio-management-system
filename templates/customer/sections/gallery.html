@@ -1,121 +1,97 @@
 <!-- SECTION: GALLERY -->
-<div id="sec-gallery" class="content-section">
-    <div class="studio-card">
 
-        <!-- Header -->
-        <div
-            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h3 class="card-title" style="margin-bottom: 0.25rem;">Studio Gallery</h3>
-                <p style="font-size: 0.85rem; color: var(--studio-text-secondary);" id="galCountLabel">
-                    {% if gallery %}{{ gallery|length }} artworks browse for inspiration{% else %}No artworks yet{%
-                    endif %}
-                </p>
-            </div>
+<div class="studio-card">
 
-            <div class="filter-group"
-                style="background: rgba(255,255,255,0.05); border: 1px solid var(--studio-border); padding: 4px; border-radius: 12px;">
-                <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
-                {% set styles = gallery | map(attribute='style') | select | unique | list %}
-                {% for style in styles %}
-                <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
-                {% endfor %}
-                <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
-                    style="display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-heart" style="color: #FF4757;"></i> Saved
-                    <span
-                        style="background: rgba(255, 71, 87, 0.15); color: #FF4757; padding: 0.1rem 0.6rem; border-radius: 10px; font-size: 0.7rem; font-weight: 800;"
-                        id="savedBadge">
-                        {{ liked_count | default(0) }}
-                    </span>
-                </button>
-            </div>
+    <!-- Header -->
+    <div
+        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h3 class="card-title" style="margin-bottom: 0.25rem;">Studio Gallery</h3>
+            <p style="font-size: 0.85rem; color: var(--studio-text-secondary);" id="galCountLabel">
+                {% if gallery %}{{ gallery|length }} artworks browse for inspiration{% else %}No artworks yet{%
+                endif %}
+            </p>
         </div>
 
-        <!-- All Gallery Grid -->
-        <div class="gallery-grid" id="galleryGrid">
-            {% if gallery %}
-            {% for item in gallery %}
-            <div class="gallery-item" onclick="openLb(this)" style="cursor: pointer;" data-id="{{ item.gallery_id }}"
-                data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
-                data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
-                data-style="{{ item.style or '' }}">
-
-                <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
-                    id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
-                    <i class="fas fa-heart"></i>
-                </button>
-
-                <div class="gallery-img-wrapper">
-                    <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
-                        class="gallery-img" loading="lazy">
-                    <div class="gallery-overlay">
-                        <div>
-                            <i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                            <p style="font-weight: 700;">View Details</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gallery-info">
-                    <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="gallery-artist" style="font-weight: 600;">by {{ item.artist_name }}</span>
-                        {% if item.style %}
-                        <span class="badge"
-                            style="background: rgba(255, 0, 60, 0.1); color: var(--studio-accent); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.2);">{{
-                            item.style }}</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+        <div class="filter-group">
+            <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
+            {% set styles = gallery | map(attribute='style') | select | unique | list %}
+            {% for style in styles %}
+            <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
             {% endfor %}
-            {% else %}
-            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-                <p>No artworks uploaded to the gallery yet.</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- No Results -->
-        <div id="galNoResult"
-            style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-            <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-            <p>No artworks found for this style.</p>
-        </div>
-
-        <!-- Saved Grid -->
-        <div id="savedGrid" style="display: none;">
-            <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-                <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
-                <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
-                    class="btn-studio btn-primary">Browse Gallery</button>
-            </div>
-            <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
-        </div>
-
-    </div>
-
-    <!-- Gallery Lightbox Modal -->
-    <div id="lb"
-        style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: opacity 0.3s ease;">
-        <button onclick="closeLb()"
-            style="position: absolute; top: 2rem; right: 2rem; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; transition: transform 0.2s;"><i
-                class="fa-solid fa-xmark"></i></button>
-        <div style="text-align:center; max-width: 90vw;">
-            <img id="lbImg" src="" alt=""
-                style="max-height: 75vh; max-width: 100%; border-radius: 24px; box-shadow: 0 30px 100px rgba(0,0,0,0.8); object-fit: contain; border: 1px solid rgba(255,255,255,0.1);">
-            <div style="margin-top: 2rem;">
-                <p id="lbTitle"
-                    style="font-family:'Cinzel',serif; font-size: 1.8rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0; letter-spacing: 0.1em; text-transform: uppercase;">
-                </p>
-                <p id="lbSub"
-                    style="font-size: 0.85rem; color: var(--studio-text-secondary); margin: 0; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;">
-                </p>
-            </div>
+            <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
+                style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-heart" style="color: var(--studio-selection);"></i> Saved
+                <span id="savedBadge" class="badge" style="margin-left: 0.25rem;">
+                    {{ liked_count | default(0) }}
+                </span>
+            </button>
         </div>
     </div>
+
+    <!-- All Gallery Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+        {% if gallery %}
+        {% for item in gallery %}
+        <div class="gallery-item" onclick="openLbFromItem(this)" style="cursor: pointer;"
+            data-id="{{ item.gallery_id }}" data-category="{{ item.style or 'Other' }}"
+            data-img="{{ url_for('static', filename=item.image_path) }}" data-title="{{ item.caption or 'Untitled' }}"
+            data-artist="{{ item.artist_name }}" data-style="{{ item.style or '' }}">
+
+            <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
+                id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
+                <i class="fas fa-heart"></i>
+            </button>
+
+            <div class="gallery-img-wrapper">
+                <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
+                    class="gallery-img" loading="lazy">
+                <div class="gallery-overlay">
+                    <div>
+                        <i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                        <p style="font-weight: 700;">View Details</p>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-info">
+                <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="gallery-artist" style="font-weight: 600;">by {{ item.artist_name }}</span>
+                    {% if item.style %}
+                    <span class="badge"
+                        style="background: rgba(255, 0, 60, 0.1); color: var(--studio-accent); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.2);">{{
+                        item.style }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+            <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+            <p>No artworks uploaded to the gallery yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- No Results -->
+    <div id="galNoResult"
+        style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+        <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+        <p>No artworks found for this style.</p>
+    </div>
+
+    <!-- Saved Grid -->
+    <div id="savedGrid" style="display: none;">
+        <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+            <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
+            <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
+                class="btn-studio btn-primary">Browse Gallery</button>
+        </div>
+        <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
+    </div>
+
 </div>
 
 <!-- Toast -->
@@ -184,44 +160,17 @@
         fetch(`/customer/gallery/like/${galleryId}`, { method: 'POST' }).catch(err => console.log(err));
     };
 
-    window.openLb = function (item) {
+    window.openLbFromItem = function (item) {
         if (!item) return;
-        const lb = document.getElementById('lb');
-        if (!lb) return;
-
-        try {
-            document.getElementById('lbImg').src = item.dataset.img || '';
-            document.getElementById('lbTitle').textContent = item.dataset.title || 'Untitled';
-            const sub = [];
-            if (item.dataset.artist && item.dataset.artist !== 'None') sub.push('Artist: ' + item.dataset.artist);
-            if (item.dataset.style && item.dataset.style !== 'None') sub.push('Style: ' + item.dataset.style);
-            document.getElementById('lbSub').textContent = sub.join('  •  ');
-
-            lb.style.display = 'flex';
-            setTimeout(() => { lb.style.opacity = '1'; }, 10);
-        } catch (e) {
-            console.error("Error opening lightbox:", e);
-        }
+        const src = item.dataset.img || '';
+        const title = item.dataset.title || 'Untitled';
+        const subList = [];
+        if (item.dataset.artist && item.dataset.artist !== 'None') subList.push('Artist: ' + item.dataset.artist);
+        if (item.dataset.style && item.dataset.style !== 'None') subList.push('Style: ' + item.dataset.style);
+        const sub = subList.join('  •  ');
+        if (window.openLb) window.openLb(src, title, sub);
     };
 
-    window.closeLb = function () {
-        const lb = document.getElementById('lb');
-        if (lb) {
-            lb.style.opacity = '0';
-            setTimeout(() => { lb.style.display = 'none'; }, 300);
-        }
-    };
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeLb();
-    });
-
-    const lbElement = document.getElementById('lb');
-    if (lbElement) {
-        lbElement.addEventListener('click', function (e) {
-            if (e.target === this) closeLb();
-        });
-    }
 
     window.switchGalTab = function (tab, btn) {
         currentTab = tab;
@@ -261,7 +210,7 @@
                     const card = document.createElement('div');
                     card.className = 'gallery-item';
                     card.dataset.id = item.gallery_id;
-                    card.dataset.img = `/static/${item.image_path || ''}`;
+                    card.dataset.img = item.image_path.startsWith('/static/') ? item.image_path : `/static/${item.image_path || ''}`;
                     card.dataset.title = item.caption || 'Untitled';
                     card.dataset.artist = item.artist_name || '';
                     card.dataset.style = item.style || '';

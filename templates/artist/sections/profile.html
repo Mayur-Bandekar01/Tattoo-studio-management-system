@@ -1,88 +1,86 @@
-<div id="sec-profile" class="section">
-    <div style="margin-bottom: 2.5rem;">
-        <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Artist Identity
-        </h2>
-        <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Manage your professional credentials and
-            account security</p>
+<div style="margin-bottom: 2.5rem;">
+    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Artist Identity
+    </h2>
+    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Manage your professional credentials and
+        account security</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+    <!-- Profile Info Card -->
+    <div class="studio-card" style="padding: 2.5rem; text-align: center;">
+        <div
+            style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-indigo-soft); border: 2px solid var(--studio-border); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--studio-indigo); margin: 0 auto 1.5rem; box-shadow: var(--studio-shadow);">
+            <i class="fas fa-pen-nib"></i>
+        </div>
+
+        <div style="margin-bottom: 2.5rem;">
+            <h3
+                style="font-family: 'Cinzel', serif; font-size: 1.25rem; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
+                {{ artist_profile.artist_name if artist_profile else name }}
+            </h3>
+            <p
+                style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--studio-indigo); font-weight: 700;">
+                Resident Artist</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.25rem; text-align: left;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
+                <span
+                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Artist
+                    ID</span>
+                <span
+                    style="font-family: monospace; font-size: 0.9rem; color: var(--studio-indigo); font-weight: 700;">#{{
+                    session.get('user_id') }}</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
+                <span
+                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Primary
+                    Email</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
+                    artist_profile.artist_email if artist_profile else '—' }}</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
+                <span
+                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Contact</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
+                    artist_profile.phone if artist_profile else '—' }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
+                <span
+                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Specialisation</span>
+                <span class="badge badge-info" style="font-size: 0.7rem; font-weight: 700;">{{
+                    artist_profile.specialisation if artist_profile else '—' }}</span>
+            </div>
+        </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-        <!-- Profile Info Card -->
-        <div class="studio-card" style="padding: 2.5rem; text-align: center;">
-            <div
-                style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-indigo-soft); border: 2px solid var(--studio-border); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--studio-indigo); margin: 0 auto 1.5rem; box-shadow: var(--studio-shadow);">
-                <i class="fas fa-pen-nib"></i>
+    <!-- Change Password Card -->
+    <div class="studio-card" style="padding: 2.5rem;">
+        <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">SECURITY
+            SETTINGS</h3>
+        <form method="POST" action="/artist/change-password">
+            <div style="margin-bottom: 1.5rem;">
+                <label class="form-label">Current Password</label>
+                <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..."
+                    required>
             </div>
-
+            <div style="margin-bottom: 1.5rem;">
+                <label class="form-label">New Password</label>
+                <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters"
+                    required>
+            </div>
             <div style="margin-bottom: 2.5rem;">
-                <h3
-                    style="font-family: 'Cinzel', serif; font-size: 1.25rem; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
-                    {{ artist_profile.artist_name if artist_profile else name }}
-                </h3>
-                <p
-                    style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--studio-indigo); font-weight: 700;">
-                    Resident Artist</p>
+                <label class="form-label">Confirm New Password</label>
+                <input class="studio-input" type="password" name="confirm_password" placeholder="Repeat new password"
+                    required>
             </div>
-
-            <div style="display: flex; flex-direction: column; gap: 0.25rem; text-align: left;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                    <span
-                        style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Artist
-                        ID</span>
-                    <span
-                        style="font-family: monospace; font-size: 0.9rem; color: var(--studio-indigo); font-weight: 700;">#{{
-                        session.get('user_id') }}</span>
-                </div>
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                    <span
-                        style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Primary
-                        Email</span>
-                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
-                        artist_profile.artist_email if artist_profile else '—' }}</span>
-                </div>
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                    <span
-                        style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Contact</span>
-                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
-                        artist_profile.phone if artist_profile else '—' }}</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
-                    <span
-                        style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Specialisation</span>
-                    <span class="badge badge-info" style="font-size: 0.7rem; font-weight: 700;">{{
-                        artist_profile.specialisation if artist_profile else '—' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Change Password Card -->
-        <div class="studio-card" style="padding: 2.5rem;">
-            <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">SECURITY
-                SETTINGS</h3>
-            <form method="POST" action="/artist/change-password">
-                <div style="margin-bottom: 1.5rem;">
-                    <label class="form-label">Current Password</label>
-                    <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..."
-                        required>
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label class="form-label">New Password</label>
-                    <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters"
-                        required>
-                </div>
-                <div style="margin-bottom: 2.5rem;">
-                    <label class="form-label">Confirm New Password</label>
-                    <input class="studio-input" type="password" name="confirm_password"
-                        placeholder="Repeat new password" required>
-                </div>
-                <button type="submit" class="btn-studio btn-primary"
-                    style="width: 100%; justify-content: center; padding: 1rem;">
-                    <i class="fas fa-shield-alt"></i> Update Security Credentials
-                </button>
-            </form>
-        </div>
+            <button type="submit" class="btn-studio btn-primary"
+                style="width: 100%; justify-content: center; padding: 1rem;">
+                <i class="fas fa-shield-alt"></i> Update Security Credentials
+            </button>
+        </form>
     </div>
 </div>

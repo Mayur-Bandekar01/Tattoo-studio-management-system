@@ -1,198 +1,195 @@
 <!-- ═══════════════════════════════════════
      SECTION: OVERVIEW (sec-overview)
 ═══════════════════════════════════════ -->
-<div id="sec-overview" class="content-section active">
 
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div style="margin-bottom: 2rem;">
-        {% for category, message in messages %}
-        <div class="flash-msg {{ category }}" onclick="this.remove()">
-            <i class="fas {% if category == 'success' %}fa-check-circle
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div style="margin-bottom: 2rem;">
+    {% for category, message in messages %}
+    <div class="flash-msg {{ category }}" onclick="this.remove()">
+        <i class="fas {% if category == 'success' %}fa-check-circle
                       {% elif category == 'error' %}fa-exclamation-circle
                       {% else %}fa-info-circle{% endif %}"></i>
-            <span>{{ message }}</span>
-            <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
-        </div>
-        {% endfor %}
+        <span>{{ message }}</span>
+        <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
     </div>
-    {% endif %}
-    {% endwith %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 
-    <!-- ── Core Metrics Grid ── -->
-    <div class="summary-grid">
-        <!-- Total Bookings -->
-        <div class="summary-card" style="border-left: 4px solid var(--studio-indigo);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box bg-indigo-soft text-indigo">
-                    <i class="fa-solid fa-calendar-check"></i>
-                </div>
-                <span class="badge bg-indigo-soft text-indigo">Bookings</span>
+<!-- ── Core Metrics Grid ── -->
+<div class="summary-grid">
+    <!-- Total Bookings -->
+    <div class="summary-card" style="border-left-color: var(--studio-indigo);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div class="icon-box">
+                <i class="fa-solid fa-calendar-check"></i>
             </div>
-            <p class="card-label">Total Volume</p>
-            <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
+            <span class="badge badge-info">Bookings</span>
         </div>
+        <p class="card-label">Total Volume</p>
+        <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
+    </div>
 
-        <!-- Pending Approvals -->
-        <div class="summary-card" style="border-left: 4px solid var(--studio-warning);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box bg-warning-soft text-warning">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
-                <span class="badge bg-warning-soft text-warning">Pending</span>
+    <!-- Pending Approvals -->
+    <div class="summary-card" style="border-left-color: var(--studio-warning);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div class="icon-box"
+                style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245,158,11,0.2);">
+                <i class="fa-solid fa-clock"></i>
             </div>
-            <p class="card-label">Awaiting Studio</p>
-            <div class="card-value">
-                {{ appointments|selectattr('status', 'equalto', 'Pending')|list|length if appointments else 0 }}
-            </div>
+            <span class="badge badge-warning">Pending</span>
         </div>
-
-        <!-- Finished Sessions -->
-        <div class="summary-card" style="border-left: 4px solid var(--studio-success);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box bg-success-soft text-success">
-                    <i class="fas fa-check-double"></i>
-                </div>
-                <span class="badge bg-success-soft text-success">Completed</span>
-            </div>
-            <p class="card-label">Past Masterpieces</p>
-            <div class="card-value">
-                {{ appointments|selectattr('status', 'in', ['Done', 'Completed'])|list|length if appointments else 0 }}
-            </div>
+        <p class="card-label">Awaiting Studio</p>
+        <div class="card-value">
+            {{ appointments|selectattr('status', 'equalto', 'Pending')|list|length if appointments else 0 }}
         </div>
     </div>
 
-    <!-- 1. Hero Card: Upcoming Session -->
-    <div class="studio-card"
-        style="border-left: 5px solid var(--studio-indigo); margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem; background: var(--studio-grad-glow); backdrop-filter: blur(20px);">
-        <div
-            style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
-            <div style="position: relative; z-index: 2;">
-                <p
-                    style="font-size: 0.75rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                    <i class="fas fa-bolt"></i> Upcoming Session
-                </p>
-                {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
-                {% set next_appt = appointments[0] %}
-                <h2
-                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.25rem; line-height: 1; letter-spacing: -0.02em;">
-                    {{ next_appt.appointment_date }}
-                </h2>
-                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; font-weight: 500; max-width: 500px;">
-                    with Artist <strong style="color: #FFFFFF; text-decoration: underline;">{{ next_appt.artist_name
-                        }}</strong>
-                    &mdash; "{{ next_appt.tattoo_concept }}"
-                </p>
-                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                    <span class="badge"
-                        style="background: rgba(255,255,255,0.2); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; font-size: 0.75rem;">
-                        {{ next_appt.status }}
-                    </span>
-                    <span style="font-size: 0.85rem; color: #FFFFFF; font-weight: 700; opacity: 0.9;">
-                        <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
-                    </span>
-                </div>
-                {% else %}
-                <h2
-                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.5rem; line-height: 1; letter-spacing: -0.02em;">
-                    No upcoming sessions
-                </h2>
-                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 500px;">
-                    Your skin is a waiting canvas. Book your next masterpiece today.
-                </p>
-                <div style="margin-top: 2rem;">
-                    <button onclick="switchTab('book', document.querySelector('[data-section=book]'))"
-                        class="btn-studio btn-outline"
-                        style="background: #FFFFFF; color: #FF003C; border: none; font-weight: 900;">
-                        <i class="fas fa-calendar-plus" style="margin-right: 6px;"></i> Schedule Now
-                    </button>
-                </div>
-                {% endif %}
+    <!-- Finished Sessions -->
+    <div class="summary-card" style="border-left-color: var(--studio-success);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div class="icon-box"
+                style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16,185,129,0.2);">
+                <i class="fas fa-check-double"></i>
             </div>
+            <span class="badge badge-success">Completed</span>
+        </div>
+        <p class="card-label">Past Masterpieces</p>
+        <div class="card-value">
+            {{ appointments|selectattr('status', 'in', ['Done', 'Completed'])|list|length if appointments else 0 }}
+        </div>
+    </div>
+</div>
 
+<!-- 1. Hero Card: Upcoming Session -->
+<div class="studio-card"
+    style="border-left: 5px solid var(--studio-selection); margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem; background: var(--studio-grad-hero); backdrop-filter: blur(20px);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div style="position: relative; z-index: 2;">
+            <p
+                style="font-size: 0.75rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
+                <i class="fas fa-bolt"></i> Upcoming Session
+            </p>
             {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
-            <div
-                style="background: rgba(255, 255, 255, 0.15); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 2rem; position: relative; z-index: 2; backdrop-filter: blur(5px);">
-                <i class="fas fa-calendar-day"></i>
+            {% set next_appt = appointments[0] %}
+            <h2
+                style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.25rem; line-height: 1; letter-spacing: -0.02em;">
+                {{ next_appt.appointment_date }}
+            </h2>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; font-weight: 500; max-width: 500px;">
+                with Artist <strong style="color: #FFFFFF; text-decoration: underline;">{{ next_appt.artist_name
+                    }}</strong>
+                &mdash; "{{ next_appt.tattoo_concept }}"
+            </p>
+            <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                <span class="badge"
+                    style="background: rgba(255,255,255,0.2); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; font-size: 0.75rem;">
+                    {{ next_appt.status }}
+                </span>
+                <span style="font-size: 0.85rem; color: #FFFFFF; font-weight: 700; opacity: 0.9;">
+                    <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
+                </span>
+            </div>
+            {% else %}
+            <h2
+                style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.5rem; line-height: 1; letter-spacing: -0.02em;">
+                No upcoming sessions
+            </h2>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 500px;">
+                Your skin is a waiting canvas. Book your next masterpiece today.
+            </p>
+            <div style="margin-top: 2rem;">
+                <button onclick="switchTab('book', document.querySelector('[data-section=book]'))"
+                    class="btn-studio btn-primary" style="font-weight: 900;">
+                    <i class="fas fa-calendar-plus" style="margin-right: 6px;"></i> Schedule Now
+                </button>
             </div>
             {% endif %}
         </div>
 
-        <!-- Decorative background blobs -->
+        {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
         <div
-            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
+            style="background: rgba(255, 255, 255, 0.15); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 2rem; position: relative; z-index: 2; backdrop-filter: blur(5px);">
+            <i class="fas fa-calendar-day"></i>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Decorative background blobs -->
+    <div
+        style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
+    </div>
+</div>
+
+<!-- 2. Secondary Content Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+
+    <!-- Card 1: Past Tattoos -->
+    <div class="studio-card"
+        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-accent);"
+        onclick="switchTab('gallery', document.querySelector('[data-section=gallery]'))">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
+            <div class="icon-box">
+                <i class="fas fa-history"></i>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Past
+                Tattoos</h3>
+        </div>
+        <p
+            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
+            Review your completed masterpieces and session history. Build your personal art portfolio.
+        </p>
+        <div
+            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+            View History <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
         </div>
     </div>
 
-    <!-- 2. Secondary Content Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-
-        <!-- Card 1: Past Tattoos -->
-        <div class="studio-card"
-            style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-indigo);"
-            onclick="switchTab('gallery', document.querySelector('[data-section=gallery]'))">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-                <div class="svc-icon"
-                    style="margin: 0; width: 44px; height: 44px; font-size: 1.1rem; border-radius: 12px;">
-                    <i class="fas fa-history"></i>
-                </div>
-                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Past
-                    Tattoos</h3>
+    <!-- Card 2: Favorite Artists -->
+    <div class="studio-card"
+        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-warning);"
+        onclick="switchTab('book', document.querySelector('[data-section=book]'))">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
+            <div class="icon-box"
+                style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245, 158, 11, 0.2);">
+                <i class="fas fa-users"></i>
             </div>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-                Review your completed masterpieces and session history. Build your personal art portfolio.
-            </p>
-            <div
-                style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-                View History <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
-            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Favorite
+                Artists</h3>
         </div>
-
-        <!-- Card 2: Favorite Artists -->
-        <div class="studio-card"
-            style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-warning);"
-            onclick="switchTab('book', document.querySelector('[data-section=book]'))">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-                <div class="svc-icon"
-                    style="margin: 0; width: 44px; height: 44px; font-size: 1.1rem; border-radius: 12px;">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Favorite
-                    Artists</h3>
-            </div>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-                Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.
-            </p>
-            <div
-                style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-                Explore Team <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
-            </div>
+        <p
+            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
+            Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.
+        </p>
+        <div
+            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+            Explore Team <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
         </div>
-
-        <!-- Card 3: Aftercare Notes -->
-        <div class="studio-card"
-            style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-success);"
-            onclick="switchTab('aftercare', document.querySelector('[data-section=aftercare]'))">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-                <div class="svc-icon"
-                    style="margin: 0; width: 44px; height: 44px; font-size: 1.1rem; border-radius: 12px;">
-                    <i class="fas fa-hand-holding-medical"></i>
-                </div>
-                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Aftercare
-                    Notes</h3>
-            </div>
-            <p
-                style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-                Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
-            </p>
-            <div
-                style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-                Read Guide <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Card 3: Aftercare Notes -->
+    <div class="studio-card"
+        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-success);"
+        onclick="switchTab('aftercare', document.querySelector('[data-section=aftercare]'))">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
+            <div class="icon-box"
+                style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16, 185, 129, 0.2);">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Aftercare
+                Notes</h3>
+        </div>
+        <p
+            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
+            Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
+        </p>
+        <div
+            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+            Read Guide <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
+        </div>
+    </div>
+
 </div>

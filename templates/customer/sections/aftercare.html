@@ -1,203 +1,528 @@
-<div id="sec-aftercare" class="content-section">
+<!-- ═══════════════════════════════════════
+     SECTION: AFTERCARE PROTOCOL (sec-aftercare)
+═══════════════════════════════════════ -->
 
-    <div class="obs-glass"
-        style="margin-bottom: 2rem; padding: 1.5rem; display: flex; gap: 1.25rem; border: 1px solid rgba(255, 0, 60, 0.2);">
-        <i class="fas fa-biohazard"
-            style="font-size: 1.5rem; color: var(--studio-accent); filter: drop-shadow(0 0 10px rgba(255, 0, 60, 0.4));"></i>
+<style>
+    #sec-aftercare .hero-alert {
+        margin-bottom: 2.5rem;
+        padding: 2rem;
+        display: flex;
+        gap: 1.5rem;
+        border: 1px solid rgba(255, 0, 60, 0.4);
+        background: linear-gradient(135deg, rgba(255, 0, 60, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+        box-shadow: 0 0 30px rgba(255, 0, 60, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    #sec-aftercare .hero-alert::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--studio-selection);
+    }
+
+    #sec-aftercare .hero-alert i {
+        font-size: 2rem;
+        color: var(--studio-selection);
+        filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.6));
+        animation: pulse-glow 2s infinite ease-in-out;
+    }
+
+    #sec-aftercare .hero-alert-title {
+        font-weight: 900;
+        margin-bottom: 0.75rem;
+        color: #FFFFFF;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 1.1rem;
+    }
+
+    #sec-aftercare .hero-alert-text {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--studio-text-secondary);
+    }
+
+    #sec-aftercare .aftercare-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    #sec-aftercare .phase-card {
+        padding: 2rem;
+    }
+
+    #sec-aftercare .phase-card h3 {
+        margin-bottom: 2rem;
+        font-family: var(--font-heading);
+    }
+
+    #sec-aftercare .step-item {
+        display: flex;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    #sec-aftercare .step-item:hover {
+        transform: translateX(8px);
+    }
+
+    #sec-aftercare .step-idx {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: var(--studio-accent);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 0.75rem;
+        box-shadow: 0 4px 10px rgba(200, 160, 64, 0.3);
+    }
+
+    #sec-aftercare .step-title {
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+        color: var(--studio-text-primary);
+        font-size: 0.95rem;
+    }
+
+    #sec-aftercare .step-text {
+        font-size: 0.85rem;
+        color: var(--studio-text-secondary);
+        line-height: 1.6;
+    }
+
+    #sec-aftercare .protocol-box {
+        padding: 1.75rem;
+        border: 1px solid rgba(16, 185, 129, 0.15);
+        background: rgba(16, 185, 129, 0.03);
+    }
+
+    #sec-aftercare .protocol-box i.main-icon {
+        font-size: 1.75rem;
+        color: #10B981;
+        margin-bottom: 1.25rem;
+    }
+
+    #sec-aftercare .protocol-title {
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+        color: #10B981;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.85rem;
+    }
+
+    #sec-aftercare .protocol-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #sec-aftercare .protocol-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.85rem;
+        color: var(--studio-text-secondary);
+    }
+
+    #sec-aftercare .protocol-list li i {
+        color: #10B981;
+        font-size: 0.8rem;
+    }
+
+    #sec-aftercare .prohibition-box {
+        padding: 1.75rem;
+        border: 1px solid rgba(255, 0, 60, 0.15);
+        background: rgba(255, 0, 60, 0.03);
+    }
+
+    #sec-aftercare .prohibition-box i.main-icon {
+        font-size: 1.75rem;
+        color: var(--studio-selection);
+        margin-bottom: 1.25rem;
+    }
+
+    #sec-aftercare .prohibition-title {
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+        color: var(--studio-selection);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.85rem;
+    }
+
+    #sec-aftercare .prohibition-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #sec-aftercare .prohibition-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.85rem;
+        color: var(--studio-text-secondary);
+    }
+
+    #sec-aftercare .prohibition-list li i {
+        color: var(--studio-selection);
+        font-size: 0.8rem;
+    }
+
+    #sec-aftercare .preservation-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    #sec-aftercare .pres-card {
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        background: rgba(255, 255, 255, 0.01);
+    }
+
+    #sec-aftercare .pres-card i {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        filter: drop-shadow(0 0 12px currentColor);
+    }
+
+    #sec-aftercare .pres-title {
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        color: var(--studio-text-primary);
+        font-size: 1rem;
+    }
+
+    #sec-aftercare .pres-text {
+        font-size: 0.85rem;
+        color: var(--studio-text-secondary);
+        line-height: 1.7;
+    }
+
+    #sec-aftercare .timeline-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    #sec-aftercare .timeline-block {
+        display: flex;
+        border: 1px solid var(--studio-border);
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: var(--studio-radius-sm);
+        overflow: hidden;
+        transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    #sec-aftercare .timeline-block:hover {
+        border-color: var(--studio-accent);
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    #sec-aftercare .timeline-aside {
+        width: 80px;
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid var(--studio-border);
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    #sec-aftercare .timeline-days {
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: var(--studio-text-primary);
+        line-height: 1;
+    }
+
+    #sec-aftercare .timeline-tag {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--studio-accent);
+        font-weight: 800;
+        margin-top: 0.4rem;
+    }
+
+    #sec-aftercare .timeline-main {
+        padding: 1.5rem;
+        flex: 1;
+    }
+
+    #sec-aftercare .timeline-title {
+        font-weight: 800;
+        color: var(--studio-text-primary);
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+
+    #sec-aftercare .timeline-text {
+        font-size: 0.85rem;
+        color: var(--studio-text-secondary);
+        opacity: 0.8;
+        line-height: 1.6;
+    }
+
+    #sec-aftercare .emergency-alert {
+        border: 1px solid rgba(255, 0, 60, 0.5);
+        background: linear-gradient(135deg, rgba(255, 0, 60, 0.15) 0%, rgba(10, 10, 10, 1) 100%);
+        padding: 2.5rem;
+        border-radius: var(--studio-radius);
+        box-shadow: 0 10px 40px rgba(255, 0, 60, 0.15);
+    }
+
+    #sec-aftercare .emergency-icon {
+        font-size: 2rem;
+        color: var(--studio-selection);
+        margin-bottom: 1.5rem;
+        filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.5));
+    }
+
+    #sec-aftercare .emergency-title {
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: #FFFFFF;
+        font-size: 1.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    #sec-aftercare .emergency-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+    }
+
+    #sec-aftercare .emergency-item {
+        color: var(--studio-text-secondary);
+        font-weight: 600;
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    #sec-aftercare .emergency-item::before {
+        content: '\f111';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 0.4rem;
+        color: var(--studio-selection);
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+</style>
+
+<div id="sec-aftercare">
+
+    <!-- Hero Header -->
+    <div class="obs-glass hero-alert">
+        <i class="fas fa-biohazard"></i>
         <div>
-            <p
-                style="font-weight: 800; margin-bottom: 0.5rem; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.1em;">
-                Critical — Healing Protocol</p>
-            <p style="font-size: 0.9rem; line-height: 1.6; color: var(--studio-text-secondary);">Proper aftercare is
-                essential for masterpiece preservation. Neglecting these protocols can compromise color retention and
-                skin health. Follow your artist's specific guidance religiously.</p>
+            <p class="hero-alert-title">Important — How to Heal Your Tattoo</p>
+            <p class="hero-alert-text">
+                Taking care of your tattoo is very important to keep it looking its best. If you don't follow these
+                steps, your tattoo might fade or you could have skin problems. Make sure to follow your artist's advice
+                exactly.
+            </p>
         </div>
     </div>
 
-    <!-- 0–24 Hours -->
-    <div class="studio-card" style="margin-bottom: 2rem;">
-        <h3 class="card-title" style="font-weight: 800; display: flex; align-items: center;"><i
-                class="fas fa-hourglass-start"
-                style="color: #FFB302; margin-right: 1rem; filter: drop-shadow(0 0 8px rgba(255, 179, 2, 0.3));"></i>Immediate
-            After (0 — 24 Hours)</h3>
-        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
-            <div style="display: flex; gap: 1.25rem;">
-                <div class="step-num" style="background: var(--studio-accent); color: white; font-weight: 900;">1</div>
+    <div class="aftercare-grid">
+
+        <!-- Phase 1: The First 24 Hours -->
+        <div class="studio-card phase-card">
+            <h3 class="card-title">
+                <i class="fas fa-hourglass-start" style="color: #FFB302; margin-right: 1rem;"></i>
+                The First 24 Hours
+            </h3>
+
+            <div class="step-item">
+                <div class="step-idx">1</div>
                 <div>
-                    <p style="font-weight: 800; margin-bottom: 0.35rem; color: var(--studio-text-primary);">Protect the
-                        Canvas</p>
-                    <p style="font-size: 0.85rem; color: var(--studio-text-secondary); line-height: 1.6;">Your artist
-                        will wrap your tattoo. Keep it on for 2–4 hours. Do not expose the fresh wound prematurely.</p>
+                    <p class="step-title">Protect Your New Tattoo</p>
+                    <p class="step-text">Your artist will wrap your tattoo. Keep it on for 2–4 hours. Don't take it off
+                        early.</p>
                 </div>
             </div>
-            <div style="display: flex; gap: 1.25rem;">
-                <div class="step-num" style="background: var(--studio-accent); color: white; font-weight: 900;">2</div>
+
+            <div class="step-item">
+                <div class="step-idx">2</div>
                 <div>
-                    <p style="font-weight: 800; margin-bottom: 0.35rem; color: var(--studio-text-primary);">Purification
-                    </p>
-                    <p style="font-size: 0.85rem; color: var(--studio-text-secondary); line-height: 1.6;">Use lukewarm
-                        water and mild antibacterial soap. Pat dry with a fresh paper towel — absolute sterility is key.
-                    </p>
+                    <p class="step-title">Cleaning Your Tattoo</p>
+                    <p class="step-text">Use warm water and mild soap. Pat it dry with a clean paper towel — keeping it
+                        clean is very important.</p>
                 </div>
             </div>
-            <div style="display: flex; gap: 1.25rem;">
-                <div class="step-num" style="background: var(--studio-accent); color: white; font-weight: 900;">3</div>
+
+            <div class="step-item">
+                <div class="step-idx">3</div>
                 <div>
-                    <p style="font-weight: 800; margin-bottom: 0.35rem; color: var(--studio-text-primary);">Hydration
-                    </p>
-                    <p style="font-size: 0.85rem; color: var(--studio-text-secondary); line-height: 1.6;">Apply a
-                        micro-layer of tattoo-specific moisturizer. The skin must breathe; do not suffocate it in
-                        ointment.</p>
+                    <p class="step-title">Moisturizing</p>
+                    <p class="step-text">Apply a very thin layer of tattoo lotion. Your skin needs to breathe, so don't
+                        use too much lotion.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 2 Weeks -->
-    <div class="studio-card" style="margin-bottom: 2rem;">
-        <h3 class="card-title" style="font-weight: 800; display: flex; align-items: center;"><i class="fas fa-dna"
-                style="color: var(--studio-accent); margin-right: 1rem; filter: drop-shadow(0 0 8px rgba(255, 0, 60, 0.3));"></i>First
-            2 Weeks — Regeneration</h3>
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1.5rem;">
-            <div class="obs-glass" style="padding: 1.5rem; border: 1px solid rgba(0, 255, 128, 0.1);">
-                <i class="fas fa-shield-check" style="font-size: 1.5rem; color: #00FF80; margin-bottom: 1rem;"></i>
-                <div>
-                    <p
-                        style="font-weight: 800; margin-bottom: 1rem; color: #00FF80; text-transform: uppercase; letter-spacing: 0.1em;">
-                        Standard Protocol</p>
-                    <ul
-                        style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.8; color: var(--studio-text-secondary);">
-                        <li><i class="fas fa-check" style="margin-right: 0.5rem; color: #00FF80;"></i> Wash 2–3 times
-                            daily</li>
-                        <li><i class="fas fa-check" style="margin-right: 0.5rem; color: #00FF80;"></i> Maintain
-                            hydration levels</li>
-                        <li><i class="fas fa-check" style="margin-right: 0.5rem; color: #00FF80;"></i> Wear loose,
-                            breathable fabrics</li>
-                        <li><i class="fas fa-check" style="margin-right: 0.5rem; color: #00FF80;"></i> Environmental
-                            sterility</li>
+        <!-- Phase 2: Healing Phase -->
+        <div class="studio-card phase-card">
+            <h3 class="card-title">
+                <i class="fas fa-dna" style="color: var(--studio-selection); margin-right: 1rem;"></i>
+                First 2 Weeks — Healing Time
+            </h3>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="obs-glass protocol-box">
+                    <i class="fas fa-shield-check main-icon"></i>
+                    <p class="protocol-title">What to Do</p>
+                    <ul class="protocol-list">
+                        <li><i class="fas fa-check"></i> Wash 2–3 times every day</li>
+                        <li><i class="fas fa-check"></i> Keep the skin moisturized</li>
+                        <li><i class="fas fa-check"></i> Wear loose, clean clothes</li>
+                        <li><i class="fas fa-check"></i> Keep your surroundings clean</li>
+                    </ul>
+                </div>
+
+                <div class="obs-glass prohibition-box">
+                    <i class="fas fa-skull-crossbones main-icon"></i>
+                    <p class="prohibition-title">What NOT to Do</p>
+                    <ul class="prohibition-list">
+                        <li><i class="fas fa-times"></i> DON'T scratch or pick at it</li>
+                        <li><i class="fas fa-times"></i> NO swimming or soaking in water</li>
+                        <li><i class="fas fa-times"></i> NO direct sunlight</li>
+                        <li><i class="fas fa-times"></i> NO heavy exercise or gym sessions</li>
                     </ul>
                 </div>
             </div>
-            <div class="obs-glass" style="padding: 1.5rem; border: 1px solid rgba(255, 0, 60, 0.1);">
-                <i class="fas fa-skull-crossbones"
-                    style="font-size: 1.5rem; color: var(--studio-accent); margin-bottom: 1rem;"></i>
-                <div>
-                    <p
-                        style="font-weight: 800; margin-bottom: 1rem; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em;">
-                        Strict Prohibitions</p>
-                    <ul
-                        style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.8; color: var(--studio-text-secondary);">
-                        <li><i class="fas fa-times" style="margin-right: 0.8rem; color: var(--studio-accent);"></i> NO
-                            scratching or picking</li>
-                        <li><i class="fas fa-times" style="margin-right: 0.8rem; color: var(--studio-accent);"></i> NO
-                            aquatic immersion (pools)</li>
-                        <li><i class="fas fa-times" style="margin-right: 0.8rem; color: var(--studio-accent);"></i> NO
-                            direct photons (sunlight)</li>
-                        <li><i class="fas fa-times" style="margin-right: 0.8rem; color: var(--studio-accent);"></i> NO
-                            high-impact sweating</li>
-                    </ul>
-                </div>
+        </div>
+
+    </div>
+
+    <!-- Long Term Preservation -->
+    <div class="studio-card" style="margin-bottom: 2.5rem; padding: 3rem 2rem;">
+        <h3 class="card-title" style="text-align: center; margin-bottom: 3rem;">
+            <i class="fas fa-shuttle-space" style="color: var(--studio-accent); margin-right: 1rem;"></i>
+            Keeping it Great Forever
+        </h3>
+
+        <div class="preservation-grid">
+            <div class="obs-glass pres-card">
+                <i class="fas fa-sun" style="color: #FFB302;"></i>
+                <p class="pres-title">Protect from Sun</p>
+                <p class="pres-text">Always use SPF 50+ sunscreen. Sunlight causes ink to fade over time.</p>
+            </div>
+
+            <div class="obs-glass pres-card">
+                <i class="fas fa-droplet" style="color: #00D2FF;"></i>
+                <p class="pres-title">Skin Health</p>
+                <p class="pres-text">Use lotion every day. Dry skin makes tattoos look dull and can cause fading.</p>
+            </div>
+
+            <div class="obs-glass pres-card">
+                <i class="fas fa-sparkles" style="color: #FFD700;"></i>
+                <p class="pres-title">Artist Check-up</p>
+                <p class="pres-text">Come back after 4 months. We can touch up any areas that need it.</p>
             </div>
         </div>
     </div>
 
-    <!-- Long Term -->
-    <div class="studio-card" style="margin-bottom: 2rem;">
-        <h3 class="card-title" style="font-weight: 800; display: flex; align-items: center;"><i
-                class="fas fa-shuttle-space"
-                style="color: var(--studio-accent); margin-right: 1rem; filter: drop-shadow(0 0 8px rgba(255, 0, 60, 0.3));"></i>Long
-            Term Preservation</h3>
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
-            <div class="obs-glass" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-sun" style="font-size: 2.5rem; color: #FFB302; margin-bottom: 1.25rem;"></i>
-                <p style="font-weight: 800; margin-bottom: 0.5rem; color: var(--studio-text-primary);">UV Resistance</p>
-                <p style="font-size: 0.8rem; color: var(--studio-text-secondary); line-height: 1.6;">Always deploy SPF
-                    50+ blockers. Photons destroy ink integrity over cycles.</p>
-            </div>
-            <div class="obs-glass" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-droplet" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1.25rem;"></i>
-                <p style="font-weight: 800; margin-bottom: 0.5rem; color: var(--studio-text-primary);">Dermal Matrix</p>
-                <p style="font-size: 0.8rem; color: var(--studio-text-secondary); line-height: 1.6;">Moisturize daily.
-                    Desiccated skin leads to visual degradation and fading.</p>
-            </div>
-            <div class="obs-glass" style="text-align: center; padding: 2rem;">
-                <i class="fas fa-sparkles" style="font-size: 2.5rem; color: #FFD700; margin-bottom: 1.25rem;"></i>
-                <p style="font-weight: 800; margin-bottom: 0.5rem; color: var(--studio-text-primary);">Calibration</p>
-                <p style="font-size: 0.8rem; color: var(--studio-text-secondary); line-height: 1.6;">Post 4-month
-                    checkup. We refresh any areas that settled unevenly.</p>
+    <!-- Timeline & Emergency -->
+    <div class="aftercare-grid" style="align-items: start;">
+
+        <!-- Timeline -->
+        <div class="studio-card phase-card">
+            <h3 class="card-title">
+                <i class="fas fa-wave-square" style="color: var(--studio-accent); margin-right: 1rem;"></i>
+                Your Healing Journey
+            </h3>
+
+            <div class="timeline-container">
+                <div class="timeline-block">
+                    <div class="timeline-aside">
+                        <p class="timeline-days">01–03</p>
+                        <p class="timeline-tag">Normal</p>
+                    </div>
+                    <div class="timeline-main">
+                        <p class="timeline-title">Early Healing</p>
+                        <p class="timeline-text">Some redness and swelling is normal. It might ooze a little at first.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-block">
+                    <div class="timeline-aside">
+                        <p class="timeline-days">04–07</p>
+                        <p class="timeline-tag">Peeling</p>
+                    </div>
+                    <div class="timeline-main">
+                        <p class="timeline-title">Peeling Phase</p>
+                        <p class="timeline-text">Your skin will start to peel. Don't pick at it; let it fall off
+                            naturally.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-block"
+                    style="border-color: rgba(255, 0, 60, 0.3); background: rgba(255, 0, 60, 0.03);">
+                    <div class="timeline-aside" style="border-color: rgba(255, 0, 60, 0.1);">
+                        <p class="timeline-days" style="color: #FFFFFF;">04+</p>
+                        <p class="timeline-tag">Healed</p>
+                    </div>
+                    <div class="timeline-main">
+                        <p class="timeline-title" style="color: #FFFFFF;">Fully Healed</p>
+                        <p class="timeline-text" style="opacity: 0.9;">Colors are set. The skin keeps healing for 3
+                            months. Your tattoo is safe!</p>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Emergency Alert -->
+        <div class="emergency-alert">
+            <i class="fas fa-kit-medical emergency-icon"></i>
+            <p class="emergency-title">When to See a Doctor</p>
+
+            <div class="emergency-list">
+                <div class="emergency-item">Swelling that gets worse after 3 days</div>
+                <div class="emergency-item">Pus or a bad smell from the tattoo</div>
+                <div class="emergency-item">Fever or chills</div>
+                <div class="emergency-item">Pain that keeps getting worse</div>
+                <div class="emergency-item">Red lines spreading from the tattoo</div>
+                <div class="emergency-item">A rash that won't go away</div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Timeline -->
-    <div class="studio-card" style="margin-bottom: 2rem;">
-        <h3 class="card-title" style="font-weight: 800;"><i class="fas fa-wave-square"
-                style="margin-right: 1rem; color: var(--studio-accent);"></i>Regenerative Timeline</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem;">
-            <div class="timeline-item" style="background: rgba(255, 255, 255, 0.03);">
-                <div class="timeline-day" style="border-right: 1px solid var(--studio-border);">
-                    <p style="font-weight: 900; font-size: 1.2rem; color: var(--studio-text-primary);">01–03</p>
-                    <p
-                        style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--studio-accent); font-weight: 800;">
-                        Acute</p>
-                </div>
-                <div>
-                    <p class="timeline-label" style="font-weight: 800; color: var(--studio-text-primary);">Trauma
-                        Response</p>
-                    <p class="timeline-desc" style="color: var(--studio-text-secondary); opacity: 0.8;">Normal redness
-                        and swelling. Micro-oozing of plasma is part of the process.</p>
-                </div>
-            </div>
-            <div class="timeline-item" style="background: rgba(255, 255, 255, 0.03);">
-                <div class="timeline-day" style="border-right: 1px solid var(--studio-border);">
-                    <p style="font-weight: 900; font-size: 1.2rem; color: var(--studio-text-primary);">04–07</p>
-                    <p
-                        style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--studio-accent); font-weight: 800;">
-                        Shedding</p>
-                </div>
-                <div>
-                    <p class="timeline-label" style="font-weight: 800; color: var(--studio-text-primary);">Skin
-                        Metamorphosis</p>
-                    <p class="timeline-desc" style="color: var(--studio-text-secondary); opacity: 0.8;">Epidermal
-                        flaking occurs. Resist the urge to pick; let nature take its course.</p>
-                </div>
-            </div>
-            <div class="timeline-item"
-                style="background: rgba(255, 0, 60, 0.05); border: 1px solid rgba(255, 0, 60, 0.1);">
-                <div class="timeline-day" style="border-right: 1px solid rgba(255, 0, 60, 0.1);">
-                    <p style="font-weight: 900; font-size: 1.2rem; color: #FFFFFF;">04+</p>
-                    <p
-                        style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--studio-accent); font-weight: 800;">
-                        Integrated</p>
-                </div>
-                <div>
-                    <p class="timeline-label" style="font-weight: 800; color: #FFFFFF;">Canvas Fully Healed</p>
-                    <p class="timeline-desc" style="color: var(--studio-text-secondary); opacity: 0.9;">Colors
-                        stabilized. Deep healing continues for 12 weeks. Masterpiece secured.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alert signs -->
-    <div class="obs-glass" style="border: 1px solid rgba(255, 0, 60, 0.3); padding: 2rem;">
-        <i class="fas fa-kit-medical"
-            style="font-size: 1.8rem; color: var(--studio-accent); margin-bottom: 1.25rem; display: block;"></i>
-        <div>
-            <p
-                style="font-weight: 900; margin-bottom: 1rem; color: #FFFFFF; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                Emergency Alert Protocols:</p>
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; font-size: 0.85rem; color: var(--studio-text-secondary); font-weight: 600;">
-                <p>• Escalating edema after 72 hours</p>
-                <p>• Purulent discharge or odor</p>
-                <p>• Systemic pyrexia (fever)</p>
-                <p>• Intensifying pain cycles</p>
-                <p>• Erythematous streaks (red lines)</p>
-                <p>• Persistent allergic reaction</p>
-            </div>
-        </div>
-    </div>
-</div>
+</div><!-- /sec-aftercare -->

@@ -14,12 +14,22 @@
     --studio-secondary   : #0F0F0F;
     --studio-sidebar     : #050505;
 
-    /* Accent — Vibrant Red → Orange */
-    --studio-indigo      : #FF003C;
-    --studio-indigo-soft : rgba(255, 0, 60, 0.1);
-    --studio-gold        : #FF8C00;
-    --studio-grad        : linear-gradient(135deg, #FF003C 0%, #FF8C00 100%);
-    --studio-grad-glow   : linear-gradient(135deg, rgba(255,0,60,0.3) 0%, rgba(255,140,0,0.1) 100%);
+    /* Accent — Premium Gold (Matched to Landing Page) */
+    --studio-accent      : #c8a040;
+    --studio-accent-soft : rgba(200, 160, 64, 0.1);
+    --studio-gold        : #c8a040;
+    --studio-gold-dim    : rgba(200, 160, 64, 0.3);
+    --studio-grad        : linear-gradient(135deg, #c8a040 0%, #e0b84a 100%);
+    --studio-grad-glow   : linear-gradient(135deg, rgba(200, 160, 64, 0.2) 0%, rgba(200, 160, 64, 0.05) 100%);
+
+    /* Selection Accent — Red/Orange (High Contrast) */
+    --studio-selection      : #FF003C;
+    --studio-selection-soft : rgba(255, 0, 60, 0.1);
+    --studio-selection-glow : 0 0 20px rgba(255, 0, 60, 0.2);
+    --studio-selection-grad : linear-gradient(135deg, #FF003C 0%, #FF8C00 100%);
+
+    --studio-indigo      : var(--studio-selection);
+    --studio-indigo-soft : var(--studio-selection-soft);
 
     /* Utility Accents */
     --studio-success     : #10B981;
@@ -53,7 +63,7 @@
     --sidebar-grad-end   : #050505;
     --sidebar-text       : #FFFFFF;
     --sidebar-muted      : rgba(255, 255, 255, 0.38);
-    --sidebar-active-bg  : var(--studio-grad);
+    --sidebar-active-bg  : var(--studio-selection-grad);
     --sidebar-hover-bg   : rgba(255, 255, 255, 0.04);
     --studio-bg-hover    : rgba(255, 255, 255, 0.04);
 
@@ -721,6 +731,11 @@ body::before {
 .badge-info    { background: var(--studio-info-soft); color: var(--studio-info); border: 1px solid var(--studio-info-soft);   }
 .badge-danger  { background: var(--studio-danger-soft); color: var(--studio-danger); border: 1px solid var(--studio-danger-soft);   }
 .badge-muted   { background: var(--studio-border-light); color: var(--studio-text-secondary); border: none; box-shadow: var(--studio-shadow);     }
+
+/* --- Utility Text Colors --- */
+.text-success { color: var(--studio-success) !important; }
+.text-danger  { color: var(--studio-danger) !important; }
+
 
 /* --- Alerts & Feedback --- */
 .studio-alert {
@@ -1394,60 +1409,66 @@ body.light .dropz {
 /* ══════════════════════════════════════════════════════════════
    LIGHT THEME — New class names (Owner-identical)
    ══════════════════════════════════════════════════════════════ */
-[data-theme="light"] {
+[data-theme="ivory"] {
     --studio-bg          : #F8F7F4;
     --studio-card        : #FFFFFF;
     --studio-card-border : rgba(0, 0, 0, 0.08);
     --studio-glass-border: 1px solid rgba(0, 0, 0, 0.07);
     --studio-secondary   : #F1EFE9;
+
     --studio-text-primary  : #0F172A;
     --studio-text-secondary: #475569;
     --studio-text-muted    : #94A3B8;
+
     --studio-border      : rgba(0, 0, 0, 0.1);
     --studio-border-light: rgba(0, 0, 0, 0.06);
     --studio-shadow      : 0 4px 20px rgba(0, 0, 0, 0.08);
     --studio-shadow-glow : 0 0 20px rgba(255, 0, 60, 0.12);
     --studio-bg-hover    : rgba(0, 0, 0, 0.04);
+
     --sidebar-grad-start : #1A1A2E;
     --sidebar-grad-mid   : #16213E;
     --sidebar-grad-end   : #0F3460;
     --sidebar-text       : #FFFFFF;
     --sidebar-muted      : rgba(255, 255, 255, 0.45);
     --sidebar-hover-bg   : rgba(255, 255, 255, 0.08);
+    --sidebar-active-bg  : var(--studio-selection-grad);
+
     --studio-indigo-soft : rgba(255, 0, 60, 0.08);
     --studio-success-soft: rgba(16, 185, 129, 0.1);
     --studio-danger-soft : rgba(239, 68, 68, 0.1);
     --studio-warning-soft: rgba(245, 158, 11, 0.1);
     --studio-info-soft   : rgba(59, 130, 246, 0.1);
+    --studio-selection-grad : linear-gradient(135deg, #FF003C 0%, #FF8C00 100%);
 }
 
-[data-theme="light"] .main-content { background: var(--studio-bg); }
-[data-theme="light"] .top-header   { background: var(--studio-bg); border-color: rgba(0,0,0,0.08); }
+[data-theme="ivory"] .main-content { background: var(--studio-bg); }
+[data-theme="ivory"] .top-header   { background: var(--studio-bg); border-color: rgba(0,0,0,0.08); }
 
-[data-theme="light"] .studio-card {
+[data-theme="ivory"] .studio-card {
     background : #FFFFFF;
     border     : 1px solid rgba(0,0,0,0.08);
     box-shadow : 0 2px 16px rgba(0,0,0,0.06);
 }
-[data-theme="light"] .studio-card:hover {
+[data-theme="ivory"] .studio-card:hover {
     box-shadow: 0 8px 32px rgba(0,0,0,0.12), var(--studio-shadow-glow);
 }
 
-[data-theme="light"] .flash-msg { background: #FFFFFF; }
+[data-theme="ivory"] .flash-msg { background: #FFFFFF; }
 
-[data-theme="light"] input[type="text"],
-[data-theme="light"] input[type="email"],
-[data-theme="light"] input[type="password"],
-[data-theme="light"] input[type="number"],
-[data-theme="light"] input[type="date"],
-[data-theme="light"] select,
-[data-theme="light"] textarea {
+[data-theme="ivory"] input[type="text"],
+[data-theme="ivory"] input[type="email"],
+[data-theme="ivory"] input[type="password"],
+[data-theme="ivory"] input[type="number"],
+[data-theme="ivory"] input[type="date"],
+[data-theme="ivory"] select,
+[data-theme="ivory"] textarea {
     background  : #FFFFFF;
     border-color: rgba(0,0,0,0.15);
     color       : var(--studio-text-primary);
 }
 
-[data-theme="light"] select option { background: #FFFFFF; color: #0F172A; }
+[data-theme="ivory"] select option { background: #FFFFFF; color: #0F172A; }
 
 /* Responsive */
 @media (max-width: 1024px) {

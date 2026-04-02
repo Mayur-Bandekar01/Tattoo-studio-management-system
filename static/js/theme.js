@@ -1,22 +1,21 @@
 /**
  * Dragon Tattoos — Global Multi-Theme Engine
- * Themes: noir (Default), light
- * Supports: data-theme (dashboards) + html.light-mode class (landing pages)
+ * Themes: noir (Royal Noir), ivory (Ivory Regal)
+ * Supports: data-theme attribute (all pages)
  */
 (function () {
-    const themes = ['noir', 'light'];
+    const themes = ['noir', 'ivory'];
     const saved = localStorage.getItem('siteTheme');
     const initialTheme = themes.includes(saved) ? saved : 'noir';
-    
+
     // Apply theme attribute immediately to prevent flicker
     document.documentElement.setAttribute('data-theme', initialTheme);
-    
-    // Sync the light-mode class (used by landing pages)
+
+    // Sync legacy light-mode class (used by some page selectors)
     syncLightModeClass(initialTheme);
 
-    // ── Sync helper ──────────────────────────────────────────────
     function syncLightModeClass(theme) {
-        if (theme === 'light') {
+        if (theme === 'ivory') {
             document.documentElement.classList.add('light-mode');
             document.body && document.body.classList.add('light-mode');
         } else {
@@ -26,21 +25,18 @@
     }
 
     // Global setters
-    window.setTheme = function(name) {
+    window.setTheme = function (name) {
         if (!themes.includes(name)) return;
         document.documentElement.setAttribute('data-theme', name);
         localStorage.setItem('siteTheme', name);
         syncLightModeClass(name);
         applyThemeIcons(name);
-        
-        // Notify other components (like Chart.js in reports)
         window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: name } }));
     };
 
-    window.toggleTheme = function() {
+    window.toggleTheme = function () {
         const current = document.documentElement.getAttribute('data-theme') || 'noir';
-        const idx = themes.indexOf(current);
-        const next = themes[(idx + 1) % themes.length];
+        const next = current === 'noir' ? 'ivory' : 'noir';
         window.setTheme(next);
     };
 
@@ -48,52 +44,47 @@
         const btn = document.getElementById('globalThemeBtn');
         if (!btn) return;
 
-        // 1. Dashboard Header Variant
+        // Dashboard header variant
         if (btn.classList.contains('header-theme-btn')) {
-            let icon = 'fa-moon';
-            if (theme === 'light') icon = 'fa-sun';
-            btn.innerHTML = `<i class="fas ${icon}"></i>`;
+            btn.innerHTML = `<i class="fas ${theme === 'ivory' ? 'fa-sun' : 'fa-moon'}"></i>`;
             return;
         }
 
-        // 2. Floating Button Variant (Site-wide)
-        let icon = 'fa-moon';
-        let color = '#c8a040';
-        let bg = 'rgba(10,10,10,0.90)';
-        let border = 'rgba(200,160,64,0.4)';
+        // Floating button variant (landing pages)
+        const configs = {
+            noir:  { icon: 'fa-moon', color: '#C9A84C', bg: 'rgba(8,8,26,0.92)',    border: 'rgba(201,168,76,0.45)', label: 'Royal Noir'  },
+            ivory: { icon: 'fa-sun',  color: '#8B1A2E', bg: 'rgba(250,248,243,0.95)', border: 'rgba(139,26,46,0.4)',  label: 'Ivory Regal' },
+        };
+        const c = configs[theme] || configs.noir;
 
-        if (theme === 'light') {
-            icon = 'fa-sun';
-            color = '#ffffff';
-            bg = '#845EC2';
-            border = '#9b7ad4';
-        }
-
-        btn.innerHTML = `<i class="fa-regular ${icon}" style="font-size: 1.15rem;"></i>`;
-        btn.style.background = bg;
-        btn.style.color = color;
-        btn.style.border = `1px solid ${border}`;
+        btn.innerHTML = `<i class="fa-solid ${c.icon}" style="font-size:1.1rem;"></i>`;
+        btn.style.background = c.bg;
+        btn.style.color = c.color;
+        btn.style.border = `1px solid ${c.border}`;
+        btn.title = `Theme: ${c.label} — click to switch`;
     }
 
     function injectThemeButton() {
         if (document.getElementById('globalThemeBtn')) return;
-        
+
         const btn = document.createElement('button');
         btn.id = 'globalThemeBtn';
         btn.onclick = window.toggleTheme;
         btn.style.cssText = `
             position:fixed; bottom:20px; right:20px; z-index:9999;
-            width:44px; height:44px; border-radius:50%; cursor:pointer;
+            width:46px; height:46px; border-radius:50%; cursor:pointer;
             display:flex; align-items:center; justify-content:center;
-            backdrop-filter:blur(12px); transition:all 0.3s ease;
+            backdrop-filter:blur(14px); transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
+            box-shadow:0 4px 20px rgba(0,0,0,0.3);
         `;
         document.body.appendChild(btn);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Re-sync body class after DOM is ready (body may not exist at script parse time)
         syncLightModeClass(initialTheme);
         injectThemeButton();
         applyThemeIcons(initialTheme);
     });
 })();
+
+

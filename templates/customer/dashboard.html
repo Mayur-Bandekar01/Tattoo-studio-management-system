@@ -16,8 +16,22 @@
 
     <div class="dashboard-container">
 
+        <!-- MOBILE HEADER -->
+        <header class="mobile-nav-header">
+            <div class="mobile-logo">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+                <span>DRAGON TATTOOS</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
         <!-- SIDEBAR -->
-        <aside class="studio-sidebar">
+        <aside id="mainSidebar" class="studio-sidebar">
             <div class="sidebar-header">
                 <div class="logo-text">
                     <div class="logo-icon">
@@ -64,9 +78,9 @@
                 <button class="nav-link" onclick="switchTab('profile', this)" data-section="profile">
                     <i class="fas fa-user-circle"></i> Profile
                 </button>
-                <a href="/logout" class="nav-link nav-logout">
+                <button class="nav-link nav-logout" onclick="window.location.href='/logout'">
                     <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                </button>
             </nav>
 
         </aside>
@@ -76,10 +90,8 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="welcome-msg">
-                    <h1 id="pgT">Welcome, <span
-                            style="background:var(--studio-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{
-                            name }}</span></h1>
-                    <p id="pgS">Here's everything happening in your studio journey.</p>
+                    <h1 id="pageTitle">Welcome, {{ name }}</h1>
+                    <p id="pageSubtitle">Here's everything happening in your studio journey.</p>
                 </div>
                 <div class="header-actions">
                     <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
@@ -135,48 +147,138 @@
 
 
     <script>
-        const PM = {
-            overview: ['Overview', 'Welcome back, {{ name }}!'],
-            book: ['Book Appointment', 'Schedule your next session'],
-            appointments: ['My Sessions', 'Track your booking history'],
-            invoices: ['Billing & Invoices', 'Manage your payments'],
-            gallery: ['Studio Gallery', 'Explore our artwork'],
-            aftercare: ['Aftercare Guide', 'Essential tattoo healing tips'],
-            messages: ['Messages', 'Chat with your artists'],
-            profile: ['My Profile', 'Account settings & security'],
+        const TAB_META = {
+            overview: { title: 'Welcome, {{ name }}', subtitle: "Here's your studio journey at a glance" },
+            book: { title: 'Studio Booking', subtitle: 'Schedule your next masterpiece' },
+            appointments: { title: 'My Sessions', subtitle: 'Track your upcoming and past tattoos' },
+            invoices: { title: 'Billing Center', subtitle: 'Manage your payments and invoices' },
+            gallery: { title: 'Studio Portfolio', subtitle: 'Get inspired by our latest works' },
+            aftercare: { title: 'Healing Protocol', subtitle: 'Professional tips for a perfect heal' },
+            messages: { title: 'Direct Messages', subtitle: 'Connect with your tattoo artist' },
+            profile: { title: 'My Account', subtitle: 'Personal settings and preferences' },
         };
 
-        function switchTab(name, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            const sec = document.getElementById('sec-' + name);
-            if (sec) sec.classList.add('active');
-
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            if (el && el.classList.contains('nav-link')) {
-                el.classList.add('active');
-            } else {
-                const navBtn = document.querySelector(`.nav-link[data-section="${name}"]`);
-                if (navBtn) navBtn.classList.add('active');
-            }
-
-            const [t, s] = PM[name] || ['', ''];
-            document.getElementById('pgT').innerHTML = t;
-            document.getElementById('pgS').textContent = s;
-            window.scrollTo({ top: 0, behavior: 'instant' });
+        function toggleSidebar() {
+            const sb = document.getElementById('mainSidebar');
+            const ov = document.getElementById('sidebarOverlay');
+            sb.classList.toggle('active');
+            ov.classList.toggle('active');
         }
 
+        function switchTab(name) {
+            /* Close sidebar on mobile */
+            if (window.innerWidth <= 1024) {
+                const sb = document.getElementById('mainSidebar');
+                const ov = document.getElementById('sidebarOverlay');
+                if (sb) sb.classList.remove('active');
+                if (ov) ov.classList.remove('active');
+            }
 
-
-        function filterAppts(status, btn) {
-            document.querySelectorAll('.appt-f').forEach(b => {
-                b.classList.remove('btn-primary');
-                b.classList.add('btn-secondary');
+            /* hide all sections */
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('active');
             });
-            btn.classList.add('btn-primary');
-            btn.classList.remove('btn-secondary');
+
+            /* show target */
+            const target = document.getElementById('sec-' + name);
+            if (target) {
+                target.style.display = 'block';
+                target.classList.add('active');
+            }
+
+            /* update nav active state */
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const link = document.querySelector(`.nav-link[data-section="${name}"]`);
+            if (link) link.classList.add('active');
+
+            /* update header text */
+            const info = TAB_META[name];
+            if (info) {
+                document.getElementById('pageTitle').textContent = info.title;
+                document.getElementById('pageSubtitle').textContent = info.subtitle;
+            }
+
+            localStorage.setItem('customerTab', name);
+
+            /* Instant scroll reset */
+            requestAnimationFrame(() => {
+                window.scrollTo(0, 0);
+            });
+        }
+
+        /* Generic row filter (Sessions/History) */
+        function filterAppts(status, btn) {
+            const container = btn.closest('.filter-group');
+            if (container) {
+                container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
 
             document.querySelectorAll('.appt-row').forEach(row => {
                 row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+            });
+        }
+
+        /* Init */
+        (function init() {
+            const last = localStorage.getItem('customerTab') || 'overview';
+            switchTab(last);
+        })();
+    </script>
+
+    <!-- Global Lightbox -->
+    <div id="lb"
+        style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(12px); align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+        <button onclick="closeLb()"
+            style="position: absolute; top: 2rem; right: 2rem; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; transition: transform 0.2s;"><i
+                class="fa-solid fa-xmark"></i></button>
+        <div style="text-align:center; max-width: 90vw;">
+            <img id="lbImg" src="" alt=""
+                style="max-height: 75vh; max-width: 100%; border-radius: 24px; box-shadow: 0 30px 100px rgba(0,0,0,0.8); object-fit: contain; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="margin-top: 2rem;">
+                <p id="lbTitle"
+                    style="font-family:'Cinzel',serif; font-size: 1.8rem; font-weight: 800; color: #ffffff; margin: 0 0 0.5rem 0; letter-spacing: 0.1em; text-transform: uppercase;">
+                </p>
+                <p id="lbSub"
+                    style="font-size: 0.85rem; color: var(--studio-text-secondary); margin: 0; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;">
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- GLOBAL LIGHTBOX --- */
+        window.openLb = function (src, title, sub) {
+            const lb = document.getElementById('lb');
+            if (!lb) return;
+            const img = document.getElementById('lbImg');
+            if (img) img.src = src || '';
+            const t = document.getElementById('lbTitle');
+            if (t) t.textContent = title || '';
+            const s = document.getElementById('lbSub');
+            if (s) s.textContent = sub || '';
+
+            lb.style.display = 'flex';
+            setTimeout(() => { lb.style.opacity = '1'; }, 10);
+        };
+
+        window.closeLb = function () {
+            const lb = document.getElementById('lb');
+            if (lb) {
+                lb.style.opacity = '0';
+                setTimeout(() => { lb.style.display = 'none'; }, 300);
+            }
+        };
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLb();
+        });
+
+        const lbEl = document.getElementById('lb');
+        if (lbEl) {
+            lbEl.addEventListener('click', function (e) {
+                if (e.target === this) closeLb();
             });
         }
     </script>

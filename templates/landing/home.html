@@ -236,9 +236,8 @@
 
         @keyframes emberRise {
             0% {
-                bottom: -5%;
                 opacity: 0;
-                transform: translateX(0);
+                transform: translate3d(0, 0, 0);
             }
 
             8% {
@@ -247,43 +246,49 @@
 
             50% {
                 opacity: 0.25;
-                transform: translateX(22px);
+                transform: translate3d(22px, -50vh, 0);
             }
 
             100% {
-                bottom: 106%;
                 opacity: 0;
-                transform: translateX(-12px);
+                transform: translate3d(-12px, -110vh, 0);
             }
         }
 
-        /* ── HERO ANIMATIONS ── */
+        /* ── HERO ANIMATIONS (Refined) ── */
         .hero-logo {
-            animation: fadeScaleIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+            animation: fadeScaleIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+            will-change: transform, opacity;
         }
 
         .hero-badge {
-            animation: fadeUpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.75s both;
+            animation: fadeUpIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+            will-change: transform, opacity;
         }
 
         .hero-title {
-            animation: fadeScaleIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+            animation: fadeScaleIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+            will-change: transform, opacity;
         }
 
         .hero-sub {
-            animation: fadeUpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.1s both;
+            animation: fadeUpIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both;
+            will-change: transform, opacity;
         }
 
         .hero-desc {
-            animation: fadeUpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.25s both;
+            animation: fadeUpIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+            will-change: transform, opacity;
         }
 
         .hero-btns {
-            animation: fadeUpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.4s both;
+            animation: fadeUpIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
+            will-change: transform, opacity;
         }
 
         .hero-stats {
-            animation: fadeUpIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.55s both;
+            animation: fadeUpIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.1s both;
+            will-change: transform, opacity;
         }
 
         @keyframes fadeScaleIn {
@@ -339,9 +344,10 @@
             border-radius: 20px;
             backdrop-filter: blur(12px);
             box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
-            transition: all 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            will-change: transform, opacity;
         }
 
         .bento-card:hover {
@@ -434,7 +440,8 @@
             padding: 1.25rem;
             text-align: center;
             backdrop-filter: blur(10px);
-            transition: background 0.25s, transform 0.25s;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
+            will-change: transform;
         }
 
         .stat-card:hover {
@@ -497,7 +504,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             padding: 1.75rem;
-            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+            will-change: transform;
         }
 
         .testi-card:hover {
@@ -758,11 +766,7 @@
             display: none !important;
         }
 
-        *,
-        *::before,
-        *::after {
-            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
-        }
+        /* Global transitions removed for performance (de-lagging) */
     </style>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </head>
