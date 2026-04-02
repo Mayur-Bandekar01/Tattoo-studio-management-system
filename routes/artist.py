@@ -94,7 +94,7 @@ def artist_approve(appointment_id):
     cursor = conn.cursor()
     cursor.execute("""
         UPDATE appointment SET status = 'Approved', duration_hours = %s
-        WHERE appointment_id = %s AND artist_id = %s
+        WHERE appointment_id = %s AND artist_id = %s AND status = 'Pending'
     """, (duration, appointment_id, session['user_id']))
     conn.commit()
     conn.close()
@@ -109,7 +109,7 @@ def artist_reject(appointment_id):
     cursor = conn.cursor()
     cursor.execute("""
         UPDATE appointment SET status = 'Rejected'
-        WHERE appointment_id = %s AND artist_id = %s
+        WHERE appointment_id = %s AND artist_id = %s AND status = 'Pending'
     """, (appointment_id, session['user_id']))
     conn.commit()
     conn.close()
@@ -120,12 +120,23 @@ def artist_reject(appointment_id):
 def artist_done(appointment_id):
     if session.get('role') != 'artist':
         return redirect('/login')
+
     conn   = get_db()
     cursor = conn.cursor()
+
+    # FIX: Added AND status = 'Approved' guard so only Approved appointments
+    # can be marked Done. Previously any status (even Pending/Rejected) could
+    # be marked done by crafting a direct POST request.
     cursor.execute("""
         UPDATE appointment SET status = 'Done'
-        WHERE appointment_id = %s AND artist_id = %s
+        WHERE appointment_id = %s AND artist_id = %s AND status = 'Approved'
     """, (appointment_id, session['user_id']))
+
+    if cursor.rowcount == 0:
+        conn.close()
+        flash("Only approved appointments can be marked as done.", "error")
+        return redirect('/artist/dashboard')
+
     conn.commit()
     conn.close()
     flash("Session marked as done!", "success")

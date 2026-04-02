@@ -171,7 +171,6 @@
         if (window.openLb) window.openLb(src, title, sub);
     };
 
-
     window.switchGalTab = function (tab, btn) {
         currentTab = tab;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -215,7 +214,10 @@
                     card.dataset.artist = item.artist_name || '';
                     card.dataset.style = item.style || '';
                     card.style.cursor = 'pointer';
-                    card.onclick = function () { openLb(this); };
+
+                    // FIX: was openLb(this) which called openLb(DOMElement, undefined, undefined)
+                    // now correctly calls openLbFromItem(this) which reads data-* attributes
+                    card.onclick = function () { openLbFromItem(this); };
 
                     card.innerHTML = `
                         <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>

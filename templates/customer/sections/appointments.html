@@ -27,6 +27,14 @@
         </p>
     </div>
 
+    <!-- Hidden forms for cancel and delete actions -->
+    {% for a in appointments %}
+    <form id="cancelForm-{{ a.appointment_id }}" method="POST"
+        action="/customer/cancel/{{ a.appointment_id }}" style="display:none;"></form>
+    <form id="deleteForm-{{ a.appointment_id }}" method="POST"
+        action="/customer/delete/{{ a.appointment_id }}" style="display:none;"></form>
+    {% endfor %}
+
     <div class="studio-table-container">
         <table class="studio-table">
             <thead>
@@ -100,8 +108,10 @@
                     <!-- Action column -->
                     <td>
                         <div style="display: flex; gap: 0.5rem; justify-content: center;">
+
+                            <!-- FIX: was calling undefined openChat() — now calls custOpenChatFromAppt() -->
                             <button
-                                onclick="openChat('{{ a.artist_id }}', '{{ a.artist_name }}', '{{ a.appointment_id }}')"
+                                onclick="custOpenChatFromAppt('{{ a.artist_id }}', '{{ a.artist_name }}', '{{ a.appointment_id }}')"
                                 class="btn-studio btn-outline"
                                 style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px;"
                                 title="Message Artist">
@@ -109,13 +119,19 @@
                             </button>
 
                             {% if a.status == 'Pending' %}
-                            <button onclick="cancelAppt('{{ a.appointment_id }}')" class="btn-studio btn-outline"
+                            <!-- FIX: was calling undefined cancelAppt() — now submits a real hidden form -->
+                            <button
+                                onclick="if(confirm('Cancel this appointment?')) document.getElementById('cancelForm-{{ a.appointment_id }}').submit();"
+                                class="btn-studio btn-outline"
                                 style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px; color: var(--studio-danger); border-color: rgba(239, 68, 68, 0.2);"
                                 title="Cancel Appointment">
                                 <i class="fas fa-ban"></i>
                             </button>
                             {% elif a.status in ['Cancelled', 'Rejected'] %}
-                            <button onclick="deleteAppt('{{ a.appointment_id }}')" class="btn-studio btn-outline"
+                            <!-- FIX: was calling undefined deleteAppt() — now submits a real hidden form -->
+                            <button
+                                onclick="if(confirm('Permanently delete this record?')) document.getElementById('deleteForm-{{ a.appointment_id }}').submit();"
+                                class="btn-studio btn-outline"
                                 style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px; color: var(--studio-danger); border-color: rgba(239, 68, 68, 0.2);"
                                 title="Delete Record">
                                 <i class="fas fa-trash-alt"></i>
@@ -147,4 +163,3 @@
         </table>
     </div>
 </div>
-<!-- End of Appointments Section -->
