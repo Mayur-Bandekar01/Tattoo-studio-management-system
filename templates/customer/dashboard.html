@@ -178,6 +178,7 @@
             document.querySelectorAll('.content-section').forEach(s => {
                 s.style.display = 'none';
                 s.classList.remove('active');
+                s.scrollTop = 0;
             });
 
             /* show target */
@@ -185,6 +186,7 @@
             if (target) {
                 target.style.display = 'block';
                 target.classList.add('active');
+                target.scrollTop = 0;
             }
 
             /* update nav active state */

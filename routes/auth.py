@@ -57,10 +57,11 @@ def login_post():
         user = cursor.fetchone()
         conn.close()
         if user:
-            session.permanent  = True
-            session['user_id'] = user['artist_id']
-            session['role']    = 'artist'
-            session['name']    = user['artist_name']
+            session.permanent          = True
+            session['user_id']         = user['artist_id']
+            session['role']            = 'artist'
+            session['name']            = user['artist_name']
+            session['specialisation']  = user['specialisation']  # ADDED
             return redirect('/artist/dashboard')
         flash("Invalid Artist ID or password!")
         return redirect('/login')
@@ -166,10 +167,6 @@ def forgot_password_post():
         datetime.now() + timedelta(minutes=10)
     ).strftime('%Y-%m-%d %H:%M:%S')
 
-    # Send email via helper
-    from app import app, mail  # Lazy export to avoid circular imports during setup if needed, but current_app and actual mail obj works better.  
-    # Wait, simple fix: I'll use the imported mail extension directly if accessible, but passing `mail` object works.
-    # Let's import it safely.
     try:
         from app import mail
         success = send_otp_email(mail, customer['customer_name'], email, otp)

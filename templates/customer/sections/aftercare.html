@@ -2,347 +2,7 @@
      SECTION: AFTERCARE PROTOCOL (sec-aftercare)
 ═══════════════════════════════════════ -->
 
-<style>
-    #sec-aftercare .hero-alert {
-        margin-bottom: 2.5rem;
-        padding: 2rem;
-        display: flex;
-        gap: 1.5rem;
-        border: 1px solid rgba(255, 0, 60, 0.4);
-        background: linear-gradient(135deg, rgba(255, 0, 60, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
-        box-shadow: 0 0 30px rgba(255, 0, 60, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
 
-    #sec-aftercare .hero-alert::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: var(--studio-selection);
-    }
-
-    #sec-aftercare .hero-alert i {
-        font-size: 2rem;
-        color: var(--studio-selection);
-        filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.6));
-        animation: pulse-glow 2s infinite ease-in-out;
-    }
-
-    #sec-aftercare .hero-alert-title {
-        font-weight: 900;
-        margin-bottom: 0.75rem;
-        color: #FFFFFF;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-        font-size: 1.1rem;
-    }
-
-    #sec-aftercare .hero-alert-text {
-        font-size: 0.95rem;
-        line-height: 1.7;
-        color: var(--studio-text-secondary);
-    }
-
-    #sec-aftercare .aftercare-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2.5rem;
-    }
-
-    #sec-aftercare .phase-card {
-        padding: 2rem;
-    }
-
-    #sec-aftercare .phase-card h3 {
-        margin-bottom: 2rem;
-        font-family: var(--font-heading);
-    }
-
-    #sec-aftercare .step-item {
-        display: flex;
-        gap: 1.25rem;
-        margin-bottom: 1.5rem;
-        transition: transform 0.2s ease;
-    }
-
-    #sec-aftercare .step-item:hover {
-        transform: translateX(8px);
-    }
-
-    #sec-aftercare .step-idx {
-        flex-shrink: 0;
-        width: 28px;
-        height: 28px;
-        background: var(--studio-accent);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
-        font-size: 0.75rem;
-        box-shadow: 0 4px 10px rgba(200, 160, 64, 0.3);
-    }
-
-    #sec-aftercare .step-title {
-        font-weight: 800;
-        margin-bottom: 0.4rem;
-        color: var(--studio-text-primary);
-        font-size: 0.95rem;
-    }
-
-    #sec-aftercare .step-text {
-        font-size: 0.85rem;
-        color: var(--studio-text-secondary);
-        line-height: 1.6;
-    }
-
-    #sec-aftercare .protocol-box {
-        padding: 1.75rem;
-        border: 1px solid rgba(16, 185, 129, 0.15);
-        background: rgba(16, 185, 129, 0.03);
-    }
-
-    #sec-aftercare .protocol-box i.main-icon {
-        font-size: 1.75rem;
-        color: #10B981;
-        margin-bottom: 1.25rem;
-    }
-
-    #sec-aftercare .protocol-title {
-        font-weight: 800;
-        margin-bottom: 1.25rem;
-        color: #10B981;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.85rem;
-    }
-
-    #sec-aftercare .protocol-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    #sec-aftercare .protocol-list li {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-        font-size: 0.85rem;
-        color: var(--studio-text-secondary);
-    }
-
-    #sec-aftercare .protocol-list li i {
-        color: #10B981;
-        font-size: 0.8rem;
-    }
-
-    #sec-aftercare .prohibition-box {
-        padding: 1.75rem;
-        border: 1px solid rgba(255, 0, 60, 0.15);
-        background: rgba(255, 0, 60, 0.03);
-    }
-
-    #sec-aftercare .prohibition-box i.main-icon {
-        font-size: 1.75rem;
-        color: var(--studio-selection);
-        margin-bottom: 1.25rem;
-    }
-
-    #sec-aftercare .prohibition-title {
-        font-weight: 800;
-        margin-bottom: 1.25rem;
-        color: var(--studio-selection);
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.85rem;
-    }
-
-    #sec-aftercare .prohibition-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    #sec-aftercare .prohibition-list li {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-        font-size: 0.85rem;
-        color: var(--studio-text-secondary);
-    }
-
-    #sec-aftercare .prohibition-list li i {
-        color: var(--studio-selection);
-        font-size: 0.8rem;
-    }
-
-    #sec-aftercare .preservation-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-    }
-
-    #sec-aftercare .pres-card {
-        text-align: center;
-        padding: 2.5rem 1.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        background: rgba(255, 255, 255, 0.01);
-    }
-
-    #sec-aftercare .pres-card i {
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
-        filter: drop-shadow(0 0 12px currentColor);
-    }
-
-    #sec-aftercare .pres-title {
-        font-weight: 800;
-        margin-bottom: 0.75rem;
-        color: var(--studio-text-primary);
-        font-size: 1rem;
-    }
-
-    #sec-aftercare .pres-text {
-        font-size: 0.85rem;
-        color: var(--studio-text-secondary);
-        line-height: 1.7;
-    }
-
-    #sec-aftercare .timeline-container {
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-    }
-
-    #sec-aftercare .timeline-block {
-        display: flex;
-        border: 1px solid var(--studio-border);
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: var(--studio-radius-sm);
-        overflow: hidden;
-        transition: border-color 0.2s ease, background 0.2s ease;
-    }
-
-    #sec-aftercare .timeline-block:hover {
-        border-color: var(--studio-accent);
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    #sec-aftercare .timeline-aside {
-        width: 80px;
-        padding: 1.5rem 1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-right: 1px solid var(--studio-border);
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    #sec-aftercare .timeline-days {
-        font-weight: 900;
-        font-size: 1.4rem;
-        color: var(--studio-text-primary);
-        line-height: 1;
-    }
-
-    #sec-aftercare .timeline-tag {
-        font-size: 0.6rem;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: var(--studio-accent);
-        font-weight: 800;
-        margin-top: 0.4rem;
-    }
-
-    #sec-aftercare .timeline-main {
-        padding: 1.5rem;
-        flex: 1;
-    }
-
-    #sec-aftercare .timeline-title {
-        font-weight: 800;
-        color: var(--studio-text-primary);
-        font-size: 0.95rem;
-        margin-bottom: 0.4rem;
-    }
-
-    #sec-aftercare .timeline-text {
-        font-size: 0.85rem;
-        color: var(--studio-text-secondary);
-        opacity: 0.8;
-        line-height: 1.6;
-    }
-
-    #sec-aftercare .emergency-alert {
-        border: 1px solid rgba(255, 0, 60, 0.5);
-        background: linear-gradient(135deg, rgba(255, 0, 60, 0.15) 0%, rgba(10, 10, 10, 1) 100%);
-        padding: 2.5rem;
-        border-radius: var(--studio-radius);
-        box-shadow: 0 10px 40px rgba(255, 0, 60, 0.15);
-    }
-
-    #sec-aftercare .emergency-icon {
-        font-size: 2rem;
-        color: var(--studio-selection);
-        margin-bottom: 1.5rem;
-        filter: drop-shadow(0 0 15px rgba(255, 0, 60, 0.5));
-    }
-
-    #sec-aftercare .emergency-title {
-        font-weight: 900;
-        margin-bottom: 1.5rem;
-        color: #FFFFFF;
-        font-size: 1.25rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-    }
-
-    #sec-aftercare .emergency-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1.25rem;
-    }
-
-    #sec-aftercare .emergency-item {
-        color: var(--studio-text-secondary);
-        font-weight: 600;
-        font-size: 0.88rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    #sec-aftercare .emergency-item::before {
-        content: '\f111';
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        font-size: 0.4rem;
-        color: var(--studio-selection);
-    }
-
-    @keyframes pulse-glow {
-
-        0%,
-        100% {
-            opacity: 0.8;
-            transform: scale(1);
-        }
-
-        50% {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-    }
-</style>
 
 <div id="sec-aftercare">
 
@@ -364,7 +24,7 @@
         <!-- Phase 1: The First 24 Hours -->
         <div class="studio-card phase-card">
             <h3 class="card-title">
-                <i class="fas fa-hourglass-start" style="color: #FFB302; margin-right: 1rem;"></i>
+                <i class="fas fa-hourglass-start" style="color: #FFB302;"></i>
                 The First 24 Hours
             </h3>
 
@@ -399,7 +59,7 @@
         <!-- Phase 2: Healing Phase -->
         <div class="studio-card phase-card">
             <h3 class="card-title">
-                <i class="fas fa-dna" style="color: var(--studio-selection); margin-right: 1rem;"></i>
+                <i class="fas fa-dna" style="color: var(--studio-selection);"></i>
                 First 2 Weeks — Healing Time
             </h3>
 
@@ -433,7 +93,7 @@
     <!-- Long Term Preservation -->
     <div class="studio-card" style="margin-bottom: 2.5rem; padding: 3rem 2rem;">
         <h3 class="card-title" style="text-align: center; margin-bottom: 3rem;">
-            <i class="fas fa-shuttle-space" style="color: var(--studio-accent); margin-right: 1rem;"></i>
+            <i class="fas fa-shuttle-space" style="color: var(--studio-accent);"></i>
             Keeping it Great Forever
         </h3>
 
@@ -464,7 +124,7 @@
         <!-- Timeline -->
         <div class="studio-card phase-card">
             <h3 class="card-title">
-                <i class="fas fa-wave-square" style="color: var(--studio-accent); margin-right: 1rem;"></i>
+                <i class="fas fa-wave-square" style="color: var(--studio-accent);"></i>
                 Your Healing Journey
             </h3>
 
@@ -493,15 +153,14 @@
                     </div>
                 </div>
 
-                <div class="timeline-block"
-                    style="border-color: rgba(255, 0, 60, 0.3); background: rgba(255, 0, 60, 0.03);">
-                    <div class="timeline-aside" style="border-color: rgba(255, 0, 60, 0.1);">
-                        <p class="timeline-days" style="color: #FFFFFF;">04+</p>
+                <div class="timeline-block final">
+                    <div class="timeline-aside">
+                        <p class="timeline-days">04+</p>
                         <p class="timeline-tag">Healed</p>
                     </div>
                     <div class="timeline-main">
-                        <p class="timeline-title" style="color: #FFFFFF;">Fully Healed</p>
-                        <p class="timeline-text" style="opacity: 0.9;">Colors are set. The skin keeps healing for 3
+                        <p class="timeline-title">Fully Healed</p>
+                        <p class="timeline-text">Colors are set. The skin keeps healing for 3
                             months. Your tattoo is safe!</p>
                     </div>
                 </div>

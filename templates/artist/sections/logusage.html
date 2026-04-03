@@ -1,52 +1,100 @@
 <div style="margin-bottom: 2.5rem;">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Consumption
-        Tracking</h2>
-    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Record and monitor supplies used during your
-        tattoo sessions</p>
+    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">
+        Consumption Tracking</h2>
+    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Record and monitor supplies used
+        during your sessions</p>
 </div>
 
 <!-- Log Form -->
 <div class="studio-card" style="margin-bottom: 2rem;">
-    <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">RECORD NEW
-        CONSUMPTION</h3>
+    <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">
+        RECORD NEW CONSUMPTION</h3>
     <form method="POST" action="/artist/log-usage">
         <div class="form-grid">
+
             <div class="form-group">
                 <label class="form-label">Related Appointment</label>
                 <select class="studio-input" name="appointment_id" required>
                     <option value="">Select a session...</option>
                     {% if appointments %}
                     {% for appt in appointments %}
-                    {% if appt.status=='Done' %}
-                    <option value="{{ appt.appointment_id }}">Session #{{ appt.appointment_id }} | {{
-                        appt.customer_name }} ({{ appt.appointment_date }})</option>
+                    {% if appt.status == 'Done' %}
+                    <option value="{{ appt.appointment_id }}">
+                        Session #{{ appt.appointment_id }} | {{ appt.customer_name }}
+                        ({{ appt.appointment_date }})
+                    </option>
                     {% endif %}
                     {% endfor %}
                     {% endif %}
                 </select>
             </div>
+
             <div class="form-group">
                 <label class="form-label">Material Consumed</label>
-                <select class="studio-input" name="item_id" required>
+                <select class="studio-input" name="item_id" id="itemSelect" required
+                    onchange="updateItemInfo()">
                     <option value="">Select supply item...</option>
                     {% if inventory %}
                     {% for item in inventory %}
-                    <option value="{{ item.item_id }}">{{ item.item_name }} ({{ item.quant_stock }} {{ item.unit }}
-                        in stock)</option>
+                    <option value="{{ item.item_id }}"
+                            data-unit="{{ item.unit }}"
+                            data-stock="{{ item.quant_stock }}"
+                            data-name="{{ item.item_name }}">
+                        {{ item.item_name }}
+                        ({{ item.quant_stock | round(2) }} {{ item.unit }} in stock)
+                    </option>
                     {% endfor %}
                     {% endif %}
                 </select>
+                <!-- Stock info shown after selection -->
+                <div id="stockInfo" style="display: none; margin-top: 0.6rem;
+                     padding: 0.6rem 0.85rem;
+                     border-radius: 10px;
+                     background: var(--studio-secondary);
+                     border: 1px solid var(--studio-border);">
+                    <span style="font-size: 0.72rem; color: var(--studio-text-secondary);">
+                        Available stock:
+                    </span>
+                    <span id="stockDisplay"
+                          style="font-size: 0.82rem; font-weight: 700;
+                                 color: var(--studio-text-primary); font-family: monospace;">
+                    </span>
+                </div>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Log Quantity</label>
-                <input class="studio-input" type="number" name="qty_used" placeholder="Amount used" min="1" required>
+                <label class="form-label">Quantity Used</label>
+                <div style="position: relative;">
+                    <input class="studio-input" type="number" name="qty_used"
+                        id="qtyInput"
+                        placeholder="Enter amount used"
+                        min="0.01" step="0.01" required
+                        oninput="validateQty()"
+                        style="padding-right: 3.5rem;">
+                    <span id="unitBadge"
+                        style="position: absolute; right: 0.85rem; top: 50%;
+                               transform: translateY(-50%);
+                               font-size: 0.72rem; font-weight: 700;
+                               color: var(--studio-indigo);
+                               pointer-events: none;">
+                    </span>
+                </div>
+                <p id="qtyHint"
+                   style="font-size: 0.72rem; margin-top: 0.4rem; display: none;">
+                </p>
             </div>
+
         </div>
-        <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
-            <button type="submit" class="btn-studio btn-primary">
+
+        <div style="display: flex; gap: 1rem; padding-top: 1.5rem;
+                    border-top: 1px solid var(--studio-border);">
+            <button type="submit" class="btn-studio btn-primary" id="logBtn">
                 <i class="fas fa-clipboard-check"></i> Submit Usage Log
             </button>
-            <button type="reset" class="btn-studio btn-outline">Reset Entry</button>
+            <button type="reset" class="btn-studio btn-outline"
+                onclick="resetForm()">
+                Reset Entry
+            </button>
         </div>
     </form>
 </div>
@@ -60,7 +108,7 @@
                 <tr>
                     <th style="width: 140px;">Session ID</th>
                     <th>Material Used</th>
-                    <th style="width: 120px;">Quantity</th>
+                    <th style="width: 160px;">Quantity</th>
                     <th>Timestamp</th>
                 </tr>
             </thead>
@@ -68,19 +116,23 @@
                 {% if usage_logs %}
                 {% for log in usage_logs %}
                 <tr>
-                    <td
-                        style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: var(--studio-text-secondary);">
-                        #{{ log.appointment_id }}</td>
-                    <td style="font-weight: 700; color: var(--studio-text-primary);">{{ log.item_name }}</td>
+                    <td style="font-family: monospace; font-size: 0.85rem;
+                               font-weight: 700; color: var(--studio-text-secondary);">
+                        #{{ log.appointment_id }}
+                    </td>
+                    <td style="font-weight: 700; color: var(--studio-text-primary);">
+                        {{ log.item_name }}
+                    </td>
                     <td>
                         <span class="badge badge-info"
-                            style="font-family: monospace; font-size: 0.9rem; font-weight: 700; padding: 0.35rem 0.75rem;">
-                            {{ log.qty_used }}
+                            style="font-family: monospace; font-size: 0.9rem;
+                                   font-weight: 700; padding: 0.35rem 0.75rem;">
+                            {{ log.qty_used | round(2) }} {{ log.unit }}
                         </span>
                     </td>
                     <td>
-                        <div
-                            style="font-size: 0.8rem; color: var(--studio-text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="font-size: 0.8rem; color: var(--studio-text-secondary);
+                                    display: flex; align-items: center; gap: 0.5rem;">
                             <i class="far fa-clock"></i> {{ log.logged_at }}
                         </div>
                     </td>
@@ -88,9 +140,12 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="4" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                    <td colspan="4"
+                        style="text-align: center; padding: 4rem;
+                               color: var(--studio-text-secondary);">
                         <i class="fas fa-clipboard-list"
-                            style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
+                            style="font-size: 2.5rem; opacity: 0.2;
+                                   margin-bottom: 1rem; display: block;"></i>
                         No material consumption has been logged yet.
                     </td>
                 </tr>
@@ -99,3 +154,86 @@
         </table>
     </div>
 </div>
+
+<script>
+    function updateItemInfo() {
+        const sel       = document.getElementById('itemSelect');
+        const selected  = sel.options[sel.selectedIndex];
+        const stockInfo = document.getElementById('stockInfo');
+        const stockDisp = document.getElementById('stockDisplay');
+        const unitBadge = document.getElementById('unitBadge');
+        const qtyHint   = document.getElementById('qtyHint');
+        const qtyInput  = document.getElementById('qtyInput');
+
+        if (!sel.value) {
+            stockInfo.style.display = 'none';
+            unitBadge.textContent   = '';
+            qtyHint.style.display   = 'none';
+            return;
+        }
+
+        const unit  = selected.dataset.unit;
+        const stock = parseFloat(selected.dataset.stock);
+        const name  = selected.dataset.name;
+
+        // Show unit inside the quantity input
+        unitBadge.textContent = unit;
+
+        // Show available stock
+        stockInfo.style.display = 'block';
+        stockDisp.textContent   = `${stock} ${unit}`;
+        stockDisp.style.color   = stock <= 0
+            ? 'var(--studio-danger)'
+            : 'var(--studio-text-primary)';
+
+        // Show hint
+        qtyHint.style.display   = 'block';
+        qtyHint.textContent     = `Enter how many ${unit} of "${name}" were used`;
+        qtyHint.style.color     = 'var(--studio-text-secondary)';
+
+        // Reset qty input
+        qtyInput.value = '';
+        qtyInput.max   = stock;
+    }
+
+    function validateQty() {
+        const sel      = document.getElementById('itemSelect');
+        const selected = sel.options[sel.selectedIndex];
+        const qtyInput = document.getElementById('qtyInput');
+        const qtyHint  = document.getElementById('qtyHint');
+        const logBtn   = document.getElementById('logBtn');
+
+        if (!sel.value || !qtyInput.value) return;
+
+        const stock  = parseFloat(selected.dataset.stock);
+        const unit   = selected.dataset.unit;
+        const qty    = parseFloat(qtyInput.value);
+
+        if (qty > stock) {
+            qtyHint.textContent = `⚠ Exceeds available stock! Only ${stock} ${unit} left.`;
+            qtyHint.style.color = 'var(--studio-danger)';
+            qtyHint.style.display = 'block';
+            logBtn.disabled = true;
+        } else if (qty <= 0) {
+            qtyHint.textContent = '⚠ Quantity must be greater than 0.';
+            qtyHint.style.color = 'var(--studio-danger)';
+            qtyHint.style.display = 'block';
+            logBtn.disabled = true;
+        } else {
+            const remaining = (stock - qty).toFixed(2);
+            qtyHint.textContent = `After logging: ${remaining} ${unit} will remain.`;
+            qtyHint.style.color = remaining <= 0
+                ? 'var(--studio-danger)'
+                : 'var(--studio-success)';
+            qtyHint.style.display = 'block';
+            logBtn.disabled = false;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('stockInfo').style.display = 'none';
+        document.getElementById('unitBadge').textContent   = '';
+        document.getElementById('qtyHint').style.display   = 'none';
+        document.getElementById('logBtn').disabled         = false;
+    }
+</script>

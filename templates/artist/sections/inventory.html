@@ -2,7 +2,7 @@
     <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Supply
         Management</h2>
     <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Monitor stock levels and manage your
-        tattooing supplies</p>
+        supplies</p>
 </div>
 
 <!-- Add Item Form -->
@@ -13,7 +13,7 @@
         <div class="form-grid">
             <div class="form-group">
                 <label class="form-label">Item Name</label>
-                <input class="studio-input" type="text" name="item_name" placeholder="e.g. Dynamic Black Ink (8oz)"
+                <input class="studio-input" type="text" name="item_name" placeholder="e.g. Black Ink (Dynamic)"
                     required>
             </div>
             <div class="form-group">
@@ -24,32 +24,69 @@
                     <option>Ink</option>
                     <option>Glove</option>
                     <option>Aftercare</option>
+                    <option>Canvas</option>
+                    <option>Paper</option>
+                    <option>Brush</option>
+                    <option>Pigment</option>
                     <option>Other</option>
                 </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Unit Type</label>
-                <input class="studio-input" type="text" name="unit" placeholder="e.g. Boxes, Bottles, Packs" required>
+                <select class="studio-input" name="unit" id="unitSelect" required onchange="updateUnitHint()">
+                    <option value="">Select Unit...</option>
+                    <optgroup label="Volume">
+                        <option value="ml">ml (millilitres)</option>
+                        <option value="L">L (litres)</option>
+                    </optgroup>
+                    <optgroup label="Count">
+                        <option value="Pairs">Pairs</option>
+                        <option value="Pieces">Pieces</option>
+                        <option value="Boxes">Boxes</option>
+                        <option value="Packs">Packs</option>
+                        <option value="Sets">Sets</option>
+                    </optgroup>
+                    <optgroup label="Paper / Surface">
+                        <option value="Sheets">Sheets</option>
+                        <option value="Rolls">Rolls</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="Tubes">Tubes</option>
+                        <option value="Bottles">Bottles</option>
+                        <option value="Grams">Grams</option>
+                    </optgroup>
+                </select>
+                <p id="unitHint" style="font-size: 0.72rem; color: var(--studio-text-secondary); margin-top: 0.4rem;">
+                </p>
             </div>
             <div class="form-group">
                 <label class="form-label">Initial Quantity</label>
-                <input class="studio-input" type="number" name="quant_stock" placeholder="0" min="0" required>
+                <input class="studio-input" type="number" name="quant_stock" placeholder="e.g. 250 for a 250ml bottle"
+                    min="0" step="0.01" required>
             </div>
             <div class="form-group">
-                <label class="form-label">Reorder Trigger</label>
-                <input class="studio-input" type="number" name="reorder_level" placeholder="Alert at this level" min="0"
-                    required>
+                <label class="form-label">Low Stock Warning At</label>
+                <input class="studio-input" type="number" name="reorder_level"
+                    placeholder="e.g. 50 = warn when below 50ml" min="0" step="0.01" required>
+                <p style="font-size: 0.72rem; color: var(--studio-warning); margin-top: 0.4rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Warning triggers when stock falls at or below this value
+                </p>
             </div>
             <div class="form-group">
                 <label class="form-label" style="color: #20BF6B;">Unit Price (₹)</label>
-                <input class="studio-input" type="number" name="unit_cost" placeholder="0" step="any" min="0" required>
+                <input class="studio-input" type="number" name="unit_cost" placeholder="Cost per unit" step="any"
+                    min="0" required>
             </div>
         </div>
         <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
             <button type="submit" class="btn-studio btn-primary">
                 <i class="fas fa-plus-circle"></i> Add to Inventory
             </button>
-            <button type="reset" class="btn-studio btn-outline">Clear Form</button>
+            <button type="reset" class="btn-studio btn-outline"
+                onclick="document.getElementById('unitHint').textContent=''">
+                Clear Form
+            </button>
         </div>
     </form>
 </div>
@@ -60,7 +97,8 @@
         <h3 class="card-title" style="margin-bottom: 0;">LIVE INVENTORY</h3>
         {% if low_stock > 0 %}
         <span class="badge badge-danger pulse">
-            <i class="fas fa-exclamation-triangle"></i> {{ low_stock }} Item{{ 's' if low_stock != 1 else '' }} Low
+            <i class="fas fa-exclamation-triangle"></i>
+            {{ low_stock }} Item{{ 's' if low_stock != 1 else '' }} Low
         </span>
         {% endif %}
     </div>
@@ -72,74 +110,151 @@
                     <th>Supply Item</th>
                     <th>Category</th>
                     <th>Stock Level</th>
-                    <th>Threshold</th>
+                    <th>Warning At</th>
                     <th>Unit Price</th>
                     <th>Status</th>
-                    <th style="width: 180px;">Update Qty</th>
+                    <th style="width: 280px;">Update Stock</th>
                     <th style="width: 60px;"></th>
                 </tr>
             </thead>
             <tbody>
                 {% if inventory %}
                 {% for item in inventory %}
-                <tr {% if item.quant_stock <=item.reorder_level %}class="row-highlight-danger" {% endif %}>
+                {% set stock_pct = [(item.quant_stock / (item.reorder_level * 3) * 100), 100] | min if
+                item.reorder_level > 0 else 100 %}
+                {% set bar_color = 'var(--studio-danger)' if item.quant_stock <= item.reorder_level else
+                    ('var(--studio-warning)' if item.quant_stock <=item.reorder_level * 2 else 'var(--studio-success)' )
+                    %} {% set row_class='row-highlight-danger' if item.quant_stock <=item.reorder_level else '' %} {%
+                    set stock_text_class='text-danger' if item.quant_stock <=item.reorder_level else ('text-warning' if
+                    item.quant_stock <=item.reorder_level * 2 else 'text-success' ) %} <tr class="{{ row_class }}"
+                    style="--stock-pct: {{ stock_pct }}%; --bar-color: {{ bar_color }};">
+
                     <td>
-                        <div style="font-weight: 700; color: var(--studio-text-primary);">{{ item.item_name }}</div>
-                        <div style="font-size: 0.75rem; color: var(--studio-text-secondary);">{{ item.unit }}</div>
+                        <div style="font-weight: 700; color: var(--studio-text-primary);">
+                            {{ item.item_name }}
+                        </div>
+                        <div style="font-size: 0.72rem; color: var(--studio-text-secondary);">
+                            Measured in: <strong>{{ item.unit }}</strong>
+                        </div>
                     </td>
+
                     <td>
                         <span class="badge badge-muted">{{ item.category }}</span>
                     </td>
+
                     <td>
-                        <span
-                            class="{% if item.quant_stock <= item.reorder_level %}text-danger{% else %}text-success{% endif %}"
-                            style="font-family: monospace; font-size: 1.1rem; font-weight: 700;">
-                            {{ item.quant_stock }}
-                        </span>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <span class="{{ stock_text_class }}"
+                                style="font-family: monospace; font-size: 1rem; font-weight: 700;">
+                                {{ item.quant_stock | round(2) }} {{ item.unit }}
+                            </span>
+                            <div
+                                style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; overflow: hidden;">
+                                <div
+                                    style="width: var(--stock-pct); height: 100%; background: var(--bar-color); border-radius: 4px; transition: width 0.3s ease;">
+                                </div>
+                            </div>
+                        </div>
                     </td>
 
-                    <td style="font-family: monospace; color: var(--studio-text-secondary);">{{ item.reorder_level
-                        }}</td>
-                    <td style="font-family: monospace; font-weight: 700; color: var(--studio-success);">₹{{
-                        item.unit_cost|float|round(2) if item.unit_cost % 1 != 0 else item.unit_cost|int }}</td>
+                    <td style="font-family: monospace; color: var(--studio-text-secondary);">
+                        {{ item.reorder_level }} {{ item.unit }}
+                    </td>
+
+                    <td style="font-family: monospace; font-weight: 700; color: var(--studio-success);">
+                        ₹{{ item.unit_cost | float | round(2) }}
+                    </td>
+
                     <td>
                         {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-danger"
-                            style="font-size: 0.65rem;">LOW STOCK</span>
-                            {% else %}
-                            <span class="badge badge-success" style="font-size: 0.65rem;">OPTIMAL</span>
-                            {% endif %}
+                            style="font-size: 0.65rem;">
+                            <i class="fas fa-exclamation-triangle"></i> LOW STOCK
+                            </span>
+                            {% elif item.quant_stock <= item.reorder_level * 2 %} <span class="badge badge-warning"
+                                style="font-size: 0.65rem;">
+                                <i class="fas fa-clock"></i> RUNNING LOW
+                                </span>
+                                {% else %}
+                                <span class="badge badge-success" style="font-size: 0.65rem;">OPTIMAL</span>
+                                {% endif %}
                     </td>
+
                     <td>
-                        <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                            style="display: flex; gap: 0.4rem; align-items: center;">
-                            <input class="studio-input" type="number" name="quant_stock" value="{{ item.quant_stock }}"
-                                min="0"
-                                style="width: 70px; padding: 0.35rem 0.5rem; font-size: 0.8rem; background: var(--studio-card);">
-                            <button type="submit" class="btn-studio btn-primary"
-                                style="padding: 0.35rem 0.6rem; font-size: 0.75rem;">Update</button>
-                        </form>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+
+                            <!-- Restock: ADD to existing stock -->
+                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
+                                style="display: flex; gap: 0.4rem; align-items: center;">
+                                <input type="hidden" name="action" value="add">
+                                <input class="studio-input" type="number" name="quant_stock"
+                                    placeholder="Add {{ item.unit }}" min="0.01" step="0.01"
+                                    style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                                <button type="submit" class="btn-studio btn-primary"
+                                    style="padding: 0.35rem 0.6rem; font-size: 0.72rem;"
+                                    title="Add to existing stock (restock)">
+                                    <i class="fas fa-plus"></i> Restock
+                                </button>
+                            </form>
+
+                            <!-- Set: OVERWRITE stock value -->
+                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
+                                style="display: flex; gap: 0.4rem; align-items: center;">
+                                <input type="hidden" name="action" value="set">
+                                <input class="studio-input" type="number" name="quant_stock"
+                                    value="{{ item.quant_stock | round(2) }}" min="0" step="0.01"
+                                    style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                                <button type="submit" class="btn-studio btn-outline"
+                                    style="padding: 0.35rem 0.6rem; font-size: 0.72rem;" title="Set exact stock value">
+                                    <i class="fas fa-pen"></i> Set
+                                </button>
+                            </form>
+
+                        </div>
                     </td>
+
                     <td>
                         <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
                             <button type="submit" class="btn-studio text-danger bg-danger-soft"
-                                style="padding: 0.4rem; border:none;"
+                                style="padding: 0.4rem; border: none;"
                                 onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
                     </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="8" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                        <i class="fas fa-boxes"
-                            style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
-                        Your inventory is currently empty.
-                    </td>
-                </tr>
-                {% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                            <i class="fas fa-boxes"
+                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
+                            Your inventory is currently empty.
+                        </td>
+                    </tr>
+                    {% endif %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    function updateUnitHint() {
+        const unit = document.getElementById('unitSelect').value;
+        const hint = document.getElementById('unitHint');
+        const hints = {
+            'ml': 'Example: 1 bottle of 250ml ink → enter 250',
+            'L': 'Example: 1 litre of solution → enter 1',
+            'Pairs': 'Example: 1 box of 50 glove pairs → enter 50',
+            'Pieces': 'Example: 10 individual needles → enter 10',
+            'Boxes': 'Example: 3 boxes of needles → enter 3',
+            'Packs': 'Example: 2 packs of wipes → enter 2',
+            'Sheets': 'Example: 20 sheets of canvas → enter 20',
+            'Tubes': 'Example: 5 tubes of aftercare cream → enter 5',
+            'Bottles': 'Example: 3 bottles of sanitizer → enter 3',
+            'Grams': 'Example: 500g of pigment → enter 500',
+            'Sets': 'Example: 2 sets of brushes → enter 2',
+            'Rolls': 'Example: 3 rolls of plastic wrap → enter 3',
+        };
+        hint.textContent = hints[unit] || '';
+    }
+</script>

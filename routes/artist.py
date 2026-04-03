@@ -11,6 +11,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
 
+def get_artist_type(specialisation):
+    spec = (specialisation or '').lower()
+    art_keywords = ['art', 'sketch', 'paint', 'digital', 'illustrat',
+                    'watercolor', 'watercolour', 'neon', 'drawing']
+    return 'art' if any(kw in spec for kw in art_keywords) else 'tattoo'
+
 @artist_bp.route('/artist/dashboard')
 def artist_dashboard():
     if session.get('role') != 'artist':
@@ -36,19 +42,25 @@ def artist_dashboard():
     """, (artist_id,))
     today_appointments = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM inventory ORDER BY category, item_name")
+    # ── Fetch artist profile FIRST
+    cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
+    artist_profile = cursor.fetchone()
+
+    # ── Fetch ONLY this artist's inventory items
+    cursor.execute("""
+        SELECT * FROM inventory
+        WHERE artist_id = %s
+        ORDER BY category, item_name
+    """, (artist_id,))
     inventory = cursor.fetchall()
 
     cursor.execute("""
-        SELECT u.*, i.item_name FROM inventory_usage u
+        SELECT u.*, i.item_name, i.unit FROM inventory_usage u
         JOIN inventory i   ON u.item_id        = i.item_id
         JOIN appointment a ON u.appointment_id = a.appointment_id
         WHERE a.artist_id = %s ORDER BY u.logged_at DESC
     """, (artist_id,))
     usage_logs = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
-    artist_profile = cursor.fetchone()
 
     cursor.execute(
         "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
@@ -78,6 +90,7 @@ def artist_dashboard():
         total_count        = total_count
     )
 
+
 @artist_bp.route('/artist/approve/<int:appointment_id>', methods=['POST'])
 def artist_approve(appointment_id):
     if session.get('role') != 'artist':
@@ -101,6 +114,7 @@ def artist_approve(appointment_id):
     flash("Appointment approved!", "success")
     return redirect('/artist/dashboard')
 
+
 @artist_bp.route('/artist/reject/<int:appointment_id>', methods=['POST'])
 def artist_reject(appointment_id):
     if session.get('role') != 'artist':
@@ -116,6 +130,7 @@ def artist_reject(appointment_id):
     flash("Appointment rejected.", "success")
     return redirect('/artist/dashboard')
 
+
 @artist_bp.route('/artist/done/<int:appointment_id>', methods=['POST'])
 def artist_done(appointment_id):
     if session.get('role') != 'artist':
@@ -123,10 +138,6 @@ def artist_done(appointment_id):
 
     conn   = get_db()
     cursor = conn.cursor()
-
-    # FIX: Added AND status = 'Approved' guard so only Approved appointments
-    # can be marked Done. Previously any status (even Pending/Rejected) could
-    # be marked done by crafting a direct POST request.
     cursor.execute("""
         UPDATE appointment SET status = 'Done'
         WHERE appointment_id = %s AND artist_id = %s AND status = 'Approved'
@@ -142,52 +153,133 @@ def artist_done(appointment_id):
     flash("Session marked as done!", "success")
     return redirect('/artist/dashboard')
 
+
 @artist_bp.route('/artist/inventory/add', methods=['POST'])
 def artist_inventory_add():
     if session.get('role') != 'artist':
         return redirect('/login')
+
     conn   = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
+
+    # Get artist specialisation to determine artist_type
+    cursor.execute(
+        "SELECT specialisation FROM artist WHERE artist_id = %s",
+        (session['user_id'],)
+    )
+    row         = cursor.fetchone()
+    artist_type = get_artist_type(row.get('specialisation', '') if row else '')
+
+    try:
+        quant_stock   = float(request.form.get('quant_stock', 0))
+        reorder_level = float(request.form.get('reorder_level', 0))
+        unit_cost     = float(request.form.get('unit_cost', 0))
+        if quant_stock < 0 or reorder_level < 0 or unit_cost < 0:
+            raise ValueError
+    except (ValueError, TypeError):
+        flash("Invalid quantity or price entered!", "error")
+        return redirect('/artist/dashboard')
+
     cursor.execute("""
         INSERT INTO inventory
-        (item_name, category, unit, quant_stock, reorder_level, unit_cost)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        (item_name, category, unit, quant_stock, reorder_level, unit_cost, artist_type, artist_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """, (
-        request.form.get('item_name'), request.form.get('category'),
-        request.form.get('unit'),      request.form.get('quant_stock'),
-        request.form.get('reorder_level'), request.form.get('unit_cost')
+        request.form.get('item_name'),
+        request.form.get('category'),
+        request.form.get('unit'),
+        quant_stock,
+        reorder_level,
+        unit_cost,
+        artist_type,
+        session['user_id']   # ← ties item to this artist only
     ))
     conn.commit()
     conn.close()
     flash("Inventory item added!", "success")
     return redirect('/artist/dashboard')
 
+
 @artist_bp.route('/artist/inventory/update/<int:item_id>', methods=['POST'])
 def artist_inventory_update(item_id):
     if session.get('role') != 'artist':
         return redirect('/login')
+
+    action = request.form.get('action', 'set')
+    qty    = request.form.get('quant_stock', '').strip()
+
+    try:
+        qty = float(qty)
+        if qty < 0: raise ValueError
+    except (ValueError, TypeError):
+        flash("Invalid quantity entered!", "error")
+        return redirect('/artist/dashboard')
+
     conn   = get_db()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
+
+    # Security check — only allow update if item belongs to this artist
     cursor.execute(
-        "UPDATE inventory SET quant_stock = %s WHERE item_id = %s",
-        (request.form.get('quant_stock'), item_id)
+        "SELECT item_name, unit FROM inventory WHERE item_id = %s AND artist_id = %s",
+        (item_id, session['user_id'])
     )
+    item = cursor.fetchone()
+
+    if not item:
+        conn.close()
+        flash("Item not found or access denied!", "error")
+        return redirect('/artist/dashboard')
+
+    item_name = item['item_name']
+    unit      = item['unit']
+
+    if action == 'add':
+        cursor.execute(
+            "UPDATE inventory SET quant_stock = quant_stock + %s WHERE item_id = %s AND artist_id = %s",
+            (qty, item_id, session['user_id'])
+        )
+        flash(f"Restocked {item_name} — added {qty} {unit}!", "success")
+    else:
+        cursor.execute(
+            "UPDATE inventory SET quant_stock = %s WHERE item_id = %s AND artist_id = %s",
+            (qty, item_id, session['user_id'])
+        )
+        flash(f"Stock for {item_name} set to {qty} {unit}!", "success")
+
     conn.commit()
     conn.close()
-    flash("Stock updated!", "success")
     return redirect('/artist/dashboard')
+
 
 @artist_bp.route('/artist/inventory/delete/<int:item_id>', methods=['POST'])
 def artist_inventory_delete(item_id):
     if session.get('role') != 'artist':
         return redirect('/login')
+
     conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM inventory WHERE item_id = %s", (item_id,))
+    cursor = conn.cursor(dictionary=True)
+
+    # Security check — only allow delete if item belongs to this artist
+    cursor.execute(
+        "SELECT item_name FROM inventory WHERE item_id = %s AND artist_id = %s",
+        (item_id, session['user_id'])
+    )
+    item = cursor.fetchone()
+
+    if not item:
+        conn.close()
+        flash("Item not found or access denied!", "error")
+        return redirect('/artist/dashboard')
+
+    cursor.execute(
+        "DELETE FROM inventory WHERE item_id = %s AND artist_id = %s",
+        (item_id, session['user_id'])
+    )
     conn.commit()
     conn.close()
-    flash("Item deleted!", "success")
+    flash(f"{item['item_name']} deleted from inventory!", "success")
     return redirect('/artist/dashboard')
+
 
 @artist_bp.route('/artist/log-usage', methods=['POST'])
 def artist_log_usage():
@@ -199,7 +291,7 @@ def artist_log_usage():
     qty_used       = request.form.get('qty_used')
 
     try:
-        qty_used = int(qty_used)
+        qty_used = float(qty_used)
         if qty_used <= 0: raise ValueError
     except (ValueError, TypeError):
         flash("Invalid quantity entered!", "error")
@@ -207,38 +299,44 @@ def artist_log_usage():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
+
+    # Security check — only allow logging against this artist's own items
     cursor.execute(
-        "SELECT quant_stock, item_name FROM inventory WHERE item_id = %s",
-        (item_id,)
+        "SELECT quant_stock, item_name, unit FROM inventory WHERE item_id = %s AND artist_id = %s",
+        (item_id, session['user_id'])
     )
     item = cursor.fetchone()
 
     if not item:
         conn.close()
-        flash("Inventory item not found!", "error")
+        flash("Inventory item not found or access denied!", "error")
         return redirect('/artist/dashboard')
 
     if qty_used > item['quant_stock']:
         conn.close()
         flash(
-            f"Not enough stock! Only {item['quant_stock']} units "
+            f"Not enough stock! Only {item['quant_stock']} {item['unit']} "
             f"available for {item['item_name']}.",
             "error"
         )
         return redirect('/artist/dashboard')
 
     cursor.execute(
-        "INSERT INTO inventory_usage (appointment_id, item_id, qty_used) VALUES (%s,%s,%s)",
+        "INSERT INTO inventory_usage (appointment_id, item_id, qty_used) VALUES (%s, %s, %s)",
         (appointment_id, item_id, qty_used)
     )
     cursor.execute(
-        "UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s",
-        (qty_used, item_id)
+        "UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s AND artist_id = %s",
+        (qty_used, item_id, session['user_id'])
     )
     conn.commit()
     conn.close()
-    flash("Usage logged and stock updated!", "success")
+    flash(
+        f"Usage logged! {qty_used} {item['unit']} of {item['item_name']} deducted.",
+        "success"
+    )
     return redirect('/artist/dashboard')
+
 
 @artist_bp.route('/artist/change-password', methods=['POST'])
 def artist_change_password():
@@ -276,6 +374,7 @@ def artist_change_password():
     flash("Password updated successfully!", "success")
     return redirect('/artist/dashboard')
 
+
 @artist_bp.route('/artist/gallery/upload', methods=['POST'])
 def artist_gallery_upload():
     if session.get('role') != 'artist':
@@ -310,13 +409,14 @@ def artist_gallery_upload():
     conn   = get_db()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO gallery (artist_id, image_path, caption, style) VALUES (%s,%s,%s,%s)",
+        "INSERT INTO gallery (artist_id, image_path, caption, style) VALUES (%s, %s, %s, %s)",
         (session['user_id'], f"uploads/gallery/{filename}", caption, style)
     )
     conn.commit()
     conn.close()
     flash("Image uploaded to gallery successfully!", "success")
     return redirect('/artist/dashboard')
+
 
 @artist_bp.route('/artist/gallery/delete/<int:gallery_id>', methods=['POST'])
 def artist_gallery_delete(gallery_id):
