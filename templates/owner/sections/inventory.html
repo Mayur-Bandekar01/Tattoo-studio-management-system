@@ -33,6 +33,7 @@
             <thead>
                 <tr>
                     <th>Item Name</th>
+                    <th>Artist</th>
                     <th>Category</th>
                     <th style="width: 120px;">Stock</th>
                     <th style="width: 120px;">Threshold</th>
@@ -46,8 +47,10 @@
                 {% for item in inventory %}
                 <tr>
                     <td class="font-bold">{{ item.item_name }}</td>
-                    <td class="text-secondary" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">
-                        {{ item.category }}</td>
+                    <td style="font-weight:700; color:var(--studio-indigo);">
+                        {{ item.artist_name or '—' }}
+                    </td>
+                    <td><span class="badge badge-muted">{{ item.category or '—' }}</span></td>
                     <td
                         class="font-mono font-bold {{ 'text-danger' if item.quant_stock <= item.reorder_level else 'text-primary' }}">
                         {{ item.quant_stock }} {{ item.unit }}
@@ -66,7 +69,7 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 5rem 2rem;">
+                    <td colspan="8" style="text-align: center; padding: 5rem 2rem;">
                         <i class="fas fa-ghost text-muted"
                             style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
                         <p class="text-secondary" style="font-weight: 500;">Inventory database is empty.</p>

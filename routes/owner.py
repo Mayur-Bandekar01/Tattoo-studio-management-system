@@ -34,7 +34,11 @@ def owner_dashboard():
     cursor.execute("SELECT * FROM payment ORDER BY payment_date DESC")
     payments = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM inventory ORDER BY category, item_name")
+    cursor.execute("""
+    SELECT i.*, a.artist_name FROM inventory i
+    LEFT JOIN artist a ON i.artist_id = a.artist_id
+    ORDER BY a.artist_name, i.category, i.item_name
+""")
     inventory = cursor.fetchall()
 
     cursor.execute("""

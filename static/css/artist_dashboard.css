@@ -1208,25 +1208,6 @@ body.light .studio-input {
 /* Visibility Utilities */
 .sidebar-logo-text { color: var(--sidebar-logo-text, #FFFFFF); }
 
-/* ══════════════════════════════════════════════════════════════
-   LIGHT THEME — body background + main content
-   (sidebar stays dark — same pattern as owner dashboard)
-   ══════════════════════════════════════════════════════════════ */
-[data-theme="light"],
-body.light {
-    --studio-bg          : #F8F7F4;
-    --studio-card        : #FFFFFF;
-    --studio-card-border : rgba(0, 0, 0, 0.07);
-    --studio-secondary   : #F1EFE9;
-    --studio-text-primary  : #0F172A;
-    --studio-text-secondary: #475569;
-    --studio-border      : rgba(0, 0, 0, 0.1);
-    --studio-border-light: rgba(0, 0, 0, 0.05);
-    --studio-shadow      : 0 4px 20px rgba(0, 0, 0, 0.07);
-    --studio-shadow-glow : 0 0 20px rgba(255, 0, 60, 0.1);
-    --studio-indigo-soft : rgba(255, 0, 60, 0.08);
-    --studio-bg-hover    : rgba(0, 0, 0, 0.04);
-}
 
 [data-theme="light"] body,
 body.light {

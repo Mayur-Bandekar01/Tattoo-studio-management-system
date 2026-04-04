@@ -74,7 +74,7 @@
                 </p>
             </div>
             <div class="form-group">
-                <label class="form-label" style="color: #20BF6B;">Unit Price (₹)</label>
+                <label class="form-label" style="color: var(--studio-success);">Unit Price (₹)</label>
                 <input class="studio-input" type="number" name="unit_cost" placeholder="Cost per unit" step="any"
                     min="0" required>
             </div>
@@ -120,14 +120,12 @@
             <tbody>
                 {% if inventory %}
                 {% for item in inventory %}
-                {% set stock_pct = [(item.quant_stock / (item.reorder_level * 3) * 100), 100] | min if
-                item.reorder_level > 0 else 100 %}
-                {% set bar_color = 'var(--studio-danger)' if item.quant_stock <= item.reorder_level else
-                    ('var(--studio-warning)' if item.quant_stock <=item.reorder_level * 2 else 'var(--studio-success)' )
-                    %} {% set row_class='row-highlight-danger' if item.quant_stock <=item.reorder_level else '' %} {%
-                    set stock_text_class='text-danger' if item.quant_stock <=item.reorder_level else ('text-warning' if
-                    item.quant_stock <=item.reorder_level * 2 else 'text-success' ) %} <tr class="{{ row_class }}"
-                    style="--stock-pct: {{ stock_pct }}%; --bar-color: {{ bar_color }};">
+                {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else
+                (100 if item.quant_stock > 0 else 0), 100] | min %}
+                {% set bar_color = 'var(--studio-danger)'
+                if item.quant_stock <= item.reorder_level else ('var(--studio-warning)' if item.quant_stock
+                    <=item.reorder_level * 2 else 'var(--studio-success)' ) %} <tr
+                    class="{% if item.quant_stock <= item.reorder_level %}row-highlight-danger{% elif item.quant_stock <= item.reorder_level * 2 %}row-highlight-warning{% endif %}">
 
                     <td>
                         <div style="font-weight: 700; color: var(--studio-text-primary);">
@@ -144,14 +142,16 @@
 
                     <td>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <span class="{{ stock_text_class }}"
+                            <span class="{% if item.quant_stock <= item.reorder_level %}text-danger
+                                         {% elif item.quant_stock <= item.reorder_level * 2 %}text-warning
+                                         {% else %}text-success{% endif %}"
                                 style="font-family: monospace; font-size: 1rem; font-weight: 700;">
                                 {{ item.quant_stock | round(2) }} {{ item.unit }}
                             </span>
                             <div
                                 style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; overflow: hidden;">
                                 <div
-                                    style="width: var(--stock-pct); height: 100%; background: var(--bar-color); border-radius: 4px; transition: width 0.3s ease;">
+                                    style="--p: {{ stock_pct }}%; --c: {{ bar_color }}; width: var(--p); height: 100%; background: var(--c); border-radius: 4px; transition: width 0.3s ease;">
                                 </div>
                             </div>
                         </div>
