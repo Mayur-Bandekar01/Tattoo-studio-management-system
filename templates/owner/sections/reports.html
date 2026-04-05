@@ -502,9 +502,11 @@
     "daily_revenue"      : (daily_revenue or []),
     "artist_performance" : (artist_performance or []),
     "payment_methods"    : (payment_methods or []),
+    "concept_trends"     : (concept_trends or []),
     "total_revenue"      : (total_revenue | default(0)),
     "paid_revenue"       : (paid_revenue | default(0)),
     "pending_revenue"    : (pending_revenue | default(0)),
+    "monthly_revenue"    : (monthly_revenue | default(0)),
     "total_appointments" : (total_appointments | default(0)),
     "done_count"         : (done_count | default(0)),
     "pending_count"      : (pending_count | default(0)),
@@ -512,7 +514,8 @@
     "rejected_count"     : (rejected_count | default(0)),
     "cancelled_count"    : (cancelled_count | default(0)),
     "total_customers"    : (total_customers | default(0)),
-    "total_artists"      : (total_artists | default(0))
+    "total_artists"      : (total_artists | default(0)),
+    "returning_customers": (returning_customers | default(0))
 } | tojson | safe }}
 </script>
 
@@ -583,12 +586,15 @@
         <div class="kpi-foot" style="color:var(--c-violet);"><i class="fas fa-star"></i> Session success</div>
     </div>
     <div class="kpi">
-        <div class="kpi-accent" style="background:var(--c-pink);"></div>
-        <div class="kpi-icon-wrap" style="background:rgba(236,72,153,.1);color:var(--c-pink);"><i
-                class="fas fa-calculator"></i></div>
-        <div class="kpi-lbl">Avg per Session</div>
-        <div class="kpi-val" id="kv-avg">₹0</div>
-        <div class="kpi-foot" style="color:var(--c-pink);"><i class="fas fa-divide"></i> Revenue per booking</div>
+        <div class="kpi-accent" style="background:var(--c-cyan);"></div>
+        <div class="kpi-icon-wrap" style="background:rgba(6,182,212,.1);color:var(--c-cyan);"><i
+                class="fas fa-bullseye"></i></div>
+        <div class="kpi-lbl">Monthly Target</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <div class="kpi-val" id="kv-goal-val">₹0</div>
+            <div id="kv-goal-ring" style="width:40px;height:40px;"></div>
+        </div>
+        <div class="kpi-foot" style="color:var(--c-cyan);">Goal: <span id="kv-goal-target">₹2.5L</span></div>
     </div>
 </div>
 
@@ -675,16 +681,14 @@
         <div class="r-legend" id="rl-payment"></div>
     </div>
 
-    <!-- Artist sessions grouped bar -->
+    <!-- Top Style Trends -->
     <div class="r-card">
-        <div class="r-card-title">Artist Output</div>
-        <div class="r-card-sub">Completed vs total sessions per artist</div>
+        <div class="r-card-title">Top Style Trends</div>
+        <div class="r-card-sub">Most requested tattoo genres</div>
         <div style="height:210px;position:relative;">
-            <canvas id="rc-artist"></canvas>
+            <canvas id="rc-trends"></canvas>
         </div>
-        <div style="font-size:.62rem;color:#94A3B8;text-align:center;margin-top:.75rem;">
-            Green = Done &nbsp;·&nbsp; Purple = All sessions
-        </div>
+        <div id="rl-trends" class="r-legend"></div>
     </div>
 
 </div>
@@ -798,6 +802,29 @@
             document.getElementById('kv-paid-pct').textContent = pct(pr, tr) + '%';
             document.getElementById('kv-rate').textContent = pct(dc, ta) + '%';
             document.getElementById('kv-avg').textContent = ta ? fmt(Math.round(tr / ta)) : '₹0';
+
+            // Monthly Goal
+            const goalVal = D.monthly_revenue || 0;
+            const target = 250000;
+            document.getElementById('kv-goal-val').textContent = fmt(goalVal);
+            renderGoalRing(goalVal, target);
+        }
+
+        function renderGoalRing(val, target) {
+            const p = Math.min(Math.round((val / target) * 100), 100);
+            const circ = 2 * Math.PI * 16;
+            const offset = circ - (p / 100) * circ;
+            const ring = document.getElementById('kv-goal-ring');
+            if (ring) {
+                ring.innerHTML = `
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"/>
+                    <circle cx="20" cy="20" r="16" fill="none" stroke="var(--c-cyan)" stroke-width="4"
+                        stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
+                        transform="rotate(-90 20 20)"/>
+                    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="9" font-weight="800" fill="var(--c-cyan)">${p}%</text>
+                </svg>`;
+            }
         }
 
         /* ════════════════════════════════
@@ -1068,6 +1095,66 @@
         }
 
         /* ════════════════════════════════
+           Style Trends
+        ════════════════════════════════ */
+        function renderTrendsChart() {
+            const trends = D.concept_trends;
+            const ctx = document.getElementById('rc-trends').getContext('2d');
+            if (S.charts.trends) S.charts.trends.destroy();
+
+            if (!trends.length) {
+                document.getElementById('rc-trends').parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;">No trend data yet.</div>';
+                return;
+            }
+
+            const labels = trends.map(t => t.concept_type);
+            const vals = trends.map(t => t.count);
+            const total = vals.reduce((a, b) => a + b, 0);
+
+            S.charts.trends = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: vals,
+                        backgroundColor: MULTI.slice(0, labels.length),
+                        borderColor: 'transparent',
+                        borderWidth: 0,
+                        hoverOffset: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: item => `  ${item.label}: ${item.parsed} request(s)`
+                            }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('rl-trends').innerHTML = trends.map((t, i) => {
+                const p = total ? Math.round((t.count / total) * 100) : 0;
+                return `
+                <div class="r-legend-row">
+                    <div class="r-legend-left">
+                        <div class="r-dot" style="background:${MULTI[i]};"></div>
+                        <span class="r-legend-name">${t.concept_type}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span class="r-legend-pct">${p}%</span>
+                        <span class="r-legend-val">${t.count}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        /* ════════════════════════════════
            Artist sessions — grouped bar
         ════════════════════════════════ */
         function renderArtistChart() {
@@ -1271,6 +1358,7 @@
             renderStatusChart();
             renderPaymentChart();
             renderArtistChart();
+            renderTrendsChart();
             renderRankings();
             renderPerfTable();
         }

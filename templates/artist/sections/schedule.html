@@ -24,46 +24,44 @@
     </div>
 
     {% if today_appointments %}
-    <div class="timeline-card">
+    <div class="timeline-visual">
         {% for appt in today_appointments %}
-        <div class="tl-item" style="display:flex;align-items:center;gap:1.5rem;">
-            <!-- Time chip -->
-            <div style="background:var(--studio-secondary);border:1px solid var(--studio-border);
-                        padding:0.35rem 0.75rem;border-radius:8px;font-size:0.75rem;font-weight:700;
-                        color:var(--studio-text-secondary);white-space:nowrap;font-family:monospace;">
+        <div class="tl-visual-item"
+            style="--item-index: {{ loop.index0 }}; --dur-height: {{ (appt.duration_hours or 1) * 60 }}px;">
+            <div class="tl-visual-time">
+                <i class="far fa-clock" style="margin-right: 0.5rem; opacity: 0.5;"></i>
                 {{ appt.appointment_time }}
             </div>
 
-            <!-- Details -->
             <div style="flex:1;">
-                <p style="font-weight:700;color:var(--studio-text-primary);font-size:1rem;">
-                    {{ appt.customer_name }}</p>
-                <p style="font-size:0.85rem;color:var(--studio-text-secondary);margin-top:0.25rem;">
-                    {{ appt.tattoo_concept }}</p>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                    <span style="font-weight:800; color:var(--studio-text-primary); font-size:1.05rem;">
+                        {{ appt.customer_name }}
+                    </span>
+                    <span class="badge"
+                        style="background: var(--studio-indigo-soft); color: var(--studio-indigo); font-size: 0.65rem; border: none; padding: 2px 8px;">
+                        {{ appt.duration_hours or '?' }}h Session
+                    </span>
+                </div>
+                <p style="font-size:0.85rem; color:var(--studio-text-secondary); letter-spacing: 0.02em;">
+                    {{ appt.tattoo_concept }}
+                </p>
             </div>
 
-            <!-- Duration + status -->
-            <div style="text-align:right;flex-shrink:0;">
-                <div style="font-weight:700;color:var(--studio-text-primary);
-                            font-size:0.85rem;margin-bottom:0.5rem;">
-                    {{ appt.duration_hours if appt.duration_hours else '?' }} hrs
-                </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
                 {% if appt.status == 'Approved' %}
-                <span class="badge badge-success">ACTIVE</span>
+                <span class="badge badge-success" style="font-size: 0.65rem; letter-spacing: 0.1em;">ACTIVE</span>
+                <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="margin: 0;">
+                    <button type="submit" class="btn-studio btn-primary"
+                        style="padding: 0.5rem 1rem; font-size: 0.7rem;"
+                        onclick="return confirm('Complete this session?')">
+                        <i class="fas fa-check"></i>
+                    </button>
+                </form>
                 {% elif appt.status == 'Done' %}
-                <span class="badge badge-info">COMPLETED</span>
+                <span class="badge badge-info" style="font-size: 0.65rem; letter-spacing: 0.1em;">DONE</span>
                 {% endif %}
             </div>
-
-            <!-- Mark Done button for Approved sessions -->
-            {% if appt.status == 'Approved' %}
-            <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="flex-shrink:0;">
-                <button type="submit" class="btn-studio btn-primary" style="padding:0.4rem 0.85rem;font-size:0.72rem;"
-                    onclick="return confirm('Mark this session as done?')">
-                    <i class="fas fa-flag-checkered"></i> Done
-                </button>
-            </form>
-            {% endif %}
         </div>
         {% endfor %}
     </div>

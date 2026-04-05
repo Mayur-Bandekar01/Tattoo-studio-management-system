@@ -665,14 +665,72 @@ body::before {
     content      : '';
     position     : absolute;
     left         : -2.35rem;
-    top          : 50%;
-    transform    : translateY(-50%);
-    width        : 12px;
-    height       : 12px;
+    top          : 20px;
+    width        : 14px;
+    height       : 14px;
     border-radius: 50%;
     background   : var(--studio-indigo);
     border       : 3px solid var(--studio-bg);
-    box-shadow   : 0 0 0 3px rgba(255, 0, 60, 0.2);
+    box-shadow   : 0 0 15px rgba(255, 0, 60, 0.4);
+    z-index      : 2;
+}
+
+/* --- Visual Timeline Bar --- */
+.timeline-visual {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.tl-visual-item {
+    position: relative;
+    background: var(--studio-card);
+    border: 1px solid var(--studio-card-border);
+    border-left: 4px solid var(--studio-indigo);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+    animation: rowReveal 0.5s cubic-bezier(0.2, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--item-index, 0) * 0.1s);
+}
+
+.tl-visual-item:hover {
+    transform: translateX(10px) scale(1.01);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--studio-indigo-soft);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.tl-visual-time {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--studio-indigo);
+    font-size: 0.8rem;
+    min-width: 80px;
+}
+
+.tl-visual-duration {
+    height: var(--dur-height, 60px);
+    width: 4px;
+    background: var(--studio-indigo-soft);
+    position: absolute;
+    left: -4px;
+    top: 0;
+    border-radius: 4px;
+}
+
+/* --- Row Reveal --- */
+@keyframes rowReveal {
+    from { opacity: 0; transform: translateX(-15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.studio-table tr.ar {
+    animation: rowReveal 0.4s cubic-bezier(0.2, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--item-index, 0) * 0.05s);
 }
 
 /* --- Tables --- */

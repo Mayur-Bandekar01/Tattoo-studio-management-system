@@ -92,6 +92,39 @@ def owner_dashboard():
     """)
     daily_revenue = cursor.fetchall()
 
+    # --- NEW: Style Trends (Tattoo Concepts) ---
+    cursor.execute("""
+        SELECT concept_type, COUNT(*) as count
+        FROM invoice
+        WHERE concept_type IS NOT NULL AND concept_type != ''
+        GROUP BY concept_type
+        ORDER BY count DESC
+        LIMIT 5
+    """)
+    concept_trends = cursor.fetchall()
+
+    # --- NEW: Customer Loyalty (New vs Returning) ---
+    cursor.execute("""
+        SELECT COUNT(*) as returning_count
+        FROM (
+            SELECT customer_id FROM appointment
+            WHERE status = 'Done'
+            GROUP BY customer_id
+            HAVING COUNT(*) > 1
+        ) as sub
+    """)
+    returning_customers = cursor.fetchone()['returning_count']
+
+    # --- NEW: Monthly Stats ---
+    cursor.execute("""
+        SELECT IFNULL(SUM(amount_paid), 0) as monthly_val
+        FROM payment
+        WHERE status = 'Approved'
+          AND MONTH(payment_date) = MONTH(CURDATE())
+          AND YEAR(payment_date) = YEAR(CURDATE())
+    """)
+    monthly_revenue = cursor.fetchone()['monthly_val']
+
     cursor.execute("SELECT COUNT(*) as c FROM customer")
     total_customers = cursor.fetchone()['c']
     conn.close()
@@ -120,31 +153,34 @@ def owner_dashboard():
     )
 
     return render_template('owner/dashboard.html',
-        name               = session['name'],
-        appointments       = appointments,
-        artists            = artists,
-        invoices           = invoices,
-        payments           = payments,
-        inventory          = inventory,
-        artist_performance = artist_performance,
-        payment_methods    = payment_methods,
-        daily_revenue      = daily_revenue,
-        total_appointments = total_appointments,
-        pending_count      = pending_count,
-        approved_count     = approved_count,
-        done_count         = done_count,
-        rejected_count     = rejected_count,
-        cancelled_count    = cancelled_count,
-        total_artists      = total_artists,
-        low_stock          = low_stock,
-        low_stock_items    = low_stock_items,
-        unpaid_invoices    = unpaid_invoices,
-        total_invoices     = total_invoices,
-        total_revenue      = total_revenue,
-        paid_revenue       = paid_revenue,
-        pending_revenue    = pending_revenue,
-        total_customers    = total_customers,
-        pending_approvals  = pending_approvals
+        name                 = session['name'],
+        appointments         = appointments,
+        artists              = artists,
+        invoices             = invoices,
+        payments             = payments,
+        inventory            = inventory,
+        artist_performance   = artist_performance,
+        payment_methods      = payment_methods,
+        daily_revenue        = daily_revenue,
+        total_appointments   = total_appointments,
+        pending_count        = pending_count,
+        approved_count       = approved_count,
+        done_count           = done_count,
+        rejected_count       = rejected_count,
+        cancelled_count      = cancelled_count,
+        total_artists        = total_artists,
+        low_stock            = low_stock,
+        low_stock_items      = low_stock_items,
+        unpaid_invoices      = unpaid_invoices,
+        total_invoices       = total_invoices,
+        total_revenue        = total_revenue,
+        paid_revenue         = paid_revenue,
+        pending_revenue      = pending_revenue,
+        total_customers      = total_customers,
+        pending_approvals    = pending_approvals,
+        concept_trends       = concept_trends,
+        returning_customers  = returning_customers,
+        monthly_revenue      = monthly_revenue
     )
 
 @owner_bp.route('/owner/cancel/<int:appointment_id>', methods=['POST'])

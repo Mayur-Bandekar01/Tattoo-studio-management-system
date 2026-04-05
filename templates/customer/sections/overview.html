@@ -19,110 +19,114 @@
 {% endif %}
 {% endwith %}
 
-<!-- ── Core Metrics Grid ── -->
-<div class="summary-grid">
-    <!-- Total Bookings -->
-    <div class="summary-card" style="border-left-color: var(--studio-indigo);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box">
-                <i class="fa-solid fa-calendar-check"></i>
+<div style="padding-top: 1rem;">
+    <!-- ── Core Metrics Grid (3 columns for balance) ── -->
+    <div class="summary-grid">
+        <!-- Total Bookings -->
+        <div class="summary-card" style="border-left-color: var(--studio-indigo);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <span class="badge badge-info">Bookings</span>
             </div>
-            <span class="badge badge-info">Bookings</span>
+            <p class="card-label">Total Volume</p>
+            <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
         </div>
-        <p class="card-label">Total Volume</p>
-        <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
+
+        <!-- Pending Approvals -->
+        <div class="summary-card" style="border-left-color: var(--studio-warning);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box"
+                    style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245,158,11,0.2); border: 1px solid rgba(245, 158, 11, 0.1);">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <span class="badge badge-warning">Pending</span>
+            </div>
+            <p class="card-label">Awaiting Studio</p>
+            <div class="card-value">
+                {{ appointments|selectattr('status', 'equalto', 'Pending')|list|length if appointments else 0 }}
+            </div>
+        </div>
+
+        <!-- Finished Sessions -->
+        <div class="summary-card" style="border-left-color: var(--studio-success);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="icon-box"
+                    style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16,185,129,0.2); border: 1px solid rgba(16, 185, 129, 0.1);">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <span class="badge badge-success">Completed</span>
+            </div>
+            <p class="card-label">Past Masterpieces</p>
+            <div class="card-value">
+                {{ appointments|selectattr('status', 'in', ['Done', 'Completed'])|list|length if appointments else 0 }}
+            </div>
+        </div>
     </div>
 
-    <!-- Pending Approvals -->
-    <div class="summary-card" style="border-left-color: var(--studio-warning);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box"
-                style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245,158,11,0.2);">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-            <span class="badge badge-warning">Pending</span>
-        </div>
-        <p class="card-label">Awaiting Studio</p>
-        <div class="card-value">
-            {{ appointments|selectattr('status', 'equalto', 'Pending')|list|length if appointments else 0 }}
-        </div>
-    </div>
-
-    <!-- Finished Sessions -->
-    <div class="summary-card" style="border-left-color: var(--studio-success);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box"
-                style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16,185,129,0.2);">
-                <i class="fas fa-check-double"></i>
-            </div>
-            <span class="badge badge-success">Completed</span>
-        </div>
-        <p class="card-label">Past Masterpieces</p>
-        <div class="card-value">
-            {{ appointments|selectattr('status', 'in', ['Done', 'Completed'])|list|length if appointments else 0 }}
-        </div>
-    </div>
-</div>
-
-<!-- 1. Hero Card: Upcoming Session -->
-<div class="studio-card"
-    style="border-left: 5px solid var(--studio-selection); margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem; background: var(--studio-grad-hero); backdrop-filter: blur(20px);">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
-        <div style="position: relative; z-index: 2;">
-            <p
-                style="font-size: 0.75rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                <i class="fas fa-bolt"></i> Upcoming Session
-            </p>
-            {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
-            {% set next_appt = appointments[0] %}
-            <h2
-                style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.25rem; line-height: 1; letter-spacing: -0.02em;">
-                {{ next_appt.appointment_date }}
-            </h2>
-            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; font-weight: 500; max-width: 500px;">
-                with Artist <strong style="color: #FFFFFF; text-decoration: underline;">{{ next_appt.artist_name
-                    }}</strong>
-                &mdash; "{{ next_appt.tattoo_concept }}"
-            </p>
-            <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                <span class="badge"
-                    style="background: rgba(255,255,255,0.2); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; font-size: 0.75rem;">
-                    {{ next_appt.status }}
-                </span>
-                <span style="font-size: 0.85rem; color: #FFFFFF; font-weight: 700; opacity: 0.9;">
-                    <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
-                </span>
-            </div>
-            {% else %}
-            <h2
-                style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.5rem; line-height: 1; letter-spacing: -0.02em;">
-                No upcoming sessions
-            </h2>
-            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; max-width: 500px;">
-                Your skin is a waiting canvas. Book your next masterpiece today.
-            </p>
-            <div style="margin-top: 2rem;">
+    <!-- 1. Hero Card: Upcoming Session / Status -->
+    <div class="studio-card static-card"
+        style="border-left: 5px solid #FFFFFF; margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem; background: var(--studio-grad-hero); box-shadow: 0 15px 35px rgba(255, 0, 60, 0.2); z-index: 2;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div style="position: relative; z-index: 2;">
+                <p
+                    style="font-size: 0.75rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
+                    <i class="fas fa-bolt"></i> Upcoming Session
+                </p>
+                {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
+                {% set next_appt = appointments[0] %}
+                <h2
+                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.25rem; line-height: 1.1; letter-spacing: -0.02em;">
+                    {{ next_appt.appointment_date }}
+                </h2>
+                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; font-weight: 600; max-width: 500px;">
+                    with Artist <strong style="color: #FFFFFF; text-decoration: underline;">{{ next_appt.artist_name
+                        }}</strong>
+                    &mdash; "{{ next_appt.tattoo_concept }}"
+                </p>
+                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
+                    <span class="badge"
+                        style="background: rgba(255,255,255,0.2); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.4); padding: 8px 14px; font-size: 0.75rem; font-weight: 800;">
+                        {{ next_appt.status }}
+                    </span>
+                    <span style="font-size: 0.85rem; color: #FFFFFF; font-weight: 700;">
+                        <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
+                    </span>
+                </div>
+                {% else %}
+                <h2
+                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 1rem; line-height: 1.1; letter-spacing: -0.02em;">
+                    No upcoming sessions
+                </h2>
+                <p
+                    style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; font-weight: 500; max-width: 500px; margin-bottom: 2rem;">
+                    Your skin is a waiting canvas. Book your next masterpiece today.
+                </p>
                 <button onclick="switchTab('book', document.querySelector('[data-section=book]'))"
-                    class="btn-studio btn-primary" style="font-weight: 900;">
+                    class="btn-studio btn-primary"
+                    style="font-weight: 900; background: #FFFFFF; color: #000; padding: 0.8rem 1.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
                     <i class="fas fa-calendar-plus" style="margin-right: 6px;"></i> Schedule Now
                 </button>
+                {% endif %}
+            </div>
+
+            {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
+            <div
+                style="background: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 2rem; position: relative; z-index: 2; backdrop-filter: blur(5px);">
+                <i class="fas fa-calendar-day"></i>
             </div>
             {% endif %}
         </div>
 
-        {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
+        <!-- Decorative background blobs -->
         <div
-            style="background: rgba(255, 255, 255, 0.15); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 2rem; position: relative; z-index: 2; backdrop-filter: blur(5px);">
-            <i class="fas fa-calendar-day"></i>
+            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 1;">
         </div>
-        {% endif %}
-    </div>
-
-    <!-- Decorative background blobs -->
-    <div
-        style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 1;">
     </div>
 </div>
+
 
 <!-- 2. Secondary Content Grid -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">

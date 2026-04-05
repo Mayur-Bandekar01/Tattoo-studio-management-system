@@ -33,10 +33,11 @@
     <div class="gallery-grid" id="galleryGrid">
         {% if gallery %}
         {% for item in gallery %}
-        <div class="gallery-item" onclick="openLbFromItem(this)" style="cursor: pointer;"
-            data-id="{{ item.gallery_id }}" data-category="{{ item.style or 'Other' }}"
-            data-img="{{ url_for('static', filename=item.image_path) }}" data-title="{{ item.caption or 'Untitled' }}"
-            data-artist="{{ item.artist_name }}" data-style="{{ item.style or '' }}">
+        <div class="gallery-item" onclick="openLbFromItem(this)"
+            style="cursor: pointer; --item-index: {{ loop.index0 }};" data-id="{{ item.gallery_id }}"
+            data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
+            data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
+            data-style="{{ item.style or '' }}">
 
             <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
                 id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
@@ -47,19 +48,22 @@
                 <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
                     class="gallery-img" loading="lazy">
                 <div class="gallery-overlay">
-                    <div>
-                        <i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                        <p style="font-weight: 700;">View Details</p>
+                    <div class="gallery-overlay-content">
+                        <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
+                        <p
+                            style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                            View Masterpiece</p>
                     </div>
                 </div>
             </div>
             <div class="gallery-info">
                 <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="gallery-artist" style="font-weight: 600;">by {{ item.artist_name }}</span>
+                    <span class="gallery-artist" style="font-weight: 600; font-size: 0.75rem;">by {{ item.artist_name
+                        }}</span>
                     {% if item.style %}
                     <span class="badge"
-                        style="background: rgba(255, 0, 60, 0.1); color: var(--studio-accent); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.2);">{{
+                        style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.15); padding: 2px 8px;">{{
                         item.style }}</span>
                     {% endif %}
                 </div>
@@ -208,6 +212,7 @@
                 data.items.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'gallery-item';
+                    card.style.setProperty('--item-index', index);
                     card.dataset.id = item.gallery_id;
                     card.dataset.img = item.image_path.startsWith('/static/') ? item.image_path : `/static/${item.image_path || ''}`;
                     card.dataset.title = item.caption || 'Untitled';
@@ -223,13 +228,18 @@
                         <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>
                         <div class="gallery-img-wrapper">
                             <img src="/static/${item.image_path || ''}" class="gallery-img">
-                            <div class="gallery-overlay"><div><i class="fas fa-expand" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="font-weight: 700;">View Details</p></div></div>
+                            <div class="gallery-overlay">
+                                <div class="gallery-overlay-content">
+                                    <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
+                                    <p style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">View Masterpiece</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="gallery-info">
                             <p class="gallery-title">${item.caption || 'Untitled'}</p>
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span class="gallery-artist">by ${item.artist_name || 'Unknown'}</span>
-                                ${item.style ? `<span class="badge" style="background: rgba(72, 52, 212, 0.05); color: var(--studio-indigo); font-size: 0.6rem;">${item.style}</span>` : ''}
+                                <span class="gallery-artist" style="font-size: 0.75rem;">by ${item.artist_name || 'Unknown'}</span>
+                                ${item.style ? `<span class="badge" style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.1);">Extra</span>` : ''}
                             </div>
                         </div>
                     `;
@@ -244,8 +254,14 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
 
-        document.getElementById('galleryGrid').style.display = 'grid';
+        const grid = document.getElementById('galleryGrid');
+        grid.style.display = 'grid';
         document.getElementById('savedGrid').style.display = 'none';
+
+        // Add filtering class to trigger re-animation
+        grid.classList.remove('filtering');
+        void grid.offsetWidth; // Trigger reflow
+        grid.classList.add('filtering');
 
         let visible = 0;
         const targetCat = cat ? cat.toString().toLowerCase().trim() : '';
@@ -253,7 +269,10 @@
             const itemCat = (i.dataset.category || '').toLowerCase().trim();
             const show = (itemCat === targetCat);
             i.style.display = show ? '' : 'none';
-            if (show) visible++;
+            if (show) {
+                i.style.setProperty('--item-index', visible);
+                visible++;
+            }
         });
         document.getElementById('galNoResult').style.display = visible === 0 ? 'block' : 'none';
     };

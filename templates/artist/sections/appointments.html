@@ -34,7 +34,7 @@
             <tbody>
                 {% if appointments %}
                 {% for appt in appointments %}
-                <tr class="ar" data-status="{{ appt.status }}">
+                <tr class="ar" data-status="{{ appt.status }}" style="--item-index: {{ loop.index0 }};">
                     <td style="font-family: monospace; font-size: 0.8rem; color: var(--studio-text-secondary);">#{{
                         appt.appointment_id }}</td>
                     <td style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name }}</td>

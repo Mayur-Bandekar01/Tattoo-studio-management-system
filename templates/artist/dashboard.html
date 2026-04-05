@@ -194,9 +194,21 @@
             }
             btn.classList.add('active');
 
+            let visibleCount = 0;
             document.querySelectorAll('.' + cls).forEach(row => {
-                row.style.display =
-                    (status === 'all' || row.dataset.status === status) ? '' : 'none';
+                const show = (status === 'all' || row.dataset.status === status);
+
+                if (show) {
+                    row.style.display = '';
+                    row.style.setProperty('--item-index', visibleCount);
+                    // Re-trigger animation
+                    row.style.animation = 'none';
+                    row.offsetHeight; // trigger reflow
+                    row.style.animation = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
             });
         }
 
