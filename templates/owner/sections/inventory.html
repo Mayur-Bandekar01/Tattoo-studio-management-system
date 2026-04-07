@@ -45,7 +45,7 @@
             <tbody>
                 {% if inventory %}
                 {% for item in inventory %}
-                <tr>
+                <tr class="inv-row" data-date="{{ item.last_updated or '' }}">
                     <td class="font-bold">{{ item.item_name }}</td>
                     <td style="font-weight:700; color:var(--studio-indigo);">
                         {{ item.artist_name or '—' }}

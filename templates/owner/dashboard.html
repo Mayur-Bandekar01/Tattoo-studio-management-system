@@ -81,6 +81,24 @@
                     <p id="pageSubtitle">Welcome back, {{ name }}! Here's what's happening today.</p>
                 </div>
                 <div class="header-actions">
+                    <div id="header-actions-context" class="header-actions-context"
+                        style="display: flex; gap: 10px; margin-right: 15px;">
+                        <!-- Reports Context -->
+                        <div id="ctx-reports" style="display: none;">
+                            <button class="btn-studio btn-secondary" onclick="window.print()">
+                                <i class="fas fa-print"></i> Print Report
+                            </button>
+                        </div>
+                        <!-- Inventory Context -->
+                        <div id="ctx-inventory" style="display: none;">
+                            <select id="ctx-inventory-month" class="studio-input"
+                                style="padding: 6px 12px; height: 36px; min-width: 140px; font-size: 0.75rem;"
+                                onchange="filterInventoryByMonth(this.value)">
+                                <option value="all">All Months</option>
+                                <!-- Months will be populated or filtered manually -->
+                            </select>
+                        </div>
+                    </div>
                     <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
                         <i class="fas fa-sun"></i>
                     </button>
@@ -175,9 +193,65 @@
                 document.getElementById('pageSubtitle').textContent = info.subtitle;
             }
 
+            /* update context actions */
+            const ctxReports = document.getElementById('ctx-reports');
+            const ctxInventory = document.getElementById('ctx-inventory');
+            if (ctxReports) ctxReports.style.display = (name === 'reports') ? 'block' : 'none';
+            if (ctxInventory) ctxInventory.style.display = (name === 'inventory') ? 'block' : 'none';
+
             localStorage.setItem('ownerTab', name);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // --- CONTEXT: INVENTORY FILTERING ---
+        function populateInventoryMonths() {
+            const select = document.getElementById('ctx-inventory-month');
+            if (!select) return;
+
+            // Keep "All Months"
+            select.innerHTML = '<option value="all">All Months</option>';
+
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const now = new Date();
+
+            for (let i = 0; i < 12; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = label;
+                select.appendChild(opt);
+            }
+        }
+
+        function filterInventoryByMonth(month) {
+            console.log("Filtering inventory by month:", month);
+            const rows = document.querySelectorAll('.studio-table tbody tr');
+            rows.forEach(row => {
+                // If we had a date column, we would filter here.
+                // For now, this is a placeholder for the user to integrate with their data.
+                // Since the current inventory doesn't show dates, we show all if 'all' is selected.
+                if (month === 'all') {
+                    row.style.display = '';
+                } else {
+                    // Logic for filtering based on data-date attribute if added
+                    const rowDate = row.getAttribute('data-date');
+                    if (rowDate && rowDate.startsWith(month)) {
+                        row.style.display = '';
+                    } else {
+                        // If no date data is present, we might want to hide everything or show all
+                        // For demonstration, let's keep them visible if no date is found to avoid "emptying" the table
+                        // unless the user adds the data-date attribute.
+                    }
+                }
+            });
+        }
+
+        // Initialize Context
+        document.addEventListener('DOMContentLoaded', () => {
+            populateInventoryMonths();
+        });
 
         /* ────────────────────────────────────────────────────────
            filterTable — generic row filter used in Bookings section
