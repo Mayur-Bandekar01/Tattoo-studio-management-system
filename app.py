@@ -31,6 +31,13 @@ def add_no_cache(response):
     response.headers["Expires"]       = "0"
     return response
 
+@app.teardown_appcontext
+def close_db(error):
+    from flask import g
+    db = g.get('db', None)
+    if db is not None:
+        db.close()
+
 # ── ERROR HANDLERS ───────────────────────────────────────────
 @app.errorhandler(404)
 def page_not_found(e):
@@ -44,6 +51,11 @@ def server_error(e):
 # ── REGISTER BLUEPRINTS ──────────────────────────────────────
 from routes import register_blueprints
 register_blueprints(app)
+
+# ── DB MAINTENANCE ──────────────────────────────────────────
+from utils.db_maintenance import ensure_schema_consistency
+with app.app_context():
+    ensure_schema_consistency()
 
 if __name__ == '__main__':
     app.run(debug=True)

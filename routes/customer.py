@@ -7,18 +7,16 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app, jsonify
 from db import get_db
 
-customer_bp = Blueprint('customer', __name__)
+from utils.decorators import role_required
+from utils.validators import allowed_file, validate_image_size
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
+customer_bp = Blueprint('customer', __name__)
 
 import secrets
 
 @customer_bp.route('/customer/dashboard')
+@role_required('customer')
 def customer_dashboard():
-    if session.get('role') != 'customer':
-        return redirect('/login')
 
     # Generate CSRF token for the session if it doesn't exist
     if 'csrf_token' not in session:
@@ -88,9 +86,8 @@ def customer_dashboard():
     )
 
 @customer_bp.route('/customer/book', methods=['POST'])
+@role_required('customer')
 def customer_book():
-    if session.get('role') != 'customer':
-        return redirect('/login')
 
     # Verify CSRF Token
     form_csrf = request.form.get('csrf_token')
@@ -176,10 +173,7 @@ def customer_book():
         if not allowed_file(uploaded_file.filename):
             flash("Only JPG and PNG files are allowed!", "error")
             return redirect('/customer/dashboard')
-        uploaded_file.seek(0, 2)
-        file_size = uploaded_file.tell()
-        uploaded_file.seek(0)
-        if file_size > 5 * 1024 * 1024:
+        if not validate_image_size(uploaded_file, max_size_mb=5):
             flash("File size must be under 5 MB!", "error")
             return redirect('/customer/dashboard')
         ext      = uploaded_file.filename.rsplit('.', 1)[1].lower()
@@ -242,9 +236,8 @@ def customer_book():
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/cancel/<int:appointment_id>', methods=['POST'])
+@role_required('customer')
 def customer_cancel(appointment_id):
-    if session.get('role') != 'customer':
-        return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
     cursor.execute("""
@@ -257,9 +250,8 @@ def customer_cancel(appointment_id):
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/delete/<int:appointment_id>', methods=['POST'])
+@role_required('customer')
 def customer_delete(appointment_id):
-    if session.get('role') != 'customer':
-        return redirect('/login')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -294,9 +286,8 @@ def customer_delete(appointment_id):
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/pay/<int:invoice_id>', methods=['POST'])
+@role_required('customer')
 def customer_pay(invoice_id):
-    if session.get('role') != 'customer':
-        return redirect('/login')
 
     payment_method  = request.form.get('payment_method', '').strip()
     transaction_ref = request.form.get('transaction_ref', '').strip()
@@ -381,9 +372,8 @@ def customer_pay(invoice_id):
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/change-password', methods=['POST'])
+@role_required('customer')
 def customer_change_password():
-    if session.get('role') != 'customer':
-        return redirect('/login')
 
     current  = request.form.get('current_password', '').strip()
     new_pass = request.form.get('new_password', '').strip()

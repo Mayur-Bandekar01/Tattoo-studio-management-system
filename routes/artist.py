@@ -5,11 +5,10 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app
 from db import get_db
 
-artist_bp = Blueprint('artist', __name__)
+from utils.decorators import role_required
+from utils.validators import allowed_file, validate_image_size
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
+artist_bp = Blueprint('artist', __name__)
 
 def get_artist_type(specialisation):
     spec = (specialisation or '').lower()
@@ -18,9 +17,8 @@ def get_artist_type(specialisation):
     return 'art' if any(kw in spec for kw in art_keywords) else 'tattoo'
 
 @artist_bp.route('/artist/dashboard')
+@role_required('artist')
 def artist_dashboard():
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     artist_id = session['user_id']
     conn      = get_db()
@@ -92,9 +90,8 @@ def artist_dashboard():
 
 
 @artist_bp.route('/artist/approve/<int:appointment_id>', methods=['POST'])
+@role_required('artist')
 def artist_approve(appointment_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
     duration = request.form.get('duration_hours', '').strip()
     try:
         duration = int(duration)
@@ -116,9 +113,8 @@ def artist_approve(appointment_id):
 
 
 @artist_bp.route('/artist/reject/<int:appointment_id>', methods=['POST'])
+@role_required('artist')
 def artist_reject(appointment_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
     conn   = get_db()
     cursor = conn.cursor()
     cursor.execute("""
@@ -132,9 +128,8 @@ def artist_reject(appointment_id):
 
 
 @artist_bp.route('/artist/done/<int:appointment_id>', methods=['POST'])
+@role_required('artist')
 def artist_done(appointment_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     conn   = get_db()
     cursor = conn.cursor()
@@ -155,9 +150,8 @@ def artist_done(appointment_id):
 
 
 @artist_bp.route('/artist/inventory/add', methods=['POST'])
+@role_required('artist')
 def artist_inventory_add():
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -201,9 +195,8 @@ def artist_inventory_add():
 
 
 @artist_bp.route('/artist/inventory/update/<int:item_id>', methods=['POST'])
+@role_required('artist')
 def artist_inventory_update(item_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     action = request.form.get('action', 'set')
     qty    = request.form.get('quant_stock', '').strip()
@@ -252,9 +245,8 @@ def artist_inventory_update(item_id):
 
 
 @artist_bp.route('/artist/inventory/delete/<int:item_id>', methods=['POST'])
+@role_required('artist')
 def artist_inventory_delete(item_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -282,9 +274,8 @@ def artist_inventory_delete(item_id):
 
 
 @artist_bp.route('/artist/log-usage', methods=['POST'])
+@role_required('artist')
 def artist_log_usage():
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     appointment_id = request.form.get('appointment_id')
     item_id        = request.form.get('item_id')
@@ -339,9 +330,8 @@ def artist_log_usage():
 
 
 @artist_bp.route('/artist/change-password', methods=['POST'])
+@role_required('artist')
 def artist_change_password():
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     current  = request.form.get('current_password', '').strip()
     new_pass = request.form.get('new_password', '').strip()
@@ -376,9 +366,8 @@ def artist_change_password():
 
 
 @artist_bp.route('/artist/gallery/upload', methods=['POST'])
+@role_required('artist')
 def artist_gallery_upload():
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     uploaded_file = request.files.get('gallery_image')
     caption       = request.form.get('caption', '').strip()
@@ -391,10 +380,7 @@ def artist_gallery_upload():
         flash("Only JPG and PNG files are allowed!", "error")
         return redirect('/artist/dashboard')
 
-    uploaded_file.seek(0, 2)
-    file_size = uploaded_file.tell()
-    uploaded_file.seek(0)
-    if file_size > 5 * 1024 * 1024:
+    if not validate_image_size(uploaded_file, max_size_mb=5):
         flash("File size must be under 5 MB!", "error")
         return redirect('/artist/dashboard')
 
@@ -419,9 +405,8 @@ def artist_gallery_upload():
 
 
 @artist_bp.route('/artist/gallery/delete/<int:gallery_id>', methods=['POST'])
+@role_required('artist')
 def artist_gallery_delete(gallery_id):
-    if session.get('role') != 'artist':
-        return redirect('/login')
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)

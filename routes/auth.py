@@ -11,6 +11,36 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     return render_template('auth/login.html')
 
+def handle_customer_login(cursor, password):
+    email = request.form.get('email', '').strip()
+    if not email: return False, "Please enter your email!"
+    cursor.execute("SELECT * FROM customer WHERE customer_email = %s AND password = %s", (email, password))
+    user = cursor.fetchone()
+    if user:
+        session.update({'user_id': user['customer_id'], 'role': 'customer', 'name': user['customer_name']})
+        return True, '/customer/dashboard'
+    return False, "Invalid email or password!"
+
+def handle_artist_login(cursor, password):
+    artist_id = request.form.get('artist_id', '').strip()
+    if not artist_id: return False, "Please enter your Artist ID!"
+    cursor.execute("SELECT * FROM artist WHERE artist_id = %s AND password = %s", (artist_id, password))
+    user = cursor.fetchone()
+    if user:
+        session.update({'user_id': user['artist_id'], 'role': 'artist', 'name': user['artist_name'], 'specialisation': user['specialisation']})
+        return True, '/artist/dashboard'
+    return False, "Invalid Artist ID or password!"
+
+def handle_owner_login(cursor, password):
+    email = request.form.get('email', '').strip()
+    if not email: return False, "Please enter your email!"
+    cursor.execute("SELECT * FROM owner WHERE email = %s AND password = %s", (email, password))
+    user = cursor.fetchone()
+    if user:
+        session.update({'user_id': user['owner_id'], 'role': 'owner', 'name': user['name']})
+        return True, '/owner/dashboard'
+    return False, "Invalid email or password!"
+
 @auth_bp.route('/login', methods=['POST'])
 def login_post():
     role     = request.form.get('role', '').strip()
@@ -22,73 +52,27 @@ def login_post():
 
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
+    
+    handlers = {
+        'customer': handle_customer_login,
+        'artist':   handle_artist_login,
+        'owner':    handle_owner_login
+    }
 
-    if role == 'customer':
-        email = request.form.get('email', '').strip()
-        if not email:
-            conn.close()
-            flash("Please enter your email!")
-            return redirect('/login')
-        cursor.execute(
-            "SELECT * FROM customer WHERE customer_email = %s AND password = %s",
-            (email, password)
-        )
-        user = cursor.fetchone()
+    handler = handlers.get(role)
+    if not handler:
         conn.close()
-        if user:
-            session.permanent  = True
-            session['user_id'] = user['customer_id']
-            session['role']    = 'customer'
-            session['name']    = user['customer_name']
-            return redirect('/customer/dashboard')
-        flash("Invalid email or password!")
+        flash("Please select a valid role!")
         return redirect('/login')
 
-    elif role == 'artist':
-        artist_id = request.form.get('artist_id', '').strip()
-        if not artist_id:
-            conn.close()
-            flash("Please enter your Artist ID!")
-            return redirect('/login')
-        cursor.execute(
-            "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
-            (artist_id, password)
-        )
-        user = cursor.fetchone()
-        conn.close()
-        if user:
-            session.permanent          = True
-            session['user_id']         = user['artist_id']
-            session['role']            = 'artist'
-            session['name']            = user['artist_name']
-            session['specialisation']  = user['specialisation']  # ADDED
-            return redirect('/artist/dashboard')
-        flash("Invalid Artist ID or password!")
-        return redirect('/login')
-
-    elif role == 'owner':
-        email = request.form.get('email', '').strip()
-        if not email:
-            conn.close()
-            flash("Please enter your email!")
-            return redirect('/login')
-        cursor.execute(
-            "SELECT * FROM owner WHERE email = %s AND password = %s",
-            (email, password)
-        )
-        user = cursor.fetchone()
-        conn.close()
-        if user:
-            session.permanent  = True
-            session['user_id'] = user['owner_id']
-            session['role']    = 'owner'
-            session['name']    = user['name']
-            return redirect('/owner/dashboard')
-        flash("Invalid email or password!")
-        return redirect('/login')
-
+    success, result = handler(cursor, password)
     conn.close()
-    flash("Please select a valid role!")
+
+    if success:
+        session.permanent = True
+        return redirect(result)
+    
+    flash(result)
     return redirect('/login')
 
 @auth_bp.route('/register', methods=['GET'])

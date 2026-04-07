@@ -227,22 +227,16 @@
 
         function filterInventoryByMonth(month) {
             console.log("Filtering inventory by month:", month);
-            const rows = document.querySelectorAll('.studio-table tbody tr');
+            const rows = document.querySelectorAll('.inv-row');
             rows.forEach(row => {
-                // If we had a date column, we would filter here.
-                // For now, this is a placeholder for the user to integrate with their data.
-                // Since the current inventory doesn't show dates, we show all if 'all' is selected.
                 if (month === 'all') {
                     row.style.display = '';
                 } else {
-                    // Logic for filtering based on data-date attribute if added
                     const rowDate = row.getAttribute('data-date');
                     if (rowDate && rowDate.startsWith(month)) {
                         row.style.display = '';
                     } else {
-                        // If no date data is present, we might want to hide everything or show all
-                        // For demonstration, let's keep them visible if no date is found to avoid "emptying" the table
-                        // unless the user adds the data-date attribute.
+                        row.style.display = 'none';
                     }
                 }
             });
