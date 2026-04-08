@@ -808,19 +808,19 @@ select option {
 [data-theme="ivory"] {
     --studio-bg          : #F8F7F4;
     --studio-card        : #FFFFFF;
-    --studio-card-border : rgba(0, 0, 0, 0.08);
-    --studio-glass-border: 1px solid rgba(0, 0, 0, 0.07);
+    --studio-card-border : rgba(15, 23, 42, 0.08); /* Darker border for light mode */
+    --studio-glass-border: 1px solid rgba(15, 23, 42, 0.07);
     --studio-secondary   : #F1EFE9;
 
     --studio-text-primary  : #0F172A;
-    --studio-text-secondary: #475569;
-    --studio-text-muted    : #94A3B8;
+    --studio-text-secondary: #334155; /* Slightly darker than 475569 */
+    --studio-text-muted    : #64748B; /* Darker muted text for readability */
 
-    --studio-border      : rgba(0, 0, 0, 0.1);
-    --studio-border-light: rgba(0, 0, 0, 0.06);
-    --studio-shadow      : 0 4px 20px rgba(0, 0, 0, 0.08);
-    --studio-shadow-glow : 0 0 20px rgba(255, 0, 60, 0.12);
-    --studio-bg-hover    : rgba(0, 0, 0, 0.04);
+    --studio-border      : rgba(15, 23, 42, 0.12); /* Higher contrast */
+    --studio-border-light: rgba(15, 23, 42, 0.06);
+    --studio-shadow      : 0 4px 20px rgba(15, 23, 42, 0.08);
+    --studio-shadow-glow : 0 0 20px rgba(255, 0, 60, 0.1);
+    --studio-bg-hover    : rgba(15, 23, 42, 0.04);
 
     --sidebar-grad-start : #1A1A2E;
     --sidebar-grad-mid   : #16213E;
@@ -836,6 +836,10 @@ select option {
     --studio-info-soft   : rgba(59, 130, 246, 0.1);
     --sidebar-active-bg  : var(--studio-selection-grad);
     --studio-selection-grad : linear-gradient(135deg, #FF003C 0%, #FF8C00 100%);
+
+    /* Chart specific tokens for Ivory theme */
+    --chart-grid: rgba(0, 0, 0, 0.08);
+    --chart-text: #64748B;
 }
 
 /* Light mode body/html */

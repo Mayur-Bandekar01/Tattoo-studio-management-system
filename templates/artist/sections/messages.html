@@ -53,6 +53,14 @@
         border-left: 3px solid var(--studio-indigo);
     }
 
+    .ch-item:hover .btn-th-del {
+        opacity: 1 !important;
+    }
+
+    .btn-th-del:hover {
+        color: var(--studio-danger) !important;
+    }
+
     .ch-item.sub {
         padding-left: 2rem;
         background: var(--studio-bg);
@@ -173,27 +181,24 @@
     .ch-bubble {
         max-width: 75%;
         min-width: 60px;
-        padding: 0.85rem 1.25rem;
-        border-radius: 20px;
+        padding: 0.7rem 1.1rem;
+        border-radius: 22px;
         font-size: 0.875rem;
         line-height: 1.6;
         overflow-wrap: break-word;
         word-break: normal;
         white-space: pre-wrap;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
     }
 
     .ch-bubble.mine {
         background: var(--studio-indigo);
         color: #fff;
-        border-bottom-right-radius: 6px;
     }
 
     .ch-bubble.theirs {
         background: var(--studio-card);
         color: var(--studio-text-primary);
         border: 1px solid var(--studio-border);
-        border-bottom-left-radius: 6px;
     }
 
     .ch-time {
@@ -319,13 +324,21 @@
 
             <!-- Unified thread per customer -->
             <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
-                id="athread-{{ customer_id }}-gen">
-                <div class="ch-av">{{ first.customer_name[0] | upper }}</div>
+                id="athread-{{ customer_id }}-gen" style="position: relative;">
+                <div class="ch-av">{{ (first.customer_name or 'C')[0] | upper }}</div>
                 <div class="ch-item-info">
                     <div class="ch-item-name">{{ first.customer_name }}</div>
                     <div class="ch-item-sub">Conversation</div>
                 </div>
-                <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
+                <div class="ch-thread-actions" style="margin-left: auto; display: flex; align-items: center;">
+                    <button class="btn-th-del"
+                        onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
+                        title="Delete Chat"
+                        style="background: none; border: none; color: var(--studio-text-muted); cursor: pointer; opacity: 0; transition: opacity 0.2s; padding: 5px;">
+                        <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
+                    </button>
+                    <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
+                </div>
             </div>
 
             {% endfor %}
@@ -359,6 +372,19 @@
                 </div>
             </div>
             <div class="ch-msgs" id="art-msgs-area"></div>
+            <!-- Selection Toolbar -->
+            <div id="art-sel-bar"
+                style="display:none; align-items:center; justify-content:space-between; padding: 0.6rem 1.25rem; background: rgba(99, 80, 229, 0.08); border-top: 1px solid var(--studio-border); flex-shrink:0;">
+                <span id="art-sel-count" style="font-size:0.8rem; font-weight:700; color:var(--studio-text-primary);">0
+                    selected</span>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="artCancelSelection()"
+                        style="background:none; border:1px solid var(--studio-border); color:var(--studio-text-muted); padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Cancel</button>
+                    <button onclick="artDeleteSelected()"
+                        style="background:var(--studio-danger,#EF4444); border:none; color:#fff; padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;"><i
+                            class="fas fa-trash-alt" style="margin-right:5px;"></i>Delete</button>
+                </div>
+            </div>
             <div class="ch-input-bar">
                 <textarea class="ch-textarea" id="art-chat-input" placeholder="Type a message…" rows="1"
                     onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
@@ -429,6 +455,72 @@
                 });
         };
 
+        /* ── Selection Mode (WhatsApp-style) ─────────────────── */
+        var _artSelectedIds = new Set();
+        window.artToggleSelect = function (el) {
+            var id = el.getAttribute('data-id');
+            if (_artSelectedIds.has(id)) {
+                _artSelectedIds.delete(id);
+                el.classList.remove('ch-selected');
+            } else {
+                _artSelectedIds.add(id);
+                el.classList.add('ch-selected');
+            }
+            var bar = document.getElementById('art-sel-bar');
+            var count = document.getElementById('art-sel-count');
+            if (_artSelectedIds.size > 0) {
+                bar.style.display = 'flex';
+                count.textContent = _artSelectedIds.size + ' selected';
+            } else {
+                bar.style.display = 'none';
+            }
+        };
+
+        window.artCancelSelection = function () {
+            _artSelectedIds.clear();
+            document.querySelectorAll('#art-msgs-area .ch-selected').forEach(function (el) { el.classList.remove('ch-selected'); });
+            document.getElementById('art-sel-bar').style.display = 'none';
+        };
+
+        window.artDeleteSelected = function () {
+            if (_artSelectedIds.size === 0) return;
+            if (!confirm('Delete ' + _artSelectedIds.size + ' message(s) permanently?')) return;
+            var ids = Array.from(_artSelectedIds);
+            var promises = ids.map(function (id) {
+                return fetch('/chat/message/' + id, { method: 'DELETE' }).then(function (r) { return r.json(); });
+            });
+            Promise.all(promises).then(function () {
+                _artSelectedIds.clear();
+                document.getElementById('art-sel-bar').style.display = 'none';
+                artFetchMsgs();
+            });
+        };
+
+        /* ── Delete thread ─────────────────────────────────── */
+        window.artDeleteThread = function (otherId, otherRole) {
+            if (!confirm("Delete this entire conversation? This cannot be undone.")) return;
+            fetch('/chat/thread/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ other_id: otherId, other_role: otherRole })
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.success) {
+                        if (_custId == otherId) {
+                            document.getElementById('art-chat-active').style.display = 'none';
+                            document.getElementById('art-chat-empty').style.display = 'flex';
+                            clearInterval(_poll);
+                            _custId = null;
+                        }
+                        artFetchMsgs();
+                    } else {
+                        alert(data.error || "Failed to delete thread");
+                    }
+                })
+                .catch(function (err) { console.error("Thread delete failed:", err); });
+        };
+
         /* ── Fetch messages ─────────────────────────────────── */
         function artFetchMsgs() {
             if (!_custId) return;
@@ -446,17 +538,15 @@
                     } else {
                         area.innerHTML = data.messages.map(function (m) {
                             var cls = m.is_mine ? 'mine' : 'theirs';
-                            var delBtn = m.is_mine ? '<button class="ch-del-btn" onclick="artDeleteMsg(' + m.message_id + ')" title="Delete"><i class="fas fa-trash-alt"></i></button>' : '';
-                            var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + _custName[0].toUpperCase() + '</div>' : '';
+                            var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + (_custName[0] || 'C').toUpperCase() + '</div>' : '';
 
-                            return '<div class="ch-row ' + cls + '" style="display:flex; align-items:flex-start;">' +
+                            return '<div class="ch-row ' + cls + ' ch-selectable" data-id="' + m.message_id + '" onclick="artToggleSelect(this)" style="display:flex; align-items:flex-start;">' +
                                 avatar +
-                                '<div style="flex:1; display:flex; flex-direction:column; align-items:' + (m.is_mine ? 'flex-end' : 'flex-start') + ';">' +
-                                '<div style="display:flex; align-items:flex-end; gap:8px;">' +
-                                (m.is_mine ? delBtn : '') +
-                                '<div class="ch-bubble ' + cls + '">' + escHtml(m.content) + '</div>' +
+                                '<div class="ch-bubble-wrap">' +
+                                '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
+                                '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
                                 '</div>' +
-                                '<div class="ch-time">' + escHtml(m.sent_at) + '</div></div></div>';
+                                '</div>';
                         }).join('');
                     }
 

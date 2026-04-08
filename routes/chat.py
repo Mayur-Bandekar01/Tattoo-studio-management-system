@@ -142,13 +142,15 @@ def chat_delete_msg(message_id):
     conn   = get_db()
     cursor = conn.cursor()
     
-    # Only allow deleting your own messages
+    # Allow deleting if you are sender OR receiver
     cursor.execute("""
         DELETE FROM messages 
         WHERE message_id = %s 
-          AND sender_id = %s 
-          AND sender_role = %s
-    """, (message_id, str(session['user_id']), role))
+          AND (
+            (sender_id = %s AND sender_role = %s)
+            OR (receiver_id = %s AND receiver_role = %s)
+          )
+    """, (message_id, str(session['user_id']), role, str(session['user_id']), role))
     
     deleted = cursor.rowcount
     conn.commit()
@@ -158,3 +160,34 @@ def chat_delete_msg(message_id):
         return jsonify({'success': True})
     else:
         return jsonify({'error': 'Message not found or unauthorized'}), 404
+# ── DELETE a whole thread ─────────────────────────────────────
+@chat_bp.route('/chat/thread/delete', methods=['POST'])
+def chat_delete_thread():
+    role = session.get('role')
+    if role not in ('customer', 'artist'):
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data       = request.get_json(silent=True) or {}
+    other_id   = str(data.get('other_id', '')).strip()
+    other_role = data.get('other_role', '').strip()
+
+    if not other_id or not other_role:
+        return jsonify({'error': 'Invalid params'}), 400
+
+    user_id = str(session['user_id'])
+    conn    = get_db()
+    cursor  = conn.cursor()
+
+    # Delete all messages in the thread
+    cursor.execute("""
+        DELETE FROM messages
+        WHERE (
+                (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+             OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+          )
+    """, (user_id, role, other_id, other_role,
+          other_id, other_role, user_id, role))
+
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})

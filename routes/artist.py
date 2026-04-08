@@ -1,4 +1,5 @@
 # routes/artist.py
+# Routes for Tattoo and Sketch Artists (Dashboard, Inventory, Gallery).
 import os
 import time
 from werkzeug.utils import secure_filename
@@ -10,12 +11,15 @@ from utils.validators import allowed_file, validate_image_size
 
 artist_bp = Blueprint('artist', __name__)
 
+# ── ARTIST HELPERS ────────────────────────────────────────────
+
 def get_artist_type(specialisation):
     spec = (specialisation or '').lower()
     art_keywords = ['art', 'sketch', 'paint', 'digital', 'illustrat',
                     'watercolor', 'watercolour', 'neon', 'drawing']
     return 'art' if any(kw in spec for kw in art_keywords) else 'tattoo'
 
+# ── ARTIST DASHBOARD ROUTE ─────────────────────────────────────
 @artist_bp.route('/artist/dashboard')
 @role_required('artist')
 def artist_dashboard():
@@ -89,6 +93,7 @@ def artist_dashboard():
     )
 
 
+# ── APPOINTMENT ACTIONS (Approve, Reject, Done) ───────────────
 @artist_bp.route('/artist/approve/<int:appointment_id>', methods=['POST'])
 @role_required('artist')
 def artist_approve(appointment_id):
@@ -149,6 +154,7 @@ def artist_done(appointment_id):
     return redirect('/artist/dashboard')
 
 
+# ── INVENTORY MANAGEMENT (Add, Update, Delete) ────────────────
 @artist_bp.route('/artist/inventory/add', methods=['POST'])
 @role_required('artist')
 def artist_inventory_add():
@@ -273,6 +279,7 @@ def artist_inventory_delete(item_id):
     return redirect('/artist/dashboard')
 
 
+# ── USAGE LOGGING (Tracking supplies used in sessions) ────────
 @artist_bp.route('/artist/log-usage', methods=['POST'])
 @role_required('artist')
 def artist_log_usage():
@@ -329,6 +336,7 @@ def artist_log_usage():
     return redirect('/artist/dashboard')
 
 
+# ── ARTIST ACCOUNT & GALLERY ─────────────────────────────────
 @artist_bp.route('/artist/change-password', methods=['POST'])
 @role_required('artist')
 def artist_change_password():

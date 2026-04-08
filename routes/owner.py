@@ -1,4 +1,5 @@
 # routes/owner.py
+# Administrative routes for the studio owner (Owner Dashboard, Finance, Artist Management).
 import os
 import json
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app
@@ -6,6 +7,8 @@ from db import get_db
 from utils.decorators import role_required
 
 owner_bp = Blueprint('owner', __name__)
+
+# ── DASHBOARD STATISTICS HELPERS ──────────────────────────────
 
 def get_dashboard_stats(cursor):
     """Fetch aggregated statistics for the owner dashboard."""
@@ -32,6 +35,8 @@ def get_dashboard_stats(cursor):
         'returning_customers': returning_customers,
         'monthly_revenue': monthly_revenue
     }
+
+# ── PERFORMANCE & ANALYTICS HELPERS ──────────────────────────
 
 def get_performance_data(cursor):
     """Fetch performance and trend data."""
@@ -77,10 +82,11 @@ def get_performance_data(cursor):
         'concept_trends':     concept_trends
     }
 
+# ── MAIN OWNER DASHBOARD ROUTE ───────────────────────────────
 @owner_bp.route('/owner/dashboard')
 @role_required('owner')
 def owner_dashboard():
-
+    """Aggregates all studio data into one main control panel for the owner."""
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
 
@@ -158,6 +164,7 @@ def owner_dashboard():
         monthly_revenue      = stats['monthly_revenue']
     )
 
+# ── APPOINTMENT ACTIONS ──────────────────────────────────────
 @owner_bp.route('/owner/cancel/<int:appointment_id>', methods=['POST'])
 def owner_cancel(appointment_id):
     if session.get('role') != 'owner':
@@ -173,6 +180,7 @@ def owner_cancel(appointment_id):
     flash("Appointment cancelled successfully.", "success")
     return redirect('/owner/dashboard')
 
+# ── ARTIST MANAGEMENT (Add/Delete/List) ──────────────────────
 @owner_bp.route('/owner/artist/add', methods=['POST'])
 def owner_artist_add():
     if session.get('role') != 'owner':
@@ -234,6 +242,7 @@ def owner_artist_delete(artist_id):
     flash(f"Artist '{artist_name}' and all their gallery images have been removed.", "success")
     return redirect('/owner/dashboard')
 
+# ── INVOICE GENERATION ────────────────────────────────────────
 @owner_bp.route('/owner/invoice/generate', methods=['POST'])
 def owner_invoice_generate():
     if session.get('role') != 'owner':
@@ -271,6 +280,7 @@ def owner_invoice_generate():
         conn.close()
     return redirect('/owner/dashboard')
 
+# ── PAYMENT PROCESSING (Record, Approve, Reject) ──────────────
 @owner_bp.route('/owner/payment/record', methods=['POST'])
 def owner_payment_record():
     if session.get('role') != 'owner':
@@ -384,6 +394,7 @@ def owner_payment_reject(payment_id):
     flash("Payment rejected. Invoice has been returned to Pending.", "success")
     return redirect('/owner/dashboard')
 
+# ── OWNER ACCOUNT SETTINGS ───────────────────────────────────
 @owner_bp.route('/owner/change-password', methods=['POST'])
 def owner_change_password():
     if session.get('role') != 'owner':
@@ -426,6 +437,7 @@ def owner_change_password():
     flash("Password updated successfully!", "success")
     return redirect('/owner/dashboard')
 
+# ── INVOICE VIEWER (Public/Shared) ───────────────────────────
 @owner_bp.route('/invoice/view/<int:invoice_id>')
 def invoice_view(invoice_id):
     role = session.get('role')

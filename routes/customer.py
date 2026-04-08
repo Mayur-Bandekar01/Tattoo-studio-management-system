@@ -1,4 +1,5 @@
 # routes/customer.py
+# Routes for Customers (Dashboard, Booking, Payments, Gallery Likes).
 import os
 import time
 import json
@@ -14,9 +15,11 @@ customer_bp = Blueprint('customer', __name__)
 
 import secrets
 
+# ── CUSTOMER DASHBOARD ROUTE ──────────────────────────────────
 @customer_bp.route('/customer/dashboard')
 @role_required('customer')
 def customer_dashboard():
+    """Main panel where customers view their bookings, invoices, and the gallery."""
 
     # Generate CSRF token for the session if it doesn't exist
     if 'csrf_token' not in session:
@@ -85,9 +88,11 @@ def customer_dashboard():
         csrf_token         = session.get('csrf_token')
     )
 
+# ── BOOKING SYSTEM (Submit a new appointment) ────────────────
 @customer_bp.route('/customer/book', methods=['POST'])
 @role_required('customer')
 def customer_book():
+    """Handles the sophisticated booking form, including image uploads and logic based on service type."""
 
     # Verify CSRF Token
     form_csrf = request.form.get('csrf_token')
@@ -235,6 +240,7 @@ def customer_book():
 
     return redirect('/customer/dashboard')
 
+# ── APPOINTMENT ACTIONS (Cancel or Delete) ────────────────────
 @customer_bp.route('/customer/cancel/<int:appointment_id>', methods=['POST'])
 @role_required('customer')
 def customer_cancel(appointment_id):
@@ -285,6 +291,7 @@ def customer_delete(appointment_id):
     flash("Appointment deleted successfully.", "success")
     return redirect('/customer/dashboard')
 
+# ── BILLING & PAYMENTS (Submit payment info for review) ──────
 @customer_bp.route('/customer/pay/<int:invoice_id>', methods=['POST'])
 @role_required('customer')
 def customer_pay(invoice_id):
@@ -371,6 +378,7 @@ def customer_pay(invoice_id):
     )
     return redirect('/customer/dashboard')
 
+# ── CUSTOMER ACCOUNT & GALLERY LIKES ─────────────────────────
 @customer_bp.route('/customer/change-password', methods=['POST'])
 @role_required('customer')
 def customer_change_password():

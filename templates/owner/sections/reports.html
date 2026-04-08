@@ -180,10 +180,10 @@
     .r-pills {
         display: flex;
         gap: 4px;
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--studio-border-light);
         border-radius: 12px;
         padding: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--studio-border-light);
     }
 
     .r-pill {
@@ -289,7 +289,7 @@
         display: flex;
         gap: 1.75rem;
         padding: 1.25rem 0 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid var(--studio-border-light);
         margin-top: 1rem;
     }
 
@@ -320,8 +320,8 @@
         gap: 12px;
         padding: 12px 14px;
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid var(--studio-border-light);
+        background: var(--studio-bg-hover);
         transition: all .2s ease;
     }
 
@@ -662,7 +662,7 @@
         <div class="r-donut-wrap" style="height:210px;position:relative;">
             <canvas id="rc-status"></canvas>
             <div class="r-donut-center">
-                <div class="r-donut-center-val" id="status-center-val">0</div>
+                <div class="r-donut-center-val" id="status-center-val" style="color:var(--studio-text-primary);">0</div>
                 <div class="r-donut-center-lbl">Total</div>
             </div>
         </div>
@@ -749,8 +749,9 @@
 
         function updateChartDefaults() {
             const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
+            const style = getComputedStyle(document.documentElement);
 
-            const textColor = isLight ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.45)';
+            const textColor = isLight ? '#334155' : 'rgba(255, 255, 255, 0.45)';
             const tooltipBg = isLight ? 'rgba(255, 255, 255, 0.98)' : 'rgba(10, 10, 10, 0.96)';
             const tooltipText = isLight ? '#0F172A' : '#FFFFFF';
             const tooltipBody = isLight ? '#475569' : '#CBD5E1';
@@ -813,10 +814,14 @@
             const circ = 2 * Math.PI * 16;
             const offset = circ - (p / 100) * circ;
             const ring = document.getElementById('kv-goal-ring');
+
+            const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
+            const ringBg = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
+
             if (ring) {
                 ring.innerHTML = `
                 <svg width="40" height="40" viewBox="0 0 40 40">
-                    <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="4"/>
+                    <circle cx="20" cy="20" r="16" fill="none" stroke="${ringBg}" stroke-width="4"/>
                     <circle cx="20" cy="20" r="16" fill="none" stroke="var(--c-cyan)" stroke-width="4"
                         stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
                         transform="rotate(-90 20 20)"/>
@@ -883,11 +888,13 @@
             document.getElementById('rs-high').textContent = fmt(Math.max(...vals));
             document.getElementById('rs-pts').textContent = nonZ;
 
+            const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
+
             /* Colour each bar: max = solid red, rest = red-orange at low opacity */
             const bgColors = vals.map(v => {
-                if (v === 0) return 'rgba(255, 255, 255, 0.03)';
+                if (v === 0) return isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.03)';
                 if (v === maxVal) return C.indigo;
-                return 'rgba(255, 0, 60, 0.22)';
+                return isLight ? 'rgba(255, 0, 60, 0.35)' : 'rgba(255, 0, 60, 0.22)';
             });
 
             const ctx = document.getElementById('rc-revenue').getContext('2d');
@@ -919,6 +926,24 @@
                             }
                         }
                     },
+                    /* Visible Values Plugin */
+                    plugins: [{
+                        id: 'datalabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx, data } = chart;
+                            ctx.save();
+                            data.datasets[0].data.forEach((datapoint, i) => {
+                                if (datapoint === 0) return;
+                                const { x, y } = chart.getDatasetMeta(0).data[i].tooltipPosition();
+                                ctx.font = 'bold 9px Outfit, sans-serif';
+                                ctx.fillStyle = isLight ? '#0F172A' : '#FFFFFF';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'bottom';
+                                ctx.fillText(fmt(datapoint), x, y - 5);
+                            });
+                            ctx.restore();
+                        }
+                    }],
                     scales: {
                         x: {
                             grid: { display: false },
@@ -1057,6 +1082,24 @@
                             }
                         }
                     },
+                    /* Visible Values Plugin */
+                    plugins: [{
+                        id: 'datalabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx, data } = chart;
+                            ctx.save();
+                            data.datasets[0].data.forEach((datapoint, i) => {
+                                if (datapoint === 0) return;
+                                const { x, y, height } = chart.getDatasetMeta(0).data[i];
+                                ctx.font = 'bold 9px Outfit, sans-serif';
+                                ctx.fillStyle = isLight ? '#0F172A' : '#FFFFFF';
+                                ctx.textAlign = 'left';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(fmt(datapoint), x + 5, y);
+                            });
+                            ctx.restore();
+                        }
+                    }],
                     scales: {
                         x: {
                             border: { display: false },
@@ -1178,7 +1221,7 @@
                         {
                             label: 'All Sessions',
                             data: total,
-                            backgroundColor: 'rgba(96, 165, 250, 0.12)',
+                            backgroundColor: isLight ? 'rgba(59, 130, 246, 0.18)' : 'rgba(96, 165, 250, 0.12)',
                             borderRadius: { topLeft: 7, topRight: 7 },
                             maxBarThickness: 40,
                         }
@@ -1198,7 +1241,7 @@
                                 borderRadius: 5,
                                 useBorderRadius: true,
                                 font: { size: 10, weight: '700' },
-                                color: 'var(--studio-text-primary)',
+                                color: isLight ? '#0F172A' : '#FFFFFF',
                                 padding: 12,
                             }
                         },
@@ -1208,6 +1251,25 @@
                             }
                         }
                     },
+                    /* Visible Values Plugin */
+                    plugins: [{
+                        id: 'datalabels',
+                        afterDatasetsDraw(chart) {
+                            const { ctx, data } = chart;
+                            ctx.save();
+                            // Only show for the first dataset (Completed)
+                            chart.getDatasetMeta(0).data.forEach((bar, i) => {
+                                const val = data.datasets[0].data[i];
+                                if (val === 0) return;
+                                ctx.font = 'bold 9px Outfit, sans-serif';
+                                ctx.fillStyle = isLight ? '#0F172A' : '#FFFFFF';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'bottom';
+                                ctx.fillText(val, bar.x, bar.y - 5);
+                            });
+                            ctx.restore();
+                        }
+                    }],
                     scales: {
                         x: {
                             grid: { display: false },

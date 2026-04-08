@@ -1,9 +1,12 @@
+# app.py
+# Main configuration for the Tattoo Studio app.
 import os
 from datetime import timedelta
 from flask import Flask, redirect, flash
 from flask_mail import Mail
 
 # ── APP SETUP ────────────────────────────────────────────────
+# Initialize the Flask application and set secret keys/session times.
 app = Flask(__name__)
 app.secret_key = "dragon_tattoos_secret_2025"
 app.permanent_session_lifetime = timedelta(hours=2)
@@ -31,6 +34,9 @@ def add_no_cache(response):
     response.headers["Expires"]       = "0"
     return response
 
+# ── DATABASE LIFECYCLE ──
+# This ensures that whenever a request is finished (done), 
+# the database connection is closed properly to save memory.
 @app.teardown_appcontext
 def close_db(error):
     from flask import g
