@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Services</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)',
+                            text: 'var(--text)',
+                            muted: 'var(--muted)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--border)',
+                            gold: 'var(--accent, #c8a040)',
+                            goldLight: '#e0b84a'
+                        }
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: #000;
+            color: #f5f5f7;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            right: 50%;
+            height: 1px;
+            background: #c8a040;
+            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-link:hover {
+            color: var(--accent, #c8a040);
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+            right: 0;
+        }
+
+        .nav-link.active {
+            color: #f5f5f7;
+        }
+
+        .nav-link.active::after {
+            left: 0;
+            right: 0;
+            background: #c8a040;
+            height: 2px;
+        }
+
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #86868b;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #86868b;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
+
+        .mobile-menu-divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(200, 160, 64, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
+
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
+        }
+
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #f5f5f7, #c8a040, #f5f5f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #86868b;
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            border-color: rgba(200, 160, 64, 0.4);
+            color: #f5f5f7;
+        }
+
+        .filter-btn.active {
+            background: #c8a040;
+            border-color: #c8a040;
+            color: #000;
+            box-shadow: 0 4px 15px rgba(200, 160, 64, 0.3);
+        }
+
+        .stat-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #86868b;
+        }
+
+        .pain-indicator {
+            height: 4px;
+            width: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        .pain-fill {
+            height: 100%;
+            background: #c8a040;
+        }
+
+        html.light-mode .filter-btn {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #4b5563;
+        }
+
+        html.light-mode .filter-btn.active {
+            background: #f97316;
+            border-color: #f97316;
+            color: #fff;
+        }
+
+        html.light-mode .text-gradient {
+            background: linear-gradient(to right, #1f2937, #f97316, #1f2937);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.3s;
+        }
+
+        .service-card {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 1.75rem;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .service-card:hover {
+            background: #2a2a2d;
+            transform: translateY(-6px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(200, 160, 64, 0.15);
+        }
+
+        .svc-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .service-card:hover .svc-icon {
+            transform: scale(1.1);
+            background: rgba(200, 160, 64, 0.18);
+        }
+
+        .price-badge {
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.2);
+            border-radius: 8px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #c8a040;
+        }
+
+        .process-step {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 1.5rem;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .process-step:hover {
+            background: #2a2a2d;
+            transform: translateY(-4px);
+        }
+
+        .step-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.3);
+            color: #c8a040;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        footer {
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-link {
+            color: #86868b;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #c8a040;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8a040
+        }
+
+        /* ── LIGHT THEME (White + Orange Energetic) ── */
+        body.light-mode,
+        html.light-mode body {
+            --bg: #ffffff;
+            --bg-grad: rgba(249, 115, 22, 0.05);
+            --sidebar-bg: rgba(255, 255, 255, 0.96);
+            --topbar-bg: rgba(255, 255, 255, 0.96);
+            --card-bg: #fffaf5;
+            --card-hover: #ffedd5;
+            --border: #fdba74;
+            --border-h: #f97316;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #f97316;
+            --nav-muted: #9ca3af;
+            --nav-item: #4b5563;
+            --nav-hover: #f97316;
+            --shadow: rgba(249, 115, 22, 0.1);
+
+            background-color: var(--bg) !important;
+            color: var(--text) !important;
+        }
+
+        html.light-mode .navbar,
+        html.light-mode nav {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .nav-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .nav-link:hover,
+        html.light-mode .nav-link.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .mobile-menu {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        html.light-mode .mobile-menu a {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .mobile-menu a:hover,
+        html.light-mode .mobile-menu a.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .hero-section,
+        html.light-mode .page-hero,
+        html.light-mode section,
+        html.light-mode .section-dark,
+        html.light-mode .section-surface {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode .feature-card,
+        html.light-mode .testi-card,
+        html.light-mode .value-card,
+        html.light-mode .artist-card,
+        html.light-mode .stat-card,
+        html.light-mode .service-card,
+        html.light-mode .process-step {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 4px 20px var(--shadow) !important;
+        }
+
+        html.light-mode .feature-card:hover,
+        html.light-mode .testi-card:hover,
+        html.light-mode .value-card:hover,
+        html.light-mode .artist-card:hover,
+        html.light-mode .stat-card:hover,
+        html.light-mode .service-card:hover,
+        html.light-mode .process-step:hover {
+            background: var(--card-hover) !important;
+            border-color: var(--border-h) !important;
+        }
+
+        html.light-mode .testi-quote,
+        html.light-mode .testi-detail,
+        html.light-mode .footer-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .testi-name,
+        html.light-mode .footer-brand {
+            color: var(--text) !important;
+        }
+
+        html.light-mode footer,
+        html.light-mode nav~* footer {
+            background: #fffaf5 !important;
+            border-top: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .btn-outline {
+            border-color: var(--border) !important;
+            color: var(--text) !important;
+            background: rgba(249, 115, 22, 0.05) !important;
+        }
+
+        html.light-mode .burger span {
+            background: var(--muted) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-track {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-thumb {
+            background: var(--accent) !important;
+        }
+
+        /* global transition */
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a href="/">Home</a><a href="/about">About</a><a href="/services" class="active">Services</a>
+    <a href="/gallery">Gallery</a><a href="/contact">Contact</a>
+    <div class="mobile-menu-divider"></div>
+    <div class="flex gap-4">
+        <a href="/login"
+            style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+        <a href="/register"
+            style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                class="w-8 h-8 rounded-full object-cover">
+            <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/services" class="nav-link active">Services</a>
+            <a href="/gallery" class="nav-link">Gallery</a>
+            <a href="/contact" class="nav-link">Contact</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="hidden md:flex gap-3">
+                <a href="/login"
+                    class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                <a href="/register"
+                    class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+            </div>
+            <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
+                aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </div>
+</nav>
+
+<div class="page-hero text-center">
+    <div class="page-hero-grid"></div>
+    <div class="relative z-10">
+        <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium reveal">Excellence in Ink</p>
+        <h1
+            class="font-display text-5xl md:text-7xl text-apple-text mb-4 tracking-tight text-gradient reveal reveal-d1">
+            Masterful Services</h1>
+        <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed reveal reveal-d2">
+            Blending ancient tradition with modern precision. Every tattoo is a masterpiece crafted with surgical skill
+            and artistic vision.
+        </p>
+    </div>
+</div>
+
+<!-- SERVICES GRID -->
+<section class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12 reveal">
+            <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">Tattoo Styles</p>
+            <h2 class="font-display text-4xl text-apple-text tracking-tight mb-8">Curated Artistry</h2>
+
+            <!-- Category Filter -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <button class="filter-btn active" data-filter="all">All Styles</button>
+                <button class="filter-btn" data-filter="modern">Modern & Abstract</button>
+                <button class="filter-btn" data-filter="traditional">Traditional</button>
+                <button class="filter-btn" data-filter="specialized">Specialized</button>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-5">
+            <div class="service-card reveal reveal-d1" data-category="modern">
+                <div class="svc-icon"><i class="fa-solid fa-square-full"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Blackwork</h3>
+                    <span class="price-badge">From ₹2,000</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Bold black ink with strong contrast,
+                    geometric shapes and intricate patterns. Perfect for statement pieces.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 2-3w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 70%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Geometric</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Tribal</span>
+                </div>
+            </div>
+            <div class="service-card reveal reveal-d2" data-category="modern">
+                <div class="svc-icon"><i class="fa-solid fa-feather"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Fine Line</h3>
+                    <span class="price-badge">From ₹1,500</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Delicate and precise thin-line tattoos for
+                    a minimalist and elegant aesthetic. Great for subtle designs.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 1-2w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 30%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Minimal</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Floral</span>
+                </div>
+            </div>
+            <div class="service-card reveal reveal-d3" data-category="specialized">
+                <div class="svc-icon"><i class="fa-solid fa-camera"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Realism</h3>
+                    <span class="price-badge">From ₹5,000</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Photorealistic portraits and nature designs
+                    that look like actual photographs. Our most detailed work.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 3-4w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 85%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Portraits</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Animals</span>
+                </div>
+            </div>
+            <div class="service-card reveal reveal-d1" data-category="traditional">
+                <div class="svc-icon"><i class="fa-solid fa-anchor"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Traditional</h3>
+                    <span class="price-badge">From ₹2,500</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Classic bold outlines with solid colours
+                    inspired by old-school American traditional tattoo style.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 2-3w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 60%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Old
+                        School</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Neo-Trad</span>
+                </div>
+            </div>
+            <div class="service-card reveal reveal-d2" data-category="modern">
+                <div class="svc-icon"><i class="fa-solid fa-droplet"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Watercolour</h3>
+                    <span class="price-badge">From ₹3,500</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Vibrant flowing designs that mimic the look
+                    of watercolour paintings. Colourful and expressive.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 2w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 45%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Splash</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Abstract</span>
+                </div>
+            </div>
+            <div class="service-card reveal reveal-d3" data-category="specialized">
+                <div class="svc-icon"><i class="fa-solid fa-rotate"></i></div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="font-semibold text-apple-text text-sm">Touch-up & Cover</h3>
+                    <span class="price-badge">From ₹1,000</span>
+                </div>
+                <p class="text-apple-muted text-xs leading-relaxed mb-4">Refresh faded tattoos or cover old designs
+                    with fresh new artwork. Breathe new life into old ink.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="stat-badge">Healing: 1-3w</span>
+                        <span class="stat-badge flex items-center">
+                            Pain:
+                            <span class="pain-indicator"><span class="pain-fill" style="width: 50%"></span></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Touch-up</span>
+                    <span
+                        class="px-2 py-0.5 rounded-full text-[10px] text-apple-muted border border-apple-border">Cover-up</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING & FAQ -->
+<section class="py-24 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-16">
+            <div class="reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">Transparency</p>
+                <h2 class="font-display text-3xl text-apple-text mb-6">Pricing Logic</h2>
+                <div class="space-y-6">
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+                        <h4 class="text-apple-text font-semibold mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-apple-gold"></i> Hourly Rate
+                        </h4>
+                        <p class="text-apple-muted text-xs leading-relaxed">
+                            Most custom projects are billed at <span class="text-apple-text font-bold">₹1,500 - ₹3,000
+                                per hour</span>. This ensures you only pay for the time spent on your unique art.
+                        </p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+                        <h4 class="text-apple-text font-semibold mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-apple-gold"></i> Design Complexity
+                        </h4>
+                        <p class="text-apple-muted text-xs leading-relaxed">
+                            Intricate realism or detailed geometry may require a higher base price due to the
+                            preparation and technical mastery involved.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal reveal-d1">
+                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">Common Queries</p>
+                <h2 class="font-display text-3xl text-apple-text mb-6">Service FAQ</h2>
+                <div class="space-y-4">
+                    <details
+                        class="group p-4 rounded-xl border border-white/5 hover:border-apple-gold/30 transition-all cursor-pointer">
+                        <summary
+                            class="list-none flex justify-between items-center text-sm font-medium text-apple-text">
+                            Do you do cover-ups of old tattoos?
+                            <i class="fa-solid fa-plus group-open:rotate-45 transition-transform text-apple-muted"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-apple-muted leading-relaxed">
+                            Yes, we specialize in breathing new life into old ink. Cover-ups require a consultation to
+                            assess the existing artwork and design a viable solution.
+                        </p>
+                    </details>
+                    <details
+                        class="group p-4 rounded-xl border border-white/5 hover:border-apple-gold/30 transition-all cursor-pointer">
+                        <summary
+                            class="list-none flex justify-between items-center text-sm font-medium text-apple-text">
+                            Is there a minimum charge?
+                            <i class="fa-solid fa-plus group-open:rotate-45 transition-transform text-apple-muted"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-apple-muted leading-relaxed">
+                            Our studio minimum is <span class="text-apple-text font-bold">₹1,000</span>. This covers
+                            materials, sterilization, and basic setup for even the smallest designs.
+                        </p>
+                    </details>
+                    <details
+                        class="group p-4 rounded-xl border border-white/5 hover:border-apple-gold/30 transition-all cursor-pointer">
+                        <summary
+                            class="list-none flex justify-between items-center text-sm font-medium text-apple-text">
+                            How should I prepare for my session?
+                            <i class="fa-solid fa-plus group-open:rotate-45 transition-transform text-apple-muted"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-apple-muted leading-relaxed">
+                            Stay hydrated, get plenty of sleep, and eat a good meal before arriving. Avoid alcohol for
+                            24 hours prior to your appointment.
+                        </p>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="py-24 px-6" style="background:#000;">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16 reveal">
+            <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">The Process</p>
+            <h2 class="font-display text-4xl text-apple-text tracking-tight">How It Works</h2>
+        </div>
+        <div class="grid md:grid-cols-4 gap-5">
+            <div class="process-step reveal reveal-d1">
+                <div class="step-num">1</div>
+                <h4 class="font-semibold text-apple-text text-sm mb-2">Book Appointment</h4>
+                <p class="text-apple-muted text-xs leading-relaxed">Register online and book your preferred date,
+                    time and artist from your dashboard.</p>
+            </div>
+            <div class="process-step reveal reveal-d2">
+                <div class="step-num">2</div>
+                <h4 class="font-semibold text-apple-text text-sm mb-2">Consultation</h4>
+                <p class="text-apple-muted text-xs leading-relaxed">Discuss your design idea with the artist. Share
+                    references and finalise the concept.</p>
+            </div>
+            <div class="process-step reveal reveal-d3">
+                <div class="step-num">3</div>
+                <h4 class="font-semibold text-apple-text text-sm mb-2">Tattoo Session</h4>
+                <p class="text-apple-muted text-xs leading-relaxed">Your artist creates the tattoo with precision.
+                    Duration depends on design complexity.</p>
+            </div>
+            <div class="process-step reveal" style="transition-delay:0.4s">
+                <div class="step-num">4</div>
+                <h4 class="font-semibold text-apple-text text-sm mb-2">Aftercare</h4>
+                <p class="text-apple-muted text-xs leading-relaxed">Full aftercare instructions to ensure proper
+                    healing and long-lasting colour.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section py-24 px-6">
+    <div class="max-w-2xl mx-auto text-center reveal">
+        <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Ready to Book?</h2>
+        <p class="text-apple-muted text-sm mb-10 leading-relaxed">Create your account and book your appointment
+            online in minutes.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/register"
+                class="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl text-sm uppercase tracking-widest font-bold bg-apple-gold text-black hover:bg-apple-goldLight transition-all hover:-translate-y-1 active:scale-97">
+                <i class="fa-solid fa-user-plus mr-2"></i>Create Account
+            </a>
+            <a href="/contact"
+                class="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl text-sm uppercase tracking-widest font-semibold border border-apple-border text-apple-text hover:border-apple-gold hover:text-apple-gold transition-all hover:-translate-y-1">
+                <i class="fa-solid fa-phone mr-2"></i>Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer class="py-8 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                class="w-7 h-7 rounded-full object-cover opacity-80">
+            <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
+                Studio</span>
+        </div>
+        <div class="flex gap-6">
+            <a href="/" class="footer-link">Home</a>
+            <a href="/about" class="footer-link">About</a>
+            <a href="/services" class="footer-link">Services</a>
+            <a href="/gallery" class="footer-link">Gallery</a>
+            <a href="/contact" class="footer-link">Contact</a>
+        </div>
+        <p class="text-apple-muted/40 text-xs">© 2025 Dragon Tattoos Studio</p>
+    </div>
+</footer>
+
+<script>
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const btn = document.getElementById('burgerBtn');
+        menu.classList.toggle('open'); btn.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    }
+    document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+
+    // Category Filter Logic
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+
+            // Filter cards
+            serviceCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+
+                if (filter === 'all' || filter === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0) scale(1)';
+                    }, 10);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px) scale(0.95)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+</script>
+</body>
+
+</html>

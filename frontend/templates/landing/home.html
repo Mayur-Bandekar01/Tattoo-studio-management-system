@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Premium Tattoo Studio</title>
+    <meta name="description"
+        content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)',
+                            text: 'var(--text)',
+                            muted: 'var(--muted)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--border)',
+                            accent: 'var(--accent, #c8a040)',
+                            gold: '#c8a040',
+                            goldLt: '#e0b84a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg: #030303;
+            --text: #f5f5f7;
+            --muted: #86868b;
+            --accent: #c8a040;
+            --border: rgba(255, 255, 255, 0.06);
+            --card-bg: rgba(29, 29, 31, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #030303;
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* ── NAVBAR (Standardized) ── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(3, 3, 3, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            right: 50%;
+            height: 1px;
+            background: var(--accent);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+            right: 0;
+        }
+
+        .nav-link.active {
+            color: var(--text);
+        }
+
+        .nav-link.active::after {
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        /* ── HERO & SECTIONS ── */
+        .hero-section {
+            background: var(--hero-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 1.5rem 4rem;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.3s;
+        }
+
+        /* ── BUTTONS & CARDS ── */
+        .btn-gold {
+            background: var(--accent);
+            color: #000;
+            padding: 0.8rem 2rem;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-gold:hover {
+            background: #e0b84a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(200, 160, 64, 0.2);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.8rem 2rem;
+            border-radius: 99px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .pill-tag {
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.15);
+            color: var(--accent);
+            padding: 0.4rem 1.2rem;
+            border-radius: 99px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bento-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .bento-card:hover {
+            background: rgba(42, 42, 45, 0.8);
+            border-color: rgba(200, 160, 64, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .testi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 2rem;
+            transition: all 0.4s;
+        }
+
+        .testi-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(200, 160, 64, 0.2);
+        }
+
+        .testi-stars {
+            color: var(--accent);
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .testi-quote {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+            opacity: 0.9;
+        }
+
+        .testi-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .testi-detail {
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--muted);
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(3, 3, 3, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .mobile-menu a.active,
+        .mobile-menu a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding-top: 8rem;
+            }
+
+            .hero-title {
+                font-size: 3.5rem !important;
+            }
+        }
+    </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</head>
+
+<body>
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/" class="active">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/gallery">Gallery</a>
+        <a href="/contact">Contact</a>
+        <div style="width:40px;height:1px;background:rgba(200,160,64,0.3)"></div>
+        <div class="flex gap-4">
+            <a href="/login"
+                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;">Login</a>
+            <a href="/register"
+                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;">Register</a>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
+                    class="w-7 h-7 rounded-full object-cover">
+                <span class="font-display text-text text-[10px] tracking-[0.3em] uppercase opacity-90">Dragon
+                    Tattoos</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="/login"
+                        class="px-4 py-1.5 text-xs font-medium text-muted border border-white/10 rounded-full hover:text-text hover:border-white/20 transition-all">Login</a>
+                    <a href="/register"
+                        class="px-4 py-1.5 text-xs font-semibold bg-accent text-black rounded-full hover:bg-goldLt transition-all">Register</a>
+                </div>
+                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─────────────── HERO ─────────────── -->
+    <section class="hero-section">
+        <div class="hero-grid"></div>
+        <div class="relative z-10 max-w-4xl mx-auto text-center reveal">
+
+            <!-- Logo ring -->
+            <div class="hero-logo flex justify-center mb-8">
+                <div class="relative">
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                            class="w-full h-full object-cover rounded-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pill badge -->
+            <div class="hero-badge flex justify-center mb-7">
+                <div class="pill-tag">
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+                    Premium Tattoo Studio · Est. 2020
+                </div>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="font-display text-6xl md:text-8xl text-text tracking-tight leading-none mb-5">
+                DRAGON<br>
+                <span
+                    style="background:linear-gradient(135deg,#c8a040,#e8c870,#c8a040);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TATTOOS</span>
+            </h1>
+
+            <p class="text-muted text-xl md:text-2xl font-light tracking-wide mb-3">
+                Where Art Meets Skin
+            </p>
+            <p class="text-muted/70 text-sm mb-10 max-w-xl mx-auto leading-relaxed">
+                Best custom tattoo studio for collectors, enthusiasts, and first-timers seeking uncompromising quality
+                and precision ink.
+            </p>
+
+            <!-- CTAs -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <a href="/register" class="btn-gold">
+                    <i class="fa-solid fa-calendar-plus"></i> Book Consultation
+                </a>
+                <a href="/gallery" class="btn-outline">
+                    View Portfolio <i class="fa-solid fa-play text-xs ml-1.5"></i>
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <div class="stat-card">
+                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="5" data-suffix="+">5+
+                    </div>
+                    <div class="text-[10px] text-muted uppercase tracking-widest">Years</div>
+                </div>
+                <div class="stat-card">
+                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="500" data-suffix="+">500+
+                    </div>
+                    <div class="text-[10px] text-muted uppercase tracking-widest">Clients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="10" data-suffix="+">10+
+                    </div>
+                    <div class="text-[10px] text-muted uppercase tracking-widest">Styles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="3" data-suffix="">3</div>
+                    <div class="text-[10px] text-muted uppercase tracking-widest">Artists</div>
+                </div>
+            </div>
+
+            <!-- Scroll cue -->
+            <a href="#achievements" class="animate-bounce block">
+                <i class="fa-solid fa-chevron-down text-muted/40 text-lg"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- ─────────────── ACHIEVEMENTS ─────────────── -->
+    <section id="achievements" class="py-24 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
+
+            <div class="flex-1 reveal">
+                <div class="pill-tag mb-4"><i class="fa-solid fa-trophy mr-1.5"></i> Our Track Record</div>
+                <h2 class="font-display text-4xl md:text-5xl text-text tracking-tight mb-5">
+                    Proven Studio Results<br>You Can Trust
+                </h2>
+                <p class="text-muted text-sm mb-8 leading-relaxed max-w-md">From first-timers to heavy collectors,
+                    we've helped hundreds achieve remarkable body art they're proud to wear for life.</p>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-circle-check text-accent"></i> Award winning resident artists
+                    </li>
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-circle-check text-accent"></i> Featured in regional tattoo magazines
+                    </li>
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fa-solid fa-circle-check text-accent"></i> 5-star verified Google reviews
+                    </li>
+                </ul>
+            </div>
+
+            <div class="flex-1 grid grid-cols-2 gap-4 reveal reveal-d2">
+                <div class="bento-card p-8 text-center">
+                    <p class="font-display text-4xl font-bold mb-2 text-text">500+</p>
+                    <p class="text-[10px] text-muted uppercase tracking-wider">Tattoos Done</p>
+                </div>
+                <div class="bento-card p-8 text-center mt-8">
+                    <p class="font-display text-4xl font-bold mb-2 text-text">3</p>
+                    <p class="text-[10px] text-muted uppercase tracking-wider">Master Artists</p>
+                </div>
+                <div class="bento-card p-8 text-center">
+                    <p class="font-display text-4xl font-bold mb-2 text-accent">5★</p>
+                    <p class="text-[10px] text-muted uppercase tracking-wider">Avg. Rating</p>
+                </div>
+                <div class="bento-card p-8 text-center mt-8">
+                    <p class="font-display text-4xl font-bold mb-2 text-text">10+</p>
+                    <p class="text-[10px] text-muted uppercase tracking-wider">Tattoo Styles</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ─────────────── TESTIMONIALS ─────────────── -->
+    <section class="py-24 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14 reveal">
+                <div class="pill-tag mb-4"><i class="fa-solid fa-quote-left mr-1.5"></i> Client Stories</div>
+                <h2 class="font-display text-4xl md:text-5xl text-text">What People Say</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="testi-card reveal reveal-d1">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"Raj understood exactly what I wanted — bold geometric patterns that actually
+                        mean something. The blackwork is insanely clean. I get compliments every day."</p>
+                    <div class="flex items-center gap-3 mt-4">
+                        <div
+                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
+                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="testi-name">Ananya R.</div>
+                            <div class="testi-detail">Blackwork sleeve · Bengaluru</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testi-card reveal reveal-d2">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"Priya's fine-line floral work is something else entirely. Super clean, super
+                        detailed. The studio made me feel completely at ease the whole time."</p>
+                    <div class="flex items-center gap-3 mt-4">
+                        <div
+                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
+                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="testi-name">Meera K.</div>
+                            <div class="testi-detail">Fine line floral · Mysore</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testi-card reveal reveal-d3">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-quote">"Arjun's realism is photographic — seriously, people ask if it's a photo.
+                        Booking was easy, process explained well, and aftercare was thorough."</p>
+                    <div class="flex items-center gap-3 mt-4">
+                        <div
+                            style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.03);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
+                            <i class="fa-solid fa-user text-muted text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="testi-name">Vikram S.</div>
+                            <div class="testi-detail">Realistic lion portrait · Chennai</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 reveal">
+                <a href="/register" class="btn-gold">
+                    <i class="fa-solid fa-calendar-plus"></i> Book Your Session
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─────────────── FOOTER ─────────────── -->
+    <footer class="pt-16 pb-8 px-6 border-t border-white/5">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                            class="w-6 h-6 rounded-full object-cover opacity-80">
+                        <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
+                            Tattoos
+                            Studio</span>
+                    </div>
+                    <p class="text-muted text-xs max-w-xs leading-relaxed">Premium tattoo studio. Engineered for
+                        perfection, one
+                        design at a time.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Studio
+                    </h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/about" class="footer-link">About Us</a></li>
+                        <li><a href="/services" class="footer-link">Services</a></li>
+                        <li><a href="/gallery" class="footer-link">Portfolio</a></li>
+                        <li><a href="/contact" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Account
+                    </h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/register" class="footer-link">Create Account</a></li>
+                        <li><a href="/login" class="footer-link">Login</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Follow
+                    </h4>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank"
+                            rel="noopener noreferrer" class="footer-link text-lg hover:text-accent"><i
+                                class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-8 flex justify-between items-center text-[10px] text-muted"
+                style="border-color:rgba(255,255,255,0.05)">
+                <p>&copy; 2026 Dragon Tattoos Studio. All rights reserved.</p>
+                <a href="#" class="footer-link">↑ Back to top</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ── Scroll reveal
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ── Hamburger
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('burgerBtn');
+            menu.classList.toggle('open');
+            btn.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        }
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+
+        // ── Animated counters
+        const counterObs = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                const target = +el.dataset.target;
+                const suffix = el.dataset.suffix || '';
+                const duration = Math.min(1800, target * 4);
+                const step = Math.ceil(target / (duration / 16));
+                let current = 0;
+                const timer = setInterval(() => {
+                    current = Math.min(current + step, target);
+                    el.textContent = current + suffix;
+                    if (current >= target) clearInterval(timer);
+                }, 16);
+                counterObs.unobserve(el);
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
+    </script>
+</body>
+
+</html>

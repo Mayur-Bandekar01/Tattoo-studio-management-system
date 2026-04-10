@@ -1,0 +1,38 @@
+/* 
+   ══════════════════════════════════════════════════════════════
+   OFFLINE FONTS SYSTEM
+   ══════════════════════════════════════════════════════════════ 
+*/
+
+
+/* 
+   NOTE: Run scripts/setup_offline.py to download 
+   the actual .woff2 files into the /static/fonts/ directory.
+*/
+
+/* CINZEL (Heading Accent) */
+@font-face {
+    font-family: 'Cinzel';
+    src: url('../fonts/Cinzel-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* INTER (Body) */
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* OUTFIT (Modern UI) */
+@font-face {
+    font-family: 'Outfit';
+    src: url('../fonts/Outfit-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
