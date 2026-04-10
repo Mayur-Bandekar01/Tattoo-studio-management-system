@@ -7,6 +7,11 @@
     <title>Dragon Tattoos | Premium Tattoo Studio</title>
     <meta name="description"
         content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
+    <!-- Offline Assets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -106,6 +111,13 @@
             color: var(--accent);
         }
 
+        .nav-link:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+            border-radius: 4px;
+            color: var(--text);
+        }
+
         .nav-link:hover::after {
             left: 0;
             right: 0;
@@ -183,6 +195,12 @@
             background: #e0b84a;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(200, 160, 64, 0.2);
+        }
+
+        .btn-gold:focus-visible,
+        .btn-outline:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
         .btn-outline {
@@ -327,10 +345,16 @@
 
             .hero-title {
                 font-size: 3.5rem !important;
+                text-wrap: balance;
             }
+        }
+
+        .stat-num {
+            font-variant-numeric: tabular-nums;
         }
     </style>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+
 </head>
 
 <body>
@@ -354,8 +378,8 @@
     <nav class="navbar">
         <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
-                    class="w-7 h-7 rounded-full object-cover">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo" width="28"
+                    height="28" class="w-7 h-7 rounded-full object-cover">
                 <span class="font-display text-text text-[10px] tracking-[0.3em] uppercase opacity-90">Dragon
                     Tattoos</span>
             </div>
@@ -389,7 +413,7 @@
             <div class="hero-logo flex justify-center mb-8">
                 <div class="relative">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="96" height="96"
                             class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
@@ -404,7 +428,8 @@
             </div>
 
             <!-- Headline -->
-            <h1 class="font-display text-6xl md:text-8xl text-text tracking-tight leading-none mb-5">
+            <h1 class="font-display text-6xl md:text-8xl text-text tracking-tight leading-none mb-5"
+                style="text-wrap: balance;">
                 DRAGON<br>
                 <span
                     style="background:linear-gradient(135deg,#c8a040,#e8c870,#c8a040);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TATTOOS</span>
@@ -421,10 +446,10 @@
             <!-- CTAs -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                 <a href="/register" class="btn-gold">
-                    <i class="fa-solid fa-calendar-plus"></i> Book Consultation
+                    <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i> Book Consultation
                 </a>
                 <a href="/gallery" class="btn-outline">
-                    View Portfolio <i class="fa-solid fa-play text-xs ml-1.5"></i>
+                    View Portfolio <i class="fa-solid fa-play text-xs ml-1.5" aria-hidden="true"></i>
                 </a>
             </div>
 
@@ -452,7 +477,7 @@
             </div>
 
             <!-- Scroll cue -->
-            <a href="#achievements" class="animate-bounce block">
+            <a href="#achievements" class="animate-bounce block" aria-label="Scroll to achievements">
                 <i class="fa-solid fa-chevron-down text-muted/40 text-lg"></i>
             </a>
         </div>
@@ -577,8 +602,8 @@
 
                 <div class="col-span-2 md:col-span-1">
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                            class="w-6 h-6 rounded-full object-cover opacity-80">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="24" height="24"
+                            loading="lazy" class="w-6 h-6 rounded-full object-cover opacity-80">
                         <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
                             Tattoos
                             Studio</span>

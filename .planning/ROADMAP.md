@@ -8,6 +8,7 @@ Refine the customer dashboard to ensure a premium, viewport-constrained experien
 - [x] Phase 3: Template Cleanup & Inline Style Removal <!-- id: 1.3 -->
 - [x] Phase 4: Final UI Audit & Verification <!-- id: 1.4 -->
 - [x] Phase 1.5: Codebase Cleanup & Junk Removal <!-- id: 1.5 -->
+- [x] Phase 1.6: Post-Development Utility Cleanup <!-- id: 1.6 -->
 
 ## Milestone 2: Functional Enhancements
 Expand the system's capabilities for artists and owners.
