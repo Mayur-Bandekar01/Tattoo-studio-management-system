@@ -2,30 +2,43 @@ import os
 from datetime import timedelta
 from flask import Flask, redirect, flash
 from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # ── PATH CONFIGURATION ───────────────────────────────────────
-# Define root directory to clearly find frontend assets.
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 app = Flask(__name__,
             template_folder=os.path.join(BASE_DIR, 'frontend', 'templates'),
             static_folder=os.path.join(BASE_DIR, 'frontend', 'static'))
 
-app.secret_key = "dragon_tattoos_secret_2025"
+# ── SECURITY CONFIGURATION ───────────────────────────────────
+app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_6789")
 app.permanent_session_lifetime = timedelta(hours=2)
 
+# CSRF Protection (Global)
+csrf = CSRFProtect(app)
+
+# Global Payload Limit (Stop DoS at server level)
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB Limit
+
 # ── MAIL CONFIG ──────────────────────────────────────────────
-app.config['MAIL_SERVER']         = 'smtp.gmail.com'
-app.config['MAIL_PORT']           = 587
+app.config['MAIL_SERVER']         = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT']           = int(os.getenv('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS']        = True
-app.config['MAIL_USERNAME']       = 'darkdragon.ink@gmail.com'
-app.config['MAIL_PASSWORD']       = 'vlbtoadxslrpdkyt'
-app.config['MAIL_DEFAULT_SENDER'] = ('Dragon Tattoos', 'darkdragon.ink@gmail.com')
+app.config['MAIL_USERNAME']       = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD']       = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = ('Dragon Tattoos', os.getenv('MAIL_USERNAME'))
 mail = Mail(app)
 
 # ── UPLOAD CONFIG ─────────────────────────────────────────────
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'frontend', 'static', 'uploads', 'references')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure upload directories exist
 os.makedirs(os.path.join(BASE_DIR, 'frontend', 'static', 'uploads', 'gallery'),    exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'frontend', 'static', 'uploads', 'references'), exist_ok=True)
 

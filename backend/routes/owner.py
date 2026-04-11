@@ -3,6 +3,7 @@ import json
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app
 from db import get_db
 from utils.decorators import role_required
+from utils.validators import is_valid_numeric
 
 owner_bp = Blueprint('owner', __name__)
 
@@ -230,11 +231,28 @@ def owner_artist_delete(artist_id):
     artist      = cursor.fetchone()
     artist_name = artist['artist_name'] if artist else artist_id
 
-    cursor.execute("DELETE FROM gallery WHERE artist_id = %s", (artist_id,))
-    cursor.execute("DELETE FROM artist WHERE artist_id = %s", (artist_id,))
-    conn.commit()
-    conn.close()
-    flash(f"Artist '{artist_name}' and all their gallery images have been removed.", "success")
+    try:
+        # 1. Clean up gallery images from database
+        cursor.execute("DELETE FROM gallery WHERE artist_id = %s", (artist_id,))
+
+        # 1.5 Clean up orphaned messages
+        cursor.execute("DELETE FROM messages WHERE sender_id = %s OR receiver_id = %s", (artist_id, artist_id))
+        
+        # 2. Delete the artist (SQL Foreign Key CASCADE will handle appointments)
+        cursor.execute("DELETE FROM artist WHERE artist_id = %s", (artist_id,))
+        
+        conn.commit()
+        flash(f"Artist '{artist_name}' and all their gallery images have been removed.", "success")
+    except Exception as e:
+        conn.rollback()
+        # If the user hasn't run the SQL script yet, catch the foreign key error specifically
+        if "1451" in str(e):
+            flash(f"Cannot delete artist '{artist_name}' because they have active appointments or dependencies. Have you applied the SQL migration script in MySQL Workbench?", "error")
+        else:
+            flash(f"An error occurred: {str(e)}", "error")
+    finally:
+        conn.close()
+
     return redirect('/owner/dashboard')
 
 # ── INVOICE GENERATION ────────────────────────────────────────
@@ -251,10 +269,12 @@ def owner_invoice_generate():
         flash("Please fill in all invoice fields!", "error")
         return redirect('/owner/dashboard')
 
-    try:
-        total_amt = float(total_amt)
-        if total_amt <= 0: raise ValueError
-    except ValueError:
+    if not is_valid_numeric(total_amt):
+        flash("Invalid amount entered!", "error")
+        return redirect('/owner/dashboard')
+
+    total_amt = float(total_amt)
+    if total_amt <= 0:
         flash("Invalid amount entered!", "error")
         return redirect('/owner/dashboard')
 
@@ -288,10 +308,12 @@ def owner_payment_record():
         flash("Please fill in all payment fields!", "error")
         return redirect('/owner/dashboard')
 
-    try:
-        amount_paid = float(amount_paid)
-        if amount_paid <= 0: raise ValueError
-    except ValueError:
+    if not is_valid_numeric(amount_paid):
+        flash("Invalid payment amount!", "error")
+        return redirect('/owner/dashboard')
+
+    amount_paid = float(amount_paid)
+    if amount_paid <= 0:
         flash("Invalid payment amount!", "error")
         return redirect('/owner/dashboard')
 

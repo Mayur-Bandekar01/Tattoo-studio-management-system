@@ -510,12 +510,15 @@
     "total_appointments" : (total_appointments | default(0)),
     "done_count"         : (done_count | default(0)),
     "pending_count"      : (pending_count | default(0)),
-    "approved_count"     : (approved_count | default(0)),
+    "approved_count"     : (approved_count or 0),
     "rejected_count"     : (rejected_count | default(0)),
     "cancelled_count"    : (cancelled_count | default(0)),
     "total_customers"    : (total_customers | default(0)),
     "total_artists"      : (total_artists | default(0)),
-    "returning_customers": (returning_customers | default(0))
+    "returning_customers": (returning_customers | default(0)),
+    "raw_appointments"   : (appointments or []),
+    "raw_payments"      : (payments or []),
+    "raw_invoices"      : (invoices or [])
 } | tojson | safe }}
 </script>
 
@@ -692,7 +695,22 @@
 </div>
 
 <!-- ══════════════════════════════════
-     ROW 3 — Performance table
+     ROW 3 — Artist Engagement
+     (Added to support renderArtistChart)
+══════════════════════════════════════ -->
+<p class="r-heading"><i class="fas fa-users"></i> Artist Engagement</p>
+<div class="r-row">
+    <div class="r-card">
+        <div class="r-card-title">Artist Performance Trend</div>
+        <div class="r-card-sub">Completed vs total sessions per artist</div>
+        <div style="height:320px;position:relative;">
+            <canvas id="rc-artist"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ROW 4 — Performance table
 ══════════════════════════════════════ -->
 <p class="r-heading"><i class="fas fa-table"></i> Full Performance Matrix</p>
 <div class="r-card" style="padding:0;overflow:hidden;">
@@ -751,12 +769,12 @@
             const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
             const style = getComputedStyle(document.documentElement);
 
-            const textColor = isLight ? '#334155' : 'rgba(255, 255, 255, 0.45)';
+            const textColor = isLight ? '#0F172A' : '#E2E8F0'; // Darker text for light mode, lighter for dark mode
             const tooltipBg = isLight ? 'rgba(255, 255, 255, 0.98)' : 'rgba(10, 10, 10, 0.96)';
             const tooltipText = isLight ? '#0F172A' : '#FFFFFF';
-            const tooltipBody = isLight ? '#475569' : '#CBD5E1';
-            const tooltipBord = isLight ? 'rgba(255, 0, 60, 0.25)' : 'rgba(255, 0, 60, 0.3)';
-            const gridColor = isLight ? 'rgba(0, 0, 0, 0.07)' : 'rgba(255, 255, 255, 0.05)';
+            const tooltipBody = isLight ? '#334155' : '#CBD5E1';
+            const tooltipBord = isLight ? 'rgba(255, 0, 60, 0.35)' : 'rgba(255, 0, 60, 0.4)';
+            const gridColor = isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.08)'; // Higher contrast grids
 
             Chart.defaults.color = textColor;
             Chart.defaults.plugins.tooltip.backgroundColor = tooltipBg;
@@ -785,14 +803,96 @@
         const pct = (n, d) => d ? Math.round((n / d) * 100) : 0;
 
         /* ── State ── */
-        const S = { view: 'monthly', month: '', charts: {} };
+        const S = { view: 'monthly', month: '', charts: {}, filtered: {} };
+
+        function filterDataByMonth(month) {
+            const isAll = (month === 'all');
+            const targetM = month; // YYYY-MM
+
+            // Filter appointments
+            const fAppts = isAll ? D.raw_appointments : D.raw_appointments.filter(a => a.appointment_date.startsWith(targetM));
+
+            // Filter invoices
+            const fInvs = isAll ? D.raw_invoices : D.raw_invoices.filter(i => i.generated_date.startsWith(targetM));
+
+            // Filter payments
+            const fPays = isAll ? D.raw_payments : D.raw_payments.filter(p => p.payment_date.startsWith(targetM));
+
+            // Re-aggregate artist performance
+            const apMap = {};
+            D.artist_performance.forEach(a => {
+                apMap[a.artist_id] = { ...a, total_appts: 0, done_appts: 0, approved_appts: 0, pending_appts: 0, rejected_count: 0, cancelled_appts: 0, total_revenue: 0 };
+            });
+
+            fAppts.forEach(a => {
+                if (!apMap[a.artist_id]) return;
+                apMap[a.artist_id].total_appts++;
+                if (a.status === 'Done') apMap[a.artist_id].done_appts++;
+                else if (a.status === 'Approved') apMap[a.artist_id].approved_appts++;
+                else if (a.status === 'Pending') apMap[a.artist_id].pending_appts++;
+                else if (a.status === 'Rejected') apMap[a.artist_id].rejected_count++;
+                else if (a.status === 'Cancelled') apMap[a.artist_id].cancelled_appts++;
+            });
+
+            fPays.forEach(p => {
+                if (p.status !== 'Approved') return;
+                // We need to link payment to artist. Raw payments don't have artist_id directly.
+                // But raw_invoices have appointment_id, and raw_appointments have artist_id.
+                const inv = D.raw_invoices.find(i => i.invoice_id === p.invoice_id);
+                if (inv) {
+                    const appt = D.raw_appointments.find(a => a.appointment_id === inv.appointment_id);
+                    if (appt && apMap[appt.artist_id]) {
+                        apMap[appt.artist_id].total_revenue += parseFloat(p.amount_paid) || 0;
+                    }
+                }
+            });
+
+            // Re-aggregate payment methods
+            const pmMap = {};
+            fPays.forEach(p => {
+                if (p.status !== 'Approved') return;
+                const m = p.payment_method.startsWith('UPI') ? 'UPI' : p.payment_method;
+                if (!pmMap[m]) pmMap[m] = { payment_method: m, count: 0, total: 0 };
+                pmMap[m].count++;
+                pmMap[m].total += parseFloat(p.amount_paid) || 0;
+            });
+
+            // Re-aggregate concept trends
+            const ctMap = {};
+            fInvs.forEach(i => {
+                const c = i.concept_type;
+                if (!c) return;
+                if (!ctMap[c]) ctMap[c] = { concept_type: c, count: 0 };
+                ctMap[c].count++;
+            });
+
+            // Update S.filtered
+            S.filtered = {
+                appointments: fAppts,
+                invoices: fInvs,
+                payments: fPays,
+                artist_performance: Object.values(apMap),
+                payment_methods: Object.values(pmMap).sort((a, b) => b.total - a.total),
+                concept_trends: Object.values(ctMap).sort((a, b) => b.count - a.count).slice(0, 8),
+                total_revenue: fPays.filter(p => p.status === 'Approved').reduce((acc, p) => acc + (parseFloat(p.amount_paid) || 0), 0),
+                paid_revenue: fPays.filter(p => p.status === 'Approved').reduce((acc, p) => acc + (parseFloat(p.amount_paid) || 0), 0),
+                pending_revenue: fInvs.filter(i => i.pay_status === 'Pending' || i.pay_status === 'Under Review').reduce((acc, i) => acc + (parseFloat(i.total_amt) || 0), 0),
+                done_count: fAppts.filter(a => a.status === 'Done').length,
+                pending_count: fAppts.filter(a => a.status === 'Pending').length,
+                approved_count: fAppts.filter(a => a.status === 'Approved').length,
+                rejected_count: fAppts.filter(a => a.status === 'Rejected').length,
+                cancelled_count: fAppts.filter(a => a.status === 'Cancelled').length,
+                total_appointments: fAppts.length
+            };
+        }
 
         /* ════════════════════════════════
            KPI cards
         ════════════════════════════════ */
         function renderKPIs() {
+            const data = S.month ? S.filtered : D;
             const { total_revenue: tr, paid_revenue: pr, pending_revenue: pe,
-                total_appointments: ta, done_count: dc } = D;
+                total_appointments: ta, done_count: dc } = data;
             document.getElementById('kv-total').textContent = fmt(tr);
             document.getElementById('kv-paid').textContent = fmt(pr);
             document.getElementById('kv-pend').textContent = fmt(pe);
@@ -975,12 +1075,13 @@
            Appointment status donut
         ════════════════════════════════ */
         function renderStatusChart() {
+            const data = S.month ? S.filtered : D;
             const entries = [
-                { label: 'Completed', val: D.done_count, color: C.emerald },
-                { label: 'Approved', val: D.approved_count, color: C.blue },
-                { label: 'Pending', val: D.pending_count, color: C.amber },
-                { label: 'Rejected', val: D.rejected_count, color: C.red },
-                { label: 'Cancelled', val: D.cancelled_count, color: C.slate },
+                { label: 'Completed', val: data.done_count, color: C.emerald },
+                { label: 'Approved', val: data.approved_count, color: C.blue },
+                { label: 'Pending', val: data.pending_count, color: C.amber },
+                { label: 'Rejected', val: data.rejected_count, color: C.red },
+                { label: 'Cancelled', val: data.cancelled_count, color: C.slate },
             ];
             const total = entries.reduce((s, e) => s + e.val, 0);
             document.getElementById('status-center-val').textContent = total;
@@ -1038,7 +1139,9 @@
            (much easier to read than donut)
         ════════════════════════════════ */
         function renderPaymentChart() {
-            const methods = D.payment_methods;
+            const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
+            const data = S.month ? S.filtered : D;
+            const methods = data.payment_methods || [];
             const wrap = document.getElementById('rc-payment-wrap');
             const canvas = document.getElementById('rc-payment');
             if (S.charts.pay) S.charts.pay.destroy();
@@ -1139,7 +1242,8 @@
            Style Trends
         ════════════════════════════════ */
         function renderTrendsChart() {
-            const trends = D.concept_trends;
+            const data = S.month ? S.filtered : D;
+            const trends = data.concept_trends || [];
             const ctx = document.getElementById('rc-trends').getContext('2d');
             if (S.charts.trends) S.charts.trends.destroy();
 
@@ -1199,7 +1303,9 @@
            Artist sessions — grouped bar
         ════════════════════════════════ */
         function renderArtistChart() {
-            const sorted = [...D.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
+            const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
+            const data = S.month ? S.filtered : D;
+            const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
             const labels = sorted.map(a => a.artist_name.split(' ')[0]);
             const done = sorted.map(a => a.done_appts || 0);
             const total = sorted.map(a => a.total_appts || 0);
@@ -1291,7 +1397,8 @@
            Rankings
         ════════════════════════════════ */
         function renderRankings() {
-            const sorted = [...D.artist_performance].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
+            const data = S.month ? S.filtered : D;
+            const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
             const list = document.getElementById('r-rank-list');
 
             if (!sorted.length) {
@@ -1331,7 +1438,8 @@
         ════════════════════════════════ */
         function renderPerfTable() {
             const tbody = document.getElementById('r-perf-tbody');
-            const sorted = [...D.artist_performance].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
+            const data = S.month ? S.filtered : D;
+            const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
 
             if (!sorted.length) {
                 tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:3rem;color:#94A3B8;">No data available.</td></tr>`;
@@ -1386,6 +1494,7 @@
             }).join('');
 
             if (!S.month) S.month = months[0] || curr;
+            filterDataByMonth(S.month);
         }
 
         /* ════════════════════════════════
@@ -1405,9 +1514,14 @@
         ════════════════════════════════ */
         window.rDispatch = function (type, payload) {
             if (type === 'SET_VIEW') S.view = payload;
-            if (type === 'SET_MONTH') { S.month = payload; S.view = 'monthly'; }
+            if (type === 'SET_MONTH') {
+                S.month = payload;
+                S.view = 'monthly';
+                filterDataByMonth(payload);
+            }
             syncPills();
-            renderRevChart();
+            renderKPIs();
+            renderAll();
         };
 
         /* ════════════════════════════════

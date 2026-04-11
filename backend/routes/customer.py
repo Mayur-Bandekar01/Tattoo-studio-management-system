@@ -179,7 +179,13 @@ def customer_book():
         if not validate_image_size(uploaded_file, max_size_mb=5):
             flash("File size must be under 5 MB!", "error")
             return redirect('/customer/dashboard')
-        ext      = uploaded_file.filename.rsplit('.', 1)[1].lower()
+        # Safe extension extraction
+        filename_parts = uploaded_file.filename.rsplit('.', 1)
+        if len(filename_parts) < 2:
+            flash("Invalid file extension!", "error")
+            return redirect('/customer/dashboard')
+
+        ext      = filename_parts[1].lower()
         filename = secure_filename(
             f"ref_{session['user_id']}_{int(time.time())}.{ext}"
         )

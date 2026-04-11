@@ -1,4 +1,5 @@
 import os
+import math
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -19,3 +20,14 @@ def validate_image_size(file_obj, max_size_mb=5):
     file_size = file_obj.tell()
     file_obj.seek(0)
     return file_size <= max_size_mb * 1024 * 1024
+
+def is_valid_numeric(value):
+    """
+    Strictly validates if a value is a finite number.
+    Prevents 'inf', '-inf', and 'NaN' from bypassing checks.
+    """
+    try:
+        val = float(value)
+        return not (math.isinf(val) or math.isnan(val))
+    except (ValueError, TypeError):
+        return False

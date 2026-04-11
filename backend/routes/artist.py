@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, session, flash,
 from db import get_db
 
 from utils.decorators import role_required
-from utils.validators import allowed_file, validate_image_size
+from utils.validators import allowed_file, validate_image_size, is_valid_numeric
 
 artist_bp = Blueprint('artist', __name__)
 
@@ -168,13 +168,19 @@ def artist_inventory_add():
     row         = cursor.fetchone()
     artist_type = get_artist_type(row.get('specialisation', '') if row else '')
 
-    try:
-        quant_stock   = float(request.form.get('quant_stock', 0))
-        reorder_level = float(request.form.get('reorder_level', 0))
-        unit_cost     = float(request.form.get('unit_cost', 0))
-        if quant_stock < 0 or reorder_level < 0 or unit_cost < 0:
-            raise ValueError
-    except (ValueError, TypeError):
+    q_raw = request.form.get('quant_stock', '0')
+    r_raw = request.form.get('reorder_level', '0')
+    u_raw = request.form.get('unit_cost', '0')
+
+    if not all(is_valid_numeric(x) for x in [q_raw, r_raw, u_raw]):
+        flash("Invalid quantity or price entered!", "error")
+        return redirect('/artist/dashboard')
+
+    quant_stock   = float(q_raw)
+    reorder_level = float(r_raw)
+    unit_cost     = float(u_raw)
+
+    if quant_stock < 0 or reorder_level < 0 or unit_cost < 0:
         flash("Invalid quantity or price entered!", "error")
         return redirect('/artist/dashboard')
 
@@ -205,10 +211,12 @@ def artist_inventory_update(item_id):
     action = request.form.get('action', 'set')
     qty    = request.form.get('quant_stock', '').strip()
 
-    try:
-        qty = float(qty)
-        if qty < 0: raise ValueError
-    except (ValueError, TypeError):
+    if not is_valid_numeric(qty):
+        flash("Invalid quantity entered!", "error")
+        return redirect('/artist/dashboard')
+
+    qty = float(qty)
+    if qty < 0:
         flash("Invalid quantity entered!", "error")
         return redirect('/artist/dashboard')
 
@@ -286,10 +294,12 @@ def artist_log_usage():
     item_id        = request.form.get('item_id')
     qty_used       = request.form.get('qty_used')
 
-    try:
-        qty_used = float(qty_used)
-        if qty_used <= 0: raise ValueError
-    except (ValueError, TypeError):
+    if not is_valid_numeric(qty_used):
+        flash("Invalid quantity entered!", "error")
+        return redirect('/artist/dashboard')
+
+    qty_used = float(qty_used)
+    if qty_used <= 0:
         flash("Invalid quantity entered!", "error")
         return redirect('/artist/dashboard')
 
@@ -390,7 +400,13 @@ def artist_gallery_upload():
         flash("File size must be under 5 MB!", "error")
         return redirect('/artist/dashboard')
 
-    ext      = uploaded_file.filename.rsplit('.', 1)[1].lower()
+    # Safe extension extraction
+    filename_parts = uploaded_file.filename.rsplit('.', 1)
+    if len(filename_parts) < 2:
+        flash("Invalid file extension!", "error")
+        return redirect('/artist/dashboard')
+        
+    ext      = filename_parts[1].lower()
     filename = secure_filename(
         f"gallery_{session['user_id']}_{int(time.time())}.{ext}"
     )
