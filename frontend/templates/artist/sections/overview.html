@@ -117,6 +117,7 @@
                         <td>
                             <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
                                 style="display: flex; gap: 0.5rem; align-items: center;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <div style="position: relative; flex: 1;">
                                     <input class="studio-input" type="number" name="duration_hours" placeholder="Hrs"
                                         required style="padding-right: 2.5rem; font-size: 0.8rem;">
@@ -129,6 +130,7 @@
 
                             <form method="POST" action="/artist/reject/{{ appt.appointment_id }}"
                                 style="margin-top: 0.5rem;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn-studio btn-outline"
                                     style="width: 100%; font-size: 0.7rem; padding: 0.4rem; border-color: rgba(239, 68, 68, 0.2); color: var(--studio-danger); background: var(--studio-danger-soft);">
                                     <i class="fas fa-times-circle"></i> Reject Request

@@ -1,8 +1,8 @@
 import random
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app
-from db import get_db
-from utils.email_service import send_otp_email
+from ..db import get_db
+from ..utils.email_service import send_otp_email
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -60,12 +60,10 @@ def login_post():
 
     handler = handlers.get(role)
     if not handler:
-        conn.close()
         flash("Please select a valid role!")
         return redirect('/login')
 
     success, result = handler(cursor, password)
-    conn.close()
 
     if success:
         session.permanent = True
@@ -99,7 +97,6 @@ def register_post():
         "SELECT customer_id FROM customer WHERE customer_email = %s", (email,)
     )
     if cursor.fetchone():
-        conn.close()
         flash("Email already registered! Please login.")
         return redirect('/register')
 
@@ -108,7 +105,6 @@ def register_post():
         VALUES (%s, %s, %s, %s, %s)
     """, (name, email, password, phone, insta_id))
     conn.commit()
-    conn.close()
     flash("Account created successfully! Please login.")
     return redirect('/login')
 
@@ -137,7 +133,6 @@ def forgot_password_post():
         (email,)
     )
     customer = cursor.fetchone()
-    conn.close()
 
     if not customer:
         flash("No account found with this email address!", "error")
@@ -151,7 +146,7 @@ def forgot_password_post():
     ).strftime('%Y-%m-%d %H:%M:%S')
 
     try:
-        from app import mail
+        from ..app import mail
         success = send_otp_email(mail, customer['customer_name'], email, otp)
         if success:
             flash(
@@ -227,7 +222,6 @@ def reset_password():
         (new_pass, email)
     )
     conn.commit()
-    conn.close()
 
     session.pop('otp_verified', None)
     session.pop('reset_email',  None)

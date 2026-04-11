@@ -4,10 +4,10 @@ import json
 from datetime import date
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app, jsonify
-from db import get_db
+from ..db import get_db
 
-from utils.decorators import role_required
-from utils.validators import allowed_file, validate_image_size
+from ..utils.decorators import role_required
+from ..utils.validators import allowed_file, validate_image_size
 
 customer_bp = Blueprint('customer', __name__)
 
@@ -19,9 +19,7 @@ import secrets
 def customer_dashboard():
     """Main panel where customers view their bookings, invoices, and the gallery."""
 
-    # Generate CSRF token for the session if it doesn't exist
-    if 'csrf_token' not in session:
-        session['csrf_token'] = secrets.token_hex(16)
+    # CSRF token is handled automatically by Flask-WTF
 
     customer_id = session['user_id']
     conn        = get_db()
@@ -63,7 +61,6 @@ def customer_dashboard():
     liked_rows  = cursor.fetchall()
     liked_ids   = set(row['gallery_id'] for row in liked_rows)
     liked_count = len(liked_ids)
-    conn.close()
 
     total_appointments = len(appointments)
     pending_count      = sum(1 for a in appointments if a['status'] == 'Pending')
@@ -82,8 +79,7 @@ def customer_dashboard():
         total_appointments = total_appointments,
         pending_count      = pending_count,
         done_count         = done_count,
-        total_invoices     = total_invoices,
-        csrf_token         = session.get('csrf_token')
+        total_invoices     = total_invoices
     )
 
 # ── BOOKING SYSTEM (Submit a new appointment) ────────────────
@@ -92,11 +88,7 @@ def customer_dashboard():
 def customer_book():
     """Handles the sophisticated booking form, including image uploads and logic based on service type."""
 
-    # Verify CSRF Token
-    form_csrf = request.form.get('csrf_token')
-    if not form_csrf or form_csrf != session.get('csrf_token'):
-        flash("Invalid security token. Please try again.", "error")
-        return redirect('/customer/dashboard')
+    # CSRF verification is handled globally by CSRFProtect(app)
 
     service_type = request.form.get('service_type', '').strip()
     artist_id    = request.form.get('artist_id', '').strip()
@@ -159,17 +151,10 @@ def customer_book():
         flash("Invalid service type selected.", "error")
         return redirect('/customer/dashboard')
 
-    # ── FIX: Reference image ──────────────────────────────────────────────────
-    # The booking form has THREE file inputs all named 'reference_image'
-    # (one each for tattoo, art, removal blocks).
-    # request.files.get() always returns the FIRST match — which is the
-    # empty tattoo input when the customer is booking art or removal.
-    # getlist() returns ALL of them; we pick the first one that has a file.
     uploaded_files = request.files.getlist('reference_image')
     uploaded_file  = next(
         (f for f in uploaded_files if f and f.filename.strip()), None
     )
-    # ─────────────────────────────────────────────────────────────────────────
 
     reference = None
     if uploaded_file:
@@ -179,7 +164,7 @@ def customer_book():
         if not validate_image_size(uploaded_file, max_size_mb=5):
             flash("File size must be under 5 MB!", "error")
             return redirect('/customer/dashboard')
-        # Safe extension extraction
+        
         filename_parts = uploaded_file.filename.rsplit('.', 1)
         if len(filename_parts) < 2:
             flash("Invalid file extension!", "error")
@@ -203,7 +188,6 @@ def customer_book():
           AND status NOT IN ('Cancelled', 'Rejected')
     """, (artist_id, appt_date, appt_time))
     if cursor.fetchone():
-        conn.close()
         if reference:
             try: os.remove(os.path.join(current_app.static_folder, reference))
             except: pass
@@ -217,7 +201,6 @@ def customer_book():
           AND status NOT IN ('Cancelled', 'Rejected')
     """, (session['user_id'], artist_id, appt_date, appt_time))
     if cursor.fetchone():
-        conn.close()
         if reference:
             try: os.remove(os.path.join(current_app.static_folder, reference))
             except: pass
@@ -239,8 +222,6 @@ def customer_book():
     except Exception as e:
         current_app.logger.error(f"Booking Error: {e}")
         flash("Something went wrong. Please try again.", "error")
-    finally:
-        conn.close()
 
     return redirect('/customer/dashboard')
 
@@ -255,14 +236,12 @@ def customer_cancel(appointment_id):
         WHERE appointment_id = %s AND customer_id = %s
     """, (appointment_id, session['user_id']))
     conn.commit()
-    conn.close()
     flash("Appointment cancelled.", "success")
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/delete/<int:appointment_id>', methods=['POST'])
 @role_required('customer')
 def customer_delete(appointment_id):
-
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
@@ -272,12 +251,10 @@ def customer_delete(appointment_id):
     appt = cursor.fetchone()
 
     if not appt:
-        conn.close()
         flash("Appointment not found!", "error")
         return redirect('/customer/dashboard')
 
     if appt['status'] not in ('Cancelled', 'Rejected'):
-        conn.close()
         flash("Only cancelled or rejected appointments can be deleted.", "error")
         return redirect('/customer/dashboard')
 
@@ -291,7 +268,6 @@ def customer_delete(appointment_id):
         "DELETE FROM appointment WHERE appointment_id = %s", (appointment_id,)
     )
     conn.commit()
-    conn.close()
     flash("Appointment deleted successfully.", "success")
     return redirect('/customer/dashboard')
 
@@ -299,7 +275,6 @@ def customer_delete(appointment_id):
 @customer_bp.route('/customer/pay/<int:invoice_id>', methods=['POST'])
 @role_required('customer')
 def customer_pay(invoice_id):
-
     payment_method  = request.form.get('payment_method', '').strip()
     transaction_ref = request.form.get('transaction_ref', '').strip()
     upi_app         = request.form.get('upi_app', '').strip()
@@ -343,17 +318,14 @@ def customer_pay(invoice_id):
     invoice = cursor.fetchone()
 
     if not invoice or invoice['customer_id'] != session['user_id']:
-        conn.close()
         flash("Invoice not found!", "error")
         return redirect('/customer/dashboard')
 
     if invoice['pay_status'] == 'Paid':
-        conn.close()
         flash("This invoice is already paid!", "error")
         return redirect('/customer/dashboard')
 
     if invoice['pay_status'] == 'Under Review':
-        conn.close()
         flash(
             "Your payment is already under review. "
             "Please wait for owner confirmation.",
@@ -373,7 +345,6 @@ def customer_pay(invoice_id):
     """, (invoice_id,))
 
     conn.commit()
-    conn.close()
 
     flash(
         "Payment submitted successfully! "
@@ -386,7 +357,6 @@ def customer_pay(invoice_id):
 @customer_bp.route('/customer/change-password', methods=['POST'])
 @role_required('customer')
 def customer_change_password():
-
     current  = request.form.get('current_password', '').strip()
     new_pass = request.form.get('new_password', '').strip()
     confirm  = request.form.get('confirm_password', '').strip()
@@ -405,7 +375,6 @@ def customer_change_password():
         (session['user_id'], current)
     )
     if not cursor.fetchone():
-        conn.close()
         flash("Current password is incorrect!", "error")
         return redirect('/customer/dashboard')
 
@@ -414,14 +383,12 @@ def customer_change_password():
         (new_pass, session['user_id'])
     )
     conn.commit()
-    conn.close()
     flash("Password updated successfully!", "success")
     return redirect('/customer/dashboard')
 
 @customer_bp.route('/customer/gallery/like/<int:gallery_id>', methods=['POST'])
 @role_required('customer')
 def customer_gallery_like(gallery_id):
-
     customer_id = session['user_id']
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -443,7 +410,6 @@ def customer_gallery_like(gallery_id):
             (gallery_id,)
         )
         count = cursor.fetchone()['cnt']
-        conn.close()
         return jsonify({'success': True, 'liked': False, 'count': count})
     else:
         cursor.execute(
@@ -456,13 +422,11 @@ def customer_gallery_like(gallery_id):
             (gallery_id,)
         )
         count = cursor.fetchone()['cnt']
-        conn.close()
         return jsonify({'success': True, 'liked': True, 'count': count})
 
 @customer_bp.route('/customer/gallery/liked')
 @role_required('customer')
 def customer_gallery_liked():
-
     customer_id = session['user_id']
     conn   = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -473,7 +437,6 @@ def customer_gallery_liked():
         WHERE gl.customer_id = %s ORDER BY gl.liked_at DESC
     """, (customer_id,))
     liked_items = cursor.fetchall()
-    conn.close()
 
     result = []
     for item in liked_items:

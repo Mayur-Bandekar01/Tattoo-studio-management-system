@@ -1,6 +1,6 @@
 # routes/chat.py
 from flask import Blueprint, request, session, jsonify
-from db import get_db
+from ..db import get_db
 
 chat_bp = Blueprint('chat', __name__)
 
@@ -44,7 +44,6 @@ def chat_get_messages():
     """, (user_id, role, other_id, other_role))
 
     conn.commit()
-    conn.close()
 
     messages = [{
         'message_id': r['message_id'],
@@ -83,7 +82,6 @@ def chat_send():
         VALUES (%s, %s, %s, %s, %s, %s)
     """, (str(session['user_id']), role, other_id, other_role, appt_id, content))
     conn.commit()
-    conn.close()
     return jsonify({'success': True})
 
 
@@ -101,7 +99,6 @@ def chat_unread_count():
         WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
     """, (str(session['user_id']), role))
     row = cursor.fetchone()
-    conn.close()
     return jsonify({'count': int(row['cnt']) if row else 0})
 
 
@@ -121,7 +118,6 @@ def chat_unread_threads():
         GROUP BY sender_id
     """, (str(session['user_id']), role))
     rows = cursor.fetchall()
-    conn.close()
 
     return jsonify({'threads': [
         {
@@ -154,7 +150,6 @@ def chat_delete_msg(message_id):
     
     deleted = cursor.rowcount
     conn.commit()
-    conn.close()
     
     if deleted > 0:
         return jsonify({'success': True})
@@ -189,5 +184,4 @@ def chat_delete_thread():
           other_id, other_role, user_id, role))
 
     conn.commit()
-    conn.close()
     return jsonify({'success': True})

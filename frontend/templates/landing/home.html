@@ -352,12 +352,76 @@
         .stat-num {
             font-variant-numeric: tabular-nums;
         }
+
+        /* ── PRELOADER ── */
+        #dragon-preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #030303;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.8s;
+        }
+
+        #dragon-preloader.loaded {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(200, 160, 64, 0.1);
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .loader-logo {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-gold 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-gold {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
     </style>
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 
 </head>
 
 <body>
+    <!-- ── PRELOADER ── -->
+    <div id="dragon-preloader">
+        <div class="loader-ring">
+            <div class="loader-logo">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon" width="40" height="40"
+                    class="w-10 h-10 rounded-full border border-accent/20">
+            </div>
+        </div>
+        <p class="font-display text-[10px] tracking-[0.4em] uppercase text-accent/60 opacity-80">Dragon Tattoos</p>
+    </div>
+
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="/" class="active">Home</a>
@@ -690,6 +754,25 @@
             });
         }, { threshold: 0.5 });
         document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
+
+        // ── Preloader Hider
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('dragon-preloader');
+            if (preloader) {
+                // Ensure minor delay for visceral feel
+                setTimeout(() => {
+                    preloader.classList.add('loaded');
+                }, 400);
+            }
+        });
+
+        // Safety timeout (Force hide after 3.5s)
+        setTimeout(() => {
+            const preloader = document.getElementById('dragon-preloader');
+            if (preloader && !preloader.classList.contains('loaded')) {
+                preloader.classList.add('loaded');
+            }
+        }, 3500);
     </script>
 </body>
 

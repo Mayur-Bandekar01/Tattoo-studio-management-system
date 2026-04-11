@@ -76,6 +76,7 @@
                             <div style="display: flex; gap: 0.5rem; align-items: center;">
                                 <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
                                     style="display: flex; gap: 0.4rem; align-items: center;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="number" name="duration_hours" placeholder="Hrs" min="1" max="12"
                                         class="studio-input"
                                         style="width: 55px; padding: 0.35rem; border: 1px solid var(--studio-border); border-radius: 8px; font-size: 0.75rem; background: var(--studio-card);"
@@ -83,13 +84,17 @@
                                     <button type="submit" class="btn-studio btn-primary"
                                         style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Approve</button>
                                 </form>
-                                <button type="submit" class="btn-studio bg-danger-soft text-danger"
-                                    style="padding: 0.35rem;">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-studio bg-danger-soft text-danger"
+                                        style="padding: 0.35rem;" title="Reject">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
                             </div>
                             {% elif appt.status=='Approved' %}
                             <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn-studio btn-primary"
                                     style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">
                                     <i class="fas fa-flag-checkered"></i> Mark Done

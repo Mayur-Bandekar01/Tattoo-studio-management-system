@@ -838,9 +838,9 @@
                 if (p.status !== 'Approved') return;
                 // We need to link payment to artist. Raw payments don't have artist_id directly.
                 // But raw_invoices have appointment_id, and raw_appointments have artist_id.
-                const inv = D.raw_invoices.find(i => i.invoice_id === p.invoice_id);
+                const inv = D.raw_invoices.find(i => i.invoice_id == p.invoice_id);
                 if (inv) {
-                    const appt = D.raw_appointments.find(a => a.appointment_id === inv.appointment_id);
+                    const appt = D.raw_appointments.find(a => a.appointment_id == inv.appointment_id);
                     if (appt && apMap[appt.artist_id]) {
                         apMap[appt.artist_id].total_revenue += parseFloat(p.amount_paid) || 0;
                     }
@@ -851,7 +851,8 @@
             const pmMap = {};
             fPays.forEach(p => {
                 if (p.status !== 'Approved') return;
-                const m = p.payment_method.startsWith('UPI') ? 'UPI' : p.payment_method;
+                const method = (p.payment_method || 'Other');
+                const m = method.startsWith('UPI') ? 'UPI' : method;
                 if (!pmMap[m]) pmMap[m] = { payment_method: m, count: 0, total: 0 };
                 pmMap[m].count++;
                 pmMap[m].total += parseFloat(p.amount_paid) || 0;
@@ -961,6 +962,7 @@
             } else {
                 const monthly = {};
                 D.daily_revenue.forEach(d => {
+                    if (!d.date_key) return;
                     const mk = d.date_key.substring(0, 7);
                     if (!monthly[mk]) {
                         const [y, mm] = mk.split('-');
@@ -1147,10 +1149,22 @@
             if (S.charts.pay) S.charts.pay.destroy();
 
             if (!methods.length) {
-                wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;">No payment data yet.</div>';
+                const emptyMsg = wrap.querySelector('.pay-empty') || (() => {
+                    const d = document.createElement('div');
+                    d.className = 'pay-empty';
+                    d.style.cssText = 'display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;';
+                    d.textContent = 'No payment data yet.';
+                    wrap.appendChild(d);
+                    return d;
+                })();
+                emptyMsg.style.display = 'flex';
+                canvas.style.display = 'none';
                 document.getElementById('rl-payment').innerHTML = '';
                 return;
             }
+            const existingEmpty = wrap.querySelector('.pay-empty');
+            if (existingEmpty) existingEmpty.style.display = 'none';
+            canvas.style.display = 'block';
 
             const sorted = [...methods].sort((a, b) => (b.total || 0) - (a.total || 0));
             const labels = sorted.map(m => m.payment_method);
@@ -1306,7 +1320,7 @@
             const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
             const data = S.month ? S.filtered : D;
             const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
-            const labels = sorted.map(a => a.artist_name.split(' ')[0]);
+            const labels = sorted.map(a => (a.artist_name || 'Unknown').split(' ')[0]);
             const done = sorted.map(a => a.done_appts || 0);
             const total = sorted.map(a => a.total_appts || 0);
 
@@ -1482,7 +1496,7 @@
         ════════════════════════════════ */
         function populateMonthSel() {
             const sel = document.getElementById('r-month-sel');
-            const months = [...new Set(D.daily_revenue.map(d => d.date_key.substring(0, 7)))];
+            const months = [...new Set(D.daily_revenue.filter(d => d.date_key).map(d => d.date_key.substring(0, 7)))];
             const curr = new Date().toISOString().substring(0, 7);
             if (!months.includes(curr)) months.push(curr);
             months.sort().reverse();

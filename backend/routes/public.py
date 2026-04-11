@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session, request
-from db import get_db
+from ..db import get_db
 
 public_bp = Blueprint('public', __name__)
 
@@ -13,7 +13,6 @@ def about():
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM artist ORDER BY artist_name")
     artists = cursor.fetchall()
-    conn.close()
     return render_template('landing/about.html', artists=artists)
 
 @public_bp.route('/services')
@@ -33,7 +32,6 @@ def gallery():
     gallery = cursor.fetchall()
     artist_count = len(set(item['artist_id'] for item in gallery))
     styles_count = len(set(item['style'] for item in gallery if item['style']))
-    conn.close()
     return render_template('landing/gallery.html',
         gallery      = gallery,
         artist_count = artist_count,

@@ -9,7 +9,8 @@
 <div class="studio-card" style="margin-bottom: 2rem;">
     <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">
         RECORD NEW CONSUMPTION</h3>
-    <form method="POST" action="/artist/log-usage">
+    <form method="POST" action="/artist/inventory/use">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-grid">
 
             <div class="form-group">
@@ -31,15 +32,12 @@
 
             <div class="form-group">
                 <label class="form-label">Material Consumed</label>
-                <select class="studio-input" name="item_id" id="itemSelect" required
-                    onchange="updateItemInfo()">
+                <select class="studio-input" name="item_id" id="itemSelect" required onchange="updateItemInfo()">
                     <option value="">Select supply item...</option>
                     {% if inventory %}
                     {% for item in inventory %}
-                    <option value="{{ item.item_id }}"
-                            data-unit="{{ item.unit }}"
-                            data-stock="{{ item.quant_stock }}"
-                            data-name="{{ item.item_name }}">
+                    <option value="{{ item.item_id }}" data-unit="{{ item.unit }}" data-stock="{{ item.quant_stock }}"
+                        data-name="{{ item.item_name }}">
                         {{ item.item_name }}
                         ({{ item.quant_stock | round(2) }} {{ item.unit }} in stock)
                     </option>
@@ -55,8 +53,7 @@
                     <span style="font-size: 0.72rem; color: var(--studio-text-secondary);">
                         Available stock:
                     </span>
-                    <span id="stockDisplay"
-                          style="font-size: 0.82rem; font-weight: 700;
+                    <span id="stockDisplay" style="font-size: 0.82rem; font-weight: 700;
                                  color: var(--studio-text-primary); font-family: monospace;">
                     </span>
                 </div>
@@ -65,22 +62,17 @@
             <div class="form-group">
                 <label class="form-label">Quantity Used</label>
                 <div style="position: relative;">
-                    <input class="studio-input" type="number" name="qty_used"
-                        id="qtyInput"
-                        placeholder="Enter amount used"
-                        min="0.01" step="0.01" required
-                        oninput="validateQty()"
+                    <input class="studio-input" type="number" name="quantity" id="qtyInput"
+                        placeholder="Enter amount used" min="0.01" step="0.01" required oninput="validateQty()"
                         style="padding-right: 3.5rem;">
-                    <span id="unitBadge"
-                        style="position: absolute; right: 0.85rem; top: 50%;
+                    <span id="unitBadge" style="position: absolute; right: 0.85rem; top: 50%;
                                transform: translateY(-50%);
                                font-size: 0.72rem; font-weight: 700;
                                color: var(--studio-indigo);
                                pointer-events: none;">
                     </span>
                 </div>
-                <p id="qtyHint"
-                   style="font-size: 0.72rem; margin-top: 0.4rem; display: none;">
+                <p id="qtyHint" style="font-size: 0.72rem; margin-top: 0.4rem; display: none;">
                 </p>
             </div>
 
@@ -91,8 +83,7 @@
             <button type="submit" class="btn-studio btn-primary" id="logBtn">
                 <i class="fas fa-clipboard-check"></i> Submit Usage Log
             </button>
-            <button type="reset" class="btn-studio btn-outline"
-                onclick="resetForm()">
+            <button type="reset" class="btn-studio btn-outline" onclick="resetForm()">
                 Reset Entry
             </button>
         </div>
@@ -124,8 +115,7 @@
                         {{ log.item_name }}
                     </td>
                     <td>
-                        <span class="badge badge-info"
-                            style="font-family: monospace; font-size: 0.9rem;
+                        <span class="badge badge-info" style="font-family: monospace; font-size: 0.9rem;
                                    font-weight: 700; padding: 0.35rem 0.75rem;">
                             {{ log.qty_used | round(2) }} {{ log.unit }}
                         </span>
@@ -140,11 +130,9 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="4"
-                        style="text-align: center; padding: 4rem;
+                    <td colspan="4" style="text-align: center; padding: 4rem;
                                color: var(--studio-text-secondary);">
-                        <i class="fas fa-clipboard-list"
-                            style="font-size: 2.5rem; opacity: 0.2;
+                        <i class="fas fa-clipboard-list" style="font-size: 2.5rem; opacity: 0.2;
                                    margin-bottom: 1rem; display: block;"></i>
                         No material consumption has been logged yet.
                     </td>
@@ -157,57 +145,57 @@
 
 <script>
     function updateItemInfo() {
-        const sel       = document.getElementById('itemSelect');
-        const selected  = sel.options[sel.selectedIndex];
+        const sel = document.getElementById('itemSelect');
+        const selected = sel.options[sel.selectedIndex];
         const stockInfo = document.getElementById('stockInfo');
         const stockDisp = document.getElementById('stockDisplay');
         const unitBadge = document.getElementById('unitBadge');
-        const qtyHint   = document.getElementById('qtyHint');
-        const qtyInput  = document.getElementById('qtyInput');
+        const qtyHint = document.getElementById('qtyHint');
+        const qtyInput = document.getElementById('qtyInput');
 
         if (!sel.value) {
             stockInfo.style.display = 'none';
-            unitBadge.textContent   = '';
-            qtyHint.style.display   = 'none';
+            unitBadge.textContent = '';
+            qtyHint.style.display = 'none';
             return;
         }
 
-        const unit  = selected.dataset.unit;
+        const unit = selected.dataset.unit;
         const stock = parseFloat(selected.dataset.stock);
-        const name  = selected.dataset.name;
+        const name = selected.dataset.name;
 
         // Show unit inside the quantity input
         unitBadge.textContent = unit;
 
         // Show available stock
         stockInfo.style.display = 'block';
-        stockDisp.textContent   = `${stock} ${unit}`;
-        stockDisp.style.color   = stock <= 0
+        stockDisp.textContent = `${stock} ${unit}`;
+        stockDisp.style.color = stock <= 0
             ? 'var(--studio-danger)'
             : 'var(--studio-text-primary)';
 
         // Show hint
-        qtyHint.style.display   = 'block';
-        qtyHint.textContent     = `Enter how many ${unit} of "${name}" were used`;
-        qtyHint.style.color     = 'var(--studio-text-secondary)';
+        qtyHint.style.display = 'block';
+        qtyHint.textContent = `Enter how many ${unit} of "${name}" were used`;
+        qtyHint.style.color = 'var(--studio-text-secondary)';
 
         // Reset qty input
         qtyInput.value = '';
-        qtyInput.max   = stock;
+        qtyInput.max = stock;
     }
 
     function validateQty() {
-        const sel      = document.getElementById('itemSelect');
+        const sel = document.getElementById('itemSelect');
         const selected = sel.options[sel.selectedIndex];
         const qtyInput = document.getElementById('qtyInput');
-        const qtyHint  = document.getElementById('qtyHint');
-        const logBtn   = document.getElementById('logBtn');
+        const qtyHint = document.getElementById('qtyHint');
+        const logBtn = document.getElementById('logBtn');
 
         if (!sel.value || !qtyInput.value) return;
 
-        const stock  = parseFloat(selected.dataset.stock);
-        const unit   = selected.dataset.unit;
-        const qty    = parseFloat(qtyInput.value);
+        const stock = parseFloat(selected.dataset.stock);
+        const unit = selected.dataset.unit;
+        const qty = parseFloat(qtyInput.value);
 
         if (qty > stock) {
             qtyHint.textContent = `⚠ Exceeds available stock! Only ${stock} ${unit} left.`;
@@ -232,8 +220,8 @@
 
     function resetForm() {
         document.getElementById('stockInfo').style.display = 'none';
-        document.getElementById('unitBadge').textContent   = '';
-        document.getElementById('qtyHint').style.display   = 'none';
-        document.getElementById('logBtn').disabled         = false;
+        document.getElementById('unitBadge').textContent = '';
+        document.getElementById('qtyHint').style.display = 'none';
+        document.getElementById('logBtn').disabled = false;
     }
 </script>

@@ -9,14 +9,15 @@ A premium, full-stack management portal designed for high-end tattoo studios. Th
 git clone <repository-url>
 cd TatooStudioProject
 
-# Install Python dependencies
-pip install -r requirements.txt
+# Install Python dependencies (Pinned versions)
+pip install -r backend/requirements.txt
 
-# Configure your database (ensure MySQL is running)
-# Update credentials in `db.py`
+# Configure your environment
+# Copy .env.example to .env and update credentials
+# Production requires a secure SECRET_KEY
 
-# Run the Flask application
-python app.py
+# Run the project from root
+python run.py
 ```
 
 ## Features
@@ -26,8 +27,11 @@ python app.py
 - **Customer Hub**: Seamless booking experience for Tattoos, Art/Sketching, and Removal services with real-time status tracking.
 - **Premium Aesthetics**: Framework-free Vanilla CSS3 architecture optimized for clarity, precision, and a luxury studio feel.
 - **Financial Suite**: Consolidated invoicing and payment recording with automated billing states.
+- **Security & Performance**: Global CSRF protection, secured session management, and MySQL connection pooling.
 
 ## Configuration
+
+The application uses environment variables for all sensitive data and configuration. Create a `.env` file in the `backend/` directory.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -35,9 +39,11 @@ python app.py
 | `DB_USER` | MySQL Database User | `root` |
 | `DB_PASS` | MySQL Database Password | - |
 | `DB_NAME` | Database Name | `dragon_tattoos` |
-| `UPLOAD_FOLDER` | Path for gallery uploads | `static/uploads/references` |
-
-*(Note: Currently database credentials are hardcoded in `db.py` and email credentials might be hardcoded in `app.py`. It's recommended to map these from the `.env` file.)*
+| `DB_POOL_SIZE`| Database Connection Pool Size | `5` |
+| `SECRET_KEY` | Flask Secret Key (Required for Session & CSRF) | - |
+| `MAIL_SERVER` | SMTP Server for OTP emails | `smtp.gmail.com` |
+| `MAIL_USERNAME`| Email account for SMTP | - |
+| `MAIL_PASSWORD`| Password/App Token for SMTP | - |
 
 ## Documentation
 

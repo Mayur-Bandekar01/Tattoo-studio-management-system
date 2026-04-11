@@ -448,7 +448,12 @@
         /* ── Delete a message ───────────────────────────────── */
         window.artDeleteMsg = function (msgId) {
             if (!confirm('Are you sure you want to delete this message?')) return;
-            fetch('/chat/message/' + msgId, { method: 'DELETE' })
+            fetch('/chat/message/' + msgId, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
                 .then(function (r) { return r.json(); })
                 .then(function (d) {
                     if (d.success) artFetchMsgs();
@@ -487,7 +492,12 @@
             if (!confirm('Delete ' + _artSelectedIds.size + ' message(s) permanently?')) return;
             var ids = Array.from(_artSelectedIds);
             var promises = ids.map(function (id) {
-                return fetch('/chat/message/' + id, { method: 'DELETE' }).then(function (r) { return r.json(); });
+                return fetch('/chat/message/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                }).then(function (r) { return r.json(); });
             });
             Promise.all(promises).then(function () {
                 _artSelectedIds.clear();
@@ -501,7 +511,10 @@
             if (!confirm("Delete this entire conversation? This cannot be undone.")) return;
             fetch('/chat/thread/delete', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
                 body: JSON.stringify({ other_id: otherId, other_role: otherRole })
             })
                 .then(function (r) { return r.json(); })
@@ -570,7 +583,10 @@
 
             fetch('/chat/send', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
                 body: JSON.stringify({
                     content: content,
                     other_id: _custId,

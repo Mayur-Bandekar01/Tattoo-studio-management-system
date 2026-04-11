@@ -16,7 +16,12 @@ app = Flask(__name__,
             static_folder=os.path.join(BASE_DIR, 'frontend', 'static'))
 
 # ── SECURITY CONFIGURATION ───────────────────────────────────
-app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_6789")
+app.secret_key = os.getenv("SECRET_KEY")
+if not app.secret_key:
+    if app.debug or os.getenv("FLASK_DEBUG") == "1" or __name__ == '__main__':
+        app.secret_key = "development_secret_key_12345"
+    else:
+        raise RuntimeError("CRITICAL: SECRET_KEY is not set in environment. Production requires a secure secret.")
 app.permanent_session_lifetime = timedelta(hours=2)
 
 # CSRF Protection (Global)
@@ -54,9 +59,12 @@ def add_no_cache(response):
 @app.teardown_appcontext
 def close_db(error):
     from flask import g
-    db = g.get('db', None)
+    db = g.pop('db', None)
     if db is not None:
-        db.close()
+        try:
+            db.close()
+        except Exception:
+            pass
 
 # ── ERROR HANDLERS ───────────────────────────────────────────
 @app.errorhandler(404)
@@ -69,12 +77,11 @@ def server_error(e):
     return redirect('/')
 
 # ── REGISTER BLUEPRINTS ──────────────────────────────────────
-# Note: Since routes/ is now relative to this file in backend/, we can import normally.
-from routes import register_blueprints
+from .routes import register_blueprints
 register_blueprints(app)
 
 # ── DB MAINTENANCE ──────────────────────────────────────────
-from utils.db_maintenance import ensure_schema_consistency
+from .utils.db_maintenance import ensure_schema_consistency
 with app.app_context():
     ensure_schema_consistency()
 

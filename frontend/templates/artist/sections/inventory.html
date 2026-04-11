@@ -10,6 +10,7 @@
     <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">REGISTER NEW
         SUPPLY</h3>
     <form method="POST" action="/artist/inventory/add">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-grid">
             <div class="form-group">
                 <label class="form-label">Item Name</label>
@@ -185,6 +186,7 @@
                             <!-- Restock: ADD to existing stock -->
                             <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
                                 style="display: flex; gap: 0.4rem; align-items: center;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="action" value="add">
                                 <input class="studio-input" type="number" name="quant_stock"
                                     placeholder="Add {{ item.unit }}" min="0.01" step="0.01"
@@ -199,6 +201,7 @@
                             <!-- Set: OVERWRITE stock value -->
                             <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
                                 style="display: flex; gap: 0.4rem; align-items: center;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="action" value="set">
                                 <input class="studio-input" type="number" name="quant_stock"
                                     value="{{ item.quant_stock | round(2) }}" min="0" step="0.01"
@@ -214,6 +217,7 @@
 
                     <td>
                         <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn-studio text-danger bg-danger-soft"
                                 style="padding: 0.4rem; border: none;"
                                 onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">

@@ -1,11 +1,29 @@
 import os
 import json
 from flask import Blueprint, render_template, request, redirect, session, flash, current_app
-from db import get_db
-from utils.decorators import role_required
-from utils.validators import is_valid_numeric
+from datetime import date, datetime, timedelta
+from ..db import get_db
+from ..utils.decorators import role_required
+from ..utils.validators import is_valid_numeric
 
 owner_bp = Blueprint('owner', __name__)
+
+def sanitize_for_json(data):
+    """Recursively convert timedelta, date, and datetime objects to strings for JSON serialization."""
+    if isinstance(data, list):
+        return [sanitize_for_json(item) for item in data]
+    if isinstance(data, dict):
+        return {k: sanitize_for_json(v) for k, v in data.items()}
+    if isinstance(data, timedelta):
+        # Convert timedelta to "HH:MM:SS" string
+        total_seconds = int(data.total_seconds())
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+    if isinstance(data, (date, datetime)):
+        return data.isoformat()
+    return data
 
 # ── DASHBOARD STATISTICS HELPERS ──────────────────────────────
 
@@ -41,6 +59,12 @@ def get_performance_data(cursor):
     """Fetch performance and trend data."""
     cursor.execute("""
         SELECT ar.artist_id, ar.artist_name, ar.specialisation,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id) as total_appts,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id AND a.status = 'Done') as done_appts,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id AND a.status = 'Approved') as approved_appts,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id AND a.status = 'Pending') as pending_appts,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id AND a.status = 'Rejected') as rejected_count,
+               (SELECT COUNT(*) FROM appointment a WHERE a.artist_id = ar.artist_id AND a.status = 'Cancelled') as cancelled_appts,
                (SELECT IFNULL(SUM(p.amount_paid), 0)
                 FROM payment p JOIN invoice i ON p.invoice_id = i.invoice_id
                 JOIN appointment a2 ON i.appointment_id = a2.appointment_id
@@ -50,10 +74,10 @@ def get_performance_data(cursor):
     artist_performance = cursor.fetchall()
 
     cursor.execute("""
-        SELECT CASE WHEN payment_method LIKE 'UPI%' THEN 'UPI' ELSE payment_method END AS method,
-               COUNT(*) as count, SUM(amount_paid) as total
+        SELECT CASE WHEN payment_method LIKE 'UPI%' THEN 'UPI' ELSE payment_method END AS payment_method,
+               COUNT(*) as count, IFNULL(SUM(amount_paid), 0) as total
         FROM payment WHERE status = 'Approved'
-        GROUP BY method ORDER BY total DESC
+        GROUP BY payment_method ORDER BY total DESC
     """)
     payment_methods = cursor.fetchall()
 
@@ -104,7 +128,7 @@ def owner_dashboard():
     artists = cursor.fetchall()
     
     cursor.execute("""
-        SELECT i.*, a.customer_id, c.customer_name FROM invoice i 
+        SELECT i.*, i.concept_type, a.customer_id, c.customer_name, a.artist_id FROM invoice i 
         JOIN appointment a ON i.appointment_id = a.appointment_id 
         JOIN customer c ON a.customer_id = c.customer_id 
         ORDER BY i.generated_date DESC
@@ -120,29 +144,37 @@ def owner_dashboard():
     """)
     payments = cursor.fetchall()
     
-    cursor.execute("SELECT * FROM inventory")
+    cursor.execute("""
+        SELECT inv.*, a.artist_name
+        FROM inventory inv
+        LEFT JOIN artist a ON inv.artist_id = a.artist_id
+        ORDER BY a.artist_name, inv.category, inv.item_name
+    """)
     inventory = cursor.fetchall()
+    # Provide formatted date string for template
+    for item in inventory:
+        lu = item.get('last_updated')
+        item['last_updated_str'] = lu.strftime('%Y-%m-%d') if lu else ''
 
     # Aggregates & Performance
     stats = get_dashboard_stats(cursor)
     perf  = get_performance_data(cursor)
-    conn.close()
 
     # Derived Python Stats
-    low_stock_items = [i for i in inventory if i['quant_stock'] <= i['reorder_level']]
-    total_revenue   = sum(p['amount_paid'] for p in payments if p.get('status') == 'Approved')
+    low_stock_items = [i for i in inventory if (i.get('quant_stock') or 0) <= (i.get('reorder_level') or 0)]
+    total_revenue   = sum((p.get('amount_paid') or 0) for p in payments if p.get('status') == 'Approved')
     
     return render_template('owner/dashboard.html',
         name                 = session['name'],
-        appointments         = appointments,
-        artists              = artists,
-        invoices             = invoices,
-        payments             = payments,
-        inventory            = inventory,
-        artist_performance   = perf['artist_performance'],
-        payment_methods      = perf['payment_methods'],
-        daily_revenue        = perf['daily_revenue'],
-        concept_trends       = perf['concept_trends'],
+        appointments         = sanitize_for_json(appointments),
+        artists              = sanitize_for_json(artists),
+        invoices             = sanitize_for_json(invoices),
+        payments             = sanitize_for_json(payments),
+        inventory            = sanitize_for_json(inventory),
+        artist_performance   = sanitize_for_json(perf['artist_performance']),
+        payment_methods      = sanitize_for_json(perf['payment_methods']),
+        daily_revenue        = sanitize_for_json(perf['daily_revenue']),
+        concept_trends       = sanitize_for_json(perf['concept_trends']),
         total_appointments   = len(appointments),
         pending_count        = sum(1 for a in appointments if a['status'] == 'Pending'),
         approved_count       = sum(1 for a in appointments if a['status'] == 'Approved'),
@@ -151,16 +183,16 @@ def owner_dashboard():
         cancelled_count      = sum(1 for a in appointments if a['status'] == 'Cancelled'),
         total_artists        = len(artists),
         low_stock            = len(low_stock_items),
-        low_stock_items      = low_stock_items,
+        low_stock_items      = sanitize_for_json(low_stock_items),
         unpaid_invoices      = sum(1 for i in invoices if i['pay_status'] == 'Pending'),
         total_invoices       = len(invoices),
         total_revenue        = total_revenue,
         paid_revenue         = total_revenue,
-        pending_revenue      = sum(i['total_amt'] for i in invoices if i['pay_status'] in ('Pending', 'Under Review')),
         total_customers      = stats['total_customers'],
         pending_approvals    = sum(1 for p in payments if p.get('status') == 'Pending Approval'),
         returning_customers  = stats['returning_customers'],
-        monthly_revenue      = stats['monthly_revenue']
+        monthly_revenue      = stats['monthly_revenue'],
+        pending_revenue      = sum((i.get('total_amt') or 0) for i in invoices if i['pay_status'] in ('Pending', 'Under Review'))
     )
 
 # ── APPOINTMENT ACTIONS ──────────────────────────────────────
@@ -174,7 +206,6 @@ def owner_cancel(appointment_id):
         (appointment_id,)
     )
     conn.commit()
-    conn.close()
     flash("Appointment cancelled successfully.", "success")
     return redirect('/owner/dashboard')
 
@@ -210,7 +241,7 @@ def owner_artist_add():
     except Exception:
         flash("Error: Artist ID or email already exists!", "error")
     finally:
-        conn.close()
+        pass
     return redirect('/owner/dashboard')
 
 @owner_bp.route('/owner/artist/delete/<artist_id>', methods=['POST'])
@@ -251,9 +282,91 @@ def owner_artist_delete(artist_id):
         else:
             flash(f"An error occurred: {str(e)}", "error")
     finally:
-        conn.close()
-
+        pass
+    
     return redirect('/owner/dashboard')
+
+# ── OWNER INVENTORY MANAGEMENT ───────────────────────────────
+@owner_bp.route('/owner/inventory/add', methods=['POST'])
+@role_required('owner')
+def owner_inventory_add():
+    """Owner adds a supply item to a specific artist's inventory."""
+    item_name     = request.form.get('item_name', '').strip()
+    category      = request.form.get('category', '').strip()
+    unit          = request.form.get('unit', '').strip()
+    quant_stock   = request.form.get('quant_stock', '').strip()
+    reorder_level = request.form.get('reorder_level', '').strip()
+    unit_cost     = request.form.get('unit_cost', '').strip()
+    artist_id     = request.form.get('artist_id', '').strip() or None
+
+    if not all([item_name, category, unit, quant_stock, reorder_level, unit_cost]):
+        flash("Please fill in all required inventory fields!", "error")
+        return redirect('/owner/dashboard')
+
+    if not is_valid_numeric(quant_stock) or not is_valid_numeric(reorder_level) or not is_valid_numeric(unit_cost):
+        flash("Invalid numeric value entered!", "error")
+        return redirect('/owner/dashboard')
+
+    conn   = get_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO inventory (item_name, category, unit, quant_stock, reorder_level, unit_cost, artist_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (item_name, category, unit, float(quant_stock), float(reorder_level), float(unit_cost), artist_id))
+        conn.commit()
+        flash(f"'{item_name}' added to inventory successfully!", "success")
+    except Exception as e:
+        flash(f"Error adding inventory item: {str(e)}", "error")
+    return redirect('/owner/dashboard')
+
+
+@owner_bp.route('/owner/inventory/update/<int:item_id>', methods=['POST'])
+@role_required('owner')
+def owner_inventory_update(item_id):
+    """Owner restocks or overrides stock for any inventory item."""
+    action      = request.form.get('action', '').strip()
+    quant_stock = request.form.get('quant_stock', '').strip()
+
+    if action not in ('add', 'set') or not quant_stock or not is_valid_numeric(quant_stock):
+        flash("Invalid update request!", "error")
+        return redirect('/owner/dashboard')
+
+    qty    = float(quant_stock)
+    conn   = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM inventory WHERE item_id = %s", (item_id,))
+    item = cursor.fetchone()
+    if not item:
+        flash("Inventory item not found!", "error")
+        return redirect('/owner/dashboard')
+
+    if action == 'add':
+        cursor.execute("UPDATE inventory SET quant_stock = quant_stock + %s WHERE item_id = %s", (qty, item_id))
+        flash(f"Restocked '{item['item_name']}' by {qty} {item['unit']}.", "success")
+    else:
+        cursor.execute("UPDATE inventory SET quant_stock = %s WHERE item_id = %s", (qty, item_id))
+        flash(f"'{item['item_name']}' stock set to {qty} {item['unit']}.", "success")
+    conn.commit()
+    return redirect('/owner/dashboard')
+
+
+@owner_bp.route('/owner/inventory/delete/<int:item_id>', methods=['POST'])
+@role_required('owner')
+def owner_inventory_delete(item_id):
+    """Owner permanently removes an inventory item."""
+    conn   = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT item_name FROM inventory WHERE item_id = %s", (item_id,))
+    item = cursor.fetchone()
+    if not item:
+        flash("Inventory item not found!", "error")
+        return redirect('/owner/dashboard')
+    cursor.execute("DELETE FROM inventory WHERE item_id = %s", (item_id,))
+    conn.commit()
+    flash(f"'{item['item_name']}' deleted from inventory.", "success")
+    return redirect('/owner/dashboard')
+
 
 # ── INVOICE GENERATION ────────────────────────────────────────
 @owner_bp.route('/owner/invoice/generate', methods=['POST'])
@@ -291,7 +404,7 @@ def owner_invoice_generate():
     except Exception:
         flash("Error: Invoice may already exist for this appointment!", "error")
     finally:
-        conn.close()
+        pass
     return redirect('/owner/dashboard')
 
 # ── PAYMENT PROCESSING (Record, Approve, Reject) ──────────────
@@ -325,11 +438,9 @@ def owner_payment_record():
     invoice = cursor.fetchone()
 
     if not invoice:
-        conn.close()
         flash("Invoice not found!", "error")
         return redirect('/owner/dashboard')
     if invoice['pay_status'] == 'Paid':
-        conn.close()
         flash("This invoice is already marked as paid!", "error")
         return redirect('/owner/dashboard')
 
@@ -343,7 +454,6 @@ def owner_payment_record():
         (invoice_id,)
     )
     conn.commit()
-    conn.close()
     flash("Payment recorded and invoice marked as Paid!", "success")
     return redirect('/owner/dashboard')
 
@@ -361,7 +471,6 @@ def owner_payment_approve(payment_id):
     payment = cursor.fetchone()
 
     if not payment:
-        conn.close()
         flash("Payment record not found!", "error")
         return redirect('/owner/dashboard')
 
@@ -374,7 +483,6 @@ def owner_payment_approve(payment_id):
         (payment['invoice_id'],)
     )
     conn.commit()
-    conn.close()
     flash("Payment approved! Invoice is now marked as Paid.", "success")
     return redirect('/owner/dashboard')
 
@@ -392,7 +500,6 @@ def owner_payment_reject(payment_id):
     payment = cursor.fetchone()
 
     if not payment:
-        conn.close()
         flash("Payment record not found!", "error")
         return redirect('/owner/dashboard')
 
@@ -403,7 +510,6 @@ def owner_payment_reject(payment_id):
         (invoice_id,)
     )
     conn.commit()
-    conn.close()
     flash("Payment rejected. Invoice has been returned to Pending.", "success")
     return redirect('/owner/dashboard')
 
@@ -436,7 +542,6 @@ def owner_change_password():
         (session['user_id'], current)
     )
     if not cursor.fetchone():
-        conn.close()
         flash("Current password is incorrect!", "error")
         return redirect('/owner/dashboard')
 
@@ -445,7 +550,6 @@ def owner_change_password():
         (new_pass, session['user_id'])
     )
     conn.commit()
-    conn.close()
     flash("Password updated successfully!", "success")
     return redirect('/owner/dashboard')
 
@@ -462,7 +566,6 @@ def invoice_view(invoice_id):
     invoice = cursor.fetchone()
 
     if not invoice:
-        conn.close()
         flash("Invoice not found!", "error")
         return redirect('/customer/dashboard' if role == 'customer' else '/owner/dashboard')
 
@@ -473,7 +576,6 @@ def invoice_view(invoice_id):
         )
         appt_check = cursor.fetchone()
         if not appt_check or appt_check['customer_id'] != session['user_id']:
-            conn.close()
             flash("Access denied!", "error")
             return redirect('/customer/dashboard')
 
@@ -490,7 +592,6 @@ def invoice_view(invoice_id):
         (invoice_id,)
     )
     payment = cursor.fetchone()
-    conn.close()
 
     extra = {}
     if appointment and appointment.get('extra_details'):
@@ -500,9 +601,9 @@ def invoice_view(invoice_id):
             extra = {}
 
     return render_template('billing/bill.html',
-        invoice     = invoice,
-        appointment = appointment,
-        payment     = payment,
+        invoice     = sanitize_for_json(invoice),
+        appointment = sanitize_for_json(appointment),
+        payment     = sanitize_for_json(payment),
         extra       = extra,
         role        = role
     )
