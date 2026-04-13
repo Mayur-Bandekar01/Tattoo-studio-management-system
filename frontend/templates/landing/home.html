@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Premium Tattoo Studio</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="description"
         content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
     <!-- Offline Assets -->
@@ -351,6 +352,79 @@
 
         .stat-num {
             font-variant-numeric: tabular-nums;
+        }
+
+        /* ── LIGHT THEME (White + Orange Energetic) ── */
+        html.light-mode,
+        html.light-mode body {
+            --bg: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #f97316;
+            --border: rgba(253, 186, 116, 0.4);
+            --card-bg: rgba(255, 250, 245, 0.8);
+            --card-border: rgba(253, 186, 116, 0.2);
+            --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(249, 115, 22, 0.06) 0%, transparent 60%), #ffffff;
+        }
+
+        html.light-mode .navbar {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .nav-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .nav-link.active,
+        html.light-mode .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .hero-title,
+        html.light-mode h1,
+        html.light-mode h2 {
+            color: var(--text) !important;
+        }
+
+        html.light-mode .hero-section {
+            background: var(--hero-bg) !important;
+        }
+
+        html.light-mode .bento-card,
+        html.light-mode .stat-card,
+        html.light-mode .testi-card {
+            background: var(--card-bg) !important;
+            border-color: var(--card-border) !important;
+        }
+
+        html.light-mode .stat-num {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .mobile-menu {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        html.light-mode .mobile-menu a {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .mobile-menu a:hover,
+        html.light-mode .mobile-menu a.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode footer {
+            background: #fffaf5 !important;
+            border-top: 1px solid var(--border) !important;
+        }
+
+        /* Global theme transition */
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
         }
 
         /* ── PRELOADER ── */

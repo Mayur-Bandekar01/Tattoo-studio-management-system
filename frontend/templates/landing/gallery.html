@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Gallery</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- Offline Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
@@ -56,14 +57,14 @@
         html.light-mode {
             --bg-primary: #ffffff;
             --bg-primary-rgb: 255, 255, 255;
-            --bg-secondary: #f8fafc;
-            --text-primary: #0f172a;
-            --text-muted: #64748b;
-            --accent-color: #0d9488;
-            --accent-rgb: 13, 148, 136;
-            --accent-light: #2dd4bf;
-            --card-bg: #ffffff;
-            --border-subtle: #e2e8f0;
+            --bg-secondary: #fffaf5;
+            --text-primary: #1f2937;
+            --text-muted: #6b7280;
+            --accent-color: #f97316;
+            --accent-rgb: 249, 115, 22;
+            --accent-light: #fb923c;
+            --card-bg: rgba(255, 250, 245, 0.8);
+            --border-subtle: rgba(253, 186, 116, 0.4);
         }
 
         body {
@@ -356,9 +357,9 @@
 
         /* Removed gallery-overlay styles per user request for clean images */
 
-        /* Light Mode Overrides — Premium Purple/Indigo Theme */
+        /* Light Mode Overrides — Ivory Regal Theme */
         html.light-mode .text-gradient {
-            background: linear-gradient(to right, #2d3436, #845EC2, #2d3436);
+            background: linear-gradient(to right, #1f2937, #f97316, #1f2937);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -366,37 +367,37 @@
 
         html.light-mode .filter-btn {
             background: #fff;
-            border-color: #e0e0e0;
-            color: #636e72;
+            border-color: rgba(253, 186, 116, 0.3);
+            color: #6b7280;
         }
 
         html.light-mode .filter-btn:hover {
-            border-color: #845EC2;
-            color: #845EC2;
+            border-color: #f97316;
+            color: #f97316;
         }
 
         html.light-mode .filter-btn.active {
-            background: #845EC2;
-            border-color: #845EC2;
+            background: #f97316;
+            border-color: #f97316;
             color: #fff;
-            box-shadow: 0 8px 25px rgba(132, 94, 194, 0.3);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.25);
         }
 
         html.light-mode .gallery-item {
-            background: #fff;
-            border-color: #eee;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 250, 245, 0.8);
+            border-color: rgba(253, 186, 116, 0.2);
+            box-shadow: 0 10px 40px rgba(249, 115, 22, 0.05);
         }
 
         html.light-mode .gallery-item:hover {
-            border-color: #845EC2;
-            box-shadow: 0 30px 60px rgba(132, 94, 194, 0.15);
+            border-color: #f97316;
+            box-shadow: 0 30px 60px rgba(249, 115, 22, 0.1);
         }
 
         html.light-mode .stat-badge {
-            background: rgba(132, 94, 194, 0.08);
-            border-color: rgba(132, 94, 194, 0.2);
-            color: #845EC2;
+            background: rgba(249, 115, 22, 0.08);
+            border-color: rgba(249, 115, 22, 0.2);
+            color: #f97316;
         }
 
         /* REVEAL */
