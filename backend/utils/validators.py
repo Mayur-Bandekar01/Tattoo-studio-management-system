@@ -1,15 +1,16 @@
 import os
 import math
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
+
 
 def allowed_file(filename):
     """
     Checks if a file has a supported image extension (PNG, JPG, JPEG).
     Used during booking and gallery uploads.
     """
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def validate_image_size(file_obj, max_size_mb=5):
     """
@@ -20,6 +21,7 @@ def validate_image_size(file_obj, max_size_mb=5):
     file_size = file_obj.tell()
     file_obj.seek(0)
     return file_size <= max_size_mb * 1024 * 1024
+
 
 def is_valid_numeric(value):
     """

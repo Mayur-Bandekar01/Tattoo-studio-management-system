@@ -1,13 +1,13 @@
 from flask_mail import Message
 
+
 def send_otp_email(mail_ext, customer_name, email, otp):
     """
     Sends the OTP email for password reset using the provided Mail extension.
     """
     try:
         msg = Message(
-            subject="Dragon Tattoos — Your Password Reset OTP",
-            recipients=[email]
+            subject="Dragon Tattoos — Your Password Reset OTP", recipients=[email]
         )
         msg.body = f"Your OTP is: {otp}\nValid for 10 minutes.\nDo not share this."
         msg.html = f"""

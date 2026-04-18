@@ -59,8 +59,10 @@
             Update your account
             password through our encrypted fortress.</p>
 
+        <!-- [DATA-FLOW]: Submits to POST /customer/change-password -->
+
         <form method="POST" action="/customer/change-password"
-            style="display: flex; flex-direction: column; gap: 1.5rem;">
+              style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="form-group">
                 <label class="lbl">Current Password</label>
                 <input type="password" name="current_password" placeholder="••••••••" required>
@@ -74,7 +76,7 @@
                 <input type="password" name="confirm_password" placeholder="Repeat new password" required>
             </div>
             <button type="submit" class="btn-studio btn-primary"
-                style="padding: 1rem; margin-top: 1rem; justify-content: center; font-weight: 900;">
+                    style="padding: 1rem; margin-top: 1rem; justify-content: center; font-weight: 900;">
                 <i class="fas fa-shield-halved" style="margin-right: 0.5rem;"></i> Update Security
             </button>
         </form>

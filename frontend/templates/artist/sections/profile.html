@@ -61,24 +61,25 @@
     <div class="studio-card" style="padding: 2.5rem;">
         <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">SECURITY
             SETTINGS</h3>
+        <!-- [DATA-FLOW]: Submits to POST /artist/change-password -->
         <form method="POST" action="/artist/change-password">
             <div style="margin-bottom: 1.5rem;">
                 <label class="form-label">Current Password</label>
                 <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..."
-                    required>
+                       required>
             </div>
             <div style="margin-bottom: 1.5rem;">
                 <label class="form-label">New Password</label>
                 <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters"
-                    required>
+                       required>
             </div>
             <div style="margin-bottom: 2.5rem;">
                 <label class="form-label">Confirm New Password</label>
                 <input class="studio-input" type="password" name="confirm_password" placeholder="Repeat new password"
-                    required>
+                       required>
             </div>
             <button type="submit" class="btn-studio btn-primary"
-                style="width: 100%; justify-content: center; padding: 1rem;">
+                    style="width: 100%; justify-content: center; padding: 1rem;">
                 <i class="fas fa-shield-alt"></i> Update Security Credentials
             </button>
         </form>

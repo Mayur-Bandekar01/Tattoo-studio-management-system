@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Studio Login</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+
     <!-- Offline Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
@@ -551,6 +553,7 @@
 
             <!-- Form -->
             <div style="padding:2rem 2.5rem 2.5rem;">
+                <!-- [DATA-FLOW]: Submits to POST /login -->
                 <form id="loginForm" method="POST" action="/login" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 

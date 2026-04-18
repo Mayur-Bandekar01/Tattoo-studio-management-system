@@ -12,6 +12,8 @@
         <p>Select a service and fill in the details — our artist will confirm your booking!</p>
     </div>
 
+    <!-- [DATA-FLOW]: Submits to POST /customer/book -->
+
     <form method="POST" action="/customer/book" enctype="multipart/form-data" id="bookingForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 

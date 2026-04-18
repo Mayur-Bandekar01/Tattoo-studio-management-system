@@ -27,6 +27,7 @@
     <div class="studio-card" style="border-color: var(--studio-indigo);">
         <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.1em;">UPLOAD NEW
             ARTWORK</h3>
+        <!-- [DATA-FLOW]: Submits to POST /artist/gallery/upload -->
         <form method="POST" action="/artist/gallery/upload" enctype="multipart/form-data">
             <div style="margin-bottom: 2rem;">
                 <label class="form-label">Select Image <span style="color: #FF4757;">*</span></label>
@@ -165,6 +166,7 @@
                 {% endif %}
             </div>
         </div>
+        <!-- [DATA-FLOW]: Submits to POST /artist/gallery/delete/{{ item.gallery_id }} -->
         <form method="POST" action="/artist/gallery/delete/{{ item.gallery_id }}"
             onsubmit="return confirm('Permanently remove this work from your portfolio?')"
             style="position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;">

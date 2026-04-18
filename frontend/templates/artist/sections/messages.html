@@ -319,35 +319,35 @@
         <div class="ch-list" id="art-thread-list">
 
             {% if appointments %}
-            {% for customer_id, appts in appointments | groupby('customer_id') %}
-            {% set first = appts | first %}
+                {% for customer_id, appts in appointments | groupby('customer_id') %}
+                    {% set first = appts | first %}
 
             <!-- Unified thread per customer -->
-            <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
-                id="athread-{{ customer_id }}-gen" style="position: relative;">
-                <div class="ch-av">{{ (first.customer_name or 'C')[0] | upper }}</div>
-                <div class="ch-item-info">
-                    <div class="ch-item-name">{{ first.customer_name }}</div>
-                    <div class="ch-item-sub">Conversation</div>
-                </div>
-                <div class="ch-thread-actions" style="margin-left: auto; display: flex; align-items: center;">
-                    <button class="btn-th-del"
-                        onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
-                        title="Delete Chat"
-                        style="background: none; border: none; color: var(--studio-text-muted); cursor: pointer; opacity: 0; transition: opacity 0.2s; padding: 5px;">
-                        <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
-                    </button>
-                    <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
-                </div>
-            </div>
+                    <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
+                         id="athread-{{ customer_id }}-gen" style="position: relative;">
+                        <div class="ch-av">{{ (first.customer_name or 'C')[0] | upper }}</div>
+                        <div class="ch-item-info">
+                            <div class="ch-item-name">{{ first.customer_name }}</div>
+                            <div class="ch-item-sub">Conversation</div>
+                        </div>
+                        <div class="ch-thread-actions" style="margin-left: auto; display: flex; align-items: center;">
+                            <button class="btn-th-del"
+                                    onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
+                                    title="Delete Chat"
+                                    style="background: none; border: none; color: var(--studio-text-muted); cursor: pointer; opacity: 0; transition: opacity 0.2s; padding: 5px;">
+                                <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
+                            </button>
+                            <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
+                        </div>
+                    </div>
 
-            {% endfor %}
+                {% endfor %}
             {% else %}
-            <div style="padding:3rem 1.5rem;text-align:center;color:var(--studio-text-secondary);">
-                <i class="fas fa-user-clock" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>
-                <p style="font-size:0.82rem;">No appointments yet. Conversations will appear here once bookings come
-                    in.</p>
-            </div>
+                <div style="padding:3rem 1.5rem;text-align:center;color:var(--studio-text-secondary);">
+                    <i class="fas fa-user-clock" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>
+                    <p style="font-size:0.82rem;">No appointments yet. Conversations will appear here once bookings come
+                        in.</p>
+                </div>
             {% endif %}
 
         </div>
@@ -374,21 +374,21 @@
             <div class="ch-msgs" id="art-msgs-area"></div>
             <!-- Selection Toolbar -->
             <div id="art-sel-bar"
-                style="display:none; align-items:center; justify-content:space-between; padding: 0.6rem 1.25rem; background: rgba(99, 80, 229, 0.08); border-top: 1px solid var(--studio-border); flex-shrink:0;">
+                 style="display:none; align-items:center; justify-content:space-between; padding: 0.6rem 1.25rem; background: rgba(99, 80, 229, 0.08); border-top: 1px solid var(--studio-border); flex-shrink:0;">
                 <span id="art-sel-count" style="font-size:0.8rem; font-weight:700; color:var(--studio-text-primary);">0
                     selected</span>
                 <div style="display:flex; gap:0.5rem;">
                     <button onclick="artCancelSelection()"
-                        style="background:none; border:1px solid var(--studio-border); color:var(--studio-text-muted); padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Cancel</button>
+                            style="background:none; border:1px solid var(--studio-border); color:var(--studio-text-muted); padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Cancel</button>
                     <button onclick="artDeleteSelected()"
-                        style="background:var(--studio-danger,#EF4444); border:none; color:#fff; padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;"><i
-                            class="fas fa-trash-alt" style="margin-right:5px;"></i>Delete</button>
+                            style="background:var(--studio-danger,#EF4444); border:none; color:#fff; padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;"><i
+                        class="fas fa-trash-alt" style="margin-right:5px;"></i>Delete</button>
                 </div>
             </div>
             <div class="ch-input-bar">
                 <textarea class="ch-textarea" id="art-chat-input" placeholder="Type a message…" rows="1"
-                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
-                    oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'">
+                          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
+                          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'">
                 </textarea>
                 <button class="ch-send-btn" id="art-send-btn" onclick="artSend()" title="Send">
                     <i class="fas fa-paper-plane" style="font-size:0.8rem;margin-left:2px;"></i>
@@ -554,12 +554,12 @@
                             var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + (_custName[0] || 'C').toUpperCase() + '</div>' : '';
 
                             return '<div class="ch-row ' + cls + ' ch-selectable" data-id="' + m.message_id + '" onclick="artToggleSelect(this)" style="display:flex; align-items:flex-start;">' +
-                                avatar +
-                                '<div class="ch-bubble-wrap">' +
-                                '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
-                                '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
-                                '</div>' +
-                                '</div>';
+                            avatar +
+                            '<div class="ch-bubble-wrap">' +
+                            '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
+                            '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
+                            '</div>' +
+                            '</div>';
                         }).join('');
                     }
 

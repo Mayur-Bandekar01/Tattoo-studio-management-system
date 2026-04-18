@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Register</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+
     <style>
         *,
         *::before,
@@ -478,6 +480,7 @@
 
             <!-- FORM -->
             <div style="padding:1.75rem 2.5rem 2.25rem;">
+                <!-- [DATA-FLOW]: Submits to POST /register -->
                 <form id="registerForm" method="POST" action="/register" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 

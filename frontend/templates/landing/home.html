@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Premium Tattoo Studio</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <meta name="description"
         content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
     <!-- Offline Assets -->
@@ -21,24 +21,39 @@
                         sans: ['Inter', 'system-ui', 'sans-serif'],
                         display: ['Cinzel', 'serif'],
                     },
-                    colors: {
-                        apple: {
-                            bg: 'var(--bg)',
-                            text: 'var(--text)',
-                            muted: 'var(--muted)',
-                            card: 'var(--card-bg)',
-                            border: 'var(--border)',
-                            accent: 'var(--accent, #c8a040)',
-                            gold: '#c8a040',
-                            goldLt: '#e0b84a',
+                                            colors: {
+                            apple: {
+                                bg: 'var(--apple-bg)',
+                                text: 'var(--apple-text)',
+                                muted: 'var(--apple-muted)',
+                                card: 'var(--apple-card)',
+                                border: 'var(--apple-border)',
+                                accent: 'var(--apple-accent)'
+                            }
                         }
-                    }
                 }
             }
         }
     </script>
 
     <style>
+    :root {
+        --apple-bg: #000;
+        --apple-text: #f5f5f7;
+        --apple-muted: #86868b;
+        --apple-card: #1d1d1f;
+        --apple-border: rgba(255, 255, 255, 0.1);
+        --apple-accent: #c8a040;
+    }
+    html.light-mode {
+        --apple-bg: #ffffff;
+        --apple-text: #1f2937;
+        --apple-muted: #6b7280;
+        --apple-card: #fffaf5;
+        --apple-border: rgba(253, 186, 116, 0.4);
+        --apple-accent: #f97316;
+    }
+
         :root {
             --bg: #030303;
             --text: #f5f5f7;
@@ -183,7 +198,7 @@
             background: var(--accent);
             color: #000;
             padding: 0.8rem 2rem;
-            border-radius: 99px;
+            border-radius: 0.5rem;
             font-weight: 600;
             font-size: 0.85rem;
             transition: all 0.3s;
@@ -195,7 +210,7 @@
         .btn-gold:hover {
             background: #e0b84a;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(200, 160, 64, 0.2);
+            /* box-shadow removed */
         }
 
         .btn-gold:focus-visible,
@@ -208,7 +223,7 @@
             border: 1px solid var(--border);
             color: var(--text);
             padding: 0.8rem 2rem;
-            border-radius: 99px;
+            border-radius: 0.5rem;
             font-weight: 500;
             font-size: 0.85rem;
             transition: all 0.3s;
@@ -506,9 +521,11 @@
         <div style="width:40px;height:1px;background:rgba(200,160,64,0.3)"></div>
         <div class="flex gap-4">
             <a href="/login"
-                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;">Login</a>
+                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none"
+                style="text-decoration:none;">Login</a>
             <a href="/register"
-                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;">Register</a>
+                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none"
+                style="text-decoration:none;">Register</a>
         </div>
     </div>
 
@@ -518,8 +535,7 @@
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo" width="28"
                     height="28" class="w-7 h-7 rounded-full object-cover">
-                <span class="font-display text-text text-[10px] tracking-[0.3em] uppercase opacity-90">Dragon
-                    Tattoos</span>
+                <span class="font-display text-apple-text text-[13px] font-bold tracking-widest uppercase">Dragon Tattoos</span>
             </div>
             <div class="hidden md:flex items-center gap-8">
                 <a href="/" class="nav-link active">Home</a>
@@ -531,9 +547,9 @@
             <div class="flex items-center gap-3">
                 <div class="hidden md:flex items-center gap-3">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-muted border border-white/10 rounded-full hover:text-text hover:border-white/20 transition-all">Login</a>
+                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none">Login</a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-accent text-black rounded-full hover:bg-goldLt transition-all">Register</a>
+                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none">Register</a>
                 </div>
                 <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
                     <span></span><span></span><span></span>

@@ -1335,6 +1335,7 @@
                         upi_app carries the selected app key separately.
                         Both hidden fields are filled inside validateUTR() before form.submit().
                     -->
+                        <!-- [DATA-FLOW]: Submits to POST /customer/pay/{{ invoice.invoice_id }} -->
                         <form id="upiForm" method="POST" action="/customer/pay/{{ invoice.invoice_id }}"
                             onsubmit="validateUTR(event, this)">
                             <input type="hidden" name="payment_method" value="UPI">
@@ -1375,6 +1376,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- [DATA-FLOW]: Submits to POST /customer/pay/{{ invoice.invoice_id }} -->
 
                     <form id="cardForm" method="POST" action="/customer/pay/{{ invoice.invoice_id }}"
                         onsubmit="submitCard(event)">
@@ -1422,6 +1425,7 @@
                             margin-bottom:1.25rem; font-size:0.72rem; color:#166534;">
                         📍 &nbsp;123 Ink Street, Art District, Bengaluru — 560001
                     </div>
+                    <!-- [DATA-FLOW]: Submits to POST /customer/pay/{{ invoice.invoice_id }} -->
                     <form method="POST" action="/customer/pay/{{ invoice.invoice_id }}">
                         <input type="hidden" name="payment_method" value="Cash">
                         <input type="hidden" name="transaction_ref" value="">

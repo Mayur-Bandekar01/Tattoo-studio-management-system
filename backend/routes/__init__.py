@@ -6,6 +6,7 @@ from .artist import artist_bp
 from .owner import owner_bp
 from .chat import chat_bp
 
+
 def register_blueprints(app):
     app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)

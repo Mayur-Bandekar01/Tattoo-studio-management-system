@@ -805,20 +805,38 @@
         /* ── State ── */
         const S = { view: 'monthly', month: '', charts: {}, filtered: {} };
 
-        function filterDataByMonth(month) {
-            const isAll = (month === 'all');
-            const targetM = month; // YYYY-MM
+        function updateFilteredData() {
+            const today = new Date();
+            // Default: All-time boundaries / no limits
+            let dateThreshold = null;
+            let targetM = null;
 
-            // Filter appointments
-            const fAppts = isAll ? D.raw_appointments : D.raw_appointments.filter(a => a.appointment_date.startsWith(targetM));
+            if (S.view === 'weekly') {
+                const limit = new Date();
+                limit.setDate(today.getDate() - 7);
+                dateThreshold = limit.toISOString().split('T')[0];
+            } else if (S.view === 'yearly') {
+                const limit = new Date();
+                limit.setFullYear(today.getFullYear() - 1);
+                dateThreshold = limit.toISOString().split('T')[0];
+            } else if (S.view === 'monthly') {
+                targetM = S.month;
+            }
 
-            // Filter invoices
-            const fInvs = isAll ? D.raw_invoices : D.raw_invoices.filter(i => i.generated_date.startsWith(targetM));
+            const matches = (dStr) => {
+                if (!dStr) return false;
+                if (targetM) return dStr.startsWith(targetM);
+                if (dateThreshold) return dStr >= dateThreshold;
+                return true;
+            };
 
-            // Filter payments
-            const fPays = isAll ? D.raw_payments : D.raw_payments.filter(p => p.payment_date.startsWith(targetM));
+            const fAppts = D.raw_appointments.filter(a => matches(a.appointment_date));
+            const fInvs = D.raw_invoices.filter(i => matches(i.generated_date));
+            const fPays = D.raw_payments.filter(p => matches(p.payment_date));
 
-            // Re-aggregate artist performance
+            // To ensure the bar chart displays correct values, we also filter daily_revenue
+            const fDaily = D.daily_revenue.filter(d => matches(d.date_key));
+
             const apMap = {};
             D.artist_performance.forEach(a => {
                 apMap[a.artist_id] = { ...a, total_appts: 0, done_appts: 0, approved_appts: 0, pending_appts: 0, rejected_count: 0, cancelled_appts: 0, total_revenue: 0 };
@@ -836,8 +854,6 @@
 
             fPays.forEach(p => {
                 if (p.status !== 'Approved') return;
-                // We need to link payment to artist. Raw payments don't have artist_id directly.
-                // But raw_invoices have appointment_id, and raw_appointments have artist_id.
                 const inv = D.raw_invoices.find(i => i.invoice_id == p.invoice_id);
                 if (inv) {
                     const appt = D.raw_appointments.find(a => a.appointment_id == inv.appointment_id);
@@ -847,7 +863,6 @@
                 }
             });
 
-            // Re-aggregate payment methods
             const pmMap = {};
             fPays.forEach(p => {
                 if (p.status !== 'Approved') return;
@@ -858,7 +873,6 @@
                 pmMap[m].total += parseFloat(p.amount_paid) || 0;
             });
 
-            // Re-aggregate concept trends
             const ctMap = {};
             fInvs.forEach(i => {
                 const c = i.concept_type;
@@ -867,11 +881,11 @@
                 ctMap[c].count++;
             });
 
-            // Update S.filtered
             S.filtered = {
                 appointments: fAppts,
                 invoices: fInvs,
                 payments: fPays,
+                daily_revenue: fDaily,
                 artist_performance: Object.values(apMap),
                 payment_methods: Object.values(pmMap).sort((a, b) => b.total - a.total),
                 concept_trends: Object.values(ctMap).sort((a, b) => b.count - a.count).slice(0, 8),
@@ -891,7 +905,7 @@
            KPI cards
         ════════════════════════════════ */
         function renderKPIs() {
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const { total_revenue: tr, paid_revenue: pr, pending_revenue: pe,
                 total_appointments: ta, done_count: dc } = data;
             document.getElementById('kv-total').textContent = fmt(tr);
@@ -901,7 +915,9 @@
             document.getElementById('kv-done').textContent = dc;
             document.getElementById('kv-paid-pct').textContent = pct(pr, tr) + '%';
             document.getElementById('kv-rate').textContent = pct(dc, ta) + '%';
-            document.getElementById('kv-avg').textContent = ta ? fmt(Math.round(tr / ta)) : '₹0';
+
+            const kvAvg = document.getElementById('kv-avg');
+            if (kvAvg) kvAvg.textContent = ta ? fmt(Math.round(tr / ta)) : '₹0';
 
             // Monthly Goal
             const goalVal = D.monthly_revenue || 0;
@@ -936,7 +952,7 @@
         ════════════════════════════════ */
         function getRevData() {
             const map = {};
-            D.daily_revenue.forEach(d => { map[d.date_key] = parseFloat(d.total_revenue) || 0; });
+            (S.filtered.daily_revenue || D.daily_revenue).forEach(d => { map[d.date_key] = parseFloat(d.total_revenue) || 0; });
             const today = new Date();
             let rows = [];
 
@@ -1077,7 +1093,7 @@
            Appointment status donut
         ════════════════════════════════ */
         function renderStatusChart() {
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const entries = [
                 { label: 'Completed', val: data.done_count, color: C.emerald },
                 { label: 'Approved', val: data.approved_count, color: C.blue },
@@ -1142,7 +1158,7 @@
         ════════════════════════════════ */
         function renderPaymentChart() {
             const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const methods = data.payment_methods || [];
             const wrap = document.getElementById('rc-payment-wrap');
             const canvas = document.getElementById('rc-payment');
@@ -1256,15 +1272,32 @@
            Style Trends
         ════════════════════════════════ */
         function renderTrendsChart() {
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const trends = data.concept_trends || [];
-            const ctx = document.getElementById('rc-trends').getContext('2d');
+            const canvas = document.getElementById('rc-trends');
+            const wrap = canvas.parentElement;
+
             if (S.charts.trends) S.charts.trends.destroy();
 
+            let emptyMsg = wrap.querySelector('.trends-empty');
+
             if (!trends.length) {
-                document.getElementById('rc-trends').parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;">No trend data yet.</div>';
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('div');
+                    emptyMsg.className = 'trends-empty';
+                    emptyMsg.style.cssText = "display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;";
+                    emptyMsg.textContent = "No trend data yet.";
+                    wrap.appendChild(emptyMsg);
+                }
+                emptyMsg.style.display = 'flex';
+                canvas.style.display = 'none';
                 return;
             }
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
+            canvas.style.display = 'block';
+
+            const ctx = canvas.getContext('2d');
 
             const labels = trends.map(t => t.concept_type);
             const vals = trends.map(t => t.count);
@@ -1318,7 +1351,7 @@
         ════════════════════════════════ */
         function renderArtistChart() {
             const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
             const labels = sorted.map(a => (a.artist_name || 'Unknown').split(' ')[0]);
             const done = sorted.map(a => a.done_appts || 0);
@@ -1411,7 +1444,7 @@
            Rankings
         ════════════════════════════════ */
         function renderRankings() {
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.total_revenue || 0) - (a.total_revenue || 0));
             const list = document.getElementById('r-rank-list');
 
@@ -1452,7 +1485,7 @@
         ════════════════════════════════ */
         function renderPerfTable() {
             const tbody = document.getElementById('r-perf-tbody');
-            const data = S.month ? S.filtered : D;
+            const data = S.filtered;
             const sorted = [...(data.artist_performance || [])].sort((a, b) => (b.done_appts || 0) - (a.done_appts || 0));
 
             if (!sorted.length) {
@@ -1508,7 +1541,7 @@
             }).join('');
 
             if (!S.month) S.month = months[0] || curr;
-            filterDataByMonth(S.month);
+            updateFilteredData();
         }
 
         /* ════════════════════════════════
@@ -1531,8 +1564,8 @@
             if (type === 'SET_MONTH') {
                 S.month = payload;
                 S.view = 'monthly';
-                filterDataByMonth(payload);
             }
+            updateFilteredData();
             syncPills();
             renderKPIs();
             renderAll();
@@ -1551,10 +1584,15 @@
             renderPerfTable();
         }
 
-        renderKPIs();
-        syncPills();
-        populateMonthSel();
-        renderAll();
+        try {
+            populateMonthSel(); // This sets S.month and calls updateFilteredData() which populates S.filtered safely
+            syncPills();
+            renderKPIs();
+            renderAll();
+        } catch (e) {
+            console.error(e);
+            alert("Error initializing charts: " + e.message);
+        }
 
         /* ── Theme Switch Observer ── */
         const observer = new MutationObserver((mutations) => {

@@ -10,8 +10,8 @@
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;
                 padding-bottom:1.5rem;border-bottom:1px solid var(--studio-border);">
         <div class="bg-indigo-soft text-indigo" style="width:48px;height:48px;border-radius:12px;
-                    display:flex;align-items:center;
-                    justify-content:center;">
+                                                       display:flex;align-items:center;
+                                                       justify-content:center;">
             <i class="fas fa-clock" style="font-size:1.2rem;"></i>
         </div>
         <div>
@@ -24,60 +24,61 @@
     </div>
 
     {% if today_appointments %}
-    <div class="timeline-visual">
-        {% for appt in today_appointments %}
-        <div class="tl-visual-item"
-            style="--item-index: {{ loop.index0 }}; --dur-height: {{ (appt.duration_hours or 1) * 60 }}px;">
-            <div class="tl-visual-time">
-                <i class="far fa-clock" style="margin-right: 0.5rem; opacity: 0.5;"></i>
-                {{ appt.appointment_time }}
-            </div>
+        <div class="timeline-visual">
+            {% for appt in today_appointments %}
+                <div class="tl-visual-item"
+                     style="--item-index: {{ loop.index0 }}; --dur-height: {{ (appt.duration_hours or 1) * 60 }}px;">
+                    <div class="tl-visual-time">
+                        <i class="far fa-clock" style="margin-right: 0.5rem; opacity: 0.5;"></i>
+                        {{ appt.appointment_time }}
+                    </div>
 
-            <div style="flex:1;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                    <span style="font-weight:800; color:var(--studio-text-primary); font-size:1.05rem;">
-                        {{ appt.customer_name }}
-                    </span>
-                    <span class="badge"
-                        style="background: var(--studio-indigo-soft); color: var(--studio-indigo); font-size: 0.65rem; border: none; padding: 2px 8px;">
-                        {{ appt.duration_hours or '?' }}h Session
-                    </span>
+                    <div style="flex:1;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                            <span style="font-weight:800; color:var(--studio-text-primary); font-size:1.05rem;">
+                                {{ appt.customer_name }}
+                            </span>
+                            <span class="badge"
+                                  style="background: var(--studio-indigo-soft); color: var(--studio-indigo); font-size: 0.65rem; border: none; padding: 2px 8px;">
+                                {{ appt.duration_hours or '?' }}h Session
+                            </span>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--studio-text-secondary); letter-spacing: 0.02em;">
+                            {{ appt.tattoo_concept }}
+                        </p>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        {% if appt.status == 'Approved' %}
+                            <span class="badge badge-success" style="font-size: 0.65rem; letter-spacing: 0.1em;">ACTIVE</span>
+                <!-- [DATA-FLOW]: Submits to POST /artist/done/{{ appt.appointment_id }} -->
+                            <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="margin: 0;">
+                                <button type="submit" class="btn-studio btn-primary"
+                                        style="padding: 0.5rem 1rem; font-size: 0.7rem;"
+                                        onclick="return confirm('Complete this session?')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                        {% elif appt.status == 'Done' %}
+                            <span class="badge badge-info" style="font-size: 0.65rem; letter-spacing: 0.1em;">DONE</span>
+                        {% endif %}
+                    </div>
                 </div>
-                <p style="font-size:0.85rem; color:var(--studio-text-secondary); letter-spacing: 0.02em;">
-                    {{ appt.tattoo_concept }}
-                </p>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                {% if appt.status == 'Approved' %}
-                <span class="badge badge-success" style="font-size: 0.65rem; letter-spacing: 0.1em;">ACTIVE</span>
-                <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="margin: 0;">
-                    <button type="submit" class="btn-studio btn-primary"
-                        style="padding: 0.5rem 1rem; font-size: 0.7rem;"
-                        onclick="return confirm('Complete this session?')">
-                        <i class="fas fa-check"></i>
-                    </button>
-                </form>
-                {% elif appt.status == 'Done' %}
-                <span class="badge badge-info" style="font-size: 0.65rem; letter-spacing: 0.1em;">DONE</span>
-                {% endif %}
-            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
 
     {% else %}
-    <div style="text-align:center;padding:5rem 2rem;">
-        <div style="width:80px;height:80px;border-radius:50%;background:var(--studio-secondary);
-                    border:1px solid var(--studio-border);display:flex;align-items:center;
-                    justify-content:center;margin:0 auto 2rem;">
-            <i class="far fa-sun" style="font-size:2.5rem;color:var(--studio-indigo);opacity:0.3;"></i>
+        <div style="text-align:center;padding:5rem 2rem;">
+            <div style="width:80px;height:80px;border-radius:50%;background:var(--studio-secondary);
+                        border:1px solid var(--studio-border);display:flex;align-items:center;
+                        justify-content:center;margin:0 auto 2rem;">
+                <i class="far fa-sun" style="font-size:2.5rem;color:var(--studio-indigo);opacity:0.3;"></i>
+            </div>
+            <h3 style="font-size:1.25rem;font-weight:700;color:var(--studio-text-primary);
+                       margin-bottom:0.5rem;">No Sessions Today</h3>
+            <p style="color:var(--studio-text-secondary);max-width:320px;margin:0 auto;line-height:1.6;">
+                No appointments scheduled for today. Take some time to sketch or manage your portfolio!
+            </p>
         </div>
-        <h3 style="font-size:1.25rem;font-weight:700;color:var(--studio-text-primary);
-                    margin-bottom:0.5rem;">No Sessions Today</h3>
-        <p style="color:var(--studio-text-secondary);max-width:320px;margin:0 auto;line-height:1.6;">
-            No appointments scheduled for today. Take some time to sketch or manage your portfolio!
-        </p>
-    </div>
     {% endif %}
 </div>

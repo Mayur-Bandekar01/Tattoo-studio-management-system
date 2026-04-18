@@ -87,6 +87,7 @@
                             </button>
                             {% endif %}
                             {% if a.status == 'Pending' %}
+                            <!-- [DATA-FLOW]: Submits to POST /owner/cancel/{{ a.appointment_id }} -->
                             <form method="POST" action="/owner/cancel/{{ a.appointment_id }}" style="display: inline;">
                                 <button type="submit" onclick="return confirm('Cancel this appointment?')"
                                     class="btn-studio"

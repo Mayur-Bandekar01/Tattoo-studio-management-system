@@ -9,222 +9,222 @@
             <h3 class="card-title" style="margin-bottom: 0.25rem;">Studio Gallery</h3>
             <p style="font-size: 0.85rem; color: var(--studio-text-secondary);" id="galCountLabel">
                 {% if gallery %}{{ gallery|length }} artworks browse for inspiration{% else %}No artworks yet{%
-                endif %}
-            </p>
-        </div>
+                    endif %}
+                    </p>
+                    </div>
 
-        <div class="filter-group">
-            <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
-            {% set styles = gallery | map(attribute='style') | select | unique | list %}
-            {% for style in styles %}
-            <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
-            {% endfor %}
-            <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
-                style="display: flex; align-items: center; gap: 0.5rem;">
-                <i class="fas fa-heart" style="color: var(--studio-selection);"></i> Saved
-                <span id="savedBadge" class="badge" style="margin-left: 0.25rem;">
-                    {{ liked_count | default(0) }}
-                </span>
-            </button>
-        </div>
-    </div>
+                    <div class="filter-group">
+                        <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
+                        {% set styles = gallery | map(attribute='style') | select | unique | list %}
+                        {% for style in styles %}
+                            <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
+                        {% endfor %}
+                        <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
+                                style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-heart" style="color: var(--studio-selection);"></i> Saved
+                            <span id="savedBadge" class="badge" style="margin-left: 0.25rem;">
+                                {{ liked_count | default(0) }}
+                            </span>
+                        </button>
+                    </div>
+                    </div>
 
     <!-- All Gallery Grid -->
-    <div class="gallery-grid" id="galleryGrid">
-        {% if gallery %}
-        {% for item in gallery %}
-        <div class="gallery-item" onclick="openLbFromItem(this)"
-            style="cursor: pointer; --item-index: {{ loop.index0 }};" data-id="{{ item.gallery_id }}"
-            data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
-            data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
-            data-style="{{ item.style or '' }}">
+                    <div class="gallery-grid" id="galleryGrid">
+                        {% if gallery %}
+                            {% for item in gallery %}
+                                <div class="gallery-item" onclick="openLbFromItem(this)"
+                                     style="cursor: pointer; --item-index: {{ loop.index0 }};" data-id="{{ item.gallery_id }}"
+                                     data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
+                                     data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
+                                     data-style="{{ item.style or '' }}">
 
-            <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
-                id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
-                <i class="fas fa-heart"></i>
-            </button>
+                                    <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
+                                            id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
 
-            <div class="gallery-img-wrapper">
-                <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
-                    class="gallery-img" loading="lazy">
-                <div class="gallery-overlay">
-                    <div class="gallery-overlay-content">
-                        <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
-                        <p
-                            style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
-                            View Masterpiece</p>
+                                    <div class="gallery-img-wrapper">
+                                        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
+                                             class="gallery-img" loading="lazy">
+                                        <div class="gallery-overlay">
+                                            <div class="gallery-overlay-content">
+                                                <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
+                                                <p
+                                                    style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                                                    View Masterpiece</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-info">
+                                        <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="gallery-artist" style="font-weight: 600; font-size: 0.75rem;">by {{ item.artist_name
+                                                }}</span>
+                                            {% if item.style %}
+                                                <span class="badge"
+                                                      style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.15); padding: 2px 8px;">{{
+                                                    item.style }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                                <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+                                <p>No artworks uploaded to the gallery yet.</p>
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
-            </div>
-            <div class="gallery-info">
-                <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="gallery-artist" style="font-weight: 600; font-size: 0.75rem;">by {{ item.artist_name
-                        }}</span>
-                    {% if item.style %}
-                    <span class="badge"
-                        style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.15); padding: 2px 8px;">{{
-                        item.style }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% else %}
-        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-            <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-            <p>No artworks uploaded to the gallery yet.</p>
-        </div>
-        {% endif %}
-    </div>
 
     <!-- No Results -->
-    <div id="galNoResult"
-        style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-        <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-        <p>No artworks found for this style.</p>
-    </div>
+                    <div id="galNoResult"
+                         style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                        <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                        <p>No artworks found for this style.</p>
+                    </div>
 
     <!-- Saved Grid -->
-    <div id="savedGrid" style="display: none;">
-        <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-            <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-            <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
-            <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
-                class="btn-studio btn-primary">Browse Gallery</button>
-        </div>
-        <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
-    </div>
+                    <div id="savedGrid" style="display: none;">
+                        <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
+                            <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
+                            <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
+                            <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
+                                    class="btn-studio btn-primary">Browse Gallery</button>
+                        </div>
+                        <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
+                    </div>
 
-</div>
+                    </div>
 
 <!-- Toast -->
-<div class="studio-toast" id="likeToast">
-    <i class="fas fa-heart"></i>
-    <span id="likeToastMsg">Saved to your collection</span>
-</div>
+                    <div class="studio-toast" id="likeToast">
+                        <i class="fas fa-heart"></i>
+                        <span id="likeToastMsg">Saved to your collection</span>
+                    </div>
 
-<script>
+                    <script>
     // Safe initialization
-    let likedIds = new Set();
-    let savedCount = 0;
-    try {
-        const rawIds = '{{ (liked_ids | default([])) | list | tojson | safe }}';
-        if (rawIds && rawIds !== 'null') {
-            likedIds = new Set(JSON.parse(rawIds));
-        }
-        const rawCount = '{{ liked_count | default(0) }}';
-        if (rawCount && rawCount !== 'None') {
-            savedCount = parseInt(rawCount, 10);
-        }
-    } catch (e) {
-        console.error("Error parsing gallery data:", e);
-    }
+                        let likedIds = new Set();
+                        let savedCount = 0;
+                        try {
+                            const rawIds = '{{ (liked_ids | default([])) | list | tojson | safe }}';
+                            if (rawIds && rawIds !== 'null') {
+                                likedIds = new Set(JSON.parse(rawIds));
+                            }
+                            const rawCount = '{{ liked_count | default(0) }}';
+                            if (rawCount && rawCount !== 'None') {
+                                savedCount = parseInt(rawCount, 10);
+                            }
+                        } catch (e) {
+                            console.error("Error parsing gallery data:", e);
+                        }
 
-    let currentTab = 'all';
+                        let currentTab = 'all';
 
-    window.toggleLike = function (e, galleryId) {
-        e.stopPropagation();
-        const btn = document.getElementById('likeBtn-' + galleryId);
-        if (!btn) return;
-        btn.classList.remove('pop');
-        void btn.offsetWidth;
-        btn.classList.add('pop');
+                        window.toggleLike = function (e, galleryId) {
+                            e.stopPropagation();
+                            const btn = document.getElementById('likeBtn-' + galleryId);
+                            if (!btn) return;
+                            btn.classList.remove('pop');
+                            void btn.offsetWidth;
+                            btn.classList.add('pop');
 
-        const wasLiked = likedIds.has(galleryId);
-        if (wasLiked) {
-            likedIds.delete(galleryId);
-            btn.classList.remove('liked');
-            savedCount = Math.max(0, savedCount - 1);
-        } else {
-            likedIds.add(galleryId);
-            btn.classList.add('liked');
-            savedCount++;
-        }
+                            const wasLiked = likedIds.has(galleryId);
+                            if (wasLiked) {
+                                likedIds.delete(galleryId);
+                                btn.classList.remove('liked');
+                                savedCount = Math.max(0, savedCount - 1);
+                            } else {
+                                likedIds.add(galleryId);
+                                btn.classList.add('liked');
+                                savedCount++;
+                            }
 
-        const badge = document.getElementById('savedBadge');
-        if (badge) badge.textContent = savedCount;
-        showToast(!wasLiked);
+                            const badge = document.getElementById('savedBadge');
+                            if (badge) badge.textContent = savedCount;
+                            showToast(!wasLiked);
 
-        if (currentTab === 'saved' && wasLiked) {
-            const card = document.querySelector(`#savedItemsGrid [data-id="${galleryId}"]`);
-            if (card) {
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.9)';
-                setTimeout(() => {
-                    card.remove();
-                    if (document.querySelectorAll('#savedItemsGrid .gallery-item').length === 0) {
-                        document.getElementById('savedItemsGrid').style.display = 'none';
-                        document.getElementById('savedEmpty').style.display = 'block';
-                    }
-                }, 300);
-            }
-        }
+                            if (currentTab === 'saved' && wasLiked) {
+                                const card = document.querySelector(`#savedItemsGrid [data-id="${galleryId}"]`);
+                                if (card) {
+                                    card.style.opacity = '0';
+                                    card.style.transform = 'scale(0.9)';
+                                    setTimeout(() => {
+                                        card.remove();
+                                        if (document.querySelectorAll('#savedItemsGrid .gallery-item').length === 0) {
+                                            document.getElementById('savedItemsGrid').style.display = 'none';
+                                            document.getElementById('savedEmpty').style.display = 'block';
+                                        }
+                                    }, 300);
+                                }
+                            }
 
-        fetch(`/customer/gallery/like/${galleryId}`, { method: 'POST' }).catch(err => console.log(err));
-    };
+                            fetch(`/customer/gallery/like/${galleryId}`, { method: 'POST' }).catch(err => console.log(err));
+                        };
 
-    window.openLbFromItem = function (item) {
-        if (!item) return;
-        const src = item.dataset.img || '';
-        const title = item.dataset.title || 'Untitled';
-        const subList = [];
-        if (item.dataset.artist && item.dataset.artist !== 'None') subList.push('Artist: ' + item.dataset.artist);
-        if (item.dataset.style && item.dataset.style !== 'None') subList.push('Style: ' + item.dataset.style);
-        const sub = subList.join('  •  ');
-        if (window.openLb) window.openLb(src, title, sub);
-    };
+                        window.openLbFromItem = function (item) {
+                            if (!item) return;
+                            const src = item.dataset.img || '';
+                            const title = item.dataset.title || 'Untitled';
+                            const subList = [];
+                            if (item.dataset.artist && item.dataset.artist !== 'None') subList.push('Artist: ' + item.dataset.artist);
+                            if (item.dataset.style && item.dataset.style !== 'None') subList.push('Style: ' + item.dataset.style);
+                            const sub = subList.join('  •  ');
+                            if (window.openLb) window.openLb(src, title, sub);
+                        };
 
-    window.switchGalTab = function (tab, btn) {
-        currentTab = tab;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
+                        window.switchGalTab = function (tab, btn) {
+                            currentTab = tab;
+                            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                            if (btn) btn.classList.add('active');
 
-        if (tab === 'all') {
-            document.getElementById('galleryGrid').style.display = 'grid';
-            document.getElementById('savedGrid').style.display = 'none';
-            document.getElementById('galNoResult').style.display = 'none';
-            document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => i.style.display = '');
-        } else {
-            document.getElementById('galleryGrid').style.display = 'none';
-            document.getElementById('galNoResult').style.display = 'none';
-            document.getElementById('savedGrid').style.display = 'block';
-            loadSavedItems();
-        }
-    };
+                            if (tab === 'all') {
+                                document.getElementById('galleryGrid').style.display = 'grid';
+                                document.getElementById('savedGrid').style.display = 'none';
+                                document.getElementById('galNoResult').style.display = 'none';
+                                document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => i.style.display = '');
+                            } else {
+                                document.getElementById('galleryGrid').style.display = 'none';
+                                document.getElementById('galNoResult').style.display = 'none';
+                                document.getElementById('savedGrid').style.display = 'block';
+                                loadSavedItems();
+                            }
+                        };
 
-    function loadSavedItems() {
-        fetch('/customer/gallery/liked')
-            .then(r => r.json())
-            .then(data => {
-                const grid = document.getElementById('savedItemsGrid');
-                const empty = document.getElementById('savedEmpty');
-                if (!grid || !empty) return;
+                        function loadSavedItems() {
+                            fetch('/customer/gallery/liked')
+                                .then(r => r.json())
+                                .then(data => {
+                                    const grid = document.getElementById('savedItemsGrid');
+                                    const empty = document.getElementById('savedEmpty');
+                                    if (!grid || !empty) return;
 
-                grid.innerHTML = '';
-                if (!data || !data.success || !data.items || data.items.length === 0) {
-                    grid.style.display = 'none';
-                    empty.style.display = 'block';
-                    return;
-                }
-                empty.style.display = 'none';
-                grid.style.display = 'grid';
-                data.items.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'gallery-item';
-                    card.style.setProperty('--item-index', index);
-                    card.dataset.id = item.gallery_id;
-                    card.dataset.img = item.image_path.startsWith('/static/') ? item.image_path : `/static/${item.image_path || ''}`;
-                    card.dataset.title = item.caption || 'Untitled';
-                    card.dataset.artist = item.artist_name || '';
-                    card.dataset.style = item.style || '';
-                    card.style.cursor = 'pointer';
+                                    grid.innerHTML = '';
+                                    if (!data || !data.success || !data.items || data.items.length === 0) {
+                                        grid.style.display = 'none';
+                                        empty.style.display = 'block';
+                                        return;
+                                    }
+                                    empty.style.display = 'none';
+                                    grid.style.display = 'grid';
+                                    data.items.forEach(item => {
+                                        const card = document.createElement('div');
+                                        card.className = 'gallery-item';
+                                        card.style.setProperty('--item-index', index);
+                                        card.dataset.id = item.gallery_id;
+                                        card.dataset.img = item.image_path.startsWith('/static/') ? item.image_path : `/static/${item.image_path || ''}`;
+                                        card.dataset.title = item.caption || 'Untitled';
+                                        card.dataset.artist = item.artist_name || '';
+                                        card.dataset.style = item.style || '';
+                                        card.style.cursor = 'pointer';
 
                     // FIX: was openLb(this) which called openLb(DOMElement, undefined, undefined)
                     // now correctly calls openLbFromItem(this) which reads data-* attributes
-                    card.onclick = function () { openLbFromItem(this); };
+                                        card.onclick = function () { openLbFromItem(this); };
 
-                    card.innerHTML = `
+                                        card.innerHTML = `
                         <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>
                         <div class="gallery-img-wrapper">
                             <img src="/static/${item.image_path || ''}" class="gallery-img">
@@ -243,45 +243,45 @@
                             </div>
                         </div>
                     `;
-                    grid.appendChild(card);
-                });
-            })
-            .catch(err => console.error("Error loading saved items", err));
-    }
+                                        grid.appendChild(card);
+                                    });
+                                })
+                                .catch(err => console.error("Error loading saved items", err));
+                        }
 
-    window.filterGallery = function (cat, btn) {
-        currentTab = 'all';
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
+                        window.filterGallery = function (cat, btn) {
+                            currentTab = 'all';
+                            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                            if (btn) btn.classList.add('active');
 
-        const grid = document.getElementById('galleryGrid');
-        grid.style.display = 'grid';
-        document.getElementById('savedGrid').style.display = 'none';
+                            const grid = document.getElementById('galleryGrid');
+                            grid.style.display = 'grid';
+                            document.getElementById('savedGrid').style.display = 'none';
 
         // Add filtering class to trigger re-animation
-        grid.classList.remove('filtering');
-        void grid.offsetWidth; // Trigger reflow
-        grid.classList.add('filtering');
+                            grid.classList.remove('filtering');
+                            void grid.offsetWidth; // Trigger reflow
+                            grid.classList.add('filtering');
 
-        let visible = 0;
-        const targetCat = cat ? cat.toString().toLowerCase().trim() : '';
-        document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => {
-            const itemCat = (i.dataset.category || '').toLowerCase().trim();
-            const show = (itemCat === targetCat);
-            i.style.display = show ? '' : 'none';
-            if (show) {
-                i.style.setProperty('--item-index', visible);
-                visible++;
-            }
-        });
-        document.getElementById('galNoResult').style.display = visible === 0 ? 'block' : 'none';
-    };
+                            let visible = 0;
+                            const targetCat = cat ? cat.toString().toLowerCase().trim() : '';
+                            document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => {
+                                const itemCat = (i.dataset.category || '').toLowerCase().trim();
+                                const show = (itemCat === targetCat);
+                                i.style.display = show ? '' : 'none';
+                                if (show) {
+                                    i.style.setProperty('--item-index', visible);
+                                    visible++;
+                                }
+                            });
+                            document.getElementById('galNoResult').style.display = visible === 0 ? 'block' : 'none';
+                        };
 
-    function showToast(isLiked) {
-        const t = document.getElementById('likeToast');
-        if (!t) return;
-        document.getElementById('likeToastMsg').textContent = isLiked ? 'Artwork saved!' : 'Removed from collection';
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
-    }
-</script>
+                        function showToast(isLiked) {
+                            const t = document.getElementById('likeToast');
+                            if (!t) return;
+                            document.getElementById('likeToastMsg').textContent = isLiked ? 'Artwork saved!' : 'Removed from collection';
+                            t.classList.add('show');
+                            setTimeout(() => t.classList.remove('show'), 2000);
+                        }
+                    </script>

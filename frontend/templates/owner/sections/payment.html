@@ -66,12 +66,14 @@
                     <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ p.payment_date }}</td>
                     <td>
                         <div style="display:flex; gap:0.5rem;">
+                            <!-- [DATA-FLOW]: Submits to POST /owner/payment/approve/{{ p.payment_id }} -->
                             <form method="POST" action="/owner/payment/approve/{{ p.payment_id }}">
                                 <button type="submit"
                                     onclick="return confirm('Confirm receipt of ₹{{ p.amount_paid }}?')"
                                     class="btn-studio btn-primary"
                                     style="padding:0.4rem 0.85rem; font-size:0.7rem;">Approve</button>
                             </form>
+                            <!-- [DATA-FLOW]: Submits to POST /owner/payment/reject/{{ p.payment_id }} -->
                             <form method="POST" action="/owner/payment/reject/{{ p.payment_id }}">
                                 <button type="submit" onclick="return confirm('Reject this payment?')"
                                     class="btn-studio btn-secondary text-danger bg-danger-soft"
@@ -103,6 +105,8 @@
                 cash transactions</p>
         </div>
     </div>
+
+    <!-- [DATA-FLOW]: Submits to POST /owner/payment/record -->
 
     <form method="POST" action="/owner/payment/record">
         <div

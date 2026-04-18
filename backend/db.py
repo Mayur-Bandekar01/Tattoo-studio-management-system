@@ -14,14 +14,15 @@ db_pool = mysql.connector.pooling.MySQLConnectionPool(
     user=os.getenv("DB_USER", "root"),
     password=os.getenv("DB_PASSWORD", ""),
     database=os.getenv("DB_NAME", "dragon_tattoos"),
-    charset='utf8mb4',
-    collation='utf8mb4_general_ci',
-    use_pure=True  # Pure python implementation can sometimes be more stable in pooled environments
+    charset="utf8mb4",
+    collation="utf8mb4_general_ci",
+    use_pure=True,  # Pure python implementation can sometimes be more stable in pooled environments
 )
+
 
 def get_db():
     """Returns a pooled connection from the MySQL pool."""
-    if 'db' not in g:
+    if "db" not in g:
         # Request a connection from the pre-warmed pool
         conn = db_pool.get_connection()
         # Ensure the connection is alive

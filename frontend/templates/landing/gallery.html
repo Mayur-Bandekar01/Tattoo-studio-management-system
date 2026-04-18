@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Gallery</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <!-- Offline Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
@@ -16,13 +16,16 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
-                    colors: {
-                        apple: {
-                            bg: 'var(--bg)', text: 'var(--text)', muted: 'var(--muted)',
-                            card: 'var(--card-bg)', border: 'var(--border)',
-                            gold: 'var(--accent, #c8a040)', goldLight: '#e0b84a'
-                        }
-                    },
+                                            colors: {
+                            apple: {
+                                bg: 'var(--apple-bg)',
+                                text: 'var(--apple-text)',
+                                muted: 'var(--apple-muted)',
+                                card: 'var(--apple-card)',
+                                border: 'var(--apple-border)',
+                                accent: 'var(--apple-accent)'
+                            }
+                        },
                     animation: {
                         'shimmer': 'shimmer 2s linear infinite',
                     },
@@ -37,6 +40,23 @@
         }
     </script>
     <style>
+    :root {
+        --apple-bg: #000;
+        --apple-text: #f5f5f7;
+        --apple-muted: #86868b;
+        --apple-card: #1d1d1f;
+        --apple-border: rgba(255, 255, 255, 0.1);
+        --apple-accent: #c8a040;
+    }
+    html.light-mode {
+        --apple-bg: #ffffff;
+        --apple-text: #1f2937;
+        --apple-muted: #6b7280;
+        --apple-card: #fffaf5;
+        --apple-border: rgba(253, 186, 116, 0.4);
+        --apple-accent: #f97316;
+    }
+
         * {
             -webkit-font-smoothing: antialiased;
         }
@@ -649,9 +669,9 @@
         <div class="mobile-menu-divider"></div>
         <div class="flex gap-4">
             <a href="/login"
-                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none" style="text-decoration:none;">Login</a>
             <a href="/register"
-                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none" style="text-decoration:none;">Register</a>
         </div>
     </div>
 
@@ -661,7 +681,7 @@
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
                     class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+                <span class="font-display text-apple-text text-[13px] font-bold tracking-widest uppercase">Dragon Tattoos</span>
             </div>
             <div class="hidden md:flex items-center gap-8">
                 <a href="/" class="nav-link">Home</a>
@@ -671,11 +691,11 @@
                 <a href="/contact" class="nav-link">Contact</a>
             </div>
             <div class="flex items-center gap-3">
-                <div class="hidden md:flex gap-3">
+                <div class="hidden md:flex items-center gap-3">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none">Login</a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none">Register</a>
                 </div>
                 <button class="burger md:hidden" id="burgerBtn"
                     onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>

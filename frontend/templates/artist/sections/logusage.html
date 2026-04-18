@@ -9,6 +9,7 @@
 <div class="studio-card" style="margin-bottom: 2rem;">
     <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">
         RECORD NEW CONSUMPTION</h3>
+    <!-- [DATA-FLOW]: Submits to POST /artist/inventory/use -->
     <form method="POST" action="/artist/inventory/use">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-grid">
@@ -18,14 +19,14 @@
                 <select class="studio-input" name="appointment_id" required>
                     <option value="">Select a session...</option>
                     {% if appointments %}
-                    {% for appt in appointments %}
-                    {% if appt.status == 'Done' %}
-                    <option value="{{ appt.appointment_id }}">
-                        Session #{{ appt.appointment_id }} | {{ appt.customer_name }}
-                        ({{ appt.appointment_date }})
-                    </option>
-                    {% endif %}
-                    {% endfor %}
+                        {% for appt in appointments %}
+                            {% if appt.status == 'Done' %}
+                                <option value="{{ appt.appointment_id }}">
+                                    Session #{{ appt.appointment_id }} | {{ appt.customer_name }}
+                                    ({{ appt.appointment_date }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                 </select>
             </div>
@@ -35,26 +36,26 @@
                 <select class="studio-input" name="item_id" id="itemSelect" required onchange="updateItemInfo()">
                     <option value="">Select supply item...</option>
                     {% if inventory %}
-                    {% for item in inventory %}
-                    <option value="{{ item.item_id }}" data-unit="{{ item.unit }}" data-stock="{{ item.quant_stock }}"
-                        data-name="{{ item.item_name }}">
-                        {{ item.item_name }}
-                        ({{ item.quant_stock | round(2) }} {{ item.unit }} in stock)
-                    </option>
-                    {% endfor %}
+                        {% for item in inventory %}
+                            <option value="{{ item.item_id }}" data-unit="{{ item.unit }}" data-stock="{{ item.quant_stock }}"
+                                    data-name="{{ item.item_name }}">
+                                {{ item.item_name }}
+                                ({{ item.quant_stock | round(2) }} {{ item.unit }} in stock)
+                            </option>
+                        {% endfor %}
                     {% endif %}
                 </select>
                 <!-- Stock info shown after selection -->
                 <div id="stockInfo" style="display: none; margin-top: 0.6rem;
-                     padding: 0.6rem 0.85rem;
-                     border-radius: 10px;
-                     background: var(--studio-secondary);
-                     border: 1px solid var(--studio-border);">
+                                           padding: 0.6rem 0.85rem;
+                                           border-radius: 10px;
+                                           background: var(--studio-secondary);
+                                           border: 1px solid var(--studio-border);">
                     <span style="font-size: 0.72rem; color: var(--studio-text-secondary);">
                         Available stock:
                     </span>
                     <span id="stockDisplay" style="font-size: 0.82rem; font-weight: 700;
-                                 color: var(--studio-text-primary); font-family: monospace;">
+                                                   color: var(--studio-text-primary); font-family: monospace;">
                     </span>
                 </div>
             </div>
@@ -63,13 +64,13 @@
                 <label class="form-label">Quantity Used</label>
                 <div style="position: relative;">
                     <input class="studio-input" type="number" name="quantity" id="qtyInput"
-                        placeholder="Enter amount used" min="0.01" step="0.01" required oninput="validateQty()"
-                        style="padding-right: 3.5rem;">
+                           placeholder="Enter amount used" min="0.01" step="0.01" required oninput="validateQty()"
+                           style="padding-right: 3.5rem;">
                     <span id="unitBadge" style="position: absolute; right: 0.85rem; top: 50%;
-                               transform: translateY(-50%);
-                               font-size: 0.72rem; font-weight: 700;
-                               color: var(--studio-indigo);
-                               pointer-events: none;">
+                                                transform: translateY(-50%);
+                                                font-size: 0.72rem; font-weight: 700;
+                                                color: var(--studio-indigo);
+                                                pointer-events: none;">
                     </span>
                 </div>
                 <p id="qtyHint" style="font-size: 0.72rem; margin-top: 0.4rem; display: none;">
@@ -105,38 +106,38 @@
             </thead>
             <tbody>
                 {% if usage_logs %}
-                {% for log in usage_logs %}
-                <tr>
-                    <td style="font-family: monospace; font-size: 0.85rem;
-                               font-weight: 700; color: var(--studio-text-secondary);">
-                        #{{ log.appointment_id }}
-                    </td>
-                    <td style="font-weight: 700; color: var(--studio-text-primary);">
-                        {{ log.item_name }}
-                    </td>
-                    <td>
-                        <span class="badge badge-info" style="font-family: monospace; font-size: 0.9rem;
-                                   font-weight: 700; padding: 0.35rem 0.75rem;">
-                            {{ log.qty_used | round(2) }} {{ log.unit }}
-                        </span>
-                    </td>
-                    <td>
-                        <div style="font-size: 0.8rem; color: var(--studio-text-secondary);
-                                    display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="far fa-clock"></i> {{ log.logged_at }}
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
+                    {% for log in usage_logs %}
+                        <tr>
+                            <td style="font-family: monospace; font-size: 0.85rem;
+                                       font-weight: 700; color: var(--studio-text-secondary);">
+                                #{{ log.appointment_id }}
+                            </td>
+                            <td style="font-weight: 700; color: var(--studio-text-primary);">
+                                {{ log.item_name }}
+                            </td>
+                            <td>
+                                <span class="badge badge-info" style="font-family: monospace; font-size: 0.9rem;
+                                                                      font-weight: 700; padding: 0.35rem 0.75rem;">
+                                    {{ log.qty_used | round(2) }} {{ log.unit }}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="font-size: 0.8rem; color: var(--studio-text-secondary);
+                                            display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="far fa-clock"></i> {{ log.logged_at }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% else %}
-                <tr>
-                    <td colspan="4" style="text-align: center; padding: 4rem;
-                               color: var(--studio-text-secondary);">
-                        <i class="fas fa-clipboard-list" style="font-size: 2.5rem; opacity: 0.2;
-                                   margin-bottom: 1rem; display: block;"></i>
-                        No material consumption has been logged yet.
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 4rem;
+                                               color: var(--studio-text-secondary);">
+                            <i class="fas fa-clipboard-list" style="font-size: 2.5rem; opacity: 0.2;
+                                                                    margin-bottom: 1rem; display: block;"></i>
+                            No material consumption has been logged yet.
+                        </td>
+                    </tr>
                 {% endif %}
             </tbody>
         </table>

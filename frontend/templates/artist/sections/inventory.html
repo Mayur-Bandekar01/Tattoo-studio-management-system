@@ -9,13 +9,14 @@
 <div class="studio-card" style="margin-bottom: 2rem;">
     <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">REGISTER NEW
         SUPPLY</h3>
+    <!-- [DATA-FLOW]: Submits to POST /artist/inventory/add -->
     <form method="POST" action="/artist/inventory/add">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-grid">
             <div class="form-group">
                 <label class="form-label">Item Name</label>
                 <input class="studio-input" type="text" name="item_name" placeholder="e.g. Black Ink (Dynamic)"
-                    required>
+                       required>
             </div>
             <div class="form-group">
                 <label class="form-label">Category</label>
@@ -63,12 +64,12 @@
             <div class="form-group">
                 <label class="form-label">Initial Quantity</label>
                 <input class="studio-input" type="number" name="quant_stock" placeholder="e.g. 250 for a 250ml bottle"
-                    min="0" step="0.01" required>
+                       min="0" step="0.01" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Low Stock Warning At</label>
                 <input class="studio-input" type="number" name="reorder_level"
-                    placeholder="e.g. 50 = warn when below 50ml" min="0" step="0.01" required>
+                       placeholder="e.g. 50 = warn when below 50ml" min="0" step="0.01" required>
                 <p style="font-size: 0.72rem; color: var(--studio-warning); margin-top: 0.4rem;">
                     <i class="fas fa-exclamation-triangle"></i>
                     Warning triggers when stock falls at or below this value
@@ -77,7 +78,7 @@
             <div class="form-group">
                 <label class="form-label" style="color: var(--studio-success);">Unit Price (₹)</label>
                 <input class="studio-input" type="number" name="unit_cost" placeholder="Cost per unit" step="any"
-                    min="0" required>
+                       min="0" required>
             </div>
         </div>
         <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
@@ -85,7 +86,7 @@
                 <i class="fas fa-plus-circle"></i> Add to Inventory
             </button>
             <button type="reset" class="btn-studio btn-outline"
-                onclick="document.getElementById('unitHint').textContent=''">
+                    onclick="document.getElementById('unitHint').textContent=''">
                 Clear Form
             </button>
         </div>
@@ -97,10 +98,10 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
         <h3 class="card-title" style="margin-bottom: 0;">LIVE INVENTORY</h3>
         {% if low_stock > 0 %}
-        <span class="badge badge-danger pulse">
-            <i class="fas fa-exclamation-triangle"></i>
-            {{ low_stock }} Item{{ 's' if low_stock != 1 else '' }} Low
-        </span>
+            <span class="badge badge-danger pulse">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ low_stock }} Item{{ 's' if low_stock != 1 else '' }} Low
+            </span>
         {% endif %}
     </div>
 
@@ -120,122 +121,125 @@
             </thead>
             <tbody>
                 {% if inventory %}
-                {% for item in inventory %}
-                {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else
-                (100 if item.quant_stock > 0 else 0), 100] | min %}
-                {% set bar_color = 'var(--studio-danger)'
-                if item.quant_stock <= item.reorder_level else ('var(--studio-warning)' if item.quant_stock
-                    <=item.reorder_level * 2 else 'var(--studio-success)' ) %} <tr
-                    class="{% if item.quant_stock <= item.reorder_level %}row-highlight-danger{% elif item.quant_stock <= item.reorder_level * 2 %}row-highlight-warning{% endif %}">
+                    {% for item in inventory %}
+                        {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else
+                        (100 if item.quant_stock > 0 else 0), 100] | min %}
+                        {% set bar_color = 'var(--studio-danger)'
+                        if item.quant_stock <= item.reorder_level else ('var(--studio-warning)' if item.quant_stock
+                        <=item.reorder_level * 2 else 'var(--studio-success)' ) %} <tr
+                            class="{% if item.quant_stock <= item.reorder_level %}row-highlight-danger{% elif item.quant_stock <= item.reorder_level * 2 %}row-highlight-warning{% endif %}">
 
-                    <td>
-                        <div style="font-weight: 700; color: var(--studio-text-primary);">
-                            {{ item.item_name }}
-                        </div>
-                        <div style="font-size: 0.72rem; color: var(--studio-text-secondary);">
-                            Measured in: <strong>{{ item.unit }}</strong>
-                        </div>
-                    </td>
-
-                    <td>
-                        <span class="badge badge-muted">{{ item.category }}</span>
-                    </td>
-
-                    <td>
-                        <div style="display: flex; flex-direction: column; gap: 5px;">
-                            <span class="{% if item.quant_stock <= item.reorder_level %}text-danger
-                                         {% elif item.quant_stock <= item.reorder_level * 2 %}text-warning
-                                         {% else %}text-success{% endif %}"
-                                style="font-family: monospace; font-size: 1rem; font-weight: 700;">
-                                {{ item.quant_stock | round(2) }} {{ item.unit }}
-                            </span>
-                            <div
-                                style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; overflow: hidden;">
-                                <div
-                                    style="--p: {{ stock_pct }}%; --c: {{ bar_color }}; width: var(--p); height: 100%; background: var(--c); border-radius: 4px; transition: width 0.3s ease;">
+                            <td>
+                                <div style="font-weight: 700; color: var(--studio-text-primary);">
+                                    {{ item.item_name }}
                                 </div>
-                            </div>
-                        </div>
-                    </td>
+                                <div style="font-size: 0.72rem; color: var(--studio-text-secondary);">
+                                    Measured in: <strong>{{ item.unit }}</strong>
+                                </div>
+                            </td>
 
-                    <td style="font-family: monospace; color: var(--studio-text-secondary);">
-                        {{ item.reorder_level }} {{ item.unit }}
-                    </td>
+                            <td>
+                                <span class="badge badge-muted">{{ item.category }}</span>
+                            </td>
 
-                    <td style="font-family: monospace; font-weight: 700; color: var(--studio-success);">
-                        ₹{{ item.unit_cost | float | round(2) }}
-                    </td>
+                            <td>
+                                <div style="display: flex; flex-direction: column; gap: 5px;">
+                                    <span class="{% if item.quant_stock <= item.reorder_level %}text-danger
+                                                 {% elif item.quant_stock <= item.reorder_level * 2 %}text-warning
+                                                 {% else %}text-success{% endif %}"
+                                          style="font-family: monospace; font-size: 1rem; font-weight: 700;">
+                                        {{ item.quant_stock | round(2) }} {{ item.unit }}
+                                    </span>
+                                    <div
+                                        style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; overflow: hidden;">
+                                        <div
+                                            style="--p: {{ stock_pct }}%; --c: {{ bar_color }}; width: var(--p); height: 100%; background: var(--c); border-radius: 4px; transition: width 0.3s ease;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
 
-                    <td>
-                        {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-danger"
-                            style="font-size: 0.65rem;">
-                            <i class="fas fa-exclamation-triangle"></i> LOW STOCK
-                            </span>
-                            {% elif item.quant_stock <= item.reorder_level * 2 %} <span class="badge badge-warning"
-                                style="font-size: 0.65rem;">
-                                <i class="fas fa-clock"></i> RUNNING LOW
+                            <td style="font-family: monospace; color: var(--studio-text-secondary);">
+                                {{ item.reorder_level }} {{ item.unit }}
+                            </td>
+
+                            <td style="font-family: monospace; font-weight: 700; color: var(--studio-success);">
+                                ₹{{ item.unit_cost | float | round(2) }}
+                            </td>
+
+                            <td>
+                                {% if item.quant_stock <= item.reorder_level %} <span class="badge badge-danger"
+                                                                                      style="font-size: 0.65rem;">
+                                    <i class="fas fa-exclamation-triangle"></i> LOW STOCK
                                 </span>
+                                {% elif item.quant_stock <= item.reorder_level * 2 %} <span class="badge badge-warning"
+                                                                                                style="font-size: 0.65rem;">
+                                        <i class="fas fa-clock"></i> RUNNING LOW
+                                    </span>
                                 {% else %}
-                                <span class="badge badge-success" style="font-size: 0.65rem;">OPTIMAL</span>
+                                    <span class="badge badge-success" style="font-size: 0.65rem;">OPTIMAL</span>
                                 {% endif %}
-                    </td>
+                            </td>
 
-                    <td>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <td>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
 
                             <!-- Restock: ADD to existing stock -->
-                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                                style="display: flex; gap: 0.4rem; align-items: center;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="action" value="add">
-                                <input class="studio-input" type="number" name="quant_stock"
-                                    placeholder="Add {{ item.unit }}" min="0.01" step="0.01"
-                                    style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
-                                <button type="submit" class="btn-studio btn-primary"
-                                    style="padding: 0.35rem 0.6rem; font-size: 0.72rem;"
-                                    title="Add to existing stock (restock)">
-                                    <i class="fas fa-plus"></i> Restock
-                                </button>
-                            </form>
+                            <!-- [DATA-FLOW]: Submits to POST /artist/inventory/update/{{ item.item_id }} -->
+                                    <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
+                                          style="display: flex; gap: 0.4rem; align-items: center;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="action" value="add">
+                                        <input class="studio-input" type="number" name="quant_stock"
+                                               placeholder="Add {{ item.unit }}" min="0.01" step="0.01"
+                                               style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                                        <button type="submit" class="btn-studio btn-primary"
+                                                style="padding: 0.35rem 0.6rem; font-size: 0.72rem;"
+                                                title="Add to existing stock (restock)">
+                                            <i class="fas fa-plus"></i> Restock
+                                        </button>
+                                    </form>
 
                             <!-- Set: OVERWRITE stock value -->
-                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                                style="display: flex; gap: 0.4rem; align-items: center;">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="action" value="set">
-                                <input class="studio-input" type="number" name="quant_stock"
-                                    value="{{ item.quant_stock | round(2) }}" min="0" step="0.01"
-                                    style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
-                                <button type="submit" class="btn-studio btn-outline"
-                                    style="padding: 0.35rem 0.6rem; font-size: 0.72rem;" title="Set exact stock value">
-                                    <i class="fas fa-pen"></i> Set
-                                </button>
-                            </form>
+                            <!-- [DATA-FLOW]: Submits to POST /artist/inventory/update/{{ item.item_id }} -->
+                                    <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
+                                          style="display: flex; gap: 0.4rem; align-items: center;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="action" value="set">
+                                        <input class="studio-input" type="number" name="quant_stock"
+                                               value="{{ item.quant_stock | round(2) }}" min="0" step="0.01"
+                                               style="width: 110px; padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                                        <button type="submit" class="btn-studio btn-outline"
+                                                style="padding: 0.35rem 0.6rem; font-size: 0.72rem;" title="Set exact stock value">
+                                            <i class="fas fa-pen"></i> Set
+                                        </button>
+                                    </form>
 
-                        </div>
-                    </td>
+                                </div>
+                            </td>
 
-                    <td>
-                        <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="btn-studio text-danger bg-danger-soft"
-                                style="padding: 0.4rem; border: none;"
-                                onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                    </tr>
+                            <td>
+                        <!-- [DATA-FLOW]: Submits to POST /artist/inventory/delete/{{ item.item_id }} -->
+                                <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-studio text-danger bg-danger-soft"
+                                            style="padding: 0.4rem; border: none;"
+                                            onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                     {% endfor %}
-                    {% else %}
+                {% else %}
                     <tr>
                         <td colspan="8" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
                             <i class="fas fa-boxes"
-                                style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
+                               style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
                             Your inventory is currently empty.
                         </td>
                     </tr>
-                    {% endif %}
+                {% endif %}
             </tbody>
         </table>
     </div>

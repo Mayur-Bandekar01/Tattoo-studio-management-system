@@ -18,6 +18,8 @@
         </div>
     </div>
 
+    <!-- [DATA-FLOW]: Submits to POST /owner/artist/add -->
+
     <form method="POST" action="/owner/artist/add">
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
@@ -93,6 +95,7 @@
                         <span class="badge bg-indigo-soft text-indigo">{{ artist.specialisation }}</span>
                     </td>
                     <td>
+                        <!-- [DATA-FLOW]: Submits to POST /owner/artist/delete/{{ artist.artist_id }} -->
                         <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}"
                             style="display: inline;">
                             <button type="submit" onclick="return confirm('Remove this artist from the team?')"
