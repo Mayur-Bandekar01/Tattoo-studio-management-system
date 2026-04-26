@@ -131,8 +131,8 @@
                     Distribution</p>
             </div>
             <div class="flex items-center gap-3">
-                <select id="r-month-sel" class="studio-input !py-2 !px-4 !text-[10px] !w-32 hidden"
-                    onchange="rDispatch('SET_MONTH',this.value)"></select>
+                <select id="r-month-sel" class="studio-input !py-2 !px-4 !text-[10px] !w-32"
+                    onchange="rDispatch('SET_MONTH',this.value)" style="display: none;"></select>
                 <div class="flex p-1 bg-studio-surface border border-studio-border rounded-xl">
                     <button id="rpill-week" onclick="rDispatch('SET_VIEW','weekly')"
                         class="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all text-studio-text-secondary hover:text-studio-gold">Week</button>
@@ -208,7 +208,7 @@
         <h3 class="text-sm font-black text-studio-text uppercase tracking-widest mb-1">Financial Ingress</h3>
         <p class="text-[9px] font-bold text-studio-text-secondary uppercase tracking-widest mb-8">Settlement Method
             Distribution</p>
-        <div class="h-[220px] mb-6">
+        <div id="rc-payment-wrap" class="h-[220px] mb-6">
             <canvas id="rc-payment"></canvas>
         </div>
         <div class="space-y-2" id="rl-payment"></div>
@@ -701,26 +701,33 @@
                 const isLight = document.documentElement.getAttribute('data-theme') === 'ivory' || document.documentElement.classList.contains('light-mode');
                 const data = S.filtered;
                 const methods = data.payment_methods || [];
-                const wrap = document.getElementById('rc-payment-wrap');
                 const canvas = document.getElementById('rc-payment');
+                if (!canvas) return;
+                
+                const wrap = document.getElementById('rc-payment-wrap') || canvas.parentElement;
                 if (S.charts.pay) S.charts.pay.destroy();
 
                 if (!methods.length) {
-                    const emptyMsg = wrap.querySelector('.pay-empty') || (() => {
-                        const d = document.createElement('div');
-                        d.className = 'pay-empty';
-                        d.style.cssText = 'display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;';
-                        d.textContent = 'No payment data yet.';
-                        wrap.appendChild(d);
-                        return d;
-                    })();
-                    emptyMsg.style.display = 'flex';
+                    if (wrap) {
+                        const emptyMsg = wrap.querySelector('.pay-empty') || (() => {
+                            const d = document.createElement('div');
+                            d.className = 'pay-empty';
+                            d.style.cssText = 'display:flex;align-items:center;justify-content:center;height:210px;color:#94A3B8;font-size:.8rem;';
+                            d.textContent = 'No payment data yet.';
+                            wrap.appendChild(d);
+                            return d;
+                        })();
+                        emptyMsg.style.display = 'flex';
+                    }
                     canvas.style.display = 'none';
                     document.getElementById('rl-payment').innerHTML = '';
                     return;
                 }
-                const existingEmpty = wrap.querySelector('.pay-empty');
-                if (existingEmpty) existingEmpty.style.display = 'none';
+                
+                if (wrap) {
+                    const existingEmpty = wrap.querySelector('.pay-empty');
+                    if (existingEmpty) existingEmpty.style.display = 'none';
+                }
                 canvas.style.display = 'block';
 
                 const sorted = [...methods].sort((a, b) => (b.total || 0) - (a.total || 0));
@@ -816,7 +823,10 @@
                 const data = S.filtered;
                 const trends = data.concept_trends || [];
                 const canvas = document.getElementById('rc-trends');
+                if (!canvas) return;
+                
                 const wrap = canvas.parentElement;
+                if (!wrap) return;
 
                 if (S.charts.trends) S.charts.trends.destroy();
 
