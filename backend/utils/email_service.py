@@ -49,5 +49,4 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
         mail_ext.send(msg)
         return True
     except Exception as e:
-        print("EMAIL ERROR:", e)
         return False

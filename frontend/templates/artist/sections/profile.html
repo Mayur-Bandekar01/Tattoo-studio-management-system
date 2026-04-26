@@ -1,87 +1,69 @@
-<div style="margin-bottom: 2.5rem;">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Artist Identity
-    </h2>
-    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Manage your professional credentials and
-        account security</p>
-</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 reveal">
+<!-- Profile Info Card -->
+<div class="studio-card accent-gold text-center relative overflow-hidden group">
+    <!-- Background Accent -->
+    <div class="absolute -top-24 -right-24 w-48 h-48 bg-studio-gold-soft rounded-full blur-3xl group-hover:bg-studio-gold-dim transition-colors"></div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-    <!-- Profile Info Card -->
-    <div class="studio-card" style="padding: 2.5rem; text-align: center;">
-        <div
-            style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-indigo-soft); border: 2px solid var(--studio-border); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--studio-indigo); margin: 0 auto 1.5rem; box-shadow: var(--studio-shadow);">
-            <i class="fas fa-pen-nib"></i>
-        </div>
-
-        <div style="margin-bottom: 2.5rem;">
-            <h3
-                style="font-family: 'Cinzel', serif; font-size: 1.25rem; color: var(--studio-text-primary); margin-bottom: 0.25rem;">
-                {{ artist_profile.artist_name if artist_profile else name }}
-            </h3>
-            <p
-                style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--studio-indigo); font-weight: 700;">
-                Resident Artist</p>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; text-align: left;">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Artist
-                    ID</span>
-                <span
-                    style="font-family: monospace; font-size: 0.9rem; color: var(--studio-indigo); font-weight: 700;">#{{
-                    session.get('user_id') }}</span>
-            </div>
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Primary
-                    Email</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
-                    artist_profile.artist_email if artist_profile else '—' }}</span>
-            </div>
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--studio-border);">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Contact</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: var(--studio-text-primary);">{{
-                    artist_profile.phone if artist_profile else '—' }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
-                <span
-                    style="font-size: 0.7rem; font-weight: 700; color: var(--studio-text-secondary); text-transform: uppercase;">Specialisation</span>
-                <span class="badge badge-info" style="font-size: 0.7rem; font-weight: 700;">{{
-                    artist_profile.specialisation if artist_profile else '—' }}</span>
-            </div>
-        </div>
+    <div class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mx-auto mb-8 transform -rotate-6 group-hover:rotate-0 transition-transform shadow-2xl relative z-10">
+        <i class="fas fa-pen-nib text-3xl text-accent"></i>
     </div>
 
-    <!-- Change Password Card -->
-    <div class="studio-card" style="padding: 2.5rem;">
-        <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.15em;">SECURITY
-            SETTINGS</h3>
-        <!-- [DATA-FLOW]: Submits to POST /artist/change-password -->
-        <form method="POST" action="/artist/change-password">
-            <div style="margin-bottom: 1.5rem;">
-                <label class="form-label">Current Password</label>
-                <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..."
-                       required>
+    <div class="mb-10 relative z-10">
+        <h3 class="text-2xl font-display text-text mb-1 uppercase tracking-tight">
+            {{ artist_profile.artist_name if artist_profile else name }}
+        </h3>
+        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-accent font-sans">Resident Artist</p>
+    </div>
+
+    <div class="space-y-1 text-left relative z-10">
+        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
+            <span class="studio-label !mb-0">Artist ID</span>
+            <span class="font-mono text-[11px] font-bold text-accent">#{{ session.get('user_id') }}</span>
+        </div>
+        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
+            <span class="studio-label !mb-0">Primary Email</span>
+            <span class="text-[11px] font-bold text-text">{{ artist_profile.artist_email if artist_profile else '—' }}</span>
+        </div>
+        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
+            <span class="studio-label !mb-0">Contact</span>
+            <span class="text-[11px] font-bold text-text">{{ artist_profile.phone if artist_profile else '—' }}</span>
+        </div>
+        <div class="flex justify-between items-center py-4 group/row">
+            <span class="studio-label !mb-0">Specialisation</span>
+            <span class="badge badge-warning">
+                {{ artist_profile.specialisation if artist_profile else '—' }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Security Settings Card -->
+<div class="studio-card accent-danger">
+    <h3 class="card-title mb-10">Security Settings</h3>
+
+        <form method="POST" action="/artist/change-password" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="space-y-2">
+                <label class="studio-label">Current Password</label>
+                <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..." required>
             </div>
-            <div style="margin-bottom: 1.5rem;">
-                <label class="form-label">New Password</label>
-                <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters"
-                       required>
+
+            <div class="space-y-2">
+                <label class="studio-label">New Password</label>
+                <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters" required>
             </div>
-            <div style="margin-bottom: 2.5rem;">
-                <label class="form-label">Confirm New Password</label>
-                <input class="studio-input" type="password" name="confirm_password" placeholder="Repeat new password"
-                       required>
+
+            <div class="space-y-2">
+                <label class="studio-label">Confirm New Password</label>
+                <input class="studio-input" type="password" name="confirm_password" placeholder="Repeat new password" required>
             </div>
-            <button type="submit" class="btn-studio btn-primary"
-                    style="width: 100%; justify-content: center; padding: 1rem;">
-                <i class="fas fa-shield-alt"></i> Update Security Credentials
+
+        <div class="pt-6">
+            <button type="submit" class="btn-studio btn-primary w-full justify-center">
+                <i class="fas fa-shield-alt"></i> Update Credentials
             </button>
+        </div>
         </form>
     </div>
 </div>

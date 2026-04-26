@@ -1,4 +1,5 @@
 import random
+import re
 from datetime import datetime, timedelta
 from flask import (
     Blueprint,
@@ -89,20 +90,19 @@ def login_post():
         return redirect("/login")
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    with conn.cursor(dictionary=True) as cursor:
+        handlers = {
+            "customer": handle_customer_login,
+            "artist": handle_artist_login,
+            "owner": handle_owner_login,
+        }
 
-    handlers = {
-        "customer": handle_customer_login,
-        "artist": handle_artist_login,
-        "owner": handle_owner_login,
-    }
+        handler = handlers.get(role)
+        if not handler:
+            flash("Please select a valid role!")
+            return redirect("/login")
 
-    handler = handlers.get(role)
-    if not handler:
-        flash("Please select a valid role!")
-        return redirect("/login")
-
-    success, result = handler(cursor, password)
+        success, result = handler(cursor, password)
 
     if success:
         session.permanent = True
@@ -110,6 +110,18 @@ def login_post():
 
     flash(result)
     return redirect("/login")
+
+
+def is_password_strong(password):
+    if len(password) < 8:
+        return False
+    if not re.search(r"[A-Z]", password):
+        return False
+    if not re.search(r"[0-9]", password):
+        return False
+    if not re.search(r"[^A-Za-z0-9]", password):
+        return False
+    return True
 
 
 @auth_bp.route("/register", methods=["GET"])
@@ -128,27 +140,39 @@ def register_post():
     if not name or not email or not phone or not password:
         flash("Please fill all required fields!")
         return redirect("/register")
-    if len(password) < 8:
-        flash("Password must be at least 8 characters!")
+
+    # Email Validation
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        flash("Please enter a valid email address!")
+        return redirect("/register")
+
+    # Phone Validation
+    if not re.match(r"^\d{10}$", phone):
+        flash("Phone number must be exactly 10 digits!")
+        return redirect("/register")
+
+    # Password Validation
+    if not is_password_strong(password):
+        flash("Password does not meet complexity requirements!")
         return redirect("/register")
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT customer_id FROM customer WHERE customer_email = %s", (email,)
-    )
-    if cursor.fetchone():
-        flash("Email already registered! Please login.")
-        return redirect("/register")
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "SELECT customer_id FROM customer WHERE customer_email = %s", (email,)
+        )
+        if cursor.fetchone():
+            flash("Email already registered! Please login.")
+            return redirect("/register")
 
-    cursor.execute(
-        """
-        INSERT INTO customer (customer_name, customer_email, password, phone, insta_id)
-        VALUES (%s, %s, %s, %s, %s)
-    """,
-        (name, email, password, phone, insta_id),
-    )
-    conn.commit()
+        cursor.execute(
+            """
+            INSERT INTO customer (customer_name, customer_email, password, phone, insta_id)
+            VALUES (%s, %s, %s, %s, %s)
+        """,
+            (name, email, password, phone, insta_id),
+        )
+        conn.commit()
     flash("Account created successfully! Please login.")
     return redirect("/login")
 
@@ -174,12 +198,12 @@ def forgot_password_post():
         return redirect("/forgot-password")
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s",
-        (email,),
-    )
-    customer = cursor.fetchone()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s",
+            (email,),
+        )
+        customer = cursor.fetchone()
 
     if not customer:
         flash("No account found with this email address!", "error")
@@ -269,11 +293,11 @@ def reset_password():
         return render_template("auth/reset_password.html")
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email)
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email)
+        )
+        conn.commit()
 
     session.pop("otp_verified", None)
     session.pop("reset_email", None)

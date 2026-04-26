@@ -1,66 +1,98 @@
-<!-- ═══════════════════════════════════════
-     SECTION: OWNER INVENTORY
-     Full CRUD — view all artists' supplies
-     ═══════════════════════════════════════ -->
+<!-- SECTION: OWNER INVENTORY -->
 
+<!-- ── Strategic Resource Matrix ── -->
+<div class="studio-card p-8 mb-10">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+        <div>
+            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Global Inventory Vault</h3>
+            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Real-time Supply Chain
+                Monitoring</p>
+        </div>
 
-<div class="studio-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 class="card-title" style="margin-bottom: 0;">LIVE INVENTORY</h3>
-        <input type="text" id="invSearch" class="studio-input" placeholder="Search items or artists..."
-            style="width: 220px; padding: 0.4rem 0.75rem; font-size: 0.8rem;" oninput="filterInventory(this.value)">
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <select id="invArtistFilter" class="studio-input !py-3 !text-xs !w-48"
+                onchange="filterInventory('invArtistFilter')">
+                <option value="all">All Operational Units</option>
+                {% for artist in artists %}
+                <option value="{{ artist.artist_name | lower }}">{{ artist.artist_name }}</option>
+                {% endfor %}
+            </select>
+            <div class="relative flex-1 lg:flex-none lg:w-64">
+                <i
+                    class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-studio-text-secondary text-xs"></i>
+                <input type="text" id="invSearch" class="studio-input !pl-12 !py-3 !text-xs"
+                    placeholder="Search materials..." oninput="filterInventory('invSearch')">
+            </div>
+        </div>
     </div>
 
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="dash-table-container">
+        <table class="dash-table">
             <thead>
                 <tr>
-                    <th>Item Name</th>
-                    <th>Artist</th>
-                    <th>Category</th>
-                    <th>Stock Level</th>
-                    <th>Reorder At</th>
-                    <th>Unit Cost</th>
-                    <th>Total Value</th>
-                    <th>Status</th>
-
+                    <th>Resource Material</th>
+                    <th>Assigned Node</th>
+                    <th>Classification</th>
+                    <th class="text-center">Stock Level</th>
+                    <th class="text-center">Critical Threshold</th>
+                    <th class="text-right">Unit Value</th>
+                    <th class="text-right">Vault Net</th>
+                    <th class="text-center">Integrity</th>
                 </tr>
             </thead>
             <tbody id="invBody">
                 {% if inventory %}
                 {% for item in inventory %}
-                <tr class="inv-row" data-search="{{ (item.item_name ~ ' ' ~ (item.artist_name or '')) | lower }}">
-                    <td class="font-bold">{{ item.item_name }}
-                        <div style="font-size: 0.7rem; color: var(--studio-text-secondary);">{{ item.unit }}</div>
-                    </td>
-                    <td style="font-weight:700; color:var(--studio-indigo);">
-                        {{ item.artist_name or '—' }}
-                    </td>
-                    <td><span class="badge badge-muted">{{ item.category or '—' }}</span></td>
-                    <td
-                        class="font-mono font-bold {{ 'text-danger' if item.quant_stock <= item.reorder_level else 'text-success' }}">
-                        {{ item.quant_stock | round(2) }} {{ item.unit }}
-                    </td>
-                    <td class="font-mono text-secondary">{{ item.reorder_level }} {{ item.unit }}</td>
-                    <td class="font-bold">₹{{ "%.2f"|format(item.unit_cost | float) }}</td>
-                    <td class="font-bold text-indigo">₹{{ "%.2f"|format((item.quant_stock | float) * (item.unit_cost |
-                        float)) }}</td>
+                <tr class="inv-row group" data-search="{{ (item.item_name ~ ' ' ~ (item.artist_name or '')) | lower }}">
                     <td>
-                        {% if item.quant_stock <= item.reorder_level %} <span class="badge bg-danger-soft text-danger">
-                            <i class="fas fa-exclamation-triangle"></i> Low</span>
+                        <div class="font-black text-studio-text text-sm uppercase">{{ item.item_name }}</div>
+                        <div class="text-[9px] font-bold text-studio-gold uppercase tracking-widest">{{ item.unit }}
+                        </div>
+                    </td>
+                    <td class="font-bold text-studio-text-secondary text-xs uppercase">{{ item.artist_name or 'Main
+                        Vault' }}</td>
+                    <td>
+                        <span
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-surface border border-studio-border text-[9px] font-black text-studio-text-secondary uppercase tracking-widest">
+                            {{ item.category or 'Unclassified' }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div
+                            class="font-mono font-black text-sm {{ 'text-studio-danger' if item.quant_stock <= item.reorder_level else 'text-emerald-500' }}">
+                            {% if item.unit in ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles'] %}
+                            {{ item.quant_stock | round(0) | int }}
                             {% else %}
-                            <span class="badge bg-success-soft text-success">OK</span>
+                            {{ item.quant_stock | round(2) }}
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="text-center font-mono text-studio-text-secondary text-xs opacity-60">
+                        {{ item.reorder_level }}
+                    </td>
+                    <td class="text-right font-bold text-studio-text text-sm">₹{{ "%.2f"|format(item.unit_cost | float)
+                        }}</td>
+                    <td class="text-right font-black text-studio-gold text-sm italic">₹{{
+                        "%.2f"|format((item.quant_stock | float) * (item.unit_cost | float)) }}</td>
+                    <td class="text-center">
+                        {% if item.quant_stock <= item.reorder_level %} <span
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-danger/10 text-studio-danger text-[9px] font-black uppercase tracking-widest border border-studio-danger/20">
+                            <i class="fas fa-bolt-lightning text-[8px]"></i> Critical
+                            </span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">Optimal</span>
                             {% endif %}
                     </td>
-
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 5rem 2rem;">
-                        <i class="fas fa-boxes"
-                            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
-                        <p class="text-secondary">No inventory items available.</p>
+                    <td colspan="8" class="py-24 text-center">
+                        <div class="flex flex-col items-center opacity-30">
+                            <i class="fas fa-boxes-stacked text-4xl mb-6"></i>
+                            <p class="text-xs font-black uppercase tracking-widest">No Resource Blocks Detected</p>
+                        </div>
                     </td>
                 </tr>
                 {% endif %}
@@ -69,11 +101,72 @@
     </div>
 </div>
 
-<script>
-    function filterInventory(q) {
-        const term = q.toLowerCase().trim();
-        document.querySelectorAll('#invBody .inv-row').forEach(row => {
-            row.style.display = (!term || (row.dataset.search || '').includes(term)) ? '' : 'none';
-        });
-    }
-</script>
+<!-- ── Temporal Consumption Feed ── -->
+<div class="studio-card p-8">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+        <div>
+            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Consumption Protocol Log</h3>
+            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Material Depletion
+                Sequence History</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <select id="logArtistFilter" class="studio-input !py-3 !text-xs !w-48"
+                onchange="filterLogs('logArtistFilter')">
+                <option value="all">All Operational Units</option>
+                {% for artist in artists %}
+                <option value="{{ artist.artist_name | lower }}">{{ artist.artist_name }}</option>
+                {% endfor %}
+            </select>
+            <div class="relative flex-1 lg:flex-none lg:w-64">
+                <i
+                    class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-studio-text-secondary text-xs"></i>
+                <input type="text" id="logSearch" class="studio-input !pl-12 !py-3 !text-xs"
+                    placeholder="Search history..." oninput="filterLogs('logSearch')">
+            </div>
+        </div>
+    </div>
+
+    <div class="dash-table-container">
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th class="w-32">Operation ID</th>
+                    <th>Artist Node</th>
+                    <th>Depleted Material</th>
+                    <th class="text-center">Quant Matrix</th>
+                    <th class="text-right">Sync Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if usage_logs %}
+                {% for item in usage_logs %}
+                <tr class="log-row group" data-search="{{ (item.artist_name ~ ' ' ~ item.item_name) | lower }}">
+                    <td
+                        class="font-mono text-studio-text-secondary font-bold text-xs uppercase opacity-60 group-hover:opacity-100 transition-opacity">
+                        #{{ item.appointment_id }}
+                    </td>
+                    <td class="font-black text-studio-gold text-xs uppercase">{{ item.artist_name }}</td>
+                    <td class="font-bold text-studio-text text-sm uppercase">{{ item.item_name }}</td>
+                    <td class="text-center font-mono font-black text-studio-text text-xs">
+                        {{ item.quantity }} <span class="text-studio-gold opacity-60">{{ item.unit }}</span>
+                    </td>
+                    <td class="text-right text-[10px] font-bold text-studio-text-secondary uppercase tracking-wider">
+                        {{ item.consumption_date }}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="py-24 text-center">
+                        <div class="flex flex-col items-center opacity-30">
+                            <i class="fas fa-history text-4xl mb-6"></i>
+                            <p class="text-xs font-black uppercase tracking-widest">No Consumption Vectors Found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

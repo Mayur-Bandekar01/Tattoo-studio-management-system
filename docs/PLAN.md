@@ -1,24 +1,32 @@
-# PLAN: No-Scroll Customer Dashboard Implementation
+# [UI Restoration & Stability Orchestration]
 
-## Analysis of the Issue
-The user explicitly requires a "no-scroll" experience, meaning the dashboard must fit within the 100vh viewport without triggering global vertical scrollbars. 
+Restore the "broken" dashboard UI to its previous high-fidelity state while maintaining the new modular Jinja2/Vanilla CSS architecture.
 
-### Potential Issues
-1. **Cumulative Vertical Spacing**: `main-content` padding + `top-header` margin/padding + section content may exceed 100vh.
-2. **Fixed Height Sections**: Some sections might have fixed heights that don't account for smaller viewports.
-3. **Content Overflow**: Large tables, multiple cards (Aftercare), or chat areas without proper internal scroll management.
+## User Review Required
 
-## Orchestration Strategy (Phase 1)
-We will use three specialist agents to analyze and propose solutions:
-1. **`project-planner`**: Coordinate the high-level roadmap and deliverables.
-2. **`frontend-specialist`**: Conduct a CSS audit and design the viewport-constrained layout (Flex/Grid).
-3. **`performance-optimizer`**: Ensure that the "no-scroll" layout doesn't lead to complex reflows or render bottlenecks on mobile/desktop.
+> [!IMPORTANT]
+> This plan involves re-introducing several CSS components into `main_design.css` that were previously omitted during consolidation. This will restore the "Summary Grids" and "Quick Action" layouts that are currently appearing as vertical lists.
 
-## Proposed Solutions (To be explored)
-- **Solution A: The Viewport Grid**: Convert the main layout into a 100vh grid where the header is a fixed row and the content is a `flex-1` container with `overflow-y: auto`.
-- **Solution B: Internal Section Scrolling**: Instead of the whole page scrolling, each section becomes a self-contained scrollable area (e.g., chat window stays fixed, gallery scrolls internally).
-- **Solution C: Compaction & Progressive Disclosure**: Use accordion or tabbed sub-navigation within sections to reduce the initial vertical footprint.
+## Proposed Changes
 
-## Next Steps
-1. **Agent Invocation**: Call `project-planner` to finalize this PLAN.md.
-2. **Request User Approval** to move to Phase 2 (Implementation).
+### [Phase 1: Foundation Restoration]
+- **Frontend-Specialist**: Re-implement `summary-grid`, `summary-card`, `icon-box`, `card-label`, and `card-value` in `main_design.css`.
+- **Frontend-Specialist**: Add missing utility classes defined in templates but missing in CSS (`bg-indigo-soft`, `bg-success-soft`, etc.).
+
+### [Phase 2: Interaction Audit]
+- **Debugger**: Verify all dashboard links and sidebar toggles. Ensure the active section logic in `owner_dashboard.js` and `customer_dashboard.js` matches the new template IDs.
+- **Debugger**: Fix the `toggleSidebar` conflict in `customer_dashboard.js` (Done, but will verify across all portals).
+
+### [Phase 3: Visual Polish]
+- **Performance-Optimizer**: Ensure the consolidated CSS is minimized and that there are no layout shifts on route changes.
+- **Project-Planner**: Final audit of all dashboard routes for visual regressions.
+
+## Verification Plan
+
+### Automated Tests
+- `python .agent/skills/lint-and-validate/scripts/lint_runner.py .`
+- `python .agent/skills/vulnerability-scanner/scripts/security_scan.py .`
+
+### Manual Verification
+- Browser audit of Owner, Artist, and Customer dashboard "Overview" tabs.
+- Verification of theme-switching consistency for the new "Summary Grid" components.

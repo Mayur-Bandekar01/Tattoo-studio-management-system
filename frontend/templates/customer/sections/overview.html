@@ -1,199 +1,390 @@
 <!-- ═══════════════════════════════════════
-     SECTION: OVERVIEW (sec-overview)
+     SECTION: OVERVIEW (sec-overview) — Fixed & Enhanced
 ═══════════════════════════════════════ -->
 
-<!-- Flash messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<div style="margin-bottom: 2rem;">
-    {% for category, message in messages %}
-    <div class="flash-msg {{ category }}" onclick="this.remove()">
-        <i class="fas {% if category == 'success' %}fa-check-circle
-                      {% elif category == 'error' %}fa-exclamation-circle
-                      {% else %}fa-info-circle{% endif %}"></i>
-        <span>{{ message }}</span>
-        <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
+<style>
+    /* ── Overview-only tokens (fills gaps not in customer_dashboard.css) ── */
+    .ov-wrap {
+        --ov-pending-bg   : rgba(245,158,11,0.1);
+        --ov-pending-color: #F59E0B;
+        --ov-done-bg      : rgba(16,185,129,0.1);
+        --ov-done-color   : #10B981;
+        --ov-gold-soft    : rgba(200,160,64,0.1);
+        --ov-surface      : rgba(255,255,255,0.04);
+        --ov-card-inner   : rgba(255,255,255,0.025);
+        animation: ovFadeUp 0.45s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    [data-theme="ivory"] .ov-wrap {
+        --ov-surface    : rgba(0,0,0,0.03);
+        --ov-card-inner : rgba(0,0,0,0.02);
+    }
+    @keyframes ovFadeUp {
+        from { opacity:0; transform:translateY(16px); }
+        to   { opacity:1; transform:translateY(0); }
+    }
 
-<div style="padding-top: 1rem;">
-    <!-- ── Core Metrics Grid (3 columns for balance) ── -->
-    <div class="summary-grid">
+    /* ── Metric cards grid ── */
+    .ov-metrics {
+        display              : grid;
+        grid-template-columns: repeat(3,1fr);
+        gap                  : 1.25rem;
+        margin-bottom        : 1.5rem;
+    }
+    @media(max-width:768px) { .ov-metrics { grid-template-columns:1fr; } }
+
+    /* ── Hero card ── */
+    .ov-hero {
+        background   : linear-gradient(135deg, #D4A843 0%, #E2B859 100%);
+        border-radius: var(--studio-radius-sm, 16px);
+        padding      : 2.75rem 2.5rem;
+        position     : relative;
+        overflow     : hidden;
+        margin-bottom: 1.5rem;
+        box-shadow   : 0 20px 50px rgba(212,168,67,0.25);
+        display      : flex;
+        align-items  : center;
+    }
+    .ov-hero::before {
+        content   : '';
+        position  : absolute;
+        top:-50%; left:-50%;
+        width:200%; height:200%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.28), transparent 40%);
+        pointer-events: none;
+    }
+    .ov-hero::after {
+        content     : '';
+        position    : absolute;
+        left:0; top:0; bottom:0;
+        width       : 5px;
+        background  : rgba(255,255,255,0.85);
+    }
+    /* Decorative blobs */
+    .ov-hero-blob1 {
+        position:absolute; right:-40px; top:-40px;
+        width:280px; height:280px;
+        background:rgba(255,255,255,0.08);
+        border-radius:50%;
+        pointer-events:none;
+    }
+    .ov-hero-blob2 {
+        position:absolute; right:60px; bottom:-80px;
+        width:180px; height:180px;
+        background:rgba(0,0,0,0.06);
+        border-radius:50%;
+        pointer-events:none;
+    }
+    .ov-hero-content {
+        position      : relative;
+        z-index       : 10;
+        display       : flex;
+        flex-direction: column;
+        align-items   : flex-start;
+        gap           : 0.875rem;
+        width         : 100%;
+    }
+    .ov-hero-content * { color:#ffffff !important; }
+
+    .ov-hero-label {
+        display    : flex;
+        align-items: center;
+        gap        : 6px;
+        font-size  : 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.35em;
+        opacity    : 0.85;
+    }
+    .ov-hero-date {
+        font-size    : 2.75rem;
+        font-weight  : 900;
+        letter-spacing: -0.04em;
+        line-height  : 1;
+    }
+    @media(max-width:640px){ .ov-hero-date { font-size:2rem; } }
+    .ov-hero-artist {
+        font-size  : 1rem;
+        font-weight: 600;
+        opacity    : 0.9;
+        line-height: 1.5;
+    }
+    .ov-hero-artist strong { font-weight:900; text-decoration:underline; text-underline-offset:5px; text-decoration-color:rgba(255,255,255,0.5); }
+    .ov-hero-pills {
+        display    : flex;
+        align-items: center;
+        gap        : 0.875rem;
+        flex-wrap  : wrap;
+    }
+    .ov-status-pill {
+        padding      : 6px 16px;
+        background   : rgba(255,255,255,0.2);
+        border       : 1px solid rgba(255,255,255,0.35);
+        border-radius: 20px;
+        font-size    : 10px;
+        font-weight  : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        backdrop-filter: blur(8px);
+    }
+    .ov-time-row {
+        display    : flex;
+        align-items: center;
+        gap        : 8px;
+        font-size  : 1rem;
+        font-weight: 700;
+        opacity    : 0.9;
+    }
+
+    /* Empty state CTA button inside hero */
+    .ov-hero-btn {
+        display      : inline-flex;
+        align-items  : center;
+        gap          : 8px;
+        padding      : 12px 24px;
+        background   : #ffffff;
+        color        : #0f172a !important;
+        border       : none;
+        border-radius: 12px;
+        font-size    : 12px;
+        font-weight  : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        cursor       : pointer;
+        box-shadow   : 0 8px 20px rgba(0,0,0,0.15);
+        transition   : all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ov-hero-btn:hover {
+        transform  : translateY(-3px) scale(1.02);
+        box-shadow : 0 16px 40px rgba(0,0,0,0.2);
+        background : #f8fafc;
+    }
+    .ov-hero-empty-title {
+        font-size    : 2.25rem;
+        font-weight  : 900;
+        letter-spacing: -0.03em;
+        line-height  : 1.1;
+    }
+    .ov-hero-empty-sub {
+        font-size  : 1rem;
+        opacity    : 0.85;
+        max-width  : 420px;
+        line-height: 1.6;
+    }
+
+    /* ── Info cards at bottom ── */
+    .ov-info-grid {
+        display              : grid;
+        grid-template-columns: repeat(3,1fr);
+        gap                  : 1.25rem;
+    }
+    @media(max-width:900px) { .ov-info-grid { grid-template-columns:1fr; } }
+
+    .ov-info-card {
+        background   : var(--studio-card);
+        border       : 1px solid var(--studio-card-border);
+        border-radius: var(--studio-radius-sm,16px);
+        padding      : 1.75rem 2rem;
+        position     : relative;
+        overflow     : hidden;
+        display      : flex;
+        flex-direction: column;
+        cursor       : pointer;
+        transition   : transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+        box-shadow   : var(--studio-shadow);
+    }
+    .ov-info-card:hover {
+        transform : translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    }
+    .ov-info-card::before {
+        content      : '';
+        position     : absolute;
+        left:0; top:0; bottom:0;
+        width        : 5px;
+        border-radius: 0;
+    }
+    .ov-info-card.c-info::before   { background: var(--studio-info,#3B82F6); }
+    .ov-info-card.c-gold::before   { background: var(--studio-gold,#c8a040); }
+    .ov-info-card.c-warn::before   { background: var(--studio-warning,#F59E0B); }
+
+    .ov-card-icon {
+        width          : 40px; height:40px;
+        border-radius  : 10px;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+        font-size      : 1rem;
+        flex-shrink    : 0;
+        margin-bottom  : 1rem;
+        border         : 1px solid transparent;
+    }
+    .ov-card-icon.c-info  { background:rgba(59,130,246,0.1);  color:#3B82F6; border-color:rgba(59,130,246,0.2); }
+    .ov-card-icon.c-gold  { background:var(--ov-gold-soft);   color:var(--studio-gold,#c8a040); border-color:rgba(200,160,64,0.2); }
+    .ov-card-icon.c-warn  { background:rgba(245,158,11,0.1);  color:#F59E0B; border-color:rgba(245,158,11,0.2); }
+
+    .ov-card-title {
+        font-size    : 1.1rem;
+        font-weight  : 900;
+        color        : var(--studio-text-primary);
+        letter-spacing: -0.02em;
+        line-height  : 1.2;
+        margin-bottom: 4px;
+    }
+    .ov-card-subtitle {
+        font-size     : 9px;
+        font-weight   : 800;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-bottom : 0.875rem;
+    }
+    .ov-card-subtitle.c-info { color:#3B82F6; }
+    .ov-card-subtitle.c-gold { color:var(--studio-gold,#c8a040); }
+    .ov-card-subtitle.c-warn { color:#F59E0B; }
+
+    .ov-card-body {
+        font-size  : 12.5px;
+        font-weight: 500;
+        color      : var(--studio-text-muted);
+        line-height: 1.65;
+        flex       : 1;
+        margin-bottom: 1.25rem;
+    }
+    .ov-card-footer {
+        display      : flex;
+        align-items  : center;
+        gap          : 6px;
+        padding-top  : 1rem;
+        border-top   : 1px solid var(--studio-border-light);
+        font-size    : 9.5px;
+        font-weight  : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        transition   : gap 0.2s;
+    }
+    .ov-info-card:hover .ov-card-footer { gap:10px; }
+    .ov-card-footer.c-info { color:#3B82F6; }
+    .ov-card-footer.c-gold { color:var(--studio-gold,#c8a040); }
+    .ov-card-footer.c-warn { color:#F59E0B; }
+    .ov-card-footer i { font-size:8px; }
+
+    /* Metric card refinements */
+    .ov-metric .icon-box { margin-bottom:0; }
+</style>
+
+<div class="ov-wrap">
+
+    <!-- ── 3 Metric cards ── -->
+    <div class="ov-metrics">
+
         <!-- Total Bookings -->
-        <div class="summary-card" style="border-left-color: var(--studio-indigo);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box">
+        <div class="summary-card accent-gold ov-metric">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                <div class="icon-box" style="background:var(--ov-gold-soft);color:var(--studio-gold);border-color:rgba(200,160,64,0.2);">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
-                <span class="badge badge-info">Bookings</span>
+                <span class="stat-badge stat-badge-bookings">Bookings</span>
             </div>
-            <p class="card-label">Total Volume</p>
+            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Total Bookings</p>
             <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
         </div>
 
-        <!-- Pending Approvals -->
-        <div class="summary-card" style="border-left-color: var(--studio-warning);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box"
-                    style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245,158,11,0.2); border: 1px solid rgba(245, 158, 11, 0.1);">
+        <!-- Pending -->
+        <div class="summary-card ov-metric" style="--accent-color:#F59E0B;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                <div class="icon-box" style="background:var(--ov-pending-bg);color:var(--ov-pending-color);border-color:rgba(245,158,11,0.2);">
                     <i class="fa-solid fa-clock"></i>
                 </div>
-                <span class="badge badge-warning">Pending</span>
+                <span class="stat-badge stat-badge-pending">Pending</span>
             </div>
-            <p class="card-label">Awaiting Studio</p>
-            <div class="card-value">
-                {{ appointments|selectattr('status', 'equalto', 'Pending')|list|length if appointments else 0 }}
-            </div>
+            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Pending Approvals</p>
+            <div class="card-value">{{ appointments|selectattr('status','equalto','Pending')|list|length if appointments else 0 }}</div>
         </div>
 
-        <!-- Finished Sessions -->
-        <div class="summary-card" style="border-left-color: var(--studio-success);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <div class="icon-box"
-                    style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16,185,129,0.2); border: 1px solid rgba(16, 185, 129, 0.1);">
+        <!-- Completed -->
+        <div class="summary-card ov-metric" style="--accent-color:#10B981;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                <div class="icon-box" style="background:var(--ov-done-bg);color:var(--ov-done-color);border-color:rgba(16,185,129,0.2);">
                     <i class="fas fa-check-double"></i>
                 </div>
-                <span class="badge badge-success">Completed</span>
+                <span class="stat-badge stat-badge-completed">Completed</span>
             </div>
-            <p class="card-label">Past Masterpieces</p>
-            <div class="card-value">
-                {{ appointments|selectattr('status', 'in', ['Done', 'Completed'])|list|length if appointments else 0 }}
-            </div>
+            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Finished Sessions</p>
+            <div class="card-value">{{ appointments|selectattr('status','in',['Done','Completed'])|list|length if appointments else 0 }}</div>
         </div>
+
     </div>
 
-    <!-- 1. Hero Card: Upcoming Session / Status -->
-    <div class="studio-card static-card"
-        style="border-left: 5px solid #FFFFFF; margin-bottom: 2.5rem; position: relative; overflow: hidden; padding: 2.5rem; background: var(--studio-grad-hero); box-shadow: 0 15px 35px rgba(255, 0, 60, 0.2); z-index: 2;">
-        <div
-            style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
-            <div style="position: relative; z-index: 2;">
-                <p
-                    style="font-size: 0.75rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                    <i class="fas fa-bolt"></i> Upcoming Session
-                </p>
-                {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
-                {% set next_appt = appointments[0] %}
-                <h2
-                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.25rem; line-height: 1.1; letter-spacing: -0.02em;">
-                    {{ next_appt.appointment_date }}
-                </h2>
-                <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; font-weight: 600; max-width: 500px;">
-                    with Artist <strong style="color: #FFFFFF; text-decoration: underline;">{{ next_appt.artist_name
-                        }}</strong>
-                    &mdash; "{{ next_appt.tattoo_concept }}"
-                </p>
-                <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1.5rem;">
-                    <span class="badge"
-                        style="background: rgba(255,255,255,0.2); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.4); padding: 8px 14px; font-size: 0.75rem; font-weight: 800;">
-                        {{ next_appt.status }}
-                    </span>
-                    <span style="font-size: 0.85rem; color: #FFFFFF; font-weight: 700;">
-                        <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
-                    </span>
-                </div>
-                {% else %}
-                <h2
-                    style="font-size: 2.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 1rem; line-height: 1.1; letter-spacing: -0.02em;">
-                    No upcoming sessions
-                </h2>
-                <p
-                    style="color: rgba(255, 255, 255, 0.95); font-size: 1.15rem; font-weight: 500; max-width: 500px; margin-bottom: 2rem;">
-                    Your skin is a waiting canvas. Book your next masterpiece today.
-                </p>
-                <button onclick="switchTab('book', document.querySelector('[data-section=book]'))"
-                    class="btn-studio btn-primary"
-                    style="font-weight: 900; background: #FFFFFF; color: #000; padding: 0.8rem 1.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
-                    <i class="fas fa-calendar-plus" style="margin-right: 6px;"></i> Schedule Now
-                </button>
-                {% endif %}
+    <!-- ── Hero: Upcoming Session ── -->
+    <div class="ov-hero">
+        <div class="ov-hero-blob1"></div>
+        <div class="ov-hero-blob2"></div>
+
+        <div class="ov-hero-content">
+            <p class="ov-hero-label">
+                <i class="fas fa-bolt" style="animation:pulse 2s infinite;"></i>
+                Upcoming Session
+            </p>
+
+            {% set upcoming = appointments|selectattr('status','in',['Pending','Approved'])|list %}
+            {% if upcoming %}
+            {% set next_appt = upcoming[0] %}
+
+            <h2 class="ov-hero-date">{{ next_appt.appointment_date }}</h2>
+            <p class="ov-hero-artist">
+                with Artist <strong>{{ next_appt.artist_name }}</strong>
+                &mdash; "{{ next_appt.tattoo_concept }}"
+            </p>
+            <div class="ov-hero-pills">
+                <span class="ov-status-pill">
+                    <i class="fas fa-shield-check" style="margin-right:5px;"></i>{{ next_appt.status }}
+                </span>
+                <span class="ov-time-row">
+                    <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
+                </span>
             </div>
 
-            {% if appointments and appointments[0].status in ['Pending', 'Approved'] %}
-            <div
-                style="background: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 2rem; position: relative; z-index: 2; backdrop-filter: blur(5px);">
-                <i class="fas fa-calendar-day"></i>
-            </div>
+            {% else %}
+
+            <h2 class="ov-hero-empty-title">Ready for your next piece?</h2>
+            <p class="ov-hero-empty-sub">Your skin is a waiting canvas. Our artists are ready to transform your vision into a permanent masterpiece.</p>
+            <button onclick="switchTab('book')" class="ov-hero-btn">
+                <i class="fas fa-calendar-plus"></i> Schedule Studio Session
+            </button>
+
             {% endif %}
         </div>
-
-        <!-- Decorative background blobs -->
-        <div
-            style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 1;">
-        </div>
-    </div>
-</div>
-
-
-<!-- 2. Secondary Content Grid -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-
-    <!-- Card 1: Past Tattoos -->
-    <div class="studio-card"
-        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-accent);"
-        onclick="switchTab('gallery', document.querySelector('[data-section=gallery]'))">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-            <div class="icon-box">
-                <i class="fas fa-history"></i>
-            </div>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Past
-                Tattoos</h3>
-        </div>
-        <p
-            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-            Review your completed masterpieces and session history. Build your personal art portfolio.
-        </p>
-        <div
-            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-            View History <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
-        </div>
     </div>
 
-    <!-- Card 2: Favorite Artists -->
-    <div class="studio-card"
-        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-warning);"
-        onclick="switchTab('book', document.querySelector('[data-section=book]'))">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-            <div class="icon-box"
-                style="background: var(--studio-warning-soft); color: var(--studio-warning); border-color: rgba(245, 158, 11, 0.2);">
-                <i class="fas fa-users"></i>
-            </div>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Favorite
-                Artists</h3>
-        </div>
-        <p
-            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-            Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.
-        </p>
-        <div
-            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-            Explore Team <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
-        </div>
-    </div>
+    <!-- ── Info cards ── -->
+    <div class="ov-info-grid">
 
-    <!-- Card 3: Aftercare Notes -->
-    <div class="studio-card"
-        style="display: flex; flex-direction: column; cursor: pointer; border-left: 4px solid var(--studio-success);"
-        onclick="switchTab('aftercare', document.querySelector('[data-section=aftercare]'))">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem;">
-            <div class="icon-box"
-                style="background: var(--studio-success-soft); color: var(--studio-success); border-color: rgba(16, 185, 129, 0.2);">
-                <i class="fas fa-notes-medical"></i>
-            </div>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--studio-text-primary); margin: 0;">Aftercare
-                Notes</h3>
+        <!-- Past Tattoos → Gallery -->
+        <div class="ov-info-card c-info" onclick="switchTab('gallery')">
+            <div class="ov-card-icon c-info"><i class="fas fa-history"></i></div>
+            <div class="ov-card-title">Past Tattoos</div>
+            <div class="ov-card-subtitle c-info">Masterpiece History</div>
+            <p class="ov-card-body">Review your completed masterpieces and session history. Build your personal art portfolio.</p>
+            <div class="ov-card-footer c-info">View History <i class="fas fa-arrow-right"></i></div>
         </div>
-        <p
-            style="color: var(--studio-text-secondary); font-size: 0.9rem; flex: 1; margin-bottom: 2rem; line-height: 1.7;">
-            Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
-        </p>
-        <div
-            style="font-size: 0.75rem; font-weight: 800; color: var(--studio-accent); text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
-            Read Guide <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
+
+        <!-- Favorite Artists → Book -->
+        <div class="ov-info-card c-gold" onclick="switchTab('book')">
+            <div class="ov-card-icon c-gold"><i class="fas fa-users"></i></div>
+            <div class="ov-card-title">Favourite Artists</div>
+            <div class="ov-card-subtitle c-gold">Studio Talent</div>
+            <p class="ov-card-body">Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.</p>
+            <div class="ov-card-footer c-gold">Explore Team <i class="fas fa-arrow-right"></i></div>
         </div>
+
+        <!-- Aftercare -->
+        <div class="ov-info-card c-warn" onclick="switchTab('aftercare')">
+            <div class="ov-card-icon c-warn"><i class="fas fa-notes-medical"></i></div>
+            <div class="ov-card-title">Aftercare Guide</div>
+            <div class="ov-card-subtitle c-warn">Healing Protocols</div>
+            <p class="ov-card-body">Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.</p>
+            <div class="ov-card-footer c-warn">Read Guide <i class="fas fa-arrow-right"></i></div>
+        </div>
+
     </div>
 
 </div>

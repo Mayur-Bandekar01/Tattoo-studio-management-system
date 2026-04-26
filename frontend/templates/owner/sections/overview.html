@@ -1,213 +1,176 @@
-<!-- ═══════════════════════════════════════
-     SECTION: OWNER OVERVIEW
-     Vibrant Obsidian — Polished v4
-     ═══════════════════════════════════════ -->
+<!-- SECTION: OWNER OVERVIEW — matches Customer Dashboard reference layout -->
 
-<!-- ── Master Control Banner ── -->
-<div class="studio-card" style="border-left: 5px solid var(--studio-indigo); position: relative; overflow: hidden;">
-    <div
-        style="position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; background: var(--studio-indigo-soft); border-radius: 50%; filter: blur(70px); pointer-events: none;">
-    </div>
-    <div style="position: relative; z-index: 1;">
-        <p class="text-indigo"
-            style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 10px;">
-            <span
-                style="display: inline-block; width: 20px; height: 2px; background: var(--studio-indigo); border-radius: 2px;"></span>
-            Studio Intelligence
-        </p>
-        <h2
-            style="font-family: var(--font-heading); font-size: 2.25rem; font-weight: 800; color: var(--studio-text-primary); margin-bottom: 0.75rem; line-height: 1.1; letter-spacing: -0.03em;">
-            Master <span class="text-indigo">Control.</span>
-        </h2>
-        <p class="text-secondary"
-            style="font-size: 0.95rem; max-width: 520px; margin-bottom: 1.75rem; font-weight: 500; line-height: 1.6;">
-            Real-time oversight of operations, artists, and financial performance. All systems reporting optimal
-            metrics.
-        </p>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button onclick="switchTab('bookings')" class="btn-studio btn-primary"><i class="fas fa-calendar-alt"></i>
-                Manage Schedule</button>
-            <button onclick="switchTab('reports')" class="btn-studio btn-secondary"><i class="fas fa-chart-bar"></i>
-                Growth Analytics</button>
-        </div>
-    </div>
-</div>
+<!-- ── 3 Metric Cards ── -->
+<div class="metric-grid" style="margin-bottom:1.25rem;">
 
-<!-- ── Core Metrics Grid ── -->
-<div class="summary-grid">
-    <!-- Revenue -->
-    <div class="summary-card" style="border-left: 4px solid var(--studio-success);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-success-soft text-success">
-                <i class="fa-solid fa-indian-rupee-sign"></i>
+    <!-- Revenue / Bookings -->
+    <div class="metric-card" style="border-top:3px solid #c8a040;">
+        <div class="metric-card-header">
+            <div class="metric-card-icon" style="background:#fef3c7;color:#c8a040;">
+                <i class="fas fa-indian-rupee-sign"></i>
             </div>
-            <span class="badge bg-success-soft text-success">Revenue</span>
+            <span class="metric-card-tag" style="background:#fef3c7;color:#d97706;">Revenue</span>
         </div>
-        <p class="card-label">Total Yield</p>
-        <div class="card-value">₹{{ total_revenue | default(0) }}</div>
-        <div class="text-success"
-            style="margin-top: 1rem; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-arrow-up"></i> 100% Performance
-        </div>
+        <div class="metric-card-label">Total Yield</div>
+        <div class="metric-card-value">₹{{ total_revenue | default(0) }}</div>
     </div>
 
-    <!-- Appointments -->
-    <div class="summary-card" style="border-left: 4px solid var(--studio-indigo);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-indigo-soft text-indigo">
-                <i class="fa-solid fa-calendar-check"></i>
+    <!-- Total Appointments -->
+    <div class="metric-card" style="border-top:3px solid #f59e0b;">
+        <div class="metric-card-header">
+            <div class="metric-card-icon" style="background:#fef3c7;color:#f59e0b;">
+                <i class="fas fa-calendar-check"></i>
             </div>
-            <span class="badge bg-indigo-soft text-indigo">Bookings</span>
+            <span class="metric-card-tag" style="background:#fef3c7;color:#f59e0b;">Bookings</span>
         </div>
-        <p class="card-label">Total Appointments</p>
-        <div class="card-value">{{ total_appointments | default(0) }}</div>
-        <div class="text-indigo"
-            style="margin-top: 1rem; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-sync-alt"></i> Real-time Synced
-        </div>
+        <div class="metric-card-label">Total Appointments</div>
+        <div class="metric-card-value">{{ total_appointments | default(0) }}</div>
     </div>
 
-    <!-- Pending -->
-    <div class="summary-card" style="border-left: 4px solid var(--studio-warning);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-warning-soft text-warning">
-                <i class="fa-solid fa-clock"></i>
+    <!-- Pending Approvals -->
+    <div class="metric-card" style="border-top:3px solid #10b981;">
+        <div class="metric-card-header">
+            <div class="metric-card-icon" style="background:#dcfce7;color:#10b981;">
+                <i class="fas fa-check-circle"></i>
             </div>
-            <span class="badge bg-warning-soft text-warning">Pending</span>
+            <span class="metric-card-tag" style="background:#dcfce7;color:#16a34a;">Pending</span>
         </div>
-        <p class="card-label">Pending Approvals</p>
-        <div class="card-value">{{ pending_count | default(0) }}</div>
-        <div class="text-warning"
-            style="margin-top: 1rem; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-exclamation-circle"></i> Requires Review
-        </div>
+        <div class="metric-card-label">Awaiting Approval</div>
+        <div class="metric-card-value">{{ pending_count | default(0) }}</div>
     </div>
 </div>
 
-<!-- ── Secondary Metrics + Quick Actions ── -->
-<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.75rem; margin-bottom: 2.5rem;">
-    <!-- Sub-stats column -->
-    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-        <!-- Completed Sessions -->
-        <div class="summary-card"
-            style="display: flex; align-items: center; gap: 1.25rem; border-left: 4px solid var(--studio-success); margin-bottom: 0;">
-            <div class="icon-box bg-success-soft text-success" style="width: 52px; height: 52px;">
-                <i class="fas fa-check-double"></i>
-            </div>
-            <div>
-                <p class="card-label">Completed Sessions</p>
-                <div class="card-value" style="font-size: 1.75rem;">{{ done_count | default(0) }}</div>
-            </div>
-        </div>
+<!-- ── Gold Hero Banner ── -->
+<div class="master-banner" style="margin-bottom:1.25rem;">
+    <div class="master-banner-eyebrow">
+        <i class="fas fa-bolt"></i> Studio Intelligence
+    </div>
+    <h1>Master Control.</h1>
+    <p>Real-time oversight of operations, artists, and financial performance.<br>All systems reporting optimal metrics.</p>
+    <div class="master-banner-actions">
+        <button onclick="switchTab('bookings')" class="btn-gold">
+            <i class="fas fa-calendar-alt"></i> Manage Schedule
+        </button>
+        <button onclick="switchTab('reports')" class="btn-outline">
+            <i class="fas fa-chart-pie"></i> Growth Analytics
+        </button>
+    </div>
+</div>
 
-        <!-- Low Stock -->
-        <div class="summary-card"
-            style="display: flex; align-items: center; gap: 1.25rem; border-left: 4px solid var(--studio-danger); margin-bottom: 0;">
-            <div class="icon-box bg-danger-soft text-danger" style="width: 52px; height: 52px;">
-                <i class="fas fa-boxes"></i>
+<!-- ── 3 Quick Action Cards ── -->
+<div class="quick-actions-grid" style="margin-bottom:1.5rem;">
+
+    <!-- Session History -->
+    <div class="quick-action-card" onclick="switchTab('bookings')">
+        <div class="quick-action-icon-wrap">
+            <div class="quick-action-icon" style="background:#fef3c7;color:#d97706;">
+                <i class="fas fa-calendar-check"></i>
             </div>
-            <div>
-                <p class="card-label">Low Stock Items</p>
-                <div class="card-value" style="font-size: 1.75rem;">{{ low_stock | default(0) }}</div>
-            </div>
+            <div class="quick-action-title">All Bookings</div>
+        </div>
+        <div class="quick-action-desc">
+            Review all studio bookings, approve or reject requests, and track session outcomes.
+        </div>
+        <div class="quick-action-link" style="color:#c8a040;">
+            View Bookings <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
         </div>
     </div>
 
-    <!-- Quick Intelligence -->
-    <div class="studio-card" style="margin-bottom: 0; border-left: 4px solid var(--studio-indigo);">
-        <h3 class="studio-title" style="margin-bottom: 1.25rem;">Quick Commands</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="qa-card" onclick="switchTab('invoice')">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <span>Invoice</span>
+    <!-- Artist Roster -->
+    <div class="quick-action-card" onclick="switchTab('artists')">
+        <div class="quick-action-icon-wrap">
+            <div class="quick-action-icon" style="background:#fef3c7;color:#d97706;">
+                <i class="fas fa-users"></i>
             </div>
-            <div class="qa-card" onclick="switchTab('artists')">
-                <i class="fas fa-user-plus"></i>
-                <span>Add Artist</span>
-            </div>
-            <div class="qa-card" onclick="switchTab('inventory')">
-                <i class="fas fa-box"></i>
-                <span>Inventory</span>
-            </div>
-            <div class="qa-card" onclick="switchTab('reports')">
+            <div class="quick-action-title">Artist Roster</div>
+        </div>
+        <div class="quick-action-desc">
+            Manage your team of world-class artists, their profiles, specialisations and assignments.
+        </div>
+        <div class="quick-action-link" style="color:#c8a040;">
+            Manage Team <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
+        </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="quick-action-card" onclick="switchTab('reports')">
+        <div class="quick-action-icon-wrap">
+            <div class="quick-action-icon" style="background:#dcfce7;color:#16a34a;">
                 <i class="fas fa-chart-pie"></i>
-                <span>Reports</span>
             </div>
+            <div class="quick-action-title">Growth Analytics</div>
+        </div>
+        <div class="quick-action-desc">
+            Full financial analytics — revenue, payment methods, artist performance, and trends.
+        </div>
+        <div class="quick-action-link" style="color:#16a34a;">
+            View Reports <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
         </div>
     </div>
 </div>
 
 <!-- ── Recent Activity ── -->
-<div class="studio-card" style="border-left: 5px solid var(--studio-indigo);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem;">
+<div class="studio-card" style="padding:1.25rem;margin-bottom:1.25rem;">
+    <div class="section-row">
         <div>
-            <h3 class="studio-title" style="margin-bottom: 4px;">Recent Activity</h3>
-            <p class="text-secondary" style="font-size: 0.8rem; font-weight: 500;">Latest studio transactions and system
-                shifts</p>
+            <div class="section-title-bar">
+                <span class="section-title">Recent Activity</span>
+            </div>
+            <p style="font-size:0.7rem;color:#94a3b8;margin-top:0.2rem;">Latest studio transactions and system shifts</p>
         </div>
-        <button onclick="switchTab('bookings')" class="btn-studio btn-secondary"
-            style="padding: 0.5rem 1rem; font-size: 0.7rem;">
-            <i class="fas fa-external-link-alt"></i> View All
+        <button onclick="switchTab('bookings')"
+            style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.875rem;background:transparent;border:1.5px solid #ece8e0;border-radius:0.5rem;font-size:0.65rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:border-color 0.15s,color 0.15s;"
+            onmouseover="this.style.borderColor='#c8a040';this.style.color='#c8a040';"
+            onmouseout="this.style.borderColor='#ece8e0';this.style.color='#64748b';">
+            <i class="fas fa-expand-alt" style="font-size:0.6rem;"></i> View All
         </button>
     </div>
-
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="dash-table-container">
+        <table class="dash-table">
             <thead>
                 <tr>
-                    <th style="width: 90px;">Ref ID</th>
+                    <th>Ref ID</th>
                     <th>Client</th>
                     <th>Artist</th>
                     <th>Concept</th>
                     <th>Date</th>
-                    <th style="width: 130px;">Status</th>
-                    <th style="width: 110px;">Action</th>
+                    <th>Status</th>
+                    <th style="text-align:center;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% if appointments %}
                 {% for a in appointments[:8] %}
                 <tr>
-                    <td class="font-mono text-indigo font-bold">#{{ a.appointment_id }}</td>
-                    <td class="font-bold">{{ a.customer_name }}</td>
-                    <td class="font-bold text-indigo">{{ a.artist_name }}</td>
-                    <td class="text-secondary"
-                        style="font-size: 0.82rem; font-style: italic; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                        "{{ a.tattoo_concept }}"</td>
-                    <td class="font-bold" style="font-size: 0.82rem;">{{ a.appointment_date }}</td>
+                    <td style="font-family:monospace;color:#c8a040;font-weight:700;">#{{ a.appointment_id }}</td>
+                    <td style="color:#1a1a2e;font-weight:700;">{{ a.customer_name }}</td>
+                    <td style="color:#c8a040;font-weight:700;">{{ a.artist_name }}</td>
+                    <td style="font-style:italic;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"{{ a.tattoo_concept }}"</td>
+                    <td style="white-space:nowrap;">{{ a.appointment_date }}</td>
                     <td>
-                        {% if a.status == 'Pending' %}
-                        <span class="badge bg-warning-soft text-warning">Pending</span>
-                        {% elif a.status == 'Approved' %}
-                        <span class="badge bg-success-soft text-success">Approved</span>
-                        {% elif a.status == 'Done' %}
-                        <span class="badge bg-indigo-soft text-indigo">Completed</span>
-                        {% elif a.status == 'Rejected' %}
-                        <span class="badge bg-danger-soft text-danger">Rejected</span>
-                        {% else %}
-                        <span class="badge"
-                            style="background: var(--studio-border-light); color: var(--studio-text-muted);">Cancelled</span>
-                        {% endif %}
+                        <span class="status-badge {% if a.status == 'Done' %}status-done{% elif a.status == 'Pending' %}status-pending{% elif a.status == 'Approved' %}status-approved{% else %}status-cancelled{% endif %}">
+                            {{ a.status }}
+                        </span>
                     </td>
-                    <td>
+                    <td style="text-align:center;">
                         {% if a.status == 'Done' and not a.has_invoice %}
-                        <button onclick="prefillInvoice('{{ a.appointment_id }}')" class="btn-studio btn-primary"
-                            style="padding: 0.38rem 0.8rem; font-size: 0.67rem;">
-                            <i class="fas fa-file-invoice"></i> Invoice
+                        <button onclick="prefillInvoice('{{ a.appointment_id }}')"
+                            style="padding:0.3rem 0.75rem;background:#c8a040;color:#fff;border:none;border-radius:0.375rem;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;">
+                            Invoice
                         </button>
                         {% else %}
-                        <span class="text-muted" style="opacity: 0.4;">—</span>
+                        <span style="color:#e2e8f0;">—</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 4rem 2rem;">
-                        <i class="fas fa-ghost text-muted"
-                            style="display: block; font-size: 2.5rem; opacity: 0.08; margin-bottom: 1rem;"></i>
-                        <p class="text-secondary" style="font-weight: 500; font-size: 0.9rem;">No activity records found
-                            in current sync.</p>
+                    <td colspan="7" style="padding:3rem;text-align:center;color:#94a3b8;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0.5;">
+                            <i class="fas fa-calendar-xmark" style="font-size:1.75rem;"></i>
+                            <p style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">No appointments yet</p>
+                        </div>
                     </td>
                 </tr>
                 {% endif %}
@@ -217,50 +180,59 @@
 </div>
 
 <!-- ── Artist Performance ── -->
-<div class="studio-card" style="border-left: 5px solid var(--studio-success);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem;">
+<div class="studio-card" style="padding:1.25rem;">
+    <div class="section-row">
         <div>
-            <h3 class="studio-title" style="margin-bottom: 4px;">Artist Performance</h3>
-            <p class="text-secondary" style="font-size: 0.8rem; font-weight: 500;">Engagement metrics and revenue yield
-                per artist</p>
+            <div class="section-title-bar">
+                <span class="section-title">Artist Performance</span>
+            </div>
+            <p style="font-size:0.7rem;color:#94a3b8;margin-top:0.2rem;">Engagement metrics and revenue yield per artist</p>
         </div>
-        <button onclick="switchTab('artists')" class="btn-studio btn-secondary"
-            style="padding: 0.5rem 1rem; font-size: 0.7rem;">
-            <i class="fas fa-users"></i> Manage Team
+        <button onclick="switchTab('artists')"
+            style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.875rem;background:transparent;border:1.5px solid #ece8e0;border-radius:0.5rem;font-size:0.65rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:border-color 0.15s,color 0.15s;"
+            onmouseover="this.style.borderColor='#c8a040';this.style.color='#c8a040';"
+            onmouseout="this.style.borderColor='#ece8e0';this.style.color='#64748b';">
+            <i class="fas fa-users-gear" style="font-size:0.6rem;"></i> Manage Team
         </button>
     </div>
-
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="dash-table-container">
+        <table class="dash-table">
             <thead>
                 <tr>
                     <th>Artist</th>
                     <th>Specialty</th>
-                    <th>Total Appts</th>
-                    <th>Completed</th>
-                    <th>Pending</th>
-                    <th style="width: 140px;">Revenue Yield</th>
+                    <th style="text-align:center;">Total Appts</th>
+                    <th style="text-align:center;">Completed</th>
+                    <th style="text-align:center;">Pending</th>
+                    <th style="text-align:right;">Revenue Yield</th>
                 </tr>
             </thead>
             <tbody>
                 {% if artist_performance %}
                 {% for ap in artist_performance %}
                 <tr>
-                    <td class="font-bold">{{ ap.artist_name }}</td>
-                    <td><span class="badge bg-indigo-soft text-indigo">{{ ap.specialisation }}</span></td>
-                    <td class="font-mono font-bold">{{ ap.total_appts }}</td>
-                    <td class="text-success font-bold">{{ ap.done_appts }}</td>
-                    <td class="text-warning font-bold">{{ ap.pending_appts }}</td>
-                    <td class="font-bold text-success">₹{{ "%.2f"|format(ap.total_revenue | default(0)) }}</td>
+                    <td style="color:#1a1a2e;font-weight:800;text-transform:uppercase;font-size:0.75rem;">{{ ap.artist_name }}</td>
+                    <td>
+                        {% set spec = (ap.specialisation or '') | lower %}
+                        {% if 'removal' in spec %}<span class="spec-badge spec-removal">{{ ap.specialisation }}</span>
+                        {% elif 'sketch' in spec or 'art' in spec %}<span class="spec-badge spec-sketch">{{ ap.specialisation }}</span>
+                        {% elif 'tattoo' in spec %}<span class="spec-badge spec-tattoo">{{ ap.specialisation }}</span>
+                        {% else %}<span class="spec-badge spec-default">{{ ap.specialisation or 'Tattoo Artist' }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align:center;font-weight:700;color:#1a1a2e;">{{ ap.total_appts }}</td>
+                    <td style="text-align:center;font-weight:700;color:#16a34a;">{{ ap.done_appts }}</td>
+                    <td style="text-align:center;font-weight:700;color:#d97706;">{{ ap.pending_appts }}</td>
+                    <td style="text-align:right;font-weight:900;color:#c8a040;font-size:0.85rem;">₹{{ "%.2f"|format(ap.total_revenue | default(0)) }}</td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 3rem;">
-                        <i class="fas fa-chart-bar text-muted"
-                            style="display: block; font-size: 2rem; opacity: 0.1; margin-bottom: 1rem;"></i>
-                        <p class="text-secondary" style="font-weight: 500; font-size: 0.9rem;">No performance data
-                            compiled for current period.</p>
+                    <td colspan="6" style="padding:3rem;text-align:center;color:#94a3b8;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0.5;">
+                            <i class="fas fa-chart-line" style="font-size:1.75rem;"></i>
+                            <p style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">No performance data yet</p>
+                        </div>
                     </td>
                 </tr>
                 {% endif %}

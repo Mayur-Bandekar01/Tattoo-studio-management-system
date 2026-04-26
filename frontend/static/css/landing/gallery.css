@@ -1,0 +1,247 @@
+/* ── GALLERY & LIGHTBOX ── */
+/* ── GALLERY GRID (Tailwind-Managed) ── */
+#galleryGrid {
+    width: 100% !important;
+}
+
+.gallery-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.gallery-item:hover {
+    transform: translateY(-8px);
+    border-color: rgba(200, 160, 64, 0.3);
+}
+
+.gallery-img-container {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+.gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gallery-item:hover .gallery-img {
+    transform: scale(1.05);
+}
+
+.gallery-meta {
+    padding: 1rem; /* Slightly reduced padding */
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    margin-top: auto;
+}
+
+.gallery-info h4 {
+    font-size: 0.875rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+}
+
+.gallery-info p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+}
+
+/* Ensure the text container in gallery.html also aligns */
+.gallery-text-content {
+    padding: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
+    margin-top: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 3, 3, 0.98);
+    backdrop-filter: blur(20px);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s;
+}
+
+.lightbox.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.lb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.lb-nav:hover { background: rgba(255, 255, 255, 0.1); }
+.lb-prev { left: 2rem; }
+.lb-next { right: 2rem; }
+
+.lightbox-img-wrapper {
+    max-width: 90vw;
+    max-height: 70vh;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.lightbox-info {
+    margin-top: 2rem;
+    text-align: center;
+    padding: 0 1.5rem;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-box {
+    padding: 1.8rem 1.25rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1.5px solid rgba(255, 255, 255, 0.15); /* More prominent border */
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-align: center;
+    min-width: 0;
+}
+
+.stat-box:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(200, 160, 64, 0.1);
+}
+
+html.light-mode .stat-box {
+    background: #ffffff;
+    border: 1.5px solid rgba(0, 0, 0, 0.12); /* More prominent border in light mode */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+html.light-mode .stat-box:hover {
+    border-color: var(--accent);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+/* Lightbox Extras */
+.lb-meta-content {
+    max-width: 512px;
+    margin: 0 auto;
+}
+
+.lb-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: white;
+    margin-top: 0.5rem;
+    line-height: 1.2;
+}
+
+.lb-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.lb-artist-name {
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+}
+
+.lb-dot {
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.lb-artist-spec {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+@media (min-width: 1024px) {
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+}
+

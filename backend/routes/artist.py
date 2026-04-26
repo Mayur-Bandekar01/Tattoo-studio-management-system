@@ -12,9 +12,14 @@ from flask import (
     current_app,
 )
 from ..db import get_db
-
 from ..utils.decorators import role_required
-from ..utils.validators import allowed_file, validate_image_size, is_valid_numeric
+from ..utils.validators import (
+    allowed_file,
+    validate_image_size,
+    is_valid_numeric,
+    validate_fields,
+)
+from ..utils.serializers import sanitize_for_json
 
 artist_bp = Blueprint("artist", __name__)
 
@@ -25,33 +30,50 @@ artist_bp = Blueprint("artist", __name__)
 def artist_dashboard():
     artist_id = session["user_id"]
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT a.*, c.customer_name FROM appointment a
+            JOIN customer c ON a.customer_id = c.customer_id
+            WHERE a.artist_id = %s ORDER BY a.appointment_date ASC
+        """,
+            (artist_id,),
+        )
+        appointments = cursor.fetchall()
+        
+        # Standardize date/time objects for JSON-safe template rendering
+        appointments = sanitize_for_json(appointments)
 
-    cursor.execute(
-        """
-        SELECT a.*, c.customer_name FROM appointment a
-        JOIN customer c ON a.customer_id = c.customer_id
-        WHERE a.artist_id = %s ORDER BY a.appointment_date ASC
-    """,
-        (artist_id,),
-    )
-    appointments = cursor.fetchall()
+        # CORE FEATURE: Only fetch inventory items belonging to THIS artist
+        cursor.execute(
+            "SELECT * FROM inventory WHERE artist_id = %s ORDER BY category, item_name",
+            (artist_id,),
+        )
+        inventory = cursor.fetchall()
 
-    # CORE FEATURE: Only fetch inventory items belonging to THIS artist
-    cursor.execute(
-        "SELECT * FROM inventory WHERE artist_id = %s ORDER BY category, item_name",
-        (artist_id,),
-    )
-    inventory = cursor.fetchall()
+        cursor.execute(
+            "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
+            (artist_id,),
+        )
+        gallery = cursor.fetchall()
 
-    cursor.execute(
-        "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
-        (artist_id,),
-    )
-    gallery = cursor.fetchall()
+        cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
+        artist_profile = cursor.fetchone()
 
-    cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
-    artist_profile = cursor.fetchone()
+        # FETCH: Recent consumption logs for this artist
+        cursor.execute(
+            """
+            SELECT ul.*, i.item_name, i.unit 
+            FROM inventory_usage ul
+            JOIN inventory i ON ul.item_id = i.item_id
+            WHERE ul.artist_id = %s
+            ORDER BY ul.logged_at DESC LIMIT 10
+        """,
+            (artist_id,),
+        )
+        usage_logs = cursor.fetchall()
+        usage_logs = sanitize_for_json(usage_logs)
 
     # Stats
     total_count = len(appointments)
@@ -73,6 +95,7 @@ def artist_dashboard():
         artist_profile=artist_profile,
         appointments=appointments,
         inventory=inventory,
+        usage_logs=usage_logs,
         my_gallery=gallery,
         total_count=total_count,
         pending_count=pending_count,
@@ -87,17 +110,18 @@ def artist_dashboard():
 @role_required("artist")
 def artist_approve(appointment_id):
     duration = request.form.get("duration_hours", "").strip()
-    if not duration or not is_valid_numeric(duration):
+    missing = validate_fields(request.form, ["duration_hours"])
+    if missing or not is_valid_numeric(duration):
         flash("Please provide a valid session duration!", "error")
         return redirect("/artist/dashboard")
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE appointment SET status = 'Approved', duration_hours = %s WHERE appointment_id = %s AND artist_id = %s",
-        (duration, appointment_id, session["user_id"]),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "UPDATE appointment SET status = 'Approved', duration_hours = %s WHERE appointment_id = %s AND artist_id = %s",
+            (duration, appointment_id, session["user_id"]),
+        )
+        conn.commit()
     flash("Appointment approved and duration set!", "success")
     return redirect("/artist/dashboard")
 
@@ -106,12 +130,12 @@ def artist_approve(appointment_id):
 @role_required("artist")
 def artist_reject(appointment_id):
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE appointment SET status = 'Rejected' WHERE appointment_id = %s AND artist_id = %s",
-        (appointment_id, session["user_id"]),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "UPDATE appointment SET status = 'Rejected' WHERE appointment_id = %s AND artist_id = %s",
+            (appointment_id, session["user_id"]),
+        )
+        conn.commit()
     flash("Appointment rejected.", "success")
     return redirect("/artist/dashboard")
 
@@ -120,12 +144,12 @@ def artist_reject(appointment_id):
 @role_required("artist")
 def artist_done(appointment_id):
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE appointment SET status = 'Done' WHERE appointment_id = %s AND artist_id = %s",
-        (appointment_id, session["user_id"]),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            "UPDATE appointment SET status = 'Done' WHERE appointment_id = %s AND artist_id = %s",
+            (appointment_id, session["user_id"]),
+        )
+        conn.commit()
     flash("Mission accomplished! Appointment marked as Done.", "success")
     return redirect("/artist/dashboard")
 
@@ -137,16 +161,18 @@ def artist_done(appointment_id):
 @role_required("artist")
 def artist_inventory_add():
     """Add a new supply item to THIS artist's personal inventory."""
+    required = ["item_name", "category", "unit", "quant_stock", "reorder_level", "unit_cost"]
+    missing = validate_fields(request.form, required)
+    if missing:
+        flash("Please fill in all supply fields!", "error")
+        return redirect("/artist/dashboard")
+
     item_name = request.form.get("item_name", "").strip()
     category = request.form.get("category", "").strip()
     unit = request.form.get("unit", "").strip()
     quant_stock = request.form.get("quant_stock", "").strip()
     reorder_level = request.form.get("reorder_level", "").strip()
     unit_cost = request.form.get("unit_cost", "").strip()
-
-    if not all([item_name, category, unit, quant_stock, reorder_level, unit_cost]):
-        flash("Please fill in all supply fields!", "error")
-        return redirect("/artist/dashboard")
 
     if (
         not is_valid_numeric(quant_stock)
@@ -157,28 +183,35 @@ def artist_inventory_add():
         return redirect("/artist/dashboard")
 
     conn = get_db()
-    cursor = conn.cursor()
-    try:
-        cursor.execute(
-            """
-            INSERT INTO inventory (item_name, category, unit, quant_stock, reorder_level, unit_cost, artist_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """,
-            (
-                item_name,
-                category,
-                unit,
-                float(quant_stock),
-                float(reorder_level),
-                float(unit_cost),
-                session["user_id"],
-            ),
-        )
-        conn.commit()
-        flash(f"'{item_name}' added to your inventory!", "success")
-    except Exception as e:
-        current_app.logger.error(f"Inventory add error: {e}")
-        flash("Failed to add supply item. Please try again.", "error")
+    with conn.cursor(dictionary=True) as cursor:
+        try:
+            # [UNIT-LOGIC]
+            countable_units = ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles']
+            is_countable = unit in countable_units
+            
+            final_quant = int(round(float(quant_stock))) if is_countable else float(quant_stock)
+            final_reorder = int(round(float(reorder_level))) if is_countable else float(reorder_level)
+
+            cursor.execute(
+                """
+                INSERT INTO inventory (item_name, category, unit, quant_stock, reorder_level, unit_cost, artist_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+                (
+                    item_name,
+                    category,
+                    unit,
+                    final_quant,
+                    final_reorder,
+                    float(unit_cost),
+                    session["user_id"],
+                ),
+            )
+            conn.commit()
+            flash(f"'{item_name}' added to your inventory!", "success")
+        except Exception as e:
+            current_app.logger.error(f"Inventory add error: {e}")
+            flash("Failed to add supply item. Please try again.", "error")
     return redirect("/artist/dashboard")
 
 
@@ -199,34 +232,38 @@ def artist_inventory_update(item_id):
 
     qty = float(quant_stock)
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
-    # SECURITY: Verify this item belongs to the logged-in artist
-    cursor.execute(
-        "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
-        (item_id, session["user_id"]),
-    )
-    item = cursor.fetchone()
-    if not item:
-        flash("Item not found or access denied!", "error")
-        return redirect("/artist/dashboard")
-
-    if action == "add":
+    with conn.cursor(dictionary=True) as cursor:
+        # SECURITY: Verify this item belongs to the logged-in artist
         cursor.execute(
-            "UPDATE inventory SET quant_stock = quant_stock + %s WHERE item_id = %s",
-            (qty, item_id),
+            "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
+            (item_id, session["user_id"]),
         )
-        flash(f"Restocked '{item['item_name']}' by {qty} {item['unit']}.", "success")
-    else:
-        if qty < 0:
-            flash("Stock quantity cannot be negative!", "error")
+        item = cursor.fetchone()
+        if not item:
+            flash("Item not found or access denied!", "error")
             return redirect("/artist/dashboard")
-        cursor.execute(
-            "UPDATE inventory SET quant_stock = %s WHERE item_id = %s", (qty, item_id)
-        )
-        flash(f"'{item['item_name']}' stock set to {qty} {item['unit']}.", "success")
 
-    conn.commit()
+        # [UNIT-LOGIC]
+        countable_units = ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles']
+        if item['unit'] in countable_units:
+            qty = int(round(qty))
+
+        if action == "add":
+            cursor.execute(
+                "UPDATE inventory SET quant_stock = quant_stock + %s WHERE item_id = %s",
+                (qty, item_id),
+            )
+            flash(f"Restocked '{item['item_name']}' by {qty} {item['unit']}.", "success")
+        else:
+            if qty < 0:
+                flash("Stock quantity cannot be negative!", "error")
+                return redirect("/artist/dashboard")
+            cursor.execute(
+                "UPDATE inventory SET quant_stock = %s WHERE item_id = %s", (qty, item_id)
+            )
+            flash(f"'{item['item_name']}' stock set to {qty} {item['unit']}.", "success")
+
+        conn.commit()
     return redirect("/artist/dashboard")
 
 
@@ -235,20 +272,19 @@ def artist_inventory_update(item_id):
 def artist_inventory_delete(item_id):
     """Permanently remove a supply item from THIS artist's inventory."""
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    with conn.cursor(dictionary=True) as cursor:
+        # SECURITY: Verify ownership before deletion
+        cursor.execute(
+            "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
+            (item_id, session["user_id"]),
+        )
+        item = cursor.fetchone()
+        if not item:
+            flash("Item not found or access denied!", "error")
+            return redirect("/artist/dashboard")
 
-    # SECURITY: Verify ownership before deletion
-    cursor.execute(
-        "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
-        (item_id, session["user_id"]),
-    )
-    item = cursor.fetchone()
-    if not item:
-        flash("Item not found or access denied!", "error")
-        return redirect("/artist/dashboard")
-
-    cursor.execute("DELETE FROM inventory WHERE item_id = %s", (item_id,))
-    conn.commit()
+        cursor.execute("DELETE FROM inventory WHERE item_id = %s", (item_id,))
+        conn.commit()
     flash(f"'{item['item_name']}' removed from your inventory.", "success")
     return redirect("/artist/dashboard")
 
@@ -264,34 +300,52 @@ def artist_use_inventory():
         flash("Invalid inventory usage details!", "error")
         return redirect("/artist/dashboard")
 
-    quant = float(quant)
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
-    # SECURITY: Only allow use on artist's OWN items
-    cursor.execute(
-        "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
-        (item_id, session["user_id"]),
-    )
-    item = cursor.fetchone()
-
-    if not item:
-        flash("Inventory item not found or access denied!", "error")
-        return redirect("/artist/dashboard")
-
-    if item["quant_stock"] < quant:
-        flash(
-            f"Not enough stock! Only {item['quant_stock']} {item['unit']} "
-            f"available for {item['item_name']}.",
-            "error",
+    with conn.cursor(dictionary=True) as cursor:
+        # SECURITY: Only allow use on artist's OWN items
+        cursor.execute(
+            "SELECT * FROM inventory WHERE item_id = %s AND artist_id = %s",
+            (item_id, session["user_id"]),
         )
-        return redirect("/artist/dashboard")
+        item = cursor.fetchone()
 
-    cursor.execute(
-        "UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s",
-        (quant, item_id),
-    )
-    conn.commit()
+        if not item:
+            flash("Inventory item not found or access denied!", "error")
+            return redirect("/artist/dashboard")
+
+        # [UNIT-LOGIC]: Define countable vs measurable units
+        countable_units = ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles']
+        is_countable = item['unit'] in countable_units
+
+        if is_countable:
+            quant = int(round(float(quant)))  # Enforce integer for countable items
+        else:
+            quant = float(quant)
+
+        if item["quant_stock"] < quant:
+            flash(
+                f"Not enough stock! Only {item['quant_stock']} {item['unit']} "
+                f"available for {item['item_name']}.",
+                "error",
+            )
+            return redirect("/artist/dashboard")
+
+        cursor.execute(
+            "UPDATE inventory SET quant_stock = quant_stock - %s WHERE item_id = %s",
+            (quant, item_id),
+        )
+        
+        # LOG: Record the consumption in inventory_usage table
+        appt_id = request.form.get("appointment_id")
+        cursor.execute(
+            """
+            INSERT INTO inventory_usage (appointment_id, item_id, qty_used, artist_id)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (appt_id, item_id, quant, session["user_id"]),
+        )
+        
+        conn.commit()
     flash(f"Logged usage of {quant} {item['unit']} of {item['item_name']}.", "success")
     return redirect("/artist/dashboard")
 
@@ -323,15 +377,15 @@ def artist_gallery_upload():
 
     image_rel_path = f"uploads/gallery/{filename}"
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        """
-        INSERT INTO gallery (artist_id, image_path, caption, style)
-        VALUES (%s, %s, %s, %s)
-    """,
-        (session["user_id"], image_rel_path, caption, style),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """
+            INSERT INTO gallery (artist_id, image_path, caption, style)
+            VALUES (%s, %s, %s, %s)
+        """,
+            (session["user_id"], image_rel_path, caption, style),
+        )
+        conn.commit()
 
     flash("Masterpiece added to your gallery!", "success")
     return redirect("/artist/dashboard")
@@ -341,26 +395,26 @@ def artist_gallery_upload():
 @role_required("artist")
 def artist_gallery_delete(gallery_id):
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        "SELECT image_path FROM gallery WHERE gallery_id = %s AND artist_id = %s",
-        (gallery_id, session["user_id"]),
-    )
-    img = cursor.fetchone()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT image_path FROM gallery WHERE gallery_id = %s AND artist_id = %s",
+            (gallery_id, session["user_id"]),
+        )
+        img = cursor.fetchone()
 
-    if not img:
-        flash("Image not found or access denied!", "error")
-        return redirect("/artist/dashboard")
+        if not img:
+            flash("Image not found or access denied!", "error")
+            return redirect("/artist/dashboard")
 
-    if img["image_path"]:
-        fp = os.path.join(current_app.static_folder, img["image_path"])
-        if os.path.exists(fp):
-            try:
-                os.remove(fp)
-            except Exception:
-                pass
+        if img["image_path"]:
+            fp = os.path.join(current_app.static_folder, img["image_path"])
+            if os.path.exists(fp):
+                try:
+                    os.remove(fp)
+                except Exception:
+                    pass
 
-    cursor.execute("DELETE FROM gallery WHERE gallery_id = %s", (gallery_id,))
-    conn.commit()
+        cursor.execute("DELETE FROM gallery WHERE gallery_id = %s", (gallery_id,))
+        conn.commit()
     flash("Image removed from gallery.", "success")
     return redirect("/artist/dashboard")

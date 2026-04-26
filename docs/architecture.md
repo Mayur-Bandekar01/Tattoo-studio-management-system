@@ -11,7 +11,7 @@ This project is a **Flask-based Web Application** designed for a tattoo studio. 
 
 ### 2. Frontend (UI/UX)
 - **Engine**: Jinja2 Templating.
-- **Styling**: Tailwind CSS (CDN-based) with a dark/light theme system integrated directly into the templates.
+- **Styling**: Tailwind CSS (Local `tailwind.js`) with a dark/light theme system integrated directly into the templates.
 - **Structure**:
     - `templates/landing/`: Public marketing pages.
     - `templates/artist/`, `templates/customer/`, `templates/owner/`: Role-based protected dashboards.

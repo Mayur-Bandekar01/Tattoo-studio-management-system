@@ -33,3 +33,16 @@ def is_valid_numeric(value):
         return not (math.isinf(val) or math.isnan(val))
     except (ValueError, TypeError):
         return False
+
+
+def validate_fields(form_data, required_fields):
+    """
+    Standardized helper to verify that all required fields are present and not empty.
+    Returns a list of missing/empty field names.
+    """
+    missing = []
+    for field in required_fields:
+        val = form_data.get(field, "").strip()
+        if not val:
+            missing.append(field)
+    return missing

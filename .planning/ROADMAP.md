@@ -15,3 +15,11 @@ Expand the system's capabilities for artists and owners.
 
 - [x] Phase 5: Artist Booking Management Improvements <!-- id: 2.1 -->
 - [x] Phase 6: Owner Analytics Dashboard Expansion <!-- id: 2.2 -->
+
+## Milestone 3: Technical Debt & System Hardening
+Reduce coupling between business logic and database layers while hardening the application against common web vulnerabilities.
+
+- [ ] Phase 7: Data Access Layer Extraction (Addressing ISS-005) <!-- id: 3.1 -->
+- [ ] Phase 8: Advanced Session & Security Hardening (CSRF, Secure Flags) <!-- id: 3.2 -->
+- [x] Phase 11: Booking UI Refinement & Logic Hardening <!-- id: 2.3 -->
+- [x] Phase 12: Global Cleanup & Submission Optimization <!-- id: 1.7 -->

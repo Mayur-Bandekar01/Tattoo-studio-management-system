@@ -1,986 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dragon Tattoos | Contact</title>
-        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-    <!-- Offline Assets -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-        <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
-
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
-                                                colors: {
-                            apple: {
-                                bg: 'var(--apple-bg)',
-                                text: 'var(--apple-text)',
-                                muted: 'var(--apple-muted)',
-                                card: 'var(--apple-card)',
-                                border: 'var(--apple-border)',
-                                accent: 'var(--apple-accent)'
-                            }
-                        }
-                    }
-                }
-            }
-        </script>
-        <style>
-    :root {
-        --apple-bg: #000;
-        --apple-text: #f5f5f7;
-        --apple-muted: #86868b;
-        --apple-card: #1d1d1f;
-        --apple-border: rgba(255, 255, 255, 0.1);
-        --apple-accent: #c8a040;
-    }
-    html.light-mode {
-        --apple-bg: #ffffff;
-        --apple-text: #1f2937;
-        --apple-muted: #6b7280;
-        --apple-card: #fffaf5;
-        --apple-border: rgba(253, 186, 116, 0.4);
-        --apple-accent: #f97316;
-    }
-
-            * {
-                -webkit-font-smoothing: antialiased;
-            }
-
-            body {
-                background: #000;
-                color: #f5f5f7;
-                overflow-x: hidden;
-            }
-
-            .navbar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 100;
-                padding: 0 1.5rem;
-                height: 52px;
-                display: flex;
-                align-items: center;
-                background: rgba(0, 0, 0, 0.72);
-                backdrop-filter: saturate(180%) blur(20px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-                transform: translateY(-100%);
-                animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-            }
-
-            @keyframes navSlideDown {
-                to {
-                    transform: translateY(0);
-                }
-            }
-
-            .nav-link {
-                color: #86868b;
-                font-size: 0.78rem;
-                font-weight: 400;
-                letter-spacing: 0.03em;
-                transition: color 0.25s;
-                text-decoration: none;
-                position: relative;
-                padding-bottom: 2px;
-            }
-
-            .nav-link::after {
-                content: '';
-                position: absolute;
-                bottom: -2px;
-                left: 50%;
-                right: 50%;
-                height: 1px;
-                background: #c8a040;
-                transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-            }
-
-            .nav-link:hover {
-                color: var(--accent, #c8a040);
-            }
-
-            .nav-link:hover::after {
-                left: 0;
-                right: 0;
-            }
-
-            .nav-link.active {
-                color: #f5f5f7;
-            }
-
-            .nav-link.active::after {
-                left: 0;
-                right: 0;
-                background: #c8a040;
-                height: 2px;
-            }
-
-            .burger {
-                display: none;
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 6px;
-            }
-
-            .burger span {
-                display: block;
-                width: 22px;
-                height: 2px;
-                background: #86868b;
-                border-radius: 2px;
-                transition: all 0.3s;
-                margin: 5px 0;
-            }
-
-            .burger.open span:nth-child(1) {
-                transform: translateY(7px) rotate(45deg);
-            }
-
-            .burger.open span:nth-child(2) {
-                opacity: 0;
-            }
-
-            .burger.open span:nth-child(3) {
-                transform: translateY(-7px) rotate(-45deg);
-            }
-
-            .mobile-menu {
-                position: fixed;
-                inset: 0;
-                z-index: 99;
-                background: rgba(0, 0, 0, 0.97);
-                backdrop-filter: blur(20px);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 2.5rem;
-                transform: translateY(-100%);
-                opacity: 0;
-                transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-                pointer-events: none;
-            }
-
-            .mobile-menu.open {
-                transform: translateY(0);
-                opacity: 1;
-                pointer-events: all;
-            }
-
-            .mobile-menu a {
-                font-family: 'Cinzel', serif;
-                font-size: 1.75rem;
-                color: #86868b;
-                text-decoration: none;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                transition: color 0.25s;
-            }
-
-            .mobile-menu a:hover,
-            .mobile-menu a.active {
-                color: #c8a040;
-            }
-
-            .mobile-menu-divider {
-                width: 40px;
-                height: 1px;
-                background: rgba(200, 160, 64, 0.3);
-            }
-
-            @media (max-width: 768px) {
-                .burger {
-                    display: block;
-                }
-            }
-
-        /* FAQ */
-            .faq-item {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            }
-
-            .faq-btn {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 1.25rem 0;
-                background: none;
-                border: none;
-                color: #f5f5f7;
-                cursor: pointer;
-                text-align: left;
-            }
-
-            .faq-btn:hover .faq-q {
-                color: #c8a040;
-            }
-
-            .faq-q {
-                font-family: 'Inter', sans-serif;
-                font-size: 0.9rem;
-                font-weight: 400;
-                transition: color 0.2s;
-            }
-
-            .faq-icon {
-                color: #c8a040;
-                font-size: 0.75rem;
-                transition: transform 0.3s;
-                flex-shrink: 0;
-            }
-
-            .faq-icon.open {
-                transform: rotate(135deg);
-            }
-
-            .faq-body {
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            }
-
-            .faq-body.open {
-                max-height: 200px;
-            }
-
-            .faq-body p {
-                padding-bottom: 1.25rem;
-                color: #86868b;
-                font-size: 0.82rem;
-                line-height: 1.7;
-            }
-
-            .page-hero {
-                background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
-                padding: 9rem 1.5rem 5rem;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .page-hero::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
-            }
-
-            .page-hero-grid {
-                position: absolute;
-                inset: 0;
-                background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-                background-size: 60px 60px;
-            }
-
-            .reveal {
-                opacity: 0;
-                transform: translateY(28px);
-                transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-            }
-
-            .reveal.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-            .reveal-d1 {
-                transition-delay: 0.1s;
-            }
-
-            .reveal-d2 {
-                transition-delay: 0.2s;
-            }
-
-            .reveal-d3 {
-                transition-delay: 0.3s;
-            }
-
-            .reveal-d4 {
-                transition-delay: 0.4s;
-            }
-
-            .reveal-d5 {
-                transition-delay: 0.5s;
-            }
-
-            .contact-card {
-                background: rgba(29, 29, 31, 0.6);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 20px;
-                padding: 1.5rem;
-                display: flex;
-                align-items: flex-start;
-                gap: 1.25rem;
-                transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-                position: relative;
-                overflow: hidden;
-            }
-
-            .contact-card::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(200, 160, 64, 0.06), transparent 40%);
-                opacity: 0;
-                transition: opacity 0.5s;
-                pointer-events: none;
-            }
-
-            .contact-card:hover {
-                background: rgba(42, 42, 45, 0.8);
-                border-color: rgba(200, 160, 64, 0.25);
-                transform: translateY(-5px) scale(1.01);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            }
-
-            .contact-card:hover::before {
-                opacity: 1;
-            }
-
-            .contact-icon {
-                width: 44px;
-                height: 44px;
-                border-radius: 12px;
-                background: rgba(200, 160, 64, 0.1);
-                border: 1px solid rgba(200, 160, 64, 0.2);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #c8a040;
-                flex-shrink: 0;
-                transition: background 0.3s, transform 0.3s;
-            }
-
-            .contact-card:hover .contact-icon {
-                background: rgba(200, 160, 64, 0.18);
-                transform: scale(1.08);
-            }
-
-            .map-card {
-                background: rgba(29, 29, 31, 0.6);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 24px;
-                height: 350px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                gap: 1.25rem;
-                transition: all 0.4s ease;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .map-card:hover {
-                border-color: rgba(200, 160, 64, 0.2);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            }
-
-        /* form */
-            input,
-            textarea,
-            select {
-                width: 100%;
-                padding: 0.85rem 1.15rem;
-                background: rgba(29, 29, 31, 0.5);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 14px;
-                outline: none;
-                font-size: 0.875rem;
-                color: #f5f5f7;
-                transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-                font-family: 'Inter', sans-serif;
-            }
-
-            input:focus,
-            textarea:focus,
-            select:focus {
-                background: rgba(42, 42, 45, 0.8);
-                border-color: #c8a040;
-                box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
-                transform: translateY(-1px);
-            }
-
-            input::placeholder,
-            textarea::placeholder {
-                color: #555;
-            }
-
-            select option {
-                background: #1d1d1f;
-                color: #f5f5f7;
-            }
-
-            footer {
-                background: #000;
-                border-top: 1px solid rgba(255, 255, 255, 0.06);
-            }
-
-            .footer-link {
-                color: #86868b;
-                font-size: 0.75rem;
-                transition: color 0.2s;
-                text-decoration: none;
-            }
-
-            .footer-link:hover {
-                color: #c8a040;
-            }
-
-            ::-webkit-scrollbar {
-                width: 5px
-            }
-
-            ::-webkit-scrollbar-track {
-                background: #000
-            }
-
-            ::-webkit-scrollbar-thumb {
-                background: #3a3a3c;
-                border-radius: 4px
-            }
-
-            ::-webkit-scrollbar-thumb:hover {
-                background: #c8a040
-            }
-
-        /* ── LIGHT THEME (White + Orange Energetic) ── */
-            body.light-mode,
-            html.light-mode body {
-                --bg: #ffffff;
-                --bg-grad: rgba(249, 115, 22, 0.05);
-                --sidebar-bg: rgba(255, 255, 255, 0.96);
-                --topbar-bg: rgba(255, 255, 255, 0.96);
-                --card-bg: rgba(255, 250, 245, 0.8);
-                --card-hover: #ffedd5;
-                --border: rgba(253, 186, 116, 0.4);
-                --border-h: #f97316;
-                --text: #1f2937;
-                --muted: #6b7280;
-                --accent: #f97316;
-                --nav-muted: #9ca3af;
-                --nav-item: #4b5563;
-                --nav-hover: #f97316;
-                --shadow: rgba(249, 115, 22, 0.08);
-
-                background-color: var(--bg) !important;
-                color: var(--text) !important;
-            }
-
-            html.light-mode .contact-card,
-            html.light-mode .map-card,
-            html.light-mode div[style*="background: var(--card-bg)"] {
-                background: rgba(255, 255, 255, 0.7) !important;
-                backdrop-filter: blur(20px) !important;
-                -webkit-backdrop-filter: blur(20px) !important;
-                border: 1px solid var(--border) !important;
-            }
-
-            html.light-mode .navbar,
-            html.light-mode nav {
-                background: rgba(255, 255, 255, 0.88) !important;
-                border-bottom: 1px solid var(--border) !important;
-            }
-
-            html.light-mode .nav-link {
-                color: var(--muted) !important;
-            }
-
-            html.light-mode .nav-link:hover,
-            html.light-mode .nav-link.active {
-                color: var(--accent) !important;
-            }
-
-            html.light-mode .mobile-menu {
-                background: rgba(255, 255, 255, 0.98) !important;
-            }
-
-            html.light-mode .mobile-menu a {
-                color: var(--muted) !important;
-            }
-
-            html.light-mode .mobile-menu a:hover,
-            html.light-mode .mobile-menu a.active {
-                color: var(--accent) !important;
-            }
-
-            html.light-mode .hero-section,
-            html.light-mode .page-hero,
-            html.light-mode section,
-            html.light-mode .section-dark,
-            html.light-mode .section-surface {
-                background: var(--bg) !important;
-            }
-
-            html.light-mode .feature-card,
-            html.light-mode .testi-card,
-            html.light-mode .value-card,
-            html.light-mode .artist-card,
-            html.light-mode .stat-card,
-            html.light-mode .contact-card,
-            html.light-mode .map-card {
-                background: var(--card-bg) !important;
-                border: 1px solid var(--border) !important;
-                box-shadow: 0 4px 20px var(--shadow) !important;
-            }
-
-            html.light-mode .feature-card:hover,
-            html.light-mode .testi-card:hover,
-            html.light-mode .value-card:hover,
-            html.light-mode .artist-card:hover,
-            html.light-mode .stat-card:hover,
-            html.light-mode .contact-card:hover {
-                background: var(--card-hover) !important;
-                border-color: var(--border-h) !important;
-            }
-
-            html.light-mode .testi-quote,
-            html.light-mode .testi-detail,
-            html.light-mode .footer-link {
-                color: var(--muted) !important;
-            }
-
-            html.light-mode .testi-name,
-            html.light-mode .footer-brand {
-                color: var(--text) !important;
-            }
-
-            html.light-mode footer,
-            html.light-mode nav~* footer {
-                background: #fffaf5 !important;
-                border-top: 1px solid var(--border) !important;
-            }
-
-            html.light-mode .btn-outline {
-                border-color: var(--border) !important;
-                color: var(--text) !important;
-                background: rgba(249, 115, 22, 0.05) !important;
-            }
-
-            html.light-mode .burger span {
-                background: var(--muted) !important;
-            }
-
-            html.light-mode ::-webkit-scrollbar-track {
-                background: var(--bg) !important;
-            }
-
-            html.light-mode ::-webkit-scrollbar-thumb {
-                background: var(--accent) !important;
-            }
-
-            html.light-mode input,
-            html.light-mode textarea,
-            html.light-mode select {
-                background: white !important;
-                border-color: var(--border) !important;
-                color: var(--text) !important;
-            }
-
-        /* Fix FAQ in light mode */
-            html.light-mode .faq-item {
-                border-bottom-color: rgba(0, 0, 0, 0.1) !important;
-            }
-
-            html.light-mode .faq-btn {
-                color: var(--text) !important;
-            }
-
-            html.light-mode .faq-body p {
-                color: var(--muted) !important;
-            }
-
-        /* Fix inline-background cards in light mode */
-            html.light-mode div[style*='background:#1d1d1f'] {
-                background: var(--card-bg) !important;
-                border-color: var(--border) !important;
-            }
-
-        /* Fix footer-link */
-            html.light-mode .footer-link {
-                color: var(--muted) !important;
-            }
-
-        /* global transition */
-            *,
-            *::before,
-            *::after {
-                transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
-            }
-        </style>
-        <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-
-    </head>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a>
-        <a href="/gallery">Gallery</a><a href="/contact" class="active">Contact</a>
-        <div class="mobile-menu-divider"></div>
-        <div class="flex gap-4">
-            <a href="/login"
-               class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none" style="text-decoration:none;">Login</a>
-            <a href="/register"
-               class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none" style="text-decoration:none;">Register</a>
-        </div>
-    </div>
-
-    <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                     class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-[13px] font-bold tracking-widest uppercase">Dragon Tattoos</span>
-            </div>
-            <div class="hidden md:flex items-center gap-8">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link">Gallery</a>
-                <a href="/contact" class="nav-link active">Contact</a>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-3">
-                    <a href="/login"
-                       class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none">Login</a>
-                    <a href="/register"
-                       class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none">Register</a>
-                </div>
-                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
-                        aria-label="Menu"><span></span><span></span><span></span></button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="page-hero text-center">
-        <div class="page-hero-grid"></div>
-        <div class="relative z-10">
-            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium">Get In Touch</p>
-            <h1 class="font-display text-5xl md:text-6xl text-apple-text mb-4 tracking-tight">Contact Us</h1>
-            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed">
-                Walk in, call us or drop a message. We're always happy to discuss your next tattoo!
-            </p>
-        </div>
-    </div>
-
-    <section class="py-24 px-6">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
-
-        <!-- contact info -->
-            <div class="space-y-4">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-6 reveal">Studio Info</p>
-
-                <div class="contact-card reveal reveal-d1">
-                    <div class="contact-icon"><i class="fa-solid fa-location-dot text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Studio Address</p>
-                        <p class="text-apple-muted text-xs leading-relaxed">123 Ink Street, Art District<br>Bengaluru,
-                            Karnataka 560001</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d2">
-                    <div class="contact-icon"><i class="fa-solid fa-phone text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Phone</p>
-                        <p class="text-apple-muted text-xs">+91 98765 43210</p>
-                        <p class="text-apple-muted text-xs">+91 87654 32109</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d3">
-                    <div class="contact-icon"><i class="fa-solid fa-envelope text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Email</p>
-                        <p class="text-apple-muted text-xs">studio@dragontattoos.com</p>
-                        <p class="text-apple-muted text-xs">bookings@dragontattoos.com</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d4">
-                    <div class="contact-icon"><i class="fa-solid fa-clock text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Working Hours</p>
-                        <p class="text-apple-muted text-xs">Mon – Sat: 10:00 AM – 8:00 PM</p>
-                        <p class="text-apple-muted text-xs">Sunday: By Appointment Only</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d5">
-                    <div class="contact-icon"><i class="fa-brands fa-instagram text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Instagram</p>
-                        <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank" rel="noopener noreferrer"
-                           class="text-apple-muted text-xs hover:text-apple-gold transition-colors">@dragontattooshaliyal</a>
-                        <p class="text-apple-muted text-xs mt-0.5">Follow us for latest work & updates</p>
-                    </div>
-                </div>
-            </div>
-
-        <!-- map + quick info -->
-            <div class="reveal reveal-d1">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-6">Find Us</p>
-                <div class="map-card mb-4">
-                    <i class="fa-solid fa-map-location-dot text-apple-gold/25 text-5xl"></i>
-                    <p class="text-apple-muted/50 text-sm font-medium">123 Ink Street, Bengaluru</p>
-                    <p class="text-apple-muted/30 text-xs">Google Maps will load here</p>
-                    <a href="https://maps.google.com" target="_blank"
-                       class="mt-2 px-5 py-2 bg-apple-gold/10 border border-apple-gold/20 text-apple-gold text-xs rounded-xl hover:bg-apple-gold/18 transition-all">
-                        <i class="fa-solid fa-external-link-alt mr-2"></i>Open in Google Maps
-                    </a>
-                </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl"
-                     style="background:#1d1d1f;border:1px solid rgba(255,255,255,0.06);">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-apple-gold/10 border border-apple-gold/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-car text-apple-gold text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-apple-text text-xs font-semibold mb-0.5">Easy to Reach</p>
-                        <p class="text-apple-muted text-xs leading-relaxed">2 min walk from New Bus Stand, Haliyal. Free
-                            parking available outside.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<!-- ENQUIRY FORM -->
-    <section class="py-24 px-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">Drop a Message</p>
-                <h2 class="font-display text-4xl text-apple-text tracking-tight">Send an Enquiry</h2>
-                <p class="text-apple-muted text-sm mt-3">Not sure yet? Send us your idea and we'll get back to you!</p>
-            </div>
-
-            <div class="p-8 rounded-2xl reveal reveal-d1"
-                 style="background: var(--card-bg); border: 1px solid var(--border);">
-                <div class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Full
-                                Name</label>
-                            <input type="text" placeholder="Your name">
-                        </div>
-                        <div>
-                            <label class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Phone
-                                Number</label>
-                            <input type="tel" placeholder="Your phone number">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Email
-                            Address</label>
-                        <input type="email" placeholder="your@email.com">
-                    </div>
-                    <div>
-                        <label class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Tattoo
-                            Style</label>
-                        <select>
-                            <option value="">Select a style...</option>
-                            <option>Blackwork</option>
-                            <option>Fine Line</option>
-                            <option>Realism</option>
-                            <option>Traditional</option>
-                            <option>Watercolour</option>
-                            <option>Not Sure Yet</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Your
-                            Message</label>
-                        <textarea rows="4" placeholder="Tell us about your tattoo idea..."></textarea>
-                    </div>
-                    <button onclick="sendEnquiry(event)"
-                            class="w-full py-4 bg-gradient-to-r from-apple-gold to-apple-goldLight text-black font-bold text-sm uppercase tracking-widest rounded-xl hover:shadow-[0_0_20px_rgba(200,160,64,0.4)] transition-all hover:-translate-y-1 active:scale-95 relative overflow-hidden group">
-                        <span class="relative z-10 flex items-center justify-center">
-                            <i
-                                class="fa-solid fa-paper-plane mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                            Send Enquiry
-                        </span>
-                        <div
-                            class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out">
-                        </div>
-                    </button>
-                    <p class="text-center text-xs text-apple-muted">
-                        Or simply
-                        <a href="/register" class="text-apple-gold hover:underline">create an account</a>
-                        to book directly online!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<!-- FAQ SECTION -->
-    <section class="py-20 px-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <p class="text-apple-gold text-xs font-medium uppercase tracking-widest mb-3">Got Questions?</p>
-                <h2 class="font-display text-4xl text-apple-text">Frequently Asked</h2>
-            </div>
-            <div class="reveal reveal-d1">
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)">
-                        <span class="faq-q">Do I need to book an appointment in advance?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Yes, we strongly recommend booking ahead to secure your preferred artist and time slot. Walk-ins
-                            are welcome but subject to availability. You can book online through your account.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)">
-                        <span class="faq-q">How long does a tattoo session take?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Session duration depends on the size and detail of the design. Small tattoos may take 1–2 hours,
-                            while large sleeves or detailed realism can span multiple sessions of 4–6 hours each.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)">
-                        <span class="faq-q">What should I do before my appointment?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Stay hydrated, eat a proper meal beforehand, wear comfortable clothing that allows easy access to
-                            the tattoo area. Avoid alcohol for 24 hours before your session.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)">
-                        <span class="faq-q">How do I take care of my tattoo after the session?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>We provide full aftercare instructions after every session. In general: keep it clean, apply
-                            provided ointment, avoid sun and swimming for 2–3 weeks and do not pick at the healing skin.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-8 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                     class="w-7 h-7 rounded-full object-cover opacity-80">
-                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
-                    Studio</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="/" class="footer-link">Home</a>
-                <a href="/about" class="footer-link">About</a>
-                <a href="/services" class="footer-link">Services</a>
-                <a href="/gallery" class="footer-link">Gallery</a>
-                <a href="/contact" class="footer-link">Contact</a>
-            </div>
-            <p class="text-apple-muted/40 text-xs">© 2025 Dragon Tattoos Studio</p>
-        </div>
-    </footer>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Contact Us</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <meta name="description"
+        content="Walk in, call us or drop a message. We're always happy to discuss your next tattoo!">
+
+    <!-- Global CSS & Assets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+    <!-- Tailwind Output (Local Build) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind_output.css') }}">
+    <!-- Tailwind Play CDN (Migration Fallback) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-    // Intersection Observer for Reveal Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                // If it's a container with staggered children
-                    if (entry.target.hasAttribute('data-stagger')) {
-                        const children = entry.target.querySelectorAll('.reveal');
-                        children.forEach((child, index) => {
-                            setTimeout(() => {
-                                child.classList.add('visible');
-                            }, index * 100);
-                        });
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        studio: {
+                            bg: 'var(--studio-bg)',
+                            surface: 'var(--studio-surface)',
+                            card: 'var(--studio-card)',
+                            cardBorder: 'var(--studio-border)',
+                            gold: 'var(--studio-gold)',
+                            'gold-soft': 'var(--studio-gold-soft)',
+                            'gold-dim': 'var(--studio-gold-dim)',
+                            border: 'var(--studio-border)',
+                        },
+                        accent: 'var(--accent, var(--studio-gold))',
+                        text: 'var(--text, var(--studio-text-primary))',
+                        muted: 'var(--text-muted, var(--studio-text-muted))',
                     }
-                    observer.unobserve(entry.target);
                 }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // Spotlight Hover Effect
-        document.querySelectorAll('.contact-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
-
-        function sendEnquiry() {
-            const btn = event.currentTarget;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Sending...';
-            btn.disabled = true;
-
-            setTimeout(() => {
-                alert('Thank you for your enquiry! We will contact you within 24 hours.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }, 1500);
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('burgerBtn');
-            menu.classList.toggle('open');
-            btn.classList.toggle('open');
-            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-        }
-
-        document.querySelectorAll('#mobileMenu a').forEach(a => {
-            a.addEventListener('click', toggleMobileMenu);
-        });
-
-        function toggleFaq(btn) {
-            const body = btn.nextElementSibling;
-            const icon = btn.querySelector('.faq-icon');
-            const isOpen = body.classList.contains('open');
-
-        // Close other FAQs
-            document.querySelectorAll('.faq-body').forEach(b => {
-                if (b !== body) b.classList.remove('open');
-            });
-            document.querySelectorAll('.faq-icon').forEach(i => {
-                if (i !== icon) i.classList.remove('open');
-            });
-
-            if (!isOpen) {
-                body.classList.add('open');
-                icon.classList.add('open');
-            } else {
-                body.classList.remove('open');
-                icon.classList.remove('open');
             }
         }
     </script>
+
+    <!-- Legacy CSS (Will be removed after verification) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing/contact.css') }}">
+<script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
+</head>
+
+<body class="landing-page">
+
+    {% include 'landing/_navbar.html' %}
+
+    <main>
+        <!-- HERO -->
+        <div
+            class="flex flex-col items-center justify-center relative pt-32 pb-20 px-6 text-center overflow-hidden">
+            <div
+                class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[length:40px_40px] pointer-events-none transition-opacity opacity-30">
+            </div>
+            <div class="relative z-10 reveal">
+                <p class="text-accent text-[10px] uppercase tracking-[0.2em] mb-4 font-bold">Get In Touch</p>
+                <h1 class="font-display text-5xl md:text-8xl text-text mb-6 tracking-tighter leading-none">Contact Us
+                </h1>
+                <p class="text-muted text-lg max-w-xl mx-auto leading-relaxed font-light">
+                    Walk in, call us or drop a message. We're always happy to discuss your next tattoo!
+                </p>
+            </div>
+        </div>
+
+        <section class="py-16 px-6">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- contact info -->
+                <div class="space-y-3">
+                    <p class="text-muted text-[10px] font-semibold uppercase tracking-widest mb-4 scroll-reveal">Studio Info
+                    </p>
+
+                    <div class="contact-card scroll-reveal scroll-reveal-d1">
+                        <div class="contact-icon"><i class="fa-solid fa-location-dot text-sm"></i></div>
+                        <div>
+                            <p class="font-semibold text-text text-sm mb-1">Studio Address</p>
+                            <p class="text-muted text-xs leading-relaxed">123 Ink Street, Art District<br>Bengaluru,
+                                Karnataka 560001</p>
+                        </div>
+                    </div>
+                    <div class="contact-card scroll-reveal scroll-reveal-d2">
+                        <div class="contact-icon"><i class="fa-solid fa-phone text-sm"></i></div>
+                        <div>
+                            <p class="font-semibold text-text text-sm mb-1">Phone</p>
+                            <p class="text-muted text-xs">+91 98765 43210</p>
+                            <p class="text-muted text-xs">+91 87654 32109</p>
+                        </div>
+                    </div>
+                    <div class="contact-card scroll-reveal scroll-reveal-d3">
+                        <div class="contact-icon"><i class="fa-solid fa-envelope text-sm"></i></div>
+                        <div>
+                            <p class="font-semibold text-text text-sm mb-1">Email</p>
+                            <p class="text-muted text-xs">studio@dragontattoos.com</p>
+                            <p class="text-muted text-xs">bookings@dragontattoos.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-card scroll-reveal scroll-reveal-d4">
+                        <div class="contact-icon"><i class="fa-solid fa-clock text-sm"></i></div>
+                        <div>
+                            <p class="font-semibold text-text text-sm mb-1">Working Hours</p>
+                            <p class="text-muted text-xs">Mon – Sat: 10:00 AM – 8:00 PM</p>
+                            <p class="text-muted text-xs">Sunday: By Appointment Only</p>
+                        </div>
+                    </div>
+                    <div class="contact-card scroll-reveal scroll-reveal-d5">
+                        <div class="contact-icon"><i class="fa-brands fa-instagram text-sm"></i></div>
+                        <div>
+                            <p class="font-semibold text-text text-sm mb-1">Instagram</p>
+                            <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-muted text-xs hover:text-accent transition-colors">@dragontattooshaliyal</a>
+                            <p class="text-muted text-xs mt-0.5">Follow us for latest work & updates</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- map + quick info -->
+                <div class="scroll-reveal scroll-reveal-d1">
+                    <p class="text-muted text-[10px] font-semibold uppercase tracking-widest mb-4">Find Us</p>
+                    <div class="map-card mb-4">
+                        <i class="fa-solid fa-map-location-dot text-accent/25 text-5xl"></i>
+                        <p class="text-muted/50 text-sm font-medium">123 Ink Street, Bengaluru</p>
+                        <p class="text-muted/30 text-xs">Google Maps will load here</p>
+                        <a href="https://maps.google.com" target="_blank"
+                            class="mt-2 px-5 py-2 bg-accent/10 border border-accent/20 text-accent text-xs rounded-xl hover:bg-accent/18 transition-all">
+                            <i class="fa-solid fa-external-link-alt mr-2"></i>Open in Google Maps
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-studio-card border border-studio-cardBorder">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-car text-accent text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-text text-xs font-semibold mb-0.5">Easy to Reach</p>
+                            <p class="text-muted text-xs leading-relaxed">2 min walk from New Bus Stand, Haliyal. Free
+                                parking available outside.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ENQUIRY FORM -->
+        <section class="py-16 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div
+                    class="bg-card border border-cardBorder rounded-[32px] p-8 md:p-10 shadow-2xl backdrop-blur-xl reveal">
+                    <div class="max-w-2xl mx-auto text-center mb-8">
+                        <p class="text-muted text-[10px] font-semibold uppercase tracking-widest mb-3">Drop a Message
+                        </p>
+                        <h2 class="font-display text-4xl text-text tracking-tight gold-text">Send an Enquiry</h2>
+                        <p class="text-muted text-sm mt-3">Not sure yet? Send us your idea and we'll get back
+                            to you!</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label
+                                    class="text-muted text-[10px] font-semibold uppercase tracking-widest block mb-2 ml-1">Full
+                                    Name</label>
+                                <input type="text" placeholder="Your name" class="contact-input">
+                            </div>
+                            <div>
+                                <label
+                                    class="text-muted text-[10px] font-semibold uppercase tracking-widest block mb-2 ml-1">Phone
+                                    Number</label>
+                                <input type="tel" placeholder="Your phone number" class="contact-input">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="text-muted text-[10px] font-semibold uppercase tracking-widest block mb-2 ml-1">Email
+                                Address</label>
+                            <input type="email" placeholder="your@email.com" class="contact-input">
+                        </div>
+                        <div>
+                            <label
+                                class="text-muted text-[10px] font-semibold uppercase tracking-widest block mb-2 ml-1">Tattoo
+                                Style</label>
+                            <select class="contact-input appearance-none">
+                                <option value="" class="bg-studio-card text-studio-text italic">Select a style...
+                                </option>
+                                <option class="bg-studio-card text-studio-text">Blackwork</option>
+                                <option class="bg-studio-card text-studio-text">Fine Line</option>
+                                <option class="bg-studio-card text-studio-text">Realism</option>
+                                <option class="bg-studio-card text-studio-text">Traditional</option>
+                                <option class="bg-studio-card text-studio-text">Watercolour</option>
+                                <option class="bg-studio-card text-studio-text">Not Sure Yet</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="text-muted text-[10px] font-semibold uppercase tracking-widest block mb-2 ml-1">Your
+                                Message</label>
+                            <textarea rows="4" placeholder="Tell us about your tattoo idea..."
+                                class="contact-input resize-none h-32"></textarea>
+                        </div>
+                        <button onclick="sendEnquiry(event)" class="btn-gold w-full mt-4">
+                            <span class="relative z-10 flex items-center justify-center font-bold tracking-wider">
+                                <i class="fa-solid fa-paper-plane mr-2"></i>
+                                SEND ENQUIRY
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="py-16 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10 scroll-reveal">
+                    <h2 class="font-display text-4xl text-text mb-4">Common Questions</h2>
+                    <p class="text-muted text-sm">Everything you need to know about getting your first ink with us.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <details
+                        class="group p-5 rounded-2xl bg-studio-surface border border-studio-cardBorder hover:border-studio-gold/50 cursor-pointer scroll-reveal transition-all duration-300">
+                        <summary class="flex items-center justify-between text-sm font-semibold text-studio-text">
+                            What should I prepare before my appointment?
+                            <i
+                                class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-studio-gold/50"></i>
+                        </summary>
+                        <p class="mt-4 text-xs text-studio-muted leading-relaxed">Ensure you're well-rested, hydrated,
+                            and have
+                            eaten a
+                            meal. Avoid alcohol for at least 24 hours prior. Wear comfortable clothing that allows easy
+                            access
+                            to the area being tattooed.</p>
+                    </details>
+
+                    <details
+                        class="group p-5 rounded-2xl bg-studio-surface border border-studio-cardBorder hover:border-studio-gold/50 cursor-pointer scroll-reveal scroll-reveal-d1 transition-all duration-300">
+                        <summary class="flex items-center justify-between text-sm font-semibold text-studio-text">
+                            Do you have a minimum price?
+                            <i
+                                class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-studio-gold/50"></i>
+                        </summary>
+                        <p class="mt-4 text-xs text-studio-muted leading-relaxed">Yes, our studio minimum is ₹1,000.
+                            This
+                            covers the
+                            setup, single-use sterilized equipment, and the artist's opening time regardless of tattoo
+                            size.</p>
+                    </details>
+
+                    <details
+                        class="group p-5 rounded-2xl bg-studio-surface border border-studio-cardBorder hover:border-studio-gold/50 cursor-pointer scroll-reveal scroll-reveal-d2 transition-all duration-300">
+                        <summary class="flex items-center justify-between text-sm font-semibold text-studio-text">
+                            Can I bring a friend?
+                            <i
+                                class="fa-solid fa-chevron-down text-xs transition-transform group-open:rotate-180 text-studio-gold/50"></i>
+                        </summary>
+                        <p class="mt-4 text-xs text-studio-muted leading-relaxed">To maintain the highest hygiene
+                            standards and
+                            give
+                            our artists enough space to work with precision, we recommend coming alone. However, one
+                            companion
+                            is allowed in the waiting area.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── FOOTER ── -->
+    <footer class="main-footer">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="24" height="24"
+              loading="lazy" class="w-6 h-6 rounded-full object-cover opacity-80" decoding="async">
+                        <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
+                            Tattoos
+                            Studio</span>
+                    </div>
+                    <p class="text-muted text-xs max-w-xs leading-relaxed">Premium tattoo studio. Engineered for
+                        perfection, one
+                        design at a time.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Studio
+                    </h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/about" class="footer-link">About Us</a></li>
+                        <li><a href="/services" class="footer-link">Services</a></li>
+                        <li><a href="/gallery" class="footer-link">Portfolio</a></li>
+                        <li><a href="/contact" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Account
+                    </h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/register" class="footer-link">Create Account</a></li>
+                        <li><a href="/login" class="footer-link">Login</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Follow
+                    </h4>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"
+                            class="text-muted hover:text-accent transition-colors"><i
+                                class="fa-brands fa-instagram text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 flex justify-between items-center text-[10px] text-muted">
+                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
+                <a href="#" class="back-to-top">↑ Back to top</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/landing/contact.js') }}"></script>
 </body>
 
 </html>

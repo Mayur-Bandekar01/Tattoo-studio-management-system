@@ -1,31 +1,30 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER INVOICE
-     Refactored: Vibrant Obsidian Alignment
+     Refactored: Utility-First Premium
      ═══════════════════════════════════════ -->
 
 <!-- Invoice Creation Portal -->
-<div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-        <div class="bg-indigo-soft text-indigo"
-            style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+<div class="studio-card p-6 border-l-4 border-indigo-500">
+    <div class="flex items-center gap-6 mb-8">
+        <div
+            class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-2xl shadow-inner">
             <i class="fa-solid fa-file-invoice-dollar"></i>
         </div>
         <div>
-            <h3 class="studio-title" style="margin: 0;">Create Invoice</h3>
-            <p class="text-secondary"
-                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Generate
-                billing for completed sessions</p>
+            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Create Invoice</h3>
+            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-1">Generate billing for
+                completed sessions</p>
         </div>
     </div>
 
     <!-- [DATA-FLOW]: Submits to POST /owner/invoice/generate -->
-
-    <form method="POST" action="/owner/invoice/generate">
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div>
-                <label>Select Appointment</label>
-                <select class="studio-input" name="appointment_id" id="apptSelect" required>
+    <form method="POST" action="/owner/invoice/generate" class="space-y-6">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Select
+                    Appointment</label>
+                <select class="studio-input w-full" name="appointment_id" id="apptSelect" required>
                     <option value="">Select completed session...</option>
                     {% if appointments %}
                     {% for a in appointments %}
@@ -38,9 +37,10 @@
                     {% endif %}
                 </select>
             </div>
-            <div>
-                <label>Service Category</label>
-                <select class="studio-input" name="concept_type" required>
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Service
+                    Category</label>
+                <select class="studio-input w-full" name="concept_type" required>
                     <option value="">Select...</option>
                     <option>Tattoo</option>
                     <option>Touch-up</option>
@@ -48,87 +48,124 @@
                     <option>Sketch</option>
                 </select>
             </div>
-            <div>
-                <label>Amount (₹)</label>
-                <div style="position: relative;">
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Amount (₹)</label>
+                <div class="relative group">
                     <span
-                        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--studio-indigo);">₹</span>
-                    <input class="studio-input" type="number" name="total_amt" id="totalAmt" placeholder="0.00"
-                        step="any" min="0" required style="padding-left: 2.5rem;">
+                        class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-indigo-500 group-focus-within:scale-110 transition-transform">₹</span>
+                    <input class="studio-input w-full pl-10" type="number" name="total_amt" id="totalAmt"
+                        placeholder="0.00" step="any" min="0" required>
                 </div>
             </div>
-            <div>
-                <label>Invoice Date</label>
-                <input class="studio-input" type="date" name="generated_date" required>
+            <div class="space-y-2">
+                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Invoice Date</label>
+                <input class="studio-input w-full" type="date" name="generated_date" required>
             </div>
         </div>
-        <button type="submit" class="btn-studio btn-primary">
-            <i class="fa-solid fa-file-signature"></i> Create Invoice
-        </button>
+
+        <div class="flex justify-end pt-2">
+            <button type="submit" class="studio-btn-primary px-8">
+                <i class="fa-solid fa-file-signature mr-2"></i> Create Invoice
+            </button>
+        </div>
     </form>
 </div>
 
 <!-- Invoice History -->
-<div class="studio-card" style="border-left: 6px solid var(--studio-success);">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+<div class="studio-card p-6 mt-8 border-l-4 border-emerald-500">
+    <div class="flex items-center justify-between mb-8">
         <div>
-            <h3 class="studio-title" style="margin: 0;">Invoice History</h3>
-            <p class="text-secondary"
-                style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Manage
-                generated billing records</p>
+            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Invoice History</h3>
+            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-1">Manage generated
+                billing records</p>
+        </div>
+        <div
+            class="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
+            Archive Mode
         </div>
     </div>
 
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="overflow-x-auto -mx-6 px-6">
+        <table class="w-full text-left border-collapse">
             <thead>
-                <tr>
-                    <th style="width: 120px;">Invoice ID</th>
-                    <th style="width: 100px;">Session ID</th>
-                    <th>Category</th>
-                    <th>Total Yield</th>
-                    <th>Date</th>
-                    <th style="width: 140px;">Status</th>
-                    <th style="width: 120px;">Actions</th>
+                <tr class="border-b border-studio-border bg-studio-surface-light/30">
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Invoice ID</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Session ID</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Category</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Total
+                        Yield</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Date
+                    </th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Status
+                    </th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-studio-border">
                 {% if invoices %}
                 {% for inv in invoices %}
-                <tr>
-                    <td class="font-mono text-indigo" style="font-weight: 800;">#INV-{{ inv.invoice_id }}</td>
-                    <td class="font-bold">#{{ inv.appointment_id }}</td>
-                    <td class="font-bold text-secondary"
-                        style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">{{
-                        inv.concept_type }}</td>
-                    <td class="font-bold">₹{{ inv.total_amt }}</td>
-                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ inv.generated_date }}
+                <tr class="group hover:bg-white/5 transition-all duration-200">
+                    <td class="py-4 px-4">
+                        <span class="font-mono text-indigo-500 font-black text-xs">#INV-{{ inv.invoice_id }}</span>
                     </td>
-                    <td>
+                    <td class="py-4 px-4">
+                        <span class="font-black text-studio-text-primary text-xs">#{{ inv.appointment_id }}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span
+                            class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest bg-studio-surface-light/50 px-2 py-0.5 rounded">{{
+                            inv.concept_type }}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="font-black text-studio-text-primary">₹{{ inv.total_amt }}</span>
+                    </td>
+                    <td class="py-4 px-4 text-xs font-bold text-studio-text-muted">
+                        {{ inv.generated_date }}
+                    </td>
+                    <td class="py-4 px-4">
                         {% if inv.pay_status=='Paid' %}
-                        <span class="badge bg-success-soft text-success">Paid</span>
+                        <span
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Paid
+                        </span>
                         {% else %}
-                        <span class="badge bg-warning-soft text-warning">Pending</span>
+                        <span
+                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                            Pending
+                        </span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="py-4 px-4">
                         {% if inv.pay_status == 'Pending' %}
                         <button onclick="prefillPayment('{{ inv.invoice_id }}', '{{ inv.total_amt }}')"
-                            class="btn-studio btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.7rem;">
-                            <i class="fa-solid fa-hand-holding-dollar"></i> Record
+                            class="group/btn relative px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+                            <i
+                                class="fa-solid fa-hand-holding-dollar mr-1 group-hover/btn:translate-y-[-1px] transition-transform"></i>
+                            Record
                         </button>
                         {% else %}
-                        <span class="text-success" style="font-size: 0.75rem; font-weight: 800;">Settled ✓</span>
+                        <div
+                            class="flex items-center gap-1.5 text-emerald-500 font-black text-[10px] uppercase tracking-widest">
+                            <i class="fa-solid fa-check-double text-xs"></i> Settled
+                        </div>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 5rem 2rem;">
-                        <i class="fas fa-ghost text-muted"
-                            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
-                        <p class="text-secondary" style="font-weight: 500;">No history found in billing archive.</p>
+                    <td colspan="7" class="py-20 text-center">
+                        <div class="flex flex-col items-center justify-center opacity-20 group">
+                            <i class="fas fa-ghost text-5xl mb-4 group-hover:animate-bounce transition-all"></i>
+                            <p class="text-xs font-black uppercase tracking-[0.2em] text-studio-text-muted">No history
+                                found in billing archive</p>
+                        </div>
                     </td>
                 </tr>
                 {% endif %}

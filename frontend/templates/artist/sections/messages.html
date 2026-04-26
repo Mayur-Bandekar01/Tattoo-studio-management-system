@@ -1,401 +1,125 @@
-<style>
-    .ch-layout {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-        height: calc(100vh - 120px);
-        min-height: 600px;
-        background: var(--studio-card);
-        border: 1px solid var(--studio-border);
-        border-radius: var(--studio-radius-sm);
-        overflow: hidden;
-    }
+<!-- Chat Layout -->
+<div class="studio-card p-0 overflow-hidden border border-studio-border bg-studio-surface/20 backdrop-blur-xl h-[calc(100vh-160px)] min-h-[600px] flex no-accent">
 
-    .ch-sidebar {
-        border-right: 1px solid var(--studio-border);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
+    <!-- Sidebar: Thread List -->
+    <div class="w-72 md:w-80 border-r border-studio-border flex flex-col shrink-0 bg-studio-bg/50">
+        <div class="px-6 py-5 border-bottom border-studio-border bg-studio-surface/30">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted">Conversations</h3>
+        </div>
 
-    .ch-sidebar-hd {
-        padding: 1rem 1.25rem;
-        border-bottom: 1px solid var(--studio-border);
-        font-size: 0.65rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--studio-text-secondary);
-        flex-shrink: 0;
-    }
-
-    .ch-list {
-        flex: 1;
-        overflow-y: auto;
-    }
-
-    .ch-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.85rem 1.25rem;
-        cursor: pointer;
-        border-bottom: 1px solid var(--studio-border);
-        transition: background 0.15s;
-        position: relative;
-    }
-
-    .ch-item:hover {
-        background: var(--studio-indigo-soft);
-    }
-
-    .ch-item.active {
-        background: var(--studio-indigo-soft);
-        border-left: 3px solid var(--studio-indigo);
-    }
-
-    .ch-item:hover .btn-th-del {
-        opacity: 1 !important;
-    }
-
-    .btn-th-del:hover {
-        color: var(--studio-danger) !important;
-    }
-
-    .ch-item.sub {
-        padding-left: 2rem;
-        background: var(--studio-bg);
-    }
-
-    .ch-item.sub:hover {
-        background: var(--studio-indigo-soft);
-    }
-
-    .ch-item.sub.active {
-        background: var(--studio-indigo-soft);
-    }
-
-    .ch-av {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: var(--studio-indigo);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.85rem;
-        font-weight: 700;
-        flex-shrink: 0;
-    }
-
-    .ch-av.sm {
-        width: 28px;
-        height: 28px;
-        font-size: 0.6rem;
-        font-weight: 800;
-        background: var(--studio-indigo-soft);
-        color: var(--studio-indigo);
-        border-radius: 8px;
-    }
-
-    .ch-item-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .ch-item-name {
-        font-family: 'Outfit', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--studio-text-primary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 2px;
-    }
-
-    .ch-item-sub {
-        font-size: 0.68rem;
-        color: var(--studio-text-secondary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-top: 2px;
-    }
-
-    .ch-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--studio-indigo);
-        flex-shrink: 0;
-    }
-
-    .ch-main {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .ch-main-hd {
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--studio-border);
-        display: flex;
-        align-items: center;
-        gap: 0.875rem;
-        min-height: 64px;
-        flex-shrink: 0;
-    }
-
-    .ch-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.2rem 0.65rem;
-        border-radius: 20px;
-        font-size: 0.65rem;
-        font-weight: 700;
-        background: var(--studio-indigo-soft);
-        color: var(--studio-indigo);
-    }
-
-    .ch-msgs {
-        flex: 1;
-        overflow-y: auto;
-        padding: 2rem 2.5rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-        background: var(--studio-bg);
-    }
-
-    .ch-row {
-        display: flex;
-    }
-
-    .ch-row.mine {
-        justify-content: flex-end;
-    }
-
-    /* ── FIX: bubble text was rendering vertically ── */
-    .ch-bubble {
-        max-width: 75%;
-        min-width: 60px;
-        padding: 0.7rem 1.1rem;
-        border-radius: 22px;
-        font-size: 0.875rem;
-        line-height: 1.6;
-        overflow-wrap: break-word;
-        word-break: normal;
-        white-space: pre-wrap;
-    }
-
-    .ch-bubble.mine {
-        background: var(--studio-indigo);
-        color: #fff;
-    }
-
-    .ch-bubble.theirs {
-        background: var(--studio-card);
-        color: var(--studio-text-primary);
-        border: 1px solid var(--studio-border);
-    }
-
-    .ch-time {
-        font-size: 0.62rem;
-        color: var(--studio-text-secondary);
-        margin-top: 3px;
-        padding: 0 2px;
-    }
-
-    .ch-row.mine .ch-time {
-        text-align: right;
-    }
-
-    .ch-input-bar {
-        padding: 1rem 1.5rem;
-        border-top: 1px solid var(--studio-border);
-        display: flex;
-        gap: 0.75rem;
-        align-items: flex-end;
-        flex-shrink: 0;
-    }
-
-    .ch-textarea {
-        flex: 1;
-        resize: none;
-        border: 1px solid var(--studio-border);
-        border-radius: 12px;
-        padding: 0.6rem 0.9rem;
-        font-size: 0.85rem;
-        font-family: inherit;
-        color: var(--studio-text-primary);
-        background: var(--studio-card);
-        outline: none;
-        min-height: 40px;
-        max-height: 120px;
-        line-height: 1.5;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .ch-textarea:focus {
-        border-color: var(--studio-indigo);
-        box-shadow: 0 0 0 3px rgba(255, 0, 60, 0.08);
-    }
-
-    .ch-send-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--studio-indigo);
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        transition: background 0.2s, transform 0.15s;
-    }
-
-    .ch-del-btn {
-        opacity: 0;
-        color: var(--studio-danger, #EF4444);
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 0.8rem;
-        padding: 0.4rem;
-        transition: opacity 0.2s, transform 0.2s;
-        align-self: flex-end;
-        margin-bottom: 20px;
-    }
-
-    .ch-row.mine:hover .ch-del-btn {
-        opacity: 0.7;
-    }
-
-    .ch-del-btn:hover {
-        opacity: 1 !important;
-        transform: scale(1.1);
-    }
-
-    .ch-send-btn:hover {
-        background: #3c2bb3;
-        transform: scale(1.06);
-    }
-
-    .ch-send-btn:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .ch-empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        flex: 1;
-        color: var(--studio-text-secondary);
-        gap: 0.75rem;
-        text-align: center;
-        padding: 2rem;
-    }
-</style>
-
-<!-- Section header -->
-<div style="margin-bottom:2rem;">
-    <h2 style="font-family:'Cinzel',serif;font-size:1.5rem;color:var(--studio-text-primary);">Messages</h2>
-    <p style="color:var(--studio-text-secondary);font-size:0.85rem;">Chat with your customers about their bookings
-    </p>
-</div>
-
-<div class="ch-layout">
-
-    <!-- ── Thread list ─────────────────────────────────── -->
-    <div class="ch-sidebar">
-        <div class="ch-sidebar-hd">Conversations</div>
-        <div class="ch-list" id="art-thread-list">
-
+        <div class="flex-1 overflow-y-auto custom-scrollbar" id="art-thread-list">
             {% if appointments %}
-                {% for customer_id, appts in appointments | groupby('customer_id') %}
-                    {% set first = appts | first %}
+            {% for customer_id, appts in appointments | groupby('customer_id') %}
+            {% set first = appts | first %}
 
-            <!-- Unified thread per customer -->
-                    <div class="ch-item" onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
-                         id="athread-{{ customer_id }}-gen" style="position: relative;">
-                        <div class="ch-av">{{ (first.customer_name or 'C')[0] | upper }}</div>
-                        <div class="ch-item-info">
-                            <div class="ch-item-name">{{ first.customer_name }}</div>
-                            <div class="ch-item-sub">Conversation</div>
-                        </div>
-                        <div class="ch-thread-actions" style="margin-left: auto; display: flex; align-items: center;">
-                            <button class="btn-th-del"
-                                    onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
-                                    title="Delete Chat"
-                                    style="background: none; border: none; color: var(--studio-text-muted); cursor: pointer; opacity: 0; transition: opacity 0.2s; padding: 5px;">
-                                <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
-                            </button>
-                            <span class="ch-dot" id="adot-{{ customer_id }}-gen" style="display:none;"></span>
-                        </div>
-                    </div>
+            <div class="group flex items-center gap-3 px-5 py-4 cursor-pointer border-b border-studio-border transition-all hover:bg-studio-gold/5 relative"
+                onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
+                id="athread-{{ customer_id }}-gen">
 
-                {% endfor %}
-            {% else %}
-                <div style="padding:3rem 1.5rem;text-align:center;color:var(--studio-text-secondary);">
-                    <i class="fas fa-user-clock" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:1rem;"></i>
-                    <p style="font-size:0.82rem;">No appointments yet. Conversations will appear here once bookings come
-                        in.</p>
+                <div
+                    class="w-10 h-10 rounded-full bg-studio-gold text-studio-bg flex items-center justify-center font-bold text-sm shadow-lg group-hover:scale-110 transition-transform">
+                    {{ (first.customer_name or 'C')[0] | upper }}
                 </div>
-            {% endif %}
 
+                <div class="flex-1 min-w-0">
+                    <div class="text-[12px] font-bold text-text truncate group-hover:text-accent transition-colors">{{
+                        first.customer_name }}</div>
+                    <div class="text-[9px] text-muted uppercase tracking-widest font-bold mt-0.5">Conversation</div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button
+                        class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
+                        onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
+                        title="Delete Chat">
+                        <i class="fas fa-trash-alt text-[10px]"></i>
+                    </button>
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse" id="adot-{{ customer_id }}-gen"
+                        style="display:none;"></span>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="flex flex-col items-center justify-center p-12 text-center opacity-30">
+                <i class="fas fa-user-clock text-4xl mb-4"></i>
+                <p class="text-[10px] font-bold uppercase tracking-widest leading-relaxed">No appointments
+                    yet.<br>Conversations will appear here once bookings come in.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- ── Chat window ─────────────────────────────────── -->
-    <div class="ch-main">
+    <!-- Main Chat Window -->
+    <div class="flex-1 flex flex-col bg-studio-bg/20 relative">
 
-        <div class="ch-empty-state" id="art-chat-empty">
-            <i class="fas fa-comments" style="font-size:3rem;opacity:0.12;"></i>
-            <p style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);">Select a conversation</p>
-            <p style="font-size:0.78rem;">Click any thread on the left to start chatting</p>
+        <!-- Empty State -->
+        <div id="art-chat-empty"
+            class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 z-10 bg-studio-bg/40 backdrop-blur-sm">
+            <div
+                class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mb-6 shadow-2xl opacity-20">
+                <i class="fas fa-comments text-3xl text-accent"></i>
+            </div>
+            <h3 class="text-lg font-display text-text mb-2">Select a conversation</h3>
+            <p class="text-[10px] uppercase font-bold tracking-widest text-muted">Click any thread on the left to start
+                chatting</p>
         </div>
 
-        <div id="art-chat-active" style="display:none;flex-direction:column;height:100%;overflow:hidden;">
-            <div class="ch-main-hd">
-                <div class="ch-av" id="art-chat-av" style="width:36px;height:36px;font-size:0.82rem;">C</div>
-                <div>
-                    <div style="font-size:0.9rem;font-weight:700;color:var(--studio-text-primary);" id="art-chat-name">—
+        <!-- Active Chat -->
+        <div id="art-chat-active" class="hidden flex-col h-full overflow-hidden animate-in fade-in duration-500">
+            <!-- Chat Header -->
+            <div
+                class="px-6 py-4 border-b border-studio-border bg-studio-surface/50 backdrop-blur-md flex items-center justify-between z-20">
+                <div class="flex items-center gap-4">
+                    <div class="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs ring-2 ring-accent/20"
+                        id="art-chat-av">C</div>
+                    <div>
+                        <div class="text-[13px] font-black text-text" id="art-chat-name">—</div>
+                        <div id="art-chat-tag" class="flex gap-2"></div>
                     </div>
-                    <div id="art-chat-tag"></div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="w-8 h-8 rounded-lg bg-studio-surface border border-studio-border text-muted hover:text-text hover:border-studio-gold transition-all">
+                        <i class="fas fa-ellipsis-v text-[10px]"></i>
+                    </button>
                 </div>
             </div>
-            <div class="ch-msgs" id="art-msgs-area"></div>
+
+            <!-- Messages Area -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 flex flex-col custom-scrollbar bg-pattern-dots"
+                id="art-msgs-area"></div>
+
             <!-- Selection Toolbar -->
             <div id="art-sel-bar"
-                 style="display:none; align-items:center; justify-content:space-between; padding: 0.6rem 1.25rem; background: rgba(99, 80, 229, 0.08); border-top: 1px solid var(--studio-border); flex-shrink:0;">
-                <span id="art-sel-count" style="font-size:0.8rem; font-weight:700; color:var(--studio-text-primary);">0
+                class="hidden items-center justify-between px-6 py-3 bg-studio-gold/10 border-t border-studio-gold/20 animate-in slide-in-from-bottom duration-300">
+                <span id="art-sel-count" class="text-[10px] font-black uppercase tracking-widest text-text">0
                     selected</span>
-                <div style="display:flex; gap:0.5rem;">
+                <div class="flex gap-2">
                     <button onclick="artCancelSelection()"
-                            style="background:none; border:1px solid var(--studio-border); color:var(--studio-text-muted); padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;">Cancel</button>
+                        class="px-4 py-1.5 rounded-lg bg-studio-surface border border-studio-border text-muted text-[10px] font-black uppercase tracking-widest hover:text-text">Cancel</button>
                     <button onclick="artDeleteSelected()"
-                            style="background:var(--studio-danger,#EF4444); border:none; color:#fff; padding:5px 14px; border-radius:8px; cursor:pointer; font-size:0.8rem;"><i
-                        class="fas fa-trash-alt" style="margin-right:5px;"></i>Delete</button>
+                        class="px-4 py-1.5 rounded-lg bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 shadow-lg shadow-rose-500/20">Delete</button>
                 </div>
             </div>
-            <div class="ch-input-bar">
-                <textarea class="ch-textarea" id="art-chat-input" placeholder="Type a message…" rows="1"
-                          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
-                          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'">
-                </textarea>
-                <button class="ch-send-btn" id="art-send-btn" onclick="artSend()" title="Send">
-                    <i class="fas fa-paper-plane" style="font-size:0.8rem;margin-left:2px;"></i>
-                </button>
+
+            <!-- Input Bar -->
+            <div class="p-5 border-t border-studio-border bg-studio-surface/50 backdrop-blur-md">
+                <div
+                    class="flex items-end gap-3 bg-studio-bg rounded-2xl border border-studio-border p-2 focus-within:border-studio-gold transition-all">
+                    <textarea
+                        class="flex-1 bg-transparent border-none outline-none resize-none px-4 py-2.5 text-[12px] text-text placeholder:text-muted/30 leading-relaxed max-h-32 custom-scrollbar"
+                        id="art-chat-input" placeholder="Type a message…" rows="1"
+                        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
+                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,128)+'px'"></textarea>
+
+                    <button
+                        class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20"
+                        id="art-send-btn" onclick="artSend()" title="Send">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -411,7 +135,6 @@
                 .replace(/\n/g, '<br>');
         }
 
-        /* ── Open a thread ──────────────────────────────────── */
         window.artOpenThread = function (custId, custName, apptId) {
             _custId = custId;
             _custName = custName;
@@ -553,13 +276,16 @@
                             var cls = m.is_mine ? 'mine' : 'theirs';
                             var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + (_custName[0] || 'C').toUpperCase() + '</div>' : '';
 
-                            return '<div class="ch-row ' + cls + ' ch-selectable" data-id="' + m.message_id + '" onclick="artToggleSelect(this)" style="display:flex; align-items:flex-start;">' +
-                            avatar +
-                            '<div class="ch-bubble-wrap">' +
-                            '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
-                            '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
-                            '</div>' +
-                            '</div>';
+                            // Only allow selection if the message is mine
+                            var selectableAttr = m.is_mine ? ' class="ch-row mine ch-selectable" onclick="artToggleSelect(this)"' : ' class="ch-row theirs"';
+
+                            return '<div ' + selectableAttr + ' data-id="' + m.message_id + '" style="display:flex; align-items:flex-start;">' +
+                                avatar +
+                                '<div class="ch-bubble-wrap">' +
+                                '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
+                                '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
+                                '</div>' +
+                                '</div>';
                         }).join('');
                     }
 

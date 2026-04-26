@@ -5,27 +5,28 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
-
 # ── PATH CONFIGURATION ───────────────────────────────────────
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Load environment variables explicitly from backend
+load_dotenv(os.path.join(BASE_DIR, "backend", ".env"))
 
 app = Flask(
     __name__,
     template_folder=os.path.join(BASE_DIR, "frontend", "templates"),
     static_folder=os.path.join(BASE_DIR, "frontend", "static"),
 )
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
+# Debug set to False for production-ready state
 
 # ── SECURITY CONFIGURATION ───────────────────────────────────
 app.secret_key = os.getenv("SECRET_KEY")
 if not app.secret_key:
-    if app.debug or os.getenv("FLASK_DEBUG") == "1" or __name__ == "__main__":
-        app.secret_key = "development_secret_key_12345"
-    else:
-        raise RuntimeError(
-            "CRITICAL: SECRET_KEY is not set in environment. Production requires a secure secret."
-        )
+    # Force runtime error in production, allow no fallback in dev to ensure .env is used
+    raise RuntimeError(
+        "CRITICAL: SECRET_KEY is not set in environment or .env. Secure starting requires a valid key."
+    )
 app.permanent_session_lifetime = timedelta(hours=2)
 
 # CSRF Protection (Global)
@@ -55,21 +56,6 @@ os.makedirs(
     os.path.join(BASE_DIR, "frontend", "static", "uploads", "references"), exist_ok=True
 )
 
-
-# ── TRACEABILITY LOGGING (EXAM AID) ──────────────────────────
-@app.before_request
-def trace_request():
-    if request.path.startswith("/static"):
-        return
-    args = dict(request.args)
-    form = {
-        k: "********" if "password" in k.lower() else v for k, v in request.form.items()
-    }  # Hide passwords
-    print(f"\n[TRACE] ---> User hit Route: {request.path} | Action: {request.method}")
-    if args:
-        print(f"       ---> URL Params: {args}")
-    if form:
-        print(f"       ---> Body/Form Data: {form}")
 
 
 # ── NO CACHE AFTER LOGOUT ────────────────────────────────────
@@ -118,4 +104,6 @@ with app.app_context():
     ensure_schema_consistency()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

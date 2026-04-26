@@ -1,20 +1,18 @@
-<div style="margin-bottom: 2rem;">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">My Appointments
-    </h2>
-    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Manage and track all your studio bookings
-        and requests</p>
-</div>
+<div class="studio-card mb-0 accent-gold" style="--accent-color: var(--studio-gold);">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+        <div>
+            <h3 class="card-title mb-1">
+                Booking Management
+            </h3>
+            <p class="text-[10px] text-muted font-medium mt-1">Monitor, filter and manage your entire client schedule</p>
+        </div>
 
-<div class="studio-card">
-    <div
-        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
-        <h3 class="card-title" style="margin-bottom: 0;">Booking Management</h3>
         <div class="filter-group">
             <button class="filter-btn active" onclick="filt('ar', 'all', this)">All</button>
-            <button class="filter-btn" onclick="filt('ar','Pending',this)">Pending</button>
-            <button class="filter-btn" onclick="filt('ar','Approved',this)">Approved</button>
-            <button class="filter-btn" onclick="filt('ar','Done',this)">Done</button>
-            <button class="filter-btn" onclick="filt('ar','Rejected',this)">Rejected</button>
+            <button class="filter-btn" onclick="filt('ar', 'Pending', this)">Pending</button>
+            <button class="filter-btn" onclick="filt('ar', 'Approved', this)">Approved</button>
+            <button class="filter-btn" onclick="filt('ar', 'Done', this)">Done</button>
+            <button class="filter-btn" onclick="filt('ar', 'Rejected', this)">Rejected</button>
         </div>
     </div>
 
@@ -24,110 +22,100 @@
                 <tr>
                     <th style="width: 80px;">ID</th>
                     <th>Customer</th>
-                    <th>Concept</th>
-                    <th>Reference</th>
-                    <th>Schedule</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th class="hidden md:table-cell">Concept</th>
+                    <th class="text-center" style="width: 80px;">Details</th>
+                    <th style="width: 110px;">Reference</th>
+                    <th style="width: 180px;">Schedule</th>
+                    <th style="width: 120px;">Status</th>
+                    <th style="width: 220px;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% if appointments %}
-                    {% for appt in appointments %}
-                        <tr class="ar" data-status="{{ appt.status }}" style="--item-index: {{ loop.index0 }};">
-                            <td style="font-family: monospace; font-size: 0.8rem; color: var(--studio-text-secondary);">#{{
-                                appt.appointment_id }}</td>
-                            <td style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name }}</td>
-                            <td>
-                                <div style="font-size: 0.85rem; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                                     title="{{ appt.tattoo_concept }}">
-                                    {{ appt.tattoo_concept }}
-                                </div>
-                            </td>
-                            <td>
-                                {% if appt.reference %}
-                                    <a href="{{ appt.reference if appt.reference.startswith('http') else url_for('static', filename=appt.reference) }}"
-                                       target="_blank" class="btn-studio btn-outline"
-                                       style="padding: 0.35rem 0.75rem; font-size: 0.65rem;">
-                                        <i
-                                            class="fas {% if appt.reference.startswith('http') %}fa-link{% else %}fa-image{% endif %}"></i>
-                                        View
-                                    </a>
-                                {% else %}
-                                    <span style="color: var(--studio-text-secondary); font-size: 0.75rem;">—</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div style="font-weight: 600; font-size: 0.85rem;">{{ appt.appointment_date }}</div>
-                                <div style="font-size: 0.75rem; color: var(--studio-text-secondary);">at {{
-                                    appt.appointment_time }} ({{ appt.duration_hours if appt.duration_hours else '?' }}h)
-                                </div>
-                            </td>
-                            <td>
-                                <span
-                                    class="badge {% if appt.status=='Pending' %}badge-warning{% elif appt.status=='Approved' %}badge-success{% elif appt.status=='Done' %}badge-info{% elif appt.status=='Rejected' %}badge-danger{% else %}badge-muted{% endif %}">
-                                    {{ appt.status }}
-                                </span>
-                            </td>
-                            <td>
-                                <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-
-                                    {% if appt.status=='Pending' %}
-                                        <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                <!-- [DATA-FLOW]: Submits to POST /artist/approve/{{ appt.appointment_id }} -->
-                                            <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
-                                                  style="display: flex; gap: 0.4rem; align-items: center;">
-                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                <input type="number" name="duration_hours" placeholder="Hrs" min="1" max="12"
-                                                       class="studio-input"
-                                                       style="width: 55px; padding: 0.35rem; border: 1px solid var(--studio-border); border-radius: 8px; font-size: 0.75rem; background: var(--studio-card);"
-                                                       required>
-                                                <button type="submit" class="btn-studio btn-primary"
-                                                        style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Approve</button>
-                                            </form>
-                                <!-- [DATA-FLOW]: Submits to POST /artist/reject/{{ appt.appointment_id }} -->
-                                            <form method="POST" action="/artist/reject/{{ appt.appointment_id }}">
-                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                <button type="submit" class="btn-studio bg-danger-soft text-danger"
-                                                        style="padding: 0.35rem;" title="Reject">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    {% elif appt.status=='Approved' %}
-                            <!-- [DATA-FLOW]: Submits to POST /artist/done/{{ appt.appointment_id }} -->
-                                        <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                            <button type="submit" class="btn-studio btn-primary"
-                                                    style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">
-                                                <i class="fas fa-flag-checkered"></i> Mark Done
-                                            </button>
-                                        </form>
-                                    {% endif %}
-
-                            <!-- Chat button — always visible -->
-                                    <button
-                                        onclick="artOpenChatFromAppt('{{ appt.customer_id }}','{{ appt.customer_name }}','{{ appt.appointment_id }}')"
-                                        title="Chat about appointment #{{ appt.appointment_id }}"
-                                        class="bg-indigo-soft text-indigo" style="width:32px;height:32px;border-radius:8px;
-                                                                                  border:1px solid var(--studio-border-light);cursor:pointer;
-                                                                                  display:flex;align-items:center;justify-content:center;
-                                                                                  transition:background 0.15s;">
-                                        <i class="fas fa-comment-dots" style="font-size:0.75rem;"></i>
+                {% for appt in appointments %}
+                <tr class="ar reveal" data-status="{{ appt.status }}"
+                    style="--transition-delay: {{ loop.index0 * 50 }}ms">
+                    <td class="font-mono opacity-50">#{{ appt.appointment_id }}</td>
+                    <td class="font-bold text-text">{{ appt.customer_name }}</td>
+                    <td class="hidden md:table-cell">
+                        <div class="max-w-[200px] truncate opacity-80" title="{{ appt.tattoo_concept }}">
+                            {{ appt.tattoo_concept }}
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <button
+                            class="w-8 h-8 rounded-lg bg-studio-gold/10 text-accent border border-studio-gold/10 hover:bg-studio-gold hover:text-studio-bg transition-all duration-300 flex items-center justify-center mx-auto"
+                            onclick="artShowDetails(this)" data-appt='{{ appt | tojson | safe }}'
+                            title="View Full Details">
+                            <i class="fas fa-eye text-xs"></i>
+                        </button>
+                    </td>
+                    <td>
+                        {% if appt.reference %}
+                        <a href="{{ appt.reference if appt.reference.startswith('http') else url_for('static', filename=appt.reference) }}"
+                            target="_blank"
+                            class="px-3 py-1.5 rounded-lg bg-studio-surface border border-studio-border text-[9px] font-black uppercase tracking-widest text-accent hover:border-studio-gold transition-all block text-center">
+                            <i
+                                class="fas {% if appt.reference.startswith('http') %}fa-link{% else %}fa-image{% endif %} mr-1"></i>
+                            View
+                        </a>
+                        {% else %}
+                        <span class="opacity-30">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="font-bold text-[10px]">{{ appt.appointment_date }}</div>
+                        <div class="text-[9px] opacity-50 uppercase tracking-tighter">
+                            at {{ appt.appointment_time }} ({{ appt.duration_hours if appt.duration_hours else '?' }}h)
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge {% if appt.status=='Pending' %}badge-warning{% elif appt.status=='Approved' %}badge-success{% elif appt.status=='Done' %}badge-info{% elif appt.status=='Rejected' %}badge-danger{% else %}badge-muted{% endif %}">
+                            {{ appt.status }}
+                        </span>
+                    </td>
+                    <td class="py-4">
+                        <div class="action-group">
+                            {% if appt.status=='Pending' %}
+                            <div class="approve-form">
+                                <form method="POST" action="/artist/approve/{{ appt.appointment_id }}" class="flex items-center gap-2">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="number" name="duration_hours" placeholder="H" min="1" max="12" class="input-mini studio-input" required>
+                                    <button type="submit" class="btn-studio btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Approve</button>
+                                </form>
+                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
+                                        <i class="fas fa-times text-xs"></i>
                                     </button>
+                                </form>
+                            </div>
+                            {% elif appt.status=='Approved' %}
+                            <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-studio btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; background: var(--studio-success);">
+                                    <i class="fas fa-flag-checkered"></i> Done
+                                </button>
+                            </form>
+                            {% endif %}
 
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                            <button onclick="artOpenChatFromAppt('{{ appt.customer_id }}','{{ appt.customer_name }}','{{ appt.appointment_id }}')"
+                                title="Chat about appointment #{{ appt.appointment_id }}"
+                                class="w-8 h-8 rounded-lg bg-studio-selection-soft text-accent border border-studio-selection-soft hover:bg-studio-selection hover:text-white transition-all flex items-center justify-center">
+                                <i class="fas fa-comment-dots text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                            <i class="fas fa-calendar-times"
-                               style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1rem; display: block;"></i>
-                            No appointments found in your schedule.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="8" class="text-center py-24 opacity-30">
+                        <i class="fas fa-calendar-times text-5xl mb-4 block"></i>
+                        <p class="text-[11px] font-black uppercase tracking-widest">No appointments found in your
+                            schedule</p>
+                    </td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>

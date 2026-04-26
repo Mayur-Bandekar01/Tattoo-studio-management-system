@@ -1036,8 +1036,7 @@
 
     <!-- Offline Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
 </head>
 
 <body>
@@ -1338,6 +1337,7 @@
                         <!-- [DATA-FLOW]: Submits to POST /customer/pay/{{ invoice.invoice_id }} -->
                         <form id="upiForm" method="POST" action="/customer/pay/{{ invoice.invoice_id }}"
                             onsubmit="validateUTR(event, this)">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="payment_method" value="UPI">
                             <input type="hidden" name="transaction_ref" id="utrHidden">
                             <input type="hidden" name="upi_app" id="upiAppHidden">
@@ -1381,6 +1381,7 @@
 
                     <form id="cardForm" method="POST" action="/customer/pay/{{ invoice.invoice_id }}"
                         onsubmit="submitCard(event)">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="payment_method" value="Card">
                         <input type="hidden" name="transaction_ref" value="">
 
@@ -1427,6 +1428,7 @@
                     </div>
                     <!-- [DATA-FLOW]: Submits to POST /customer/pay/{{ invoice.invoice_id }} -->
                     <form method="POST" action="/customer/pay/{{ invoice.invoice_id }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="payment_method" value="Cash">
                         <input type="hidden" name="transaction_ref" value="">
                         <button type="submit" class="btn-pay">

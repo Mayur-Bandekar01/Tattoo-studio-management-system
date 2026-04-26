@@ -1,0 +1,11 @@
+{
+  "name": "dragon-tattoos",
+  "version": "3.0.0",
+  "description": "Premium Tattoo Studio Management System",
+  "scripts": {
+    "build:css": "tailwindcss -i ./frontend/static/css/tailwind_base.css -o ./frontend/static/css/tailwind_output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.1"
+  }
+}

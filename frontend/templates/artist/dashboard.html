@@ -1,312 +1,388 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="{{ session.get('theme', 'noir') }}">
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dragon Tattoos | Artist Dashboard</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/artist_dashboard.css') }}?v=8">
-        <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
-    <!-- Offline Assets -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-        <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tattoos | Artist Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
-    <body>
-        <div class="dashboard-container">
+    <!-- Unified Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+    <!-- Tailwind Output (Local Build) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind_output.css') }}">
+    <!-- Tailwind Play CDN (Migration Fallback) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% include 'common/tailwind_config.html' %}
+
+    <!-- Legacy CSS (Will be removed after verification) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/artist_dashboard.css') }}?v=10">
+
+    <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- MOBILE HEADER -->
+        <header
+            class="lg:hidden fixed top-0 inset-x-0 h-[70px] bg-studio-surface/80 backdrop-blur-md border-b border-studio-border z-[400] flex items-center justify-between px-6">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-8 h-8 rounded-full border border-studio-border">
+                <span class="font-display text-text text-[10px] tracking-[0.2em] font-bold">DRAGON TATTOOS</span>
+            </div>
+            <button class="text-accent text-xl" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div id="sidebarOverlay"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[350] opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+            onclick="toggleSidebar()"></div>
 
         <!-- ── SIDEBAR ────────────────────────────────────────── -->
-            <aside class="studio-sidebar">
-                <div class="sidebar-header">
-                    <div class="logo-text">
-                        <div class="logo-icon">
-                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
-                        </div>
-                        <div class="logo-info">
-                            <span class="logo-name">DRAGON TATTOOS</span>
-                            <span class="logo-subtitle">Artist Portal</span>
-                        </div>
+        <aside id="mainSidebar" class="studio-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-text">
+                    <div class="logo-icon">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+                    </div>
+                    <div class="logo-info">
+                        <span class="logo-name">DRAGON TATTOOS</span>
+                        <span class="logo-subtitle">Artist Portal</span>
                     </div>
                 </div>
+            </div>
 
-                <nav class="sidebar-nav">
-                    <div class="nav-section">Main</div>
-                    <button class="nav-link active" onclick="nav('overview', this)" data-section="overview">
-                        <i class="fas fa-chart-line"></i> Overview
-                    </button>
+            <nav class="sidebar-nav">
+                <div class="nav-section">Main</div>
+                <button class="nav-link active" onclick="nav('overview', this)" data-section="overview">
+                    <i class="fas fa-home"></i> Overview
+                </button>
 
-                    <div class="nav-section">Appointments</div>
-                    <button class="nav-link" onclick="nav('appointments', this)" data-section="appointments">
-                        <i class="fas fa-calendar-check"></i> My Appointments
-                        {% if pending_count > 0 %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
-                    </button>
-                    <button class="nav-link" onclick="nav('schedule', this)" data-section="schedule">
-                        <i class="fas fa-clock"></i> Today's Schedule
-                        {% if today_count > 0 %}
-                            <span class="nav-badge">{{ today_count }}</span>
-                        {% endif %}
-                    </button>
+                <div class="nav-section">Management</div>
+                <button class="nav-link" onclick="nav('appointments', this)" data-section="appointments">
+                    <i class="fas fa-calendar-check"></i> My Appointments
+                    {% if pending_count > 0 %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+                </button>
+                <button class="nav-link" onclick="nav('schedule', this)" data-section="schedule">
+                    <i class="fas fa-clock"></i> Today's Schedule
+                    {% if today_count > 0 %}<span class="nav-badge">{{ today_count }}</span>{% endif %}
+                </button>
 
-                    <div class="nav-section">Studio</div>
-                    <button class="nav-link" onclick="nav('inventory', this)" data-section="inventory">
-                        <i class="fas fa-boxes"></i> Inventory
-                        {% if low_stock > 0 %}<span class="nav-badge">{{ low_stock }}</span>{% endif %}
-                    </button>
-                    <button class="nav-link" onclick="nav('logusage', this)" data-section="logusage">
-                        <i class="fas fa-notes-medical"></i> Log Usage
-                    </button>
-                    <button class="nav-link" onclick="nav('gallery', this)" data-section="gallery">
-                        <i class="fas fa-images"></i> My Portfolio
-                    </button>
+                <div class="nav-section">Studio</div>
+                <button class="nav-link" onclick="nav('inventory', this)" data-section="inventory">
+                    <i class="fas fa-box-open"></i> Inventory
+                    {% if low_stock > 0 %}<span class="nav-badge">{{ low_stock }}</span>{% endif %}
+                </button>
+                <button class="nav-link" onclick="nav('logusage', this)" data-section="logusage">
+                    <i class="fas fa-clipboard-list"></i> Log Usage
+                </button>
+                <button class="nav-link" onclick="nav('gallery', this)" data-section="gallery">
+                    <i class="fas fa-images"></i> My Portfolio
+                </button>
 
-                    <div class="nav-section">Account</div>
-                    <button class="nav-link" id="nav-messages-artist" onclick="nav('messages', this)"
-                            data-section="messages">
-                        <i class="fas fa-comment-dots"></i> Messages
-                        <span class="nav-badge" id="artist-msgs-badge" style="display:none;">0</span>
-                    </button>
-                    <button class="nav-link" onclick="nav('history', this)" data-section="history">
-                        <i class="fas fa-history"></i> Session History
-                    </button>
-                    <button class="nav-link" onclick="nav('profile', this)" data-section="profile">
-                        <i class="fas fa-user-circle"></i> Profile
-                    </button>
-                    <a href="/logout" class="nav-link nav-logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </nav>
-            </aside>
+                <div class="nav-section">Communication</div>
+                <button class="nav-link" id="nav-messages-artist" onclick="nav('messages', this)"
+                    data-section="messages">
+                    <i class="fas fa-comment-dots text-[14px]"></i> Messages
+                    <span class="nav-badge !bg-studio-gold hidden" id="artist-msgs-badge">0</span>
+                </button>
+
+                <div class="nav-section">Account</div>
+                <button class="nav-link" onclick="nav('profile', this)" data-section="profile">
+                    <i class="fas fa-user-circle"></i> Profile
+                </button>
+                <button class="nav-link nav-logout" onclick="window.location.href='/logout'">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </nav>
+        </aside>
 
         <!-- ── MAIN CONTENT ───────────────────────────────────── -->
-            <main class="main-content">
-                <header class="top-header">
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-content-wrapper">
                     <div class="welcome-msg">
-                        <h1><span id="greetingLbl">Good Morning</span>, {{ name }}</h1>
-                        <p><span id="pageTitle" style="font-weight: 700; color: var(--studio-text-primary);">Overview</span>
-                            &bull; <span id="pageSubtitle">Welcome back!</span></p>
+                        <h1 id="pageTitle" class="animate-header-text">Welcome</h1>
+                        <p id="pageSubtitle" class="animate-header-text">Artist production workspace</p>
                     </div>
                     <div class="header-actions">
+                        <div id="header-actions-context" class="flex gap-2"></div>
                         <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
-                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
                         </button>
                     </div>
-                </header>
+                </div>
+            </header>
 
             <!-- Flash messages -->
-                <div id="flashContainer">
+            <div id="flashMessages" class="px-[var(--studio-spacing)]">
+                <div id="flashContainer" class="flex flex-col gap-3 mb-8">
                     {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="flash-msg {{ category }}" onclick="this.remove()">
-                                    <i class="fas {% if category == 'success' %}fa-check-circle
-                                              {% elif category == 'error' %}fa-exclamation-circle
-                                              {% else %}fa-info-circle{% endif %}"></i>
-                                    <span>{{ message }}</span>
-                                    <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="flex items-center gap-3 p-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest border shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2 {{ 'bg-studio-gold/10 text-studio-gold border-studio-gold/20' if category == 'success' else 'bg-red-500/10 text-red-500 border-red-500/20' }}"
+                        onclick="this.remove()">
+                        <i
+                            class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                        <span class="flex-1">{{ message }}</span>
+                        <i class="fas fa-times opacity-40 hover:opacity-100 cursor-pointer"></i>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     {% endwith %}
                 </div>
+            </div>
 
-            <!-- ── Sections ── -->
-                <section id="sec-overview" class="section active">
+            <div class="section-container">
+                <section id="sec-overview" class="content-section active">
                     {% include 'artist/sections/overview.html' %}
                 </section>
-                <section id="sec-appointments" class="section">
+                <section id="sec-appointments" class="content-section">
                     {% include 'artist/sections/appointments.html' %}
                 </section>
-                <section id="sec-schedule" class="section">
+                <section id="sec-schedule" class="content-section">
                     {% include 'artist/sections/schedule.html' %}
                 </section>
-                <section id="sec-inventory" class="section">
+                <section id="sec-inventory" class="content-section">
                     {% include 'artist/sections/inventory.html' %}
                 </section>
-                <section id="sec-logusage" class="section">
+                <section id="sec-logusage" class="content-section">
                     {% include 'artist/sections/logusage.html' %}
                 </section>
-                <section id="sec-gallery" class="section">
+                <section id="sec-gallery" class="content-section">
                     {% include 'artist/sections/gallery.html' %}
                 </section>
-                <section id="sec-messages" class="section">
+                <section id="sec-messages" class="content-section">
                     {% include 'artist/sections/messages.html' %}
                 </section>
-                <section id="sec-history" class="section">
-                    {% include 'artist/sections/history.html' %}
-                </section>
-                <section id="sec-profile" class="section">
+                <section id="sec-profile" class="content-section">
                     {% include 'artist/sections/profile.html' %}
                 </section>
-            </main>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboards/artist_dashboard.js') }}"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        // Close sidebar when clicking links on mobile
+        document.querySelectorAll('.studio-sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        /* ── Image Zoom Logic ── */
+        function openImageZoom(src, caption, style) {
+            const modal = document.getElementById('studioImageModal');
+            const img = document.getElementById('zoomImg');
+            const cap = document.getElementById('zoomCap');
+            const stl = document.getElementById('zoomStl');
+            const meta = document.getElementById('zoomMeta');
+
+            img.src = src;
+
+            if (caption && caption.trim() !== 'None' && caption.trim() !== '') {
+                cap.innerText = caption;
+                cap.style.display = 'block';
+            } else {
+                cap.style.display = 'none';
+            }
+
+            if (style && style.trim() !== 'None' && style.trim() !== '') {
+                stl.innerText = style;
+                stl.style.display = 'inline-block';
+            } else {
+                stl.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageZoom() {
+            const modal = document.getElementById('studioImageModal');
+            modal.classList.remove('active');
+            if (!document.getElementById('mainSidebar').classList.contains('open')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close on Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeImageZoom();
+        });
+    </script>
+
+    <!-- Global Image Zoom Modal -->
+    <div id="studioImageModal" class="zoom-modal" onclick="if(event.target === this) closeImageZoom()">
+        <button class="zoom-close" onclick="closeImageZoom()" title="Close (Esc)">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="zoom-content">
+            <div class="zoom-img-container">
+                <img id="zoomImg" src="" alt="Enlarged Artwork">
+            </div>
+            <div id="zoomMeta" class="zoom-meta">
+                <span id="zoomStl" class="badge">Style</span>
+                <p id="zoomCap" class="zoom-caption"></p>
+            </div>
         </div>
+    </div>
 
-        <script>
-            const TAB_META = {
-                overview: ['Overview', 'Welcome back, {{ name }}!'],
-                appointments: ['My Appointments', 'Manage all your bookings'],
-                schedule: ["Today's Schedule", 'Your sessions for today'],
-                inventory: ['Inventory Control', 'Track studio supplies and stock'],
-                logusage: ['Log Usage', 'Record items used per session'],
-                gallery: ['My Portfolio', 'Upload and manage your artwork'],
-                messages: ['Messages', 'Chat with your customers'],
-                history: ['Session History', 'All completed sessions'],
-                profile: ['My Profile', 'Your account and security details'],
-            };
+    <!-- Appointment Details Modal -->
+    <div id="apptDetailsModal" class="zoom-modal" onclick="if(event.target === this) closeApptDetails()">
+        <button class="zoom-close" onclick="closeApptDetails()" title="Close (Esc)">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="zoom-content"
+            style="background: var(--studio-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--studio-border); width: 600px; max-width: 95vw;">
+            <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-info-circle text-indigo"></i>
+                Appointment Details
+            </h3>
+            <div id="apptDetailsContent"></div>
+            <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                <button class="btn-studio btn-outline" onclick="closeApptDetails()">Close</button>
+            </div>
+        </div>
+    </div>
 
-            function switchTab(id, el) {
-            // Tab Visibility
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                const sec = document.getElementById('sec-' + id);
-                if (sec) sec.classList.add('active');
+    <style>
+        .zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 2rem;
+        }
 
-            // Nav State
-                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-                if (el) {
-                    el.classList.add('active');
-                } else {
-                    const btn = document.querySelector(`.nav-link[onclick*="'${id}'"]`);
-                    if (btn) btn.classList.add('active');
-                }
+        .zoom-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-            // Header Meta
-                const meta = TAB_META[id];
-                if (meta) {
-                    document.getElementById('pageTitle').textContent = meta[0];
-                    document.getElementById('pageSubtitle').textContent = meta[1];
-                }
+        .zoom-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10001;
+        }
 
-            // Persistence
-                localStorage.setItem('artist_active_tab', id);
+        .zoom-close:hover {
+            background: var(--studio-indigo);
+            transform: scale(1.1);
+        }
 
-            // Special Effects per tab
-                if (id === 'schedule') renderScheduleDate();
+        .zoom-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-                window.scrollTo({ top: 0, behavior: 'instant' });
+        .zoom-modal.active .zoom-content {
+            transform: scale(1);
+        }
+
+        .zoom-img-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .zoom-img-container img {
+            max-width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .zoom-meta {
+            text-align: center;
+            max-width: 600px;
+            color: #fff;
+        }
+
+        .zoom-caption {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        #zoomStl {
+            background: var(--studio-indigo);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .zoom-modal {
+                padding: 1rem;
             }
 
-        // Keep legacy nav name for template compatibility
-            function nav(id, el) { switchTab(id, el); }
-
-            function filt(cls, status, btn) {
-                const group = btn.closest('.filter-group');
-                if (group) {
-                    group.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                }
-                btn.classList.add('active');
-
-                let visibleCount = 0;
-                document.querySelectorAll('.' + cls).forEach(row => {
-                    const show = (status === 'all' || row.dataset.status === status);
-
-                    if (show) {
-                        row.style.display = '';
-                        row.style.setProperty('--item-index', visibleCount);
-                    // Re-trigger animation
-                        row.style.animation = 'none';
-                        row.offsetHeight; // trigger reflow
-                        row.style.animation = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
+            .zoom-close {
+                top: 1rem;
+                right: 1rem;
             }
 
-            function toggleUp() {
-                const p = document.getElementById('upPanel');
-                if (p) p.style.display = p.style.display === 'none' ? 'block' : 'none';
+            .zoom-caption {
+                font-size: 0.95rem;
             }
-
-            function prevFile(input) {
-                const f = input.files[0];
-                const err = document.getElementById('fErr');
-                const ph = document.getElementById('dzPh');
-                const pv = document.getElementById('dzPv');
-
-                if (f) {
-                    if (f.size > 5 * 1024 * 1024) {
-                        if (err) { err.textContent = 'File too large. Max 5 MB allowed.'; err.style.display = 'block'; }
-                        input.value = '';
-                        if (ph) ph.style.display = 'block';
-                        if (pv) pv.style.display = 'none';
-                        return;
-                    }
-                    if (err) err.style.display = 'none';
-                    const img = document.getElementById('dzI');
-                    if (img) img.src = URL.createObjectURL(f);
-                    const nm = document.getElementById('dzN');
-                    if (nm) nm.textContent = f.name;
-                    if (ph) ph.style.display = 'none';
-                    if (pv) pv.style.display = 'block';
-                }
-            }
-
-            function clearDz(e) {
-                if (e) e.stopPropagation();
-                const input = document.getElementById('gf');
-                if (input) input.value = '';
-                const ph = document.getElementById('dzPh');
-                const pv = document.getElementById('dzPv');
-                const er = document.getElementById('fErr');
-                if (ph) ph.style.display = 'block';
-                if (pv) pv.style.display = 'none';
-                if (er) er.style.display = 'none';
-            }
-
-            function doDrop(e) {
-                e.preventDefault();
-                const dz = document.getElementById('dz');
-                if (dz) dz.classList.remove('dov');
-                const files = e.dataTransfer && e.dataTransfer.files;
-                if (files && files.length > 0) {
-                    const input = document.getElementById('gf');
-                    if (input) {
-                        input.files = files;
-                        prevFile(input);
-                    }
-                }
-            }
-
-            function renderScheduleDate() {
-                const todayEl = document.getElementById('todayStr');
-                const slotEl = document.getElementById('slotCount');
-
-                if (todayEl) {
-                    const now = new Date();
-                    const formatted = now.toLocaleDateString('en-IN', {
-                        weekday: 'long', year: 'numeric',
-                        month: 'long', day: 'numeric',
-                    });
-                    todayEl.textContent = formatted;
-                }
-
-                if (slotEl) {
-                    const items = document.querySelectorAll('#sec-schedule .tl-item');
-                    const count = items.length;
-                    slotEl.textContent = count === 0
-                        ? 'No sessions booked for today'
-                        : count + ' session' + (count === 1 ? '' : 's') + ' scheduled today';
-                }
-            }
-
-            (function init() {
-            // Greeting
-                const h = new Date().getHours();
-                const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
-                const greetEl = document.getElementById('greetingLbl');
-                if (greetEl) greetEl.textContent = greet;
-
-            // Restore Active Tab
-                const saved = localStorage.getItem('artist_active_tab') || 'overview';
-                switchTab(saved);
-
-                renderScheduleDate();
-            })();
-        </script>
-        <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-
-    </body>
+        }
+    </style>
+</body>
 
 </html>

@@ -1,287 +1,671 @@
-<!-- SECTION: GALLERY -->
+<!-- SECTION: GALLERY
+     v2: Horizontal scroll strip, custom black lightbox with gold info panel.
+-->
 
-<div class="studio-card">
+<style>
+/* ══ Gallery Wrap ════════════════════════════════════ */
+.gal-wrap {
+    background   : var(--studio-card);
+    border       : 1px solid var(--studio-card-border);
+    border-radius: var(--studio-radius);
+    padding      : 2.5rem;
+    box-shadow   : var(--studio-shadow);
+    position     : relative;
+    overflow     : hidden;
+}
 
-    <!-- Header -->
-    <div
-        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <h3 class="card-title" style="margin-bottom: 0.25rem;">Studio Gallery</h3>
-            <p style="font-size: 0.85rem; color: var(--studio-text-secondary);" id="galCountLabel">
-                {% if gallery %}{{ gallery|length }} artworks browse for inspiration{% else %}No artworks yet{%
-                    endif %}
-                    </p>
-                    </div>
+.gal-wrap::before {
+    content      : '';
+    position     : absolute;
+    left: 0; top: 0; bottom: 0;
+    width        : 5px;
+    background   : #ea580c;
+    border-radius: var(--studio-radius) 0 0 var(--studio-radius);
+}
 
-                    <div class="filter-group">
-                        <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
-                        {% set styles = gallery | map(attribute='style') | select | unique | list %}
-                        {% for style in styles %}
-                            <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
-                        {% endfor %}
-                        <button class="filter-btn" id="tabSaved" onclick="switchGalTab('saved', this)"
-                                style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-heart" style="color: var(--studio-selection);"></i> Saved
-                            <span id="savedBadge" class="badge" style="margin-left: 0.25rem;">
-                                {{ liked_count | default(0) }}
-                            </span>
-                        </button>
-                    </div>
-                    </div>
+/* ── Header ─────────────────────────────────────── */
+.gal-header {
+    display        : flex;
+    flex-wrap      : wrap;
+    align-items    : flex-start;
+    justify-content: space-between;
+    gap            : 1.25rem;
+    margin-bottom  : 2rem;
+}
 
-    <!-- All Gallery Grid -->
-                    <div class="gallery-grid" id="galleryGrid">
-                        {% if gallery %}
-                            {% for item in gallery %}
-                                <div class="gallery-item" onclick="openLbFromItem(this)"
-                                     style="cursor: pointer; --item-index: {{ loop.index0 }};" data-id="{{ item.gallery_id }}"
-                                     data-category="{{ item.style or 'Other' }}" data-img="{{ url_for('static', filename=item.image_path) }}"
-                                     data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
-                                     data-style="{{ item.style or '' }}">
+.gal-title {
+    font-size     : 1.5rem;
+    font-weight   : 900;
+    color         : var(--studio-text-primary);
+    letter-spacing: -0.02em;
+    margin        : 0 0 0.3rem;
+}
 
-                                    <button class="like-btn {% if item.gallery_id in liked_ids %}liked{% endif %}"
-                                            id="likeBtn-{{ item.gallery_id }}" onclick="toggleLike(event, Number('{{ item.gallery_id }}'))">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
+.gal-count {
+    font-size     : 0.62rem;
+    font-weight   : 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color         : var(--studio-text-muted);
+    margin        : 0;
+}
 
-                                    <div class="gallery-img-wrapper">
-                                        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}"
-                                             class="gallery-img" loading="lazy">
-                                        <div class="gallery-overlay">
-                                            <div class="gallery-overlay-content">
-                                                <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
-                                                <p
-                                                    style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
-                                                    View Masterpiece</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="gallery-info">
-                                        <p class="gallery-title">{{ item.caption or 'Untitled' }}</p>
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span class="gallery-artist" style="font-weight: 600; font-size: 0.75rem;">by {{ item.artist_name
-                                                }}</span>
-                                            {% if item.style %}
-                                                <span class="badge"
-                                                      style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.15); padding: 2px 8px;">{{
-                                                    item.style }}</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                                <i class="fas fa-images" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-                                <p>No artworks uploaded to the gallery yet.</p>
-                            </div>
-                        {% endif %}
-                    </div>
+/* ── Filter bar ─────────────────────────────────── */
+.gal-filters {
+    display      : flex;
+    flex-wrap    : wrap;
+    gap          : 0.3rem;
+    padding      : 0.3rem;
+    background   : rgba(255,255,255,0.03);
+    border       : 1px solid var(--studio-border-light);
+    border-radius: 14px;
+    align-self   : flex-start;
+}
 
-    <!-- No Results -->
-                    <div id="galNoResult"
-                         style="display: none; text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                        <i class="fas fa-filter" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
-                        <p>No artworks found for this style.</p>
-                    </div>
+[data-theme="ivory"] .gal-filters { background: rgba(0,0,0,0.03); }
 
-    <!-- Saved Grid -->
-                    <div id="savedGrid" style="display: none;">
-                        <div id="savedEmpty" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                            <i class="far fa-heart" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1rem;"></i>
-                            <p style="margin-bottom: 1.5rem;">You haven't saved any artworks yet.</p>
-                            <button onclick="switchGalTab('all', document.getElementById('tabAll'))"
-                                    class="btn-studio btn-primary">Browse Gallery</button>
+/* ══ HORIZONTAL SCROLL STRIP ════════════════════════ */
+.gal-strip-outer {
+    position: relative;
+}
+
+/* Fade edges */
+.gal-strip-outer::before,
+.gal-strip-outer::after {
+    content       : '';
+    position      : absolute;
+    top: 0; bottom: 0;
+    width         : 48px;
+    z-index       : 2;
+    pointer-events: none;
+}
+
+.gal-strip-outer::before {
+    left      : 0;
+    background: linear-gradient(to right, var(--studio-card), transparent);
+}
+
+.gal-strip-outer::after {
+    right     : 0;
+    background: linear-gradient(to left, var(--studio-card), transparent);
+}
+
+[data-theme="ivory"] .gal-strip-outer::before { background: linear-gradient(to right, #fff, transparent); }
+[data-theme="ivory"] .gal-strip-outer::after  { background: linear-gradient(to left,  #fff, transparent); }
+
+/* Scrollable track */
+.gal-strip {
+    display              : flex;
+    flex-direction       : row;
+    gap                  : 1.1rem;
+    overflow-x           : auto;
+    padding              : 0.5rem 0.25rem 1.25rem;
+    scroll-snap-type     : x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width      : thin;
+    scrollbar-color      : var(--studio-border) transparent;
+}
+
+.gal-strip::-webkit-scrollbar       { height: 4px; }
+.gal-strip::-webkit-scrollbar-track { background: transparent; }
+.gal-strip::-webkit-scrollbar-thumb { background: var(--studio-border); border-radius: 4px; }
+
+/* ── Gallery Card ─────────────────────────────────── */
+.gallery-card {
+    flex-shrink      : 0;
+    width            : 240px;
+    border-radius    : 18px;
+    overflow         : hidden;
+    border           : 1px solid var(--studio-card-border);
+    background       : var(--studio-card);
+    cursor           : pointer;
+    scroll-snap-align: start;
+    transition       : transform 0.32s cubic-bezier(0.2,1,0.3,1),
+                       box-shadow 0.32s ease,
+                       border-color 0.2s ease;
+    position         : relative;
+    animation        : galleryReveal 0.55s cubic-bezier(0.2,1,0.3,1) backwards;
+    animation-delay  : calc(var(--item-index,0) * 0.05s);
+}
+
+@keyframes galleryReveal {
+    from { opacity: 0; transform: translateX(30px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(0)    scale(1); }
+}
+
+.gallery-card:hover {
+    transform   : translateY(-6px) scale(1.02);
+    box-shadow  : 0 18px 48px rgba(0,0,0,0.5), 0 0 20px rgba(255,0,60,0.1);
+    border-color: rgba(255,0,60,0.18);
+}
+
+/* Image area */
+.gallery-card-img {
+    position    : relative;
+    width       : 100%;
+    aspect-ratio: 4/3;
+    overflow    : hidden;
+    background  : rgba(255,255,255,0.03);
+}
+
+.gallery-card-img img {
+    width     : 100%;
+    height    : 100%;
+    object-fit: cover;
+    display   : block;
+    transition: transform 0.55s cubic-bezier(0.2,1,0.3,1);
+}
+
+.gallery-card:hover .gallery-card-img img { transform: scale(1.08); }
+
+/* Hover overlay */
+.gallery-card-overlay {
+    position       : absolute;
+    inset          : 0;
+    background     : linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 52%);
+    opacity        : 0;
+    transition     : opacity 0.3s ease;
+    display        : flex;
+    flex-direction : column;
+    justify-content: flex-end;
+    padding        : 1rem;
+    pointer-events : none;
+}
+
+.gallery-card:hover .gallery-card-overlay { opacity: 1; }
+
+.gallery-card-overlay-label {
+    font-size     : 0.6rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color         : rgba(255,255,255,0.9);
+}
+
+/* Card info bar */
+.gallery-card-info {
+    padding   : 0.85rem 0.9rem;
+    border-top: 1px solid var(--studio-border-light);
+    background: var(--studio-card);
+}
+
+.gallery-card-caption {
+    font-size    : 0.82rem;
+    font-weight  : 800;
+    color        : var(--studio-text-primary);
+    white-space  : nowrap;
+    overflow     : hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.3rem;
+}
+
+.gallery-card-meta {
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    gap            : 0.4rem;
+}
+
+.gallery-card-artist {
+    font-size     : 0.6rem;
+    font-weight   : 700;
+    color         : var(--studio-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    overflow      : hidden;
+    text-overflow : ellipsis;
+    white-space   : nowrap;
+}
+
+.gallery-style-tag {
+    padding       : 2px 7px;
+    border-radius : 5px;
+    background    : var(--studio-accent-soft);
+    color         : var(--studio-gold);
+    font-size     : 0.55rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border        : 1px solid var(--studio-gold-dim);
+    white-space   : nowrap;
+    flex-shrink   : 0;
+}
+
+/* ══ CUSTOM LIGHTBOX ════════════════════════════════ */
+#galLightbox {
+    display        : none;
+    position       : fixed;
+    inset          : 0;
+    z-index        : 99999;
+    background     : #000000;
+    align-items    : center;
+    justify-content: center;
+    opacity        : 0;
+    transition     : opacity 0.35s ease;
+}
+
+#galLightbox.lb-open    { display: flex; }
+#galLightbox.lb-visible { opacity: 1; }
+
+/* Inner layout: image left, panel right */
+.lb-inner {
+    display      : flex;
+    flex-direction: row;
+    align-items  : stretch;
+    width        : 92vw;
+    max-width    : 1080px;
+    max-height   : 88vh;
+    border-radius: 24px;
+    overflow     : hidden;
+    transform    : scale(0.9) translateY(20px);
+    transition   : transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow   : 0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(200,160,64,0.1);
+}
+
+#galLightbox.lb-visible .lb-inner { transform: scale(1) translateY(0); }
+
+/* Image side */
+.lb-img-side {
+    flex           : 1 1 62%;
+    position       : relative;
+    background     : #050505;
+    overflow       : hidden;
+    min-height     : 400px;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+}
+
+#lbMainImg {
+    max-width    : 100%;
+    max-height   : 88vh;
+    width        : 100%;
+    height       : 100%;
+    object-fit   : contain;
+    display      : block;
+    transition   : opacity 0.2s ease;
+}
+
+/* Arrows */
+.lb-arrow {
+    position       : absolute;
+    top            : 50%;
+    transform      : translateY(-50%);
+    width          : 44px;
+    height         : 44px;
+    border-radius  : 50%;
+    background     : rgba(0,0,0,0.6);
+    border         : 1px solid rgba(200,160,64,0.3);
+    color          : #c8a040;
+    font-size      : 1rem;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    cursor         : pointer;
+    z-index        : 10;
+    transition     : all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.lb-arrow:hover {
+    background  : rgba(200,160,64,0.15);
+    border-color: #c8a040;
+    transform   : translateY(-50%) scale(1.1);
+}
+
+.lb-arrow-prev { left:  1rem; }
+.lb-arrow-next { right: 1rem; }
+
+/* Info panel — pure black, all text gold except title */
+.lb-info-side {
+    flex          : 0 0 290px;
+    background    : #0a0a0a;
+    border-left   : 1px solid rgba(200,160,64,0.15);
+    display       : flex;
+    flex-direction: column;
+    padding       : 2rem 1.75rem 1.75rem;
+    overflow-y    : auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(200,160,64,0.2) transparent;
+}
+
+.lb-close {
+    align-self     : flex-end;
+    width          : 34px;
+    height         : 34px;
+    border-radius  : 50%;
+    border         : 1px solid rgba(200,160,64,0.3);
+    background     : transparent;
+    color          : #c8a040;
+    font-size      : 0.9rem;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    cursor         : pointer;
+    margin-bottom  : 1.75rem;
+    transition     : all 0.2s ease;
+    flex-shrink    : 0;
+}
+
+.lb-close:hover { background: rgba(200,160,64,0.1); transform: rotate(90deg); }
+
+.lb-divider {
+    width     : 36px;
+    height    : 2px;
+    background: linear-gradient(90deg, #c8a040, transparent);
+    margin    : 1rem 0;
+    flex-shrink: 0;
+}
+
+/* ALL labels & values → gold */
+.lb-label {
+    font-size     : 0.52rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color         : rgba(200,160,64,0.6);
+    margin-bottom : 0.25rem;
+    flex-shrink   : 0;
+}
+
+.lb-value {
+    font-size  : 0.88rem;
+    font-weight: 800;
+    color      : #c8a040;
+    margin     : 0 0 1.25rem;
+    line-height: 1.3;
+    flex-shrink: 0;
+}
+
+.lb-style-pill {
+    display       : inline-flex;
+    align-items   : center;
+    padding       : 4px 12px;
+    border-radius : 20px;
+    background    : rgba(200,160,64,0.08);
+    border        : 1px solid rgba(200,160,64,0.3);
+    color         : #c8a040;
+    font-size     : 0.62rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom : 1.5rem;
+    flex-shrink   : 0;
+}
+
+/* Title → WHITE (the one exception: "description headline") */
+.lb-title {
+    font-size     : 1.35rem;
+    font-weight   : 900;
+    color         : #ffffff;
+    letter-spacing: -0.02em;
+    line-height   : 1.15;
+    margin        : 0 0 0.15rem;
+    flex-shrink   : 0;
+    font-family   : var(--font-tech, serif);
+    text-transform: uppercase;
+}
+
+.lb-counter {
+    margin-top    : auto;
+    padding-top   : 1.25rem;
+    font-size     : 0.6rem;
+    font-weight   : 700;
+    color         : rgba(200,160,64,0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    border-top    : 1px solid rgba(200,160,64,0.1);
+    flex-shrink   : 0;
+}
+
+.lb-hint {
+    font-size     : 0.52rem;
+    color         : rgba(200,160,64,0.25);
+    margin-top    : 0.4rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* ── Empty / no-result states ─────────────────────── */
+.gal-empty {
+    display        : flex;
+    flex-direction : column;
+    align-items    : center;
+    padding        : 5rem 2rem;
+    text-align     : center;
+    gap            : 1rem;
+}
+
+.gal-empty-icon {
+    width          : 64px;
+    height         : 64px;
+    border-radius  : 20px;
+    background     : rgba(255,255,255,0.03);
+    border         : 1px solid var(--studio-border-light);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    color          : var(--studio-text-muted);
+    font-size      : 1.5rem;
+    transform      : rotate(6deg);
+    margin-bottom  : 0.5rem;
+}
+
+[data-theme="ivory"] .gal-empty-icon { background: rgba(0,0,0,0.04); }
+
+.gal-empty p { font-size: 1rem; font-weight: 900; color: var(--studio-text-primary); margin: 0; }
+
+.gal-browse-btn {
+    padding       : 0.7rem 1.5rem;
+    border-radius : 12px;
+    border        : none;
+    background    : var(--studio-text-primary);
+    color         : var(--studio-bg);
+    font-size     : 0.75rem;
+    font-weight   : 800;
+    cursor        : pointer;
+    transition    : all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.gal-browse-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 680px) {
+    .lb-inner       { flex-direction: column; width: 96vw; max-height: 94vh; }
+    .lb-img-side    { min-height: 220px; flex: 0 0 auto; }
+    .lb-info-side   { flex: 1 1 auto; border-left: none; border-top: 1px solid rgba(200,160,64,0.15); padding: 1.1rem 1.25rem 1.5rem; }
+    .lb-close       { margin-bottom: 1rem; }
+    .gallery-card   { width: 190px; }
+}
+</style>
+
+<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="gal-wrap">
+
+        <!-- Gallery Filters -->
+        <div class="gal-header" style="justify-content: flex-start;">
+            <div class="gal-filters">
+                <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
+                {% set styles = gallery | map(attribute='style') | select | unique | list %}
+                {% for style in styles %}
+                <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Horizontal Strip -->
+        <div class="gal-strip-outer" id="galleryStripOuter">
+            <div class="gal-strip" id="galleryGrid">
+                {% if gallery %}{% for item in gallery %}
+                <div class="gallery-card gallery-item"
+                     style="--item-index:{{ loop.index0 }};"
+                     data-id="{{ item.gallery_id }}"
+                     data-index="{{ loop.index0 }}"
+                     data-category="{{ item.style or 'Other' }}"
+                     data-img="{{ url_for('static', filename=item.image_path) }}"
+                     data-title="{{ item.caption or 'Untitled' }}"
+                     data-artist="{{ item.artist_name }}"
+                     data-style="{{ item.style or '' }}"
+                     onclick="openGalLb({{ loop.index0 }})">
+
+                    <div class="gallery-card-img">
+                        <img src="{{ url_for('static', filename=item.image_path) }}"
+                             alt="{{ item.caption }}" loading="lazy">
+                        <div class="gallery-card-overlay">
+                            <p class="gallery-card-overlay-label">
+                                <i class="fas fa-expand" style="margin-right:5px;"></i>View Masterpiece
+                            </p>
                         </div>
-                        <div class="gallery-grid" id="savedItemsGrid" style="display: none;"></div>
                     </div>
 
-                    </div>
-
-<!-- Toast -->
-                    <div class="studio-toast" id="likeToast">
-                        <i class="fas fa-heart"></i>
-                        <span id="likeToastMsg">Saved to your collection</span>
-                    </div>
-
-                    <script>
-    // Safe initialization
-                        let likedIds = new Set();
-                        let savedCount = 0;
-                        try {
-                            const rawIds = '{{ (liked_ids | default([])) | list | tojson | safe }}';
-                            if (rawIds && rawIds !== 'null') {
-                                likedIds = new Set(JSON.parse(rawIds));
-                            }
-                            const rawCount = '{{ liked_count | default(0) }}';
-                            if (rawCount && rawCount !== 'None') {
-                                savedCount = parseInt(rawCount, 10);
-                            }
-                        } catch (e) {
-                            console.error("Error parsing gallery data:", e);
-                        }
-
-                        let currentTab = 'all';
-
-                        window.toggleLike = function (e, galleryId) {
-                            e.stopPropagation();
-                            const btn = document.getElementById('likeBtn-' + galleryId);
-                            if (!btn) return;
-                            btn.classList.remove('pop');
-                            void btn.offsetWidth;
-                            btn.classList.add('pop');
-
-                            const wasLiked = likedIds.has(galleryId);
-                            if (wasLiked) {
-                                likedIds.delete(galleryId);
-                                btn.classList.remove('liked');
-                                savedCount = Math.max(0, savedCount - 1);
-                            } else {
-                                likedIds.add(galleryId);
-                                btn.classList.add('liked');
-                                savedCount++;
-                            }
-
-                            const badge = document.getElementById('savedBadge');
-                            if (badge) badge.textContent = savedCount;
-                            showToast(!wasLiked);
-
-                            if (currentTab === 'saved' && wasLiked) {
-                                const card = document.querySelector(`#savedItemsGrid [data-id="${galleryId}"]`);
-                                if (card) {
-                                    card.style.opacity = '0';
-                                    card.style.transform = 'scale(0.9)';
-                                    setTimeout(() => {
-                                        card.remove();
-                                        if (document.querySelectorAll('#savedItemsGrid .gallery-item').length === 0) {
-                                            document.getElementById('savedItemsGrid').style.display = 'none';
-                                            document.getElementById('savedEmpty').style.display = 'block';
-                                        }
-                                    }, 300);
-                                }
-                            }
-
-                            fetch(`/customer/gallery/like/${galleryId}`, { method: 'POST' }).catch(err => console.log(err));
-                        };
-
-                        window.openLbFromItem = function (item) {
-                            if (!item) return;
-                            const src = item.dataset.img || '';
-                            const title = item.dataset.title || 'Untitled';
-                            const subList = [];
-                            if (item.dataset.artist && item.dataset.artist !== 'None') subList.push('Artist: ' + item.dataset.artist);
-                            if (item.dataset.style && item.dataset.style !== 'None') subList.push('Style: ' + item.dataset.style);
-                            const sub = subList.join('  •  ');
-                            if (window.openLb) window.openLb(src, title, sub);
-                        };
-
-                        window.switchGalTab = function (tab, btn) {
-                            currentTab = tab;
-                            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                            if (btn) btn.classList.add('active');
-
-                            if (tab === 'all') {
-                                document.getElementById('galleryGrid').style.display = 'grid';
-                                document.getElementById('savedGrid').style.display = 'none';
-                                document.getElementById('galNoResult').style.display = 'none';
-                                document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => i.style.display = '');
-                            } else {
-                                document.getElementById('galleryGrid').style.display = 'none';
-                                document.getElementById('galNoResult').style.display = 'none';
-                                document.getElementById('savedGrid').style.display = 'block';
-                                loadSavedItems();
-                            }
-                        };
-
-                        function loadSavedItems() {
-                            fetch('/customer/gallery/liked')
-                                .then(r => r.json())
-                                .then(data => {
-                                    const grid = document.getElementById('savedItemsGrid');
-                                    const empty = document.getElementById('savedEmpty');
-                                    if (!grid || !empty) return;
-
-                                    grid.innerHTML = '';
-                                    if (!data || !data.success || !data.items || data.items.length === 0) {
-                                        grid.style.display = 'none';
-                                        empty.style.display = 'block';
-                                        return;
-                                    }
-                                    empty.style.display = 'none';
-                                    grid.style.display = 'grid';
-                                    data.items.forEach(item => {
-                                        const card = document.createElement('div');
-                                        card.className = 'gallery-item';
-                                        card.style.setProperty('--item-index', index);
-                                        card.dataset.id = item.gallery_id;
-                                        card.dataset.img = item.image_path.startsWith('/static/') ? item.image_path : `/static/${item.image_path || ''}`;
-                                        card.dataset.title = item.caption || 'Untitled';
-                                        card.dataset.artist = item.artist_name || '';
-                                        card.dataset.style = item.style || '';
-                                        card.style.cursor = 'pointer';
-
-                    // FIX: was openLb(this) which called openLb(DOMElement, undefined, undefined)
-                    // now correctly calls openLbFromItem(this) which reads data-* attributes
-                                        card.onclick = function () { openLbFromItem(this); };
-
-                                        card.innerHTML = `
-                        <button class="like-btn liked" onclick="toggleLike(event, ${item.gallery_id})"><i class="fas fa-heart"></i></button>
-                        <div class="gallery-img-wrapper">
-                            <img src="/static/${item.image_path || ''}" class="gallery-img">
-                            <div class="gallery-overlay">
-                                <div class="gallery-overlay-content">
-                                    <i class="fas fa-expand" style="font-size: 1.25rem; margin-bottom: 0.5rem; display: block;"></i>
-                                    <p style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">View Masterpiece</p>
-                                </div>
-                            </div>
+                    <div class="gallery-card-info">
+                        <p class="gallery-card-caption">{{ item.caption or 'Untitled' }}</p>
+                        <div class="gallery-card-meta">
+                            <span class="gallery-card-artist">by {{ item.artist_name }}</span>
+                            {% if item.style %}
+                            <span class="gallery-style-tag">{{ item.style }}</span>
+                            {% endif %}
                         </div>
-                        <div class="gallery-info">
-                            <p class="gallery-title">${item.caption || 'Untitled'}</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span class="gallery-artist" style="font-size: 0.75rem;">by ${item.artist_name || 'Unknown'}</span>
-                                ${item.style ? `<span class="badge" style="background: var(--studio-selection-soft); color: var(--studio-selection); font-size: 0.6rem; border: 1px solid rgba(255, 0, 60, 0.1);">Extra</span>` : ''}
-                            </div>
-                        </div>
-                    `;
-                                        grid.appendChild(card);
-                                    });
-                                })
-                                .catch(err => console.error("Error loading saved items", err));
-                        }
+                    </div>
+                </div>
+                {% endfor %}{% else %}
+                <div style="padding:5rem 2rem;text-align:center;width:100%;">
+                    <div class="gal-empty">
+                        <div class="gal-empty-icon"><i class="fas fa-images"></i></div>
+                        <p>No artworks uploaded yet.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
 
-                        window.filterGallery = function (cat, btn) {
-                            currentTab = 'all';
-                            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                            if (btn) btn.classList.add('active');
+        <!-- No Results -->
+        <div id="galNoResult" style="display:none;">
+            <div class="gal-empty">
+                <div class="gal-empty-icon"><i class="fas fa-filter"></i></div>
+                <p>No artworks found for this style.</p>
+            </div>
+        </div>
 
-                            const grid = document.getElementById('galleryGrid');
-                            grid.style.display = 'grid';
-                            document.getElementById('savedGrid').style.display = 'none';
+    </div>
+</div>
 
-        // Add filtering class to trigger re-animation
-                            grid.classList.remove('filtering');
-                            void grid.offsetWidth; // Trigger reflow
-                            grid.classList.add('filtering');
+<!-- ══ CUSTOM LIGHTBOX ══════════════════════════════ -->
+<div id="galLightbox" onclick="handleLbBgClick(event)">
+    <div class="lb-inner" id="lbInner">
 
-                            let visible = 0;
-                            const targetCat = cat ? cat.toString().toLowerCase().trim() : '';
-                            document.querySelectorAll('#galleryGrid .gallery-item').forEach(i => {
-                                const itemCat = (i.dataset.category || '').toLowerCase().trim();
-                                const show = (itemCat === targetCat);
-                                i.style.display = show ? '' : 'none';
-                                if (show) {
-                                    i.style.setProperty('--item-index', visible);
-                                    visible++;
-                                }
-                            });
-                            document.getElementById('galNoResult').style.display = visible === 0 ? 'block' : 'none';
-                        };
+        <!-- Image side -->
+        <div class="lb-img-side">
+            <img id="lbMainImg" src="" alt="">
+            <button class="lb-arrow lb-arrow-prev" onclick="lbNav(-1)" title="Previous">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lb-arrow lb-arrow-next" onclick="lbNav(1)" title="Next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
-                        function showToast(isLiked) {
-                            const t = document.getElementById('likeToast');
-                            if (!t) return;
-                            document.getElementById('likeToastMsg').textContent = isLiked ? 'Artwork saved!' : 'Removed from collection';
-                            t.classList.add('show');
-                            setTimeout(() => t.classList.remove('show'), 2000);
-                        }
-                    </script>
+        <!-- Info panel — black bg, gold text, white title -->
+        <div class="lb-info-side">
+            <button class="lb-close" onclick="closeGalLb()" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Title is WHITE (description headline exception) -->
+            <p class="lb-label">Artwork</p>
+            <h2 class="lb-title" id="lbTitle">—</h2>
+
+            <div class="lb-divider"></div>
+
+            <span class="lb-style-pill" id="lbStyle" style="display:none;"></span>
+
+            <p class="lb-label">Artist</p>
+            <p class="lb-value" id="lbArtist">—</p>
+
+            <p class="lb-counter" id="lbCounter">1 / 1</p>
+            <p class="lb-hint">← → keys to navigate &nbsp;·&nbsp; ESC to close</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    function getItems() {
+        return Array.from(document.querySelectorAll('#galleryGrid .gallery-card'));
+    }
+
+    var currentIndex = 0;
+
+    window.openGalLb = function (idx) {
+        var items = getItems();
+        if (!items.length) return;
+        currentIndex = idx;
+        populate(items, currentIndex);
+
+        var lb = document.getElementById('galLightbox');
+        lb.classList.add('lb-open');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () { lb.classList.add('lb-visible'); });
+        });
+    };
+
+    function populate(items, idx) {
+        var card   = items[idx];
+        var img    = document.getElementById('lbMainImg');
+        var title  = document.getElementById('lbTitle');
+        var artist = document.getElementById('lbArtist');
+        var style  = document.getElementById('lbStyle');
+        var ctr    = document.getElementById('lbCounter');
+
+        img.style.opacity = '0';
+        setTimeout(function () {
+            img.src            = card.dataset.img    || '';
+            img.alt            = card.dataset.title  || '';
+            title.textContent  = card.dataset.title  || 'Untitled';
+            artist.textContent = card.dataset.artist || '—';
+            ctr.textContent    = (idx + 1) + ' / ' + items.length;
+
+            var s = card.dataset.style;
+            if (s) { style.textContent = s; style.style.display = 'inline-flex'; }
+            else   { style.style.display = 'none'; }
+
+            img.style.opacity = '1';
+        }, 130);
+    }
+
+    window.lbNav = function (dir) {
+        var items = getItems();
+        if (!items.length) return;
+        currentIndex = (currentIndex + dir + items.length) % items.length;
+        populate(items, currentIndex);
+    };
+
+    window.closeGalLb = function () {
+        var lb = document.getElementById('galLightbox');
+        lb.classList.remove('lb-visible');
+        document.body.style.overflow = '';
+        setTimeout(function () { lb.classList.remove('lb-open'); }, 370);
+    };
+
+    window.handleLbBgClick = function (e) {
+        if (!document.getElementById('lbInner').contains(e.target)) closeGalLb();
+    };
+
+    window.openLbFromItem = function (el) {
+        var items = getItems();
+        var idx   = parseInt(el.dataset.index, 10) || 0;
+        openGalLb(idx);
+    };
+
+    document.addEventListener('keydown', function (e) {
+        if (!document.getElementById('galLightbox').classList.contains('lb-open')) return;
+        if (e.key === 'Escape')      closeGalLb();
+        if (e.key === 'ArrowRight')  lbNav(1);
+        if (e.key === 'ArrowLeft')   lbNav(-1);
+    });
+})();
+</script>

@@ -8,555 +8,52 @@
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <meta name="description"
         content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
-    <!-- Offline Assets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
 
+    <!-- Global CSS & Assets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+
+    <!-- Tailwind CSS (Standardised) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['Outfit', 'system-ui', 'sans-serif'],
                         display: ['Cinzel', 'serif'],
                     },
-                                            colors: {
-                            apple: {
-                                bg: 'var(--apple-bg)',
-                                text: 'var(--apple-text)',
-                                muted: 'var(--apple-muted)',
-                                card: 'var(--apple-card)',
-                                border: 'var(--apple-border)',
-                                accent: 'var(--apple-accent)'
-                            }
-                        }
+                    colors: {
+                        studio: {
+                            bg: 'var(--studio-bg)',
+                            surface: 'var(--studio-surface)',
+                            card: 'var(--studio-card)',
+                            border: 'var(--studio-border)',
+                            gold: 'var(--studio-gold)',
+                            'gold-soft': 'var(--studio-gold-soft)',
+                            'gold-dim': 'var(--studio-gold-dim)',
+                        },
+                        accent: 'var(--accent, var(--studio-gold))',
+                        text: 'var(--text, var(--studio-text-primary))',
+                        muted: 'var(--text-muted, var(--studio-text-muted))',
+                    }
                 }
             }
         }
     </script>
 
-    <style>
-    :root {
-        --apple-bg: #000;
-        --apple-text: #f5f5f7;
-        --apple-muted: #86868b;
-        --apple-card: #1d1d1f;
-        --apple-border: rgba(255, 255, 255, 0.1);
-        --apple-accent: #c8a040;
-    }
-    html.light-mode {
-        --apple-bg: #ffffff;
-        --apple-text: #1f2937;
-        --apple-muted: #6b7280;
-        --apple-card: #fffaf5;
-        --apple-border: rgba(253, 186, 116, 0.4);
-        --apple-accent: #f97316;
-    }
+    <!-- Project Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing/home.css') }}">
 
-        :root {
-            --bg: #030303;
-            --text: #f5f5f7;
-            --muted: #86868b;
-            --accent: #c8a040;
-            --border: rgba(255, 255, 255, 0.06);
-            --card-bg: rgba(29, 29, 31, 0.6);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #030303;
-        }
-
-        * {
-            -webkit-font-smoothing: antialiased;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        /* ── NAVBAR (Standardized) ── */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            background: rgba(3, 3, 3, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 1.5rem;
-            transform: translateY(-100%);
-            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-        }
-
-        @keyframes navSlideDown {
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .nav-link {
-            color: var(--muted);
-            font-size: 0.78rem;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: color 0.25s;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            right: 50%;
-            height: 1px;
-            background: var(--accent);
-            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .nav-link:hover {
-            color: var(--accent);
-        }
-
-        .nav-link:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 4px;
-            border-radius: 4px;
-            color: var(--text);
-        }
-
-        .nav-link:hover::after {
-            left: 0;
-            right: 0;
-        }
-
-        .nav-link.active {
-            color: var(--text);
-        }
-
-        .nav-link.active::after {
-            left: 0;
-            right: 0;
-            height: 2px;
-        }
-
-        /* ── HERO & SECTIONS ── */
-        .hero-section {
-            background: var(--hero-bg);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 6rem 1.5rem 4rem;
-        }
-
-        .hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-d1 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-d2 {
-            transition-delay: 0.2s;
-        }
-
-        .reveal-d3 {
-            transition-delay: 0.3s;
-        }
-
-        /* ── BUTTONS & CARDS ── */
-        .btn-gold {
-            background: var(--accent);
-            color: #000;
-            padding: 0.8rem 2rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-gold:hover {
-            background: #e0b84a;
-            transform: translateY(-2px);
-            /* box-shadow removed */
-        }
-
-        .btn-gold:focus-visible,
-        .btn-outline:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.8rem 2rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .btn-outline:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .pill-tag {
-            background: rgba(200, 160, 64, 0.1);
-            border: 1px solid rgba(200, 160, 64, 0.15);
-            color: var(--accent);
-            padding: 0.4rem 1.2rem;
-            border-radius: 99px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .bento-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .bento-card:hover {
-            background: rgba(42, 42, 45, 0.8);
-            border-color: rgba(200, 160, 64, 0.25);
-            transform: translateY(-5px);
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 16px;
-            text-align: center;
-        }
-
-        .testi-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 22px;
-            padding: 2rem;
-            transition: all 0.4s;
-        }
-
-        .testi-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(200, 160, 64, 0.2);
-        }
-
-        .testi-stars {
-            color: var(--accent);
-            font-size: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .testi-quote {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: var(--text);
-            opacity: 0.9;
-        }
-
-        .testi-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .testi-detail {
-            font-size: 0.7rem;
-            color: var(--muted);
-        }
-
-        .burger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--muted);
-            border-radius: 2px;
-            transition: all 0.3s;
-            margin: 5px 0;
-        }
-
-        .mobile-menu {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: rgba(3, 3, 3, 0.98);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
-            transform: translateY(-100%);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            pointer-events: none;
-        }
-
-        .mobile-menu.open {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .mobile-menu a {
-            font-family: 'Cinzel', serif;
-            font-size: 1.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .mobile-menu a.active,
-        .mobile-menu a:hover {
-            color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            .hero-section {
-                padding-top: 8rem;
-            }
-
-            .hero-title {
-                font-size: 3.5rem !important;
-                text-wrap: balance;
-            }
-        }
-
-        .stat-num {
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* ── LIGHT THEME (White + Orange Energetic) ── */
-        html.light-mode,
-        html.light-mode body {
-            --bg: #ffffff;
-            --text: #1f2937;
-            --muted: #6b7280;
-            --accent: #f97316;
-            --border: rgba(253, 186, 116, 0.4);
-            --card-bg: rgba(255, 250, 245, 0.8);
-            --card-border: rgba(253, 186, 116, 0.2);
-            --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(249, 115, 22, 0.06) 0%, transparent 60%), #ffffff;
-        }
-
-        html.light-mode .navbar {
-            background: rgba(255, 255, 255, 0.88) !important;
-            border-bottom: 1px solid var(--border) !important;
-        }
-
-        html.light-mode .nav-link {
-            color: var(--muted) !important;
-        }
-
-        html.light-mode .nav-link.active,
-        html.light-mode .nav-link:hover {
-            color: var(--accent) !important;
-        }
-
-        html.light-mode .hero-title,
-        html.light-mode h1,
-        html.light-mode h2 {
-            color: var(--text) !important;
-        }
-
-        html.light-mode .hero-section {
-            background: var(--hero-bg) !important;
-        }
-
-        html.light-mode .bento-card,
-        html.light-mode .stat-card,
-        html.light-mode .testi-card {
-            background: var(--card-bg) !important;
-            border-color: var(--card-border) !important;
-        }
-
-        html.light-mode .stat-num {
-            color: var(--accent) !important;
-        }
-
-        html.light-mode .mobile-menu {
-            background: rgba(255, 255, 255, 0.98) !important;
-        }
-
-        html.light-mode .mobile-menu a {
-            color: var(--muted) !important;
-        }
-
-        html.light-mode .mobile-menu a:hover,
-        html.light-mode .mobile-menu a.active {
-            color: var(--accent) !important;
-        }
-
-        html.light-mode footer {
-            background: #fffaf5 !important;
-            border-top: 1px solid var(--border) !important;
-        }
-
-        /* Global theme transition */
-        *,
-        *::before,
-        *::after {
-            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
-        }
-
-        /* ── PRELOADER ── */
-        #dragon-preloader {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: #030303;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.8s;
-        }
-
-        #dragon-preloader.loaded {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loader-ring {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid rgba(200, 160, 64, 0.1);
-            border-top-color: var(--accent);
-            animation: spin 1s linear infinite;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .loader-logo {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse-gold 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-gold {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(0.95);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-        }
-    </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
 </head>
 
-<body>
-    <!-- ── PRELOADER ── -->
-    <div id="dragon-preloader">
-        <div class="loader-ring">
-            <div class="loader-logo">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon" width="40" height="40"
-                    class="w-10 h-10 rounded-full border border-accent/20">
-            </div>
-        </div>
-        <p class="font-display text-[10px] tracking-[0.4em] uppercase text-accent/60 opacity-80">Dragon Tattoos</p>
-    </div>
+<body class="landing-page">
 
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="/" class="active">Home</a>
-        <a href="/about">About</a>
-        <a href="/services">Services</a>
-        <a href="/gallery">Gallery</a>
-        <a href="/contact">Contact</a>
-        <div style="width:40px;height:1px;background:rgba(200,160,64,0.3)"></div>
-        <div class="flex gap-4">
-            <a href="/login"
-                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none"
-                style="text-decoration:none;">Login</a>
-            <a href="/register"
-                class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none"
-                style="text-decoration:none;">Register</a>
-        </div>
-    </div>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo" width="28"
-                    height="28" class="w-7 h-7 rounded-full object-cover">
-                <span class="font-display text-apple-text text-[13px] font-bold tracking-widest uppercase">Dragon Tattoos</span>
-            </div>
-            <div class="hidden md:flex items-center gap-8">
-                <a href="/" class="nav-link active">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link">Gallery</a>
-                <a href="/contact" class="nav-link">Contact</a>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-3">
-                    <a href="/login"
-                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-medium tracking-wide text-black border border-apple-border bg-white rounded-lg hover:bg-gray-50 transition-all shadow-none">Login</a>
-                    <a href="/register"
-                        class="inline-flex items-center justify-center text-center px-6 py-2 text-[13px] font-bold tracking-wide bg-apple-accent text-apple-bg border border-apple-accent/50 rounded-lg hover:brightness-110 hover:scale-[1.03] transition-transform duration-300 shadow-none">Register</a>
-                </div>
-                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    {% include 'landing/_navbar.html' %}
 
     <!-- ─────────────── HERO ─────────────── -->
     <section class="hero-section">
@@ -568,7 +65,7 @@
                 <div class="relative">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl">
                         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="96" height="96"
-                            class="w-full h-full object-cover rounded-full">
+              class="w-full h-full object-cover rounded-full" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
@@ -608,25 +105,18 @@
             </div>
 
             <!-- Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                <div class="stat-card">
-                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="5" data-suffix="+">5+
-                    </div>
-                    <div class="text-[10px] text-muted uppercase tracking-widest">Years</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16 max-w-3xl mx-auto">
+                <div class="stat-card p-8">
+                    <div class="font-display text-4xl md:text-5xl text-accent mb-2 stat-num" data-target="500" data-suffix="+">500+</div>
+                    <div class="text-[11px] text-muted uppercase tracking-[0.2em] font-bold">Clients</div>
                 </div>
-                <div class="stat-card">
-                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="500" data-suffix="+">500+
-                    </div>
-                    <div class="text-[10px] text-muted uppercase tracking-widest">Clients</div>
+                <div class="stat-card p-8">
+                    <div class="font-display text-4xl md:text-5xl text-accent mb-2 stat-num" data-target="10" data-suffix="+">10+</div>
+                    <div class="text-[11px] text-muted uppercase tracking-[0.2em] font-bold">Styles</div>
                 </div>
-                <div class="stat-card">
-                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="10" data-suffix="+">10+
-                    </div>
-                    <div class="text-[10px] text-muted uppercase tracking-widest">Styles</div>
-                </div>
-                <div class="stat-card">
-                    <div class="font-display text-3xl text-accent mb-1 stat-num" data-target="3" data-suffix="">3</div>
-                    <div class="text-[10px] text-muted uppercase tracking-widest">Artists</div>
+                <div class="stat-card p-8">
+                    <div class="font-display text-4xl md:text-5xl text-accent mb-2 stat-num" data-target="3" data-suffix="">3</div>
+                    <div class="text-[11px] text-muted uppercase tracking-[0.2em] font-bold">Artists</div>
                 </div>
             </div>
 
@@ -691,17 +181,15 @@
                 <h2 class="font-display text-4xl md:text-5xl text-text">What People Say</h2>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-5">
+            <div class="testimonials-grid">
                 <div class="testi-card reveal reveal-d1">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Raj understood exactly what I wanted — bold geometric patterns that actually
-                        mean something. The blackwork is insanely clean. I get compliments every day."</p>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div
-                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                    <p class="testi-quote">"Raj understood exactly what I wanted — bold geometric patterns that actually mean something. The blackwork is insanely clean. I get compliments every day."</p>
+                    <div class="testi-footer">
+                        <div class="testi-avatar">
+                            <i class="fa-solid fa-user"></i>
                         </div>
-                        <div>
+                        <div class="testi-info">
                             <div class="testi-name">Ananya R.</div>
                             <div class="testi-detail">Blackwork sleeve · Bengaluru</div>
                         </div>
@@ -710,14 +198,12 @@
 
                 <div class="testi-card reveal reveal-d2">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Priya's fine-line floral work is something else entirely. Super clean, super
-                        detailed. The studio made me feel completely at ease the whole time."</p>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div
-                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                    <p class="testi-quote">"Priya's fine-line floral work is something else entirely. Super clean, super detailed. The studio made me feel completely at ease the whole time."</p>
+                    <div class="testi-footer">
+                        <div class="testi-avatar">
+                            <i class="fa-solid fa-user"></i>
                         </div>
-                        <div>
+                        <div class="testi-info">
                             <div class="testi-name">Meera K.</div>
                             <div class="testi-detail">Fine line floral · Mysore</div>
                         </div>
@@ -726,14 +212,12 @@
 
                 <div class="testi-card reveal reveal-d3">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Arjun's realism is photographic — seriously, people ask if it's a photo.
-                        Booking was easy, process explained well, and aftercare was thorough."</p>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div
-                            style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.03);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-muted text-xs"></i>
+                    <p class="testi-quote">"Arjun's realism is photographic — seriously, people ask if it's a photo. Booking was easy, process explained well, and aftercare was thorough."</p>
+                    <div class="testi-footer">
+                        <div class="testi-avatar">
+                            <i class="fa-solid fa-user"></i>
                         </div>
-                        <div>
+                        <div class="testi-info">
                             <div class="testi-name">Vikram S.</div>
                             <div class="testi-detail">Realistic lion portrait · Chennai</div>
                         </div>
@@ -749,28 +233,27 @@
         </div>
     </section>
 
-    <!-- ─────────────── FOOTER ─────────────── -->
-    <footer class="pt-16 pb-8 px-6 border-t border-white/5">
+    <!-- ── FOOTER ── -->
+    <footer class="main-footer">
         <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-16 mb-16">
 
                 <div class="col-span-2 md:col-span-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="24" height="24"
-                            loading="lazy" class="w-6 h-6 rounded-full object-cover opacity-80">
-                        <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
-                            Tattoos
-                            Studio</span>
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="28" height="28"
+              loading="lazy" class="w-7 h-7 rounded-full object-cover" decoding="async">
+                        <span
+                            class="font-display text-text text-[11px] font-bold tracking-[0.2em] uppercase opacity-90">Dragon
+                            Tattoos</span>
                     </div>
-                    <p class="text-muted text-xs max-w-xs leading-relaxed">Premium tattoo studio. Engineered for
-                        perfection, one
-                        design at a time.</p>
+                    <p class="text-muted text-[13px] max-w-xs leading-relaxed opacity-80">Premium tattoo studio.
+                        Engineered for
+                        perfection, one design at a time.</p>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Studio
-                    </h4>
-                    <ul class="space-y-2.5">
+                    <h4 class="text-[10px] font-bold uppercase tracking-[0.25em] text-text mb-6 opacity-40">Studio</h4>
+                    <ul class="space-y-4">
                         <li><a href="/about" class="footer-link">About Us</a></li>
                         <li><a href="/services" class="footer-link">Services</a></li>
                         <li><a href="/gallery" class="footer-link">Portfolio</a></li>
@@ -779,91 +262,37 @@
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Account
-                    </h4>
-                    <ul class="space-y-2.5">
+                    <h4 class="text-[10px] font-bold uppercase tracking-[0.25em] text-text mb-6 opacity-40">Account</h4>
+                    <ul class="space-y-4">
                         <li><a href="/register" class="footer-link">Create Account</a></li>
                         <li><a href="/login" class="footer-link">Login</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Follow
-                    </h4>
-                    <div class="flex gap-3">
+                    <h4 class="text-[10px] font-bold uppercase tracking-[0.25em] text-text mb-6 opacity-40">Follow</h4>
+                    <div class="flex gap-5">
                         <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank"
-                            rel="noopener noreferrer" class="footer-link text-lg hover:text-accent"><i
-                                class="fa-brands fa-instagram"></i></a>
+                            rel="noopener noreferrer"
+                            class="text-muted hover:text-accent transition-all hover:scale-110"><i
+                                class="fa-brands fa-instagram text-xl"></i></a>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t pt-8 flex justify-between items-center text-[10px] text-muted"
-                style="border-color:rgba(255,255,255,0.05)">
-                <p>&copy; 2026 Dragon Tattoos Studio. All rights reserved.</p>
-                <a href="#" class="footer-link">↑ Back to top</a>
+            <div
+                class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-muted tracking-wider uppercase opacity-60">
+                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
+                <div class="flex items-center gap-8">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="back-to-top">↑ Back to top</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <script>
-        // ── Scroll reveal
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // ── Hamburger
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('burgerBtn');
-            menu.classList.toggle('open');
-            btn.classList.toggle('open');
-            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-        }
-        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
-
-        // ── Animated counters
-        const counterObs = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                const el = entry.target;
-                const target = +el.dataset.target;
-                const suffix = el.dataset.suffix || '';
-                const duration = Math.min(1800, target * 4);
-                const step = Math.ceil(target / (duration / 16));
-                let current = 0;
-                const timer = setInterval(() => {
-                    current = Math.min(current + step, target);
-                    el.textContent = current + suffix;
-                    if (current >= target) clearInterval(timer);
-                }, 16);
-                counterObs.unobserve(el);
-            });
-        }, { threshold: 0.5 });
-        document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
-
-        // ── Preloader Hider
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('dragon-preloader');
-            if (preloader) {
-                // Ensure minor delay for visceral feel
-                setTimeout(() => {
-                    preloader.classList.add('loaded');
-                }, 400);
-            }
-        });
-
-        // Safety timeout (Force hide after 3.5s)
-        setTimeout(() => {
-            const preloader = document.getElementById('dragon-preloader');
-            if (preloader && !preloader.classList.contains('loaded')) {
-                preloader.classList.add('loaded');
-            }
-        }, 3500);
-    </script>
+    <script src="{{ url_for('static', filename='js/landing/home.js') }}"></script>
 </body>
 
 </html>

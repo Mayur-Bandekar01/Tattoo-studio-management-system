@@ -88,3 +88,70 @@
 })();
 
 
+
+
+/* ==================== MERGED FROM LANDING_PAGES.JS ==================== */
+// ── Navigation & UI Logic
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('burgerBtn');
+    if (!menu || !btn) return;
+    
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ── Reveal System
+    const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { 
+                e.target.classList.add('visible'); 
+                revealObserver.unobserve(e.target); 
+            }
+        });
+    }, { threshold: 0.05 });
+
+    document.querySelectorAll('.reveal, .scroll-reveal').forEach(el => revealObserver.observe(el));
+
+    // ── Animated Counters
+    const counterObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const targetVal = el.dataset.target;
+            if (targetVal === undefined || targetVal === null) {
+                counterObserver.unobserve(el);
+                return;
+            }
+            const target = +targetVal;
+            const suffix = el.dataset.suffix || '';
+            const duration = Math.min(1800, target * 4);
+            const step = Math.ceil(target / (duration / 16));
+            let current = 0;
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                el.textContent = current + suffix;
+                if (current >= target) clearInterval(timer);
+            }, 16);
+            counterObserver.unobserve(el);
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num').forEach(el => counterObserver.observe(el));
+
+    // ── Navbar Active State
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav-link').forEach(link => {
+        const href = link.getAttribute('href');
+        link.classList.remove('active');
+        if (path === href || (path === '/' && href === '/home')) {
+            link.classList.add('active');
+        } else if (href !== '/' && path.startsWith(href)) {
+            link.classList.add('active');
+        }
+    });
+
+
+});

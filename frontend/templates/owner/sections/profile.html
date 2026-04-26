@@ -1,157 +1,158 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER PROFILE
-     Refactored: Vibrant Obsidian Alignment
+     Refactored: Utility-First Premium
      ═══════════════════════════════════════ -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
 
     <!-- ── Profile Info Card ── -->
-    <div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-            <div class="bg-indigo-soft text-indigo"
-                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+    <div class="studio-card p-6 border-l-4 border-indigo-500">
+        <div class="flex items-center gap-4 mb-8">
+            <div
+                class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shadow-inner">
                 <i class="fa-solid fa-crown"></i>
             </div>
             <div>
-                <h3 class="studio-title" style="margin: 0;">Owner Profile</h3>
-                <p class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">
-                    Administrative Credentials</p>
+                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Owner Profile</h3>
+                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Administrative
+                    Credentials</p>
             </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="space-y-4">
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
-                <span class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Owner
-                    ID</span>
-                <span class="font-mono text-indigo" style="font-weight: 800;">#{{ session.get('user_id') }}</span>
+                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors group">
+                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Owner ID</span>
+                <span
+                    class="font-mono text-indigo-500 font-black text-sm group-hover:scale-105 transition-transform">#{{
+                    session.get('user_id') }}</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
-                <span class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Full
-                    Name</span>
-                <span class="font-bold text-primary">{{ name }}</span>
+                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
+                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Full Name</span>
+                <span class="font-black text-studio-text-primary text-sm">{{ name }}</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
-                <span class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Role
-                    Access</span>
-                <span class="badge bg-indigo-soft text-indigo">STUDIO OWNER</span>
+                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
+                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Role Access</span>
+                <span
+                    class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">STUDIO
+                    OWNER</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
-                <span class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Team
-                    Size</span>
-                <span class="font-bold text-primary">{{ total_artists }} Artists Active</span>
+                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
+                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Team Size</span>
+                <span class="font-black text-studio-text-primary text-sm">{{ total_artists }} Artists Active</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border: 1px solid var(--studio-border); border-radius: var(--studio-radius-sm); background: var(--studio-bg-hover);">
-                <span class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Global
+                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors group">
+                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Global
                     Yield</span>
-                <span class="font-bold text-success">₹{{ total_revenue | default(0) }}</span>
+                <span class="font-black text-emerald-500 text-sm group-hover:scale-110 transition-transform">₹{{
+                    total_revenue | default(0) }}</span>
             </div>
         </div>
     </div>
 
     <!-- ── Security Settings ── -->
-    <div class="studio-card" style="border-left: 6px solid var(--studio-danger);">
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-            <div class="bg-danger-soft text-danger"
-                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+    <div class="studio-card p-6 border-l-4 border-red-500">
+        <div class="flex items-center gap-4 mb-8">
+            <div
+                class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl shadow-inner">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div>
-                <h3 class="studio-title" style="margin: 0;">Security Settings</h3>
-                <p class="text-secondary"
-                    style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-top: 4px;">Cipher &
+                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Security Settings
+                </h3>
+                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Cipher &
                     Password Management</p>
             </div>
         </div>
 
-        <!-- [DATA-FLOW]: Submits to POST /owner/change-password -->
+        <form method="POST" action="/owner/change-password" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <form method="POST" action="/owner/change-password">
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
-                <div>
-                    <label>Current Password</label>
-                    <div class="pw-wrap" style="position: relative;">
-                        <input class="studio-input" type="password" name="current_password" id="ownerCurrPw"
-                            placeholder="••••••••" required>
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerCurrPw', this)"
-                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label>New Password</label>
-                    <div class="pw-wrap" style="position: relative;">
-                        <input class="studio-input" type="password" name="new_password" id="ownerNewPw"
-                            placeholder="Minimal 8 characters" required oninput="checkOwnerPwStrength()">
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerNewPw', this)"
-                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-                    <div
-                        style="width: 100%; height: 6px; background: var(--studio-border); border-radius: 4px; margin-top: 0.6rem; overflow: hidden;">
-                        <div id="ownerPwBar" style="height: 100%; width:0%; transition: all 0.3s ease;"></div>
-                    </div>
-                    <p id="ownerPwLabel"
-                        style="font-size: 0.65rem; margin-top: 0.4rem; font-weight: 800; text-transform: uppercase;">
-                    </p>
-                </div>
-
-                <div>
-                    <label>Confirm New Password</label>
-                    <div class="pw-wrap" style="position: relative;">
-                        <input class="studio-input" type="password" name="confirm_password" id="ownerConfPw"
-                            placeholder="Re-enter password" required oninput="checkOwnerPwMatch()">
-                        <button type="button" class="pw-eye" onclick="togglePw('ownerConfPw', this)"
-                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--studio-text-muted); cursor: pointer;">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                    </div>
-                    <p id="ownerMatchLabel"
-                        style="font-size: 0.65rem; font-weight: 800; margin-top: 0.4rem; text-transform: uppercase;">
-                    </p>
-                </div>
-
-                <div class="bg-indigo-soft"
-                    style="border: 1px solid var(--studio-border); padding: 1rem; border-radius: var(--studio-radius-sm);">
-                    <p class="text-secondary"
-                        style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem;">
-                        Password must contain:</p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <p id="ownerRule_len"
-                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
-                            8+ characters</p>
-                        <p id="ownerRule_upper"
-                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
-                            Uppercase</p>
-                        <p id="ownerRule_num"
-                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
-                            Number</p>
-                        <p id="ownerRule_spec"
-                            style="font-size: 0.7rem; color: var(--studio-text-muted); margin: 0; font-weight: 600;">✗
-                            Special char</p>
-                    </div>
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Current
+                    Password</label>
+                <div class="relative group">
+                    <input class="studio-input w-full" type="password" name="current_password" id="ownerCurrPw"
+                        placeholder="••••••••" required>
+                    <button type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
+                        onclick="togglePw('ownerCurrPw', this)">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
                 </div>
             </div>
 
-            <button type="submit" class="btn-studio btn-primary" style="width: 100%;">
-                <i class="fa-solid fa-shield-halved"></i> Update Cipher
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">New
+                    Password</label>
+                <div class="relative group">
+                    <input class="studio-input w-full" type="password" name="new_password" id="ownerNewPw"
+                        placeholder="Minimal 8 characters" required oninput="checkOwnerPwStrength()">
+                    <button type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
+                        onclick="togglePw('ownerNewPw', this)">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+                <div class="w-full h-1.5 bg-black/20 rounded-full mt-3 overflow-hidden">
+                    <div id="ownerPwBar" class="h-full w-0 transition-all duration-500"></div>
+                </div>
+                <p id="ownerPwLabel" class="text-[10px] font-black uppercase mt-2 tracking-tighter h-3"></p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Confirm New
+                    Password</label>
+                <div class="relative group">
+                    <input class="studio-input w-full" type="password" name="confirm_password" id="ownerConfPw"
+                        placeholder="Re-enter password" required oninput="checkOwnerPwMatch()">
+                    <button type="button"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
+                        onclick="togglePw('ownerConfPw', this)">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+                <p id="ownerMatchLabel" class="text-[10px] font-black uppercase mt-2 tracking-tighter h-3"></p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-studio-border bg-studio-surface-light/30">
+                <p
+                    class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-xs"></i> Password Requirements
+                </p>
+                <div class="grid grid-cols-2 gap-y-2 gap-x-4">
+                    <p id="ownerRule_len"
+                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
+                        <span class="indicator">✗</span> 8+ characters
+                    </p>
+                    <p id="ownerRule_upper"
+                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
+                        <span class="indicator">✗</span> Uppercase
+                    </p>
+                    <p id="ownerRule_num"
+                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
+                        <span class="indicator">✗</span> Number
+                    </p>
+                    <p id="ownerRule_spec"
+                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
+                        <span class="indicator">✗</span> Special char
+                    </p>
+                </div>
+            </div>
+
+            <button type="submit" class="studio-btn-primary w-full py-4 relative overflow-hidden group">
+                <span class="relative z-10 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i> Update Cipher
+                </span>
+                <div
+                    class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                </div>
             </button>
         </form>
     </div>
-
-
 </div>
 
 <script>
@@ -170,19 +171,26 @@
         Object.entries(rules).forEach(([key, pass]) => {
             const el = document.getElementById(`ownerRule_${key}`);
             if (!el) return;
-            const text = el.textContent.slice(2);
-            el.textContent = (pass ? '✓ ' : '✗ ') + text;
-            el.style.color = pass ? 'var(--studio-success)' : 'var(--studio-text-muted)';
+            const indicator = el.querySelector('.indicator');
+            indicator.textContent = pass ? '✓' : '✗';
+            el.className = `text-[10px] font-black uppercase flex items-center gap-2 transition-colors ${pass ? 'text-emerald-500' : 'text-studio-text-muted'}`;
         });
 
         const score = Object.values(rules).filter(Boolean).length;
-        const colors = ['transparent', 'var(--studio-danger)', '#f97316', '#eab308', 'var(--studio-success)'];
-        const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+        const colors = ['transparent', '#ef4444', '#f97316', '#eab308', '#10b981'];
+        const labels = ['', 'Weak Vulnerability', 'Fair Security', 'Good Protection', 'Maximum Cipher'];
 
         bar.style.width = (score * 25) + '%';
         bar.style.background = colors[score];
         lbl.textContent = labels[score] || '';
         lbl.style.color = colors[score];
+
+        // Add shadow/glow effect to bar based on score
+        if (score > 0) {
+            bar.style.boxShadow = `0 0 10px ${colors[score]}44`;
+        } else {
+            bar.style.boxShadow = 'none';
+        }
     }
 
     function checkOwnerPwMatch() {
@@ -191,11 +199,11 @@
         const lbl = document.getElementById('ownerMatchLabel');
         if (!pw2) { lbl.textContent = ''; return; }
         if (pw1 === pw2) {
-            lbl.textContent = '✓ Passwords match';
-            lbl.style.color = 'var(--studio-success)';
+            lbl.textContent = '✓ Passwords synchronized';
+            lbl.style.color = '#10b981';
         } else {
-            lbl.textContent = '✗ Passwords mismatch';
-            lbl.style.color = 'var(--studio-danger)';
+            lbl.textContent = '✗ Cipher mismatch';
+            lbl.style.color = '#ef4444';
         }
     }
 </script>

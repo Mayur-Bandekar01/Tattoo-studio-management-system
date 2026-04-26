@@ -12,9 +12,9 @@ def home():
 @public_bp.route("/about")
 def about():
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM artist ORDER BY artist_name")
-    artists = cursor.fetchall()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute("SELECT * FROM artist ORDER BY artist_name")
+        artists = cursor.fetchall()
     return render_template("landing/about.html", artists=artists)
 
 
@@ -26,14 +26,14 @@ def services():
 @public_bp.route("/gallery")
 def gallery():
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("""
-        SELECT g.*, a.artist_name, a.specialisation
-        FROM gallery g
-        JOIN artist a ON g.artist_id = a.artist_id
-        ORDER BY g.uploaded_at DESC
-    """)
-    gallery = cursor.fetchall()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute("""
+            SELECT g.*, a.artist_name, a.specialisation
+            FROM gallery g
+            JOIN artist a ON g.artist_id = a.artist_id
+            ORDER BY g.uploaded_at DESC
+        """)
+        gallery = cursor.fetchall()
     artist_count = len(set(item["artist_id"] for item in gallery))
     styles_count = len(set(item["style"] for item in gallery if item["style"]))
     return render_template(

@@ -1,211 +1,242 @@
 <!-- Flashed Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div style="margin-bottom: 2rem;">
-            {% for category, message in messages %}
-                <div class="studio-alert studio-alert-{{ 'error' if category == 'error' else 'success' }}">
-                    <i class="fas {{ 'fa-exclamation-circle' if category == 'error' else 'fa-check-circle' }}"></i>
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+{% if messages %}
+<div style="margin-bottom: 2rem;">
+    {% for category, message in messages %}
+    <div class="studio-alert studio-alert-{{ 'error' if category == 'error' else 'success' }}">
+        <i class="fas {{ 'fa-exclamation-circle' if category == 'error' else 'fa-check-circle' }}"></i>
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endwith %}
 
-<!-- Welcome Header -->
-<div style="margin-bottom: 2.5rem;">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 1.75rem; color: var(--studio-text-primary); margin: 0;">
-        Artist Console ⚡</h2>
-    <p style="color: var(--studio-text-secondary); font-size: 0.9rem; margin-top: 0.25rem; font-weight: 500;">
-        Manage your sanctuary, appointments, and creative portfolio</p>
+<!-- Top Artist Identity Card -->
+<div class="studio-card accent-gold">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
+            <div class="w-14 h-14 rounded-2xl bg-studio-gold-soft border border-studio-gold-dim flex items-center justify-center text-accent text-2xl shadow-inner">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+                <p class="text-[9px] font-black uppercase tracking-[0.2em] text-accent opacity-60 mb-1">Currently Logged In</p>
+                <h2 class="font-display text-xl text-text leading-none">{{ name }}</h2>
+                <p class="text-[11px] text-muted mt-2 font-medium">
+                    {{ artist_profile.specialisation if artist_profile else 'Professional Artist' }}
+                </p>
+            </div>
+        </div>
+        <div class="hidden md:block">
+            <span class="px-4 py-2 rounded-xl bg-studio-gold-soft border border-studio-gold-dim text-accent text-[10px] font-black tracking-widest uppercase">
+                Active Session
+            </span>
+        </div>
+    </div>
 </div>
 
 <!-- Top Stats Row -->
-<div class="summary-grid">
-    <div class="summary-card" style="border-left: 4px solid var(--studio-indigo);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-indigo-soft text-indigo">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+    <!-- Appointments -->
+    <div class="summary-card accent-indigo">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-studio-selection-soft text-studio-selection flex items-center justify-center text-lg">
                 <i class="fas fa-calendar-check"></i>
             </div>
-            <span class="badge bg-indigo-soft text-indigo">Appointments</span>
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Total</span>
         </div>
-        <p class="card-label">Total Volume</p>
-        <div class="card-value">{{ total_count }}</div>
+        <p class="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-1">Volume</p>
+        <h3 class="text-3xl font-black text-text">{{ total_count }}</h3>
     </div>
 
-    <div class="summary-card" style="border-left: 4px solid var(--studio-warning);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-warning-soft text-warning">
+    <!-- Pending -->
+    <div class="summary-card accent-warning">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-studio-warning-soft text-studio-warning flex items-center justify-center text-lg">
                 <i class="fas fa-clock"></i>
             </div>
-            <span class="badge bg-warning-soft text-warning">Pending</span>
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Action</span>
         </div>
-        <p class="card-label">Requires Action</p>
-        <div class="card-value">{{ pending_count }}</div>
+        <p class="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-1">Requires Action</p>
+        <h3 class="text-3xl font-black text-text">{{ pending_count }}</h3>
     </div>
 
-    <div class="summary-card" style="border-left: 4px solid var(--studio-success);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-success-soft text-success">
+    <!-- Completed -->
+    <div class="summary-card accent-success">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-studio-success-soft text-studio-success flex items-center justify-center text-lg">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <span class="badge bg-success-soft text-success">Completed</span>
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Done</span>
         </div>
-        <p class="card-label">Finished Sessions</p>
-        <div class="card-value">{{ done_count }}</div>
+        <p class="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-1">Finished Sessions</p>
+        <h3 class="text-3xl font-black text-text">{{ done_count }}</h3>
     </div>
 
-    <div class="summary-card" style="border-left: 4px solid var(--studio-danger);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-            <div class="icon-box bg-danger-soft text-danger">
+    <!-- Inventory -->
+    <div class="summary-card accent-danger">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-studio-danger-soft text-studio-danger flex items-center justify-center text-lg">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <span class="badge bg-danger-soft text-danger">Inventory</span>
+            <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Alert</span>
         </div>
-        <p class="card-label">Low Stock Alerts</p>
-        <div class="card-value">{{ low_stock }}</div>
+        <p class="text-[10px] font-black uppercase tracking-[0.15em] text-muted mb-1">Low Stock</p>
+        <h3 class="text-3xl font-black text-text">{{ low_stock }}</h3>
     </div>
 </div>
 
 <!-- Main Content Layout -->
-<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.75rem; margin-bottom: 2.5rem;">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
 
-    <!-- Left: Pending Requests -->
-    <div class="studio-card" style="border-left: 4px solid var(--studio-warning);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+    <!-- Left: Pending Requests (Span 2) -->
+    <div class="lg:col-span-2 studio-card mb-0 accent-gold">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-                <h3 class="card-title" style="margin-bottom: 0.25rem;">NEW BOOKING REQUESTS</h3>
-                <p style="font-size: 0.75rem; color: var(--studio-text-secondary); font-weight: 500;">Please review
-                    and set session durations</p>
+                <h3 class="card-title mb-1">
+                    New Booking Requests
+                </h3>
+                <p class="text-[10px] text-muted font-medium mt-1">Review incoming requests and set session durations</p>
             </div>
-            <span class="badge badge-muted" style="font-size: 0.7rem; letter-spacing: 0.05em;">{{ pending_count }}
-                PENDING</span>
+            <div class="badge badge-warning">
+                <i class="fas fa-clock text-[10px] mr-2"></i>
+                {{ pending_count }} Pending
+            </div>
         </div>
 
         <div class="studio-table-container">
             <table class="studio-table">
                 <thead>
                     <tr>
+                        <th style="width: 80px;">ID</th>
                         <th>Customer</th>
-                        <th>Concept</th>
-                        <th>Date/Time</th>
-                        <th style="width: 250px;">Action</th>
+                        <th class="hidden md:table-cell">Concept</th>
+                        <th class="text-center" style="width: 80px;">Details</th>
+                        <th class="hidden md:table-cell">Schedule</th>
+                        <th style="width: 180px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for appt in appointments if appt.status == 'Pending' %}
-                        <tr>
-                            <td>
-                                <div style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name
-                                    }}
-                                </div>
-                                <div style="font-size: 0.7rem; color: var(--studio-text-secondary);">
-                                    Reference Attached</div>
-                            </td>
-                            <td>
-                                <div
-                                    style="padding: 0.5rem 0.75rem; background: var(--studio-secondary); border-radius: 8px; font-size: 0.8rem; color: var(--studio-text-primary); border: 1px solid var(--studio-border); font-weight: 500;">
-                                    {{ appt.tattoo_concept }}
-                                </div>
-                            </td>
-                            <td>
-                                <div style="font-weight: 700; color: var(--studio-text-primary); font-size: 0.85rem;">{{
-                                    appt.appointment_date }}</div>
-                                <div style="font-size: 0.75rem; color: var(--studio-indigo); font-weight: 600;">{{
-                                    appt.appointment_time }}</div>
-                            </td>
-                            <td>
-                            <!-- [DATA-FLOW]: Submits to POST /artist/approve/{{ appt.appointment_id }} -->
-                                <form method="POST" action="/artist/approve/{{ appt.appointment_id }}"
-                                      style="display: flex; gap: 0.5rem; align-items: center;">
+                    <tr>
+                        <td class="font-mono opacity-50">#{{ appt.appointment_id }}</td>
+                        <td class="font-bold text-text">{{ appt.customer_name }}</td>
+                        <td class="hidden md:table-cell">
+                            <div class="max-w-[150px] truncate opacity-80" title="{{ appt.tattoo_concept }}">
+                                {{ appt.tattoo_concept }}
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <button class="w-8 h-8 rounded-lg bg-studio-gold-soft text-accent border border-studio-gold-dim hover:bg-studio-gold hover:text-studio-bg transition-all duration-300 flex items-center justify-center mx-auto"
+                                onclick="artShowDetails(this)" data-appt='{{ appt | tojson | safe }}' title="View Details">
+                                <i class="fas fa-eye text-xs"></i>
+                            </button>
+                        </td>
+                        <td class="hidden md:table-cell">
+                            <div class="font-bold text-[11px]">{{ appt.appointment_date }}</div>
+                            <div class="text-[10px] opacity-50 uppercase tracking-tighter">at {{ appt.appointment_time }}</div>
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <form method="POST" action="/artist/approve/{{ appt.appointment_id }}" class="approve-form">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <div style="position: relative; flex: 1;">
-                                        <input class="studio-input" type="number" name="duration_hours" placeholder="Hrs"
-                                               required style="padding-right: 2.5rem; font-size: 0.8rem;">
-                                        <span
-                                            style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.65rem; font-weight: 800; color: var(--studio-text-secondary);">HRS</span>
-                                    </div>
-                                    <button type="submit" class="btn-studio btn-primary"
-                                            style="padding: 0.5rem 1rem; font-size: 0.75rem;">Accept</button>
+                                    <input type="number" name="duration_hours" placeholder="H" min="1" max="12"
+                                        class="input-mini studio-input" required>
+                                    <button type="submit" class="btn-studio btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">Accept</button>
                                 </form>
-
-                            <!-- [DATA-FLOW]: Submits to POST /artist/reject/{{ appt.appointment_id }} -->
-
-                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}"
-                                      style="margin-top: 0.5rem;">
+                                <form method="POST" action="/artist/reject/{{ appt.appointment_id }}" onsubmit="return confirm('Reject this request?')">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="submit" class="btn-studio btn-outline"
-                                            style="width: 100%; font-size: 0.7rem; padding: 0.4rem; border-color: rgba(239, 68, 68, 0.2); color: var(--studio-danger); background: var(--studio-danger-soft);">
-                                        <i class="fas fa-times-circle"></i> Reject Request
+                                    <button type="submit" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 border border-red-500/10 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center">
+                                        <i class="fas fa-times text-xs"></i>
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     {% else %}
-                        <tr>
-                            <td colspan="4" style="text-align: center; padding: 4rem; color: var(--studio-text-secondary);">
-                                <i class="fas fa-inbox"
-                                   style="font-size: 2rem; opacity: 0.1; margin-bottom: 1rem; display: block;"></i>
-                                No new booking requests found.
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="6" class="text-center py-16 opacity-30">
+                            <i class="fas fa-calendar-times text-4xl mb-4 block"></i>
+                            <p class="text-[10px] font-black uppercase tracking-widest">No pending requests found</p>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Right: Recent Gallery & Quick Tools -->
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
+    <!-- Right: Sidebar Column -->
+    <div class="flex flex-col gap-8">
 
         <!-- Quick Actions -->
-        <div class="studio-card" style="border-left: 4px solid var(--studio-indigo);">
-            <h3 class="card-title" style="margin-bottom: 1.5rem;">QUICK ACTIONS</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="qa-card" onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Upload Art</span>
+        <div class="studio-card mb-0 accent-indigo">
+            <h3 class="card-title mb-6 text-accent">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-gold transition-all duration-300 group cursor-pointer"
+                    onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">
+                    <div class="w-12 h-12 rounded-xl bg-studio-gold-soft text-accent flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Upload Art</span>
                 </div>
-                <div class="qa-card"
-                     onclick="nav('inventory', document.querySelector('button[onclick*=\'inventory\']'))">
-                    <i class="fas fa-boxes"></i>
-                    <span>Manage Stock</span>
+                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-indigo transition-all duration-300 group cursor-pointer"
+                    onclick="nav('inventory', document.querySelector('button[onclick*=\'inventory\']'))">
+                    <div class="w-12 h-12 rounded-xl bg-studio-selection-soft text-studio-selection flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Stock</span>
                 </div>
-                <div class="qa-card" onclick="nav('schedule', document.querySelector('button[onclick*=\'schedule\']'))">
-                    <i class="fas fa-calendar-day"></i>
-                    <span>Today's List</span>
+                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-success transition-all duration-300 group cursor-pointer"
+                    onclick="nav('schedule', document.querySelector('button[onclick*=\'schedule\']'))">
+                    <div class="w-12 h-12 rounded-xl bg-studio-success-soft text-studio-success flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Schedule</span>
                 </div>
-                <div class="qa-card" onclick="nav('profile', document.querySelector('button[onclick*=\'profile\']'))">
-                    <i class="fas fa-user-edit"></i>
-                    <span>Edit Profile</span>
+                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-info transition-all duration-300 group cursor-pointer"
+                    onclick="nav('profile', document.querySelector('button[onclick*=\'profile\']'))">
+                    <div class="w-12 h-12 rounded-xl bg-studio-info-soft text-studio-info flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Profile</span>
                 </div>
-            </div>
         </div>
+    </div>
 
         <!-- Portfolio Glimpse -->
-        <div class="studio-card" style="border-left: 4px solid var(--studio-success);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-                <h3 class="card-title" style="margin-bottom: 0;">MY PORTFOLIO</h3>
-                <button class="btn-studio btn-outline"
-                        onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))"
-                        style="padding: 0.4rem 0.8rem; font-size: 0.65rem;">View All</button>
+        <div class="studio-card mb-0 accent-success">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="card-title mb-0">
+                    Portfolio
+                </h3>
+                <button class="text-[9px] font-black uppercase tracking-widest text-accent hover:underline"
+                    onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">View All</button>
             </div>
 
             {% if my_gallery %}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                    {% for item in my_gallery[:4] %}
-                        <div
-                            style="aspect-ratio: 1; border-radius: 12px; overflow: hidden; border: 1px solid var(--studio-border);">
-                            <img src="{{ url_for('static', filename=item.image_path) }}"
-                                 style="width: 100%; height: 100%; object-fit: cover;" alt="Artwork" loading="lazy">
-                        </div>
-                    {% endfor %}
+            <div class="grid grid-cols-2 gap-3">
+                {% for item in my_gallery[:4] %}
+                <div class="aspect-square rounded-xl overflow-hidden border border-studio-border group cursor-zoom-in relative"
+                    data-zoom-img="{{ url_for('static', filename=item.image_path) }}"
+                    data-zoom-cap="{{ item.caption|replace('\'', '\\\'') if item.caption else '' }}"
+                    data-zoom-stl="{{ item.style }}"
+                    onclick="openImageZoom(this.dataset.zoomImg, this.dataset.zoomCap, this.dataset.zoomStl)">
+                    <img src="{{ url_for('static', filename=item.image_path) }}"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        alt="Artwork">
+                    <div
+                        class="absolute inset-0 bg-studio-gold/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <i class="fas fa-expand text-studio-bg text-sm"></i>
+                    </div>
                 </div>
+                {% endfor %}
+            </div>
             {% else %}
-                <div style="text-align: center; padding: 2rem; border: 1px dashed var(--studio-border); border-radius: 16px;
-                            background: var(--studio-secondary); color: var(--studio-text-secondary); font-size: 0.8rem;">
-                    No artwork uploaded yet.
-                </div>
+            <div class="text-center py-12 border-2 border-dashed border-studio-border rounded-2xl opacity-40">
+                <i class="fas fa-images text-3xl mb-3 block"></i>
+                <p class="text-[9px] font-black uppercase tracking-widest">No artwork found</p>
+            </div>
             {% endif %}
         </div>
     </div>

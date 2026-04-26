@@ -1,184 +1,311 @@
 <!-- ═══════════════════════════════════════
      SECTION: AFTERCARE PROTOCOL (sec-aftercare)
 ═══════════════════════════════════════ -->
+<style>
+/* Header refinements for cards */
+.ac-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--studio-border-light);
+}
 
+.ac-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--studio-border-light);
+    color: var(--accent-color, var(--studio-gold));
+}
 
+[data-theme="ivory"] .ac-icon-box { background: rgba(0,0,0,0.03); }
 
-<div id="sec-aftercare">
+.ac-card-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--studio-text-primary);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
 
-    <!-- Hero Header -->
-    <div class="obs-glass hero-alert">
-        <i class="fas fa-biohazard"></i>
-        <div>
-            <p class="hero-alert-title">Important — How to Heal Your Tattoo</p>
-            <p class="hero-alert-text">
-                Taking care of your tattoo is very important to keep it looking its best. If you don't follow these
-                steps, your tattoo might fade or you could have skin problems. Make sure to follow your artist's advice
-                exactly.
-            </p>
+/* Steps */
+.ac-step {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.ac-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--studio-accent-soft);
+    color: var(--studio-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.ac-step-content h4 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--studio-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.ac-step-content p {
+    font-size: 0.8rem;
+    color: var(--studio-text-muted);
+    line-height: 1.6;
+}
+
+/* List boxes */
+.ac-list-box {
+    padding: 1.25rem;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--studio-border-light);
+}
+
+[data-theme="ivory"] .ac-list-box { background: rgba(0,0,0,0.02); }
+
+.ac-list-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+}
+
+.ac-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ac-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--studio-text-secondary);
+}
+
+/* Grid blocks */
+.ac-grid-block {
+    padding: 1rem;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--studio-border-light);
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.ac-grid-block:hover { border-color: var(--studio-gold); transform: translateY(-3px); }
+
+/* Timeline */
+.ac-timeline-item {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.ac-timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 4.5rem;
+    top: 1rem;
+    bottom: -2rem;
+    width: 2px;
+    background: var(--studio-border-light);
+}
+
+.ac-timeline-item:last-child::after { display: none; }
+
+.ac-time-label {
+    width: 4rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.ac-time-days { font-size: 1rem; font-weight: 900; color: var(--studio-text-primary); }
+.ac-time-sub  { font-size: 0.6rem; font-weight: 700; color: var(--studio-text-muted); text-transform: uppercase; }
+
+.ac-time-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-top: 0.25rem;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 0 4px var(--studio-bg);
+}
+
+.ac-time-info { flex: 1; }
+</style>
+
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+        <!-- Phase 1 -->
+        <div class="studio-card" style="--accent-color: var(--studio-gold)">
+            <div class="ac-card-header">
+                <div class="ac-icon-box"><i class="fas fa-hourglass-start"></i></div>
+                <h3 class="ac-card-title">Initial 24 Hours</h3>
+            </div>
+
+            <div class="ac-step">
+                <div class="ac-step-num">1</div>
+                <div class="ac-step-content">
+                    <h4>Protect the Fresh Ink</h4>
+                    <p>Keep the wrapping on for 2–4 hours. It protects your open skin from environmental bacteria.</p>
+                </div>
+            </div>
+
+            <div class="ac-step">
+                <div class="ac-step-num">2</div>
+                <div class="ac-step-content">
+                    <h4>Gentle First Wash</h4>
+                    <p>Use lukewarm water and mild, fragrance-free soap. Clean with your hands, never a washcloth.</p>
+                </div>
+            </div>
+
+            <div class="ac-step">
+                <div class="ac-step-num">3</div>
+                <div class="ac-step-content">
+                    <h4>Thin Moisturizing</h4>
+                    <p>Apply a breathable tattoo ointment. Use a very thin layer; don't suffocate the skin.</p>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="aftercare-grid">
-
-        <!-- Phase 1: The First 24 Hours -->
-        <div class="studio-card phase-card">
-            <h3 class="card-title">
-                <i class="fas fa-hourglass-start" style="color: #FFB302;"></i>
-                The First 24 Hours
-            </h3>
-
-            <div class="step-item">
-                <div class="step-idx">1</div>
-                <div>
-                    <p class="step-title">Protect Your New Tattoo</p>
-                    <p class="step-text">Your artist will wrap your tattoo. Keep it on for 2–4 hours. Don't take it off
-                        early.</p>
-                </div>
+        <!-- Phase 2 -->
+        <div class="studio-card" style="--accent-color: var(--studio-success)">
+            <div class="ac-card-header">
+                <div class="ac-icon-box"><i class="fas fa-dna"></i></div>
+                <h3 class="ac-card-title">Healing (2 Weeks)</h3>
             </div>
 
-            <div class="step-item">
-                <div class="step-idx">2</div>
-                <div>
-                    <p class="step-title">Cleaning Your Tattoo</p>
-                    <p class="step-text">Use warm water and mild soap. Pat it dry with a clean paper towel — keeping it
-                        clean is very important.</p>
-                </div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-idx">3</div>
-                <div>
-                    <p class="step-title">Moisturizing</p>
-                    <p class="step-text">Apply a very thin layer of tattoo lotion. Your skin needs to breathe, so don't
-                        use too much lotion.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Phase 2: Healing Phase -->
-        <div class="studio-card phase-card">
-            <h3 class="card-title">
-                <i class="fas fa-dna" style="color: var(--studio-selection);"></i>
-                First 2 Weeks — Healing Time
-            </h3>
-
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="obs-glass protocol-box">
-                    <i class="fas fa-shield-check main-icon"></i>
-                    <p class="protocol-title">What to Do</p>
-                    <ul class="protocol-list">
-                        <li><i class="fas fa-check"></i> Wash 2–3 times every day</li>
-                        <li><i class="fas fa-check"></i> Keep the skin moisturized</li>
-                        <li><i class="fas fa-check"></i> Wear loose, clean clothes</li>
-                        <li><i class="fas fa-check"></i> Keep your surroundings clean</li>
+            <div class="space-y-4">
+                <div class="ac-list-box text-emerald-500 border-emerald-500/20">
+                    <p class="ac-list-title"><i class="fas fa-check-circle"></i> The Yes List</p>
+                    <ul class="ac-list">
+                        <li><i class="fas fa-tint"></i> Wash twice daily</li>
+                        <li><i class="fas fa-sun-plant-wilt"></i> Stay hydrated</li>
+                        <li><i class="fas fa-tshirt"></i> Wear 100% cotton clothing</li>
                     </ul>
                 </div>
 
-                <div class="obs-glass prohibition-box">
-                    <i class="fas fa-skull-crossbones main-icon"></i>
-                    <p class="prohibition-title">What NOT to Do</p>
-                    <ul class="prohibition-list">
-                        <li><i class="fas fa-times"></i> DON'T scratch or pick at it</li>
-                        <li><i class="fas fa-times"></i> NO swimming or soaking in water</li>
-                        <li><i class="fas fa-times"></i> NO direct sunlight</li>
-                        <li><i class="fas fa-times"></i> NO heavy exercise or gym sessions</li>
+                <div class="ac-list-box text-rose-500 border-rose-500/20">
+                    <p class="ac-list-title"><i class="fas fa-times-circle"></i> The No List</p>
+                    <ul class="ac-list">
+                        <li><i class="fas fa-ban"></i> No scratching or picking</li>
+                        <li><i class="fas fa-swimmer"></i> No swimming or bath soaking</li>
+                        <li><i class="fas fa-sun"></i> No direct sunlight exposure</li>
                     </ul>
                 </div>
             </div>
         </div>
-
-    </div>
-
-    <!-- Long Term Preservation -->
-    <div class="studio-card" style="margin-bottom: 2.5rem; padding: 3rem 2rem;">
-        <h3 class="card-title" style="text-align: center; margin-bottom: 3rem;">
-            <i class="fas fa-shuttle-space" style="color: var(--studio-accent);"></i>
-            Keeping it Great Forever
-        </h3>
-
-        <div class="preservation-grid">
-            <div class="obs-glass pres-card">
-                <i class="fas fa-sun" style="color: #FFB302;"></i>
-                <p class="pres-title">Protect from Sun</p>
-                <p class="pres-text">Always use SPF 50+ sunscreen. Sunlight causes ink to fade over time.</p>
-            </div>
-
-            <div class="obs-glass pres-card">
-                <i class="fas fa-droplet" style="color: #00D2FF;"></i>
-                <p class="pres-title">Skin Health</p>
-                <p class="pres-text">Use lotion every day. Dry skin makes tattoos look dull and can cause fading.</p>
-            </div>
-
-            <div class="obs-glass pres-card">
-                <i class="fas fa-sparkles" style="color: #FFD700;"></i>
-                <p class="pres-title">Artist Check-up</p>
-                <p class="pres-text">Come back after 4 months. We can touch up any areas that need it.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Timeline & Emergency -->
-    <div class="aftercare-grid" style="align-items: start;">
 
         <!-- Timeline -->
-        <div class="studio-card phase-card">
-            <h3 class="card-title">
-                <i class="fas fa-wave-square" style="color: var(--studio-accent);"></i>
-                Your Healing Journey
-            </h3>
+        <div class="studio-card" style="--accent-color: var(--studio-gold)">
+            <div class="ac-card-header">
+                <div class="ac-icon-box"><i class="fas fa-wave-square"></i></div>
+                <h3 class="ac-card-title">Healing Timeline</h3>
+            </div>
 
-            <div class="timeline-container">
-                <div class="timeline-block">
-                    <div class="timeline-aside">
-                        <p class="timeline-days">01–03</p>
-                        <p class="timeline-tag">Normal</p>
-                    </div>
-                    <div class="timeline-main">
-                        <p class="timeline-title">Early Healing</p>
-                        <p class="timeline-text">Some redness and swelling is normal. It might ooze a little at first.
-                        </p>
-                    </div>
+            <div class="ac-timeline-item">
+                <div class="ac-time-label">
+                    <p class="ac-time-days">1–3</p>
+                    <p class="ac-time-sub">Days</p>
                 </div>
-
-                <div class="timeline-block">
-                    <div class="timeline-aside">
-                        <p class="timeline-days">04–07</p>
-                        <p class="timeline-tag">Peeling</p>
-                    </div>
-                    <div class="timeline-main">
-                        <p class="timeline-title">Peeling Phase</p>
-                        <p class="timeline-text">Your skin will start to peel. Don't pick at it; let it fall off
-                            naturally.</p>
-                    </div>
+                <div class="ac-time-dot bg-blue-500"></div>
+                <div class="ac-time-info">
+                    <h4 class="text-sm font-black mb-1">Inflammation</h4>
+                    <p class="text-xs text-[var(--studio-text-muted)] leading-relaxed">Slight oozing, redness, and swelling is expected.</p>
                 </div>
+            </div>
 
-                <div class="timeline-block final">
-                    <div class="timeline-aside">
-                        <p class="timeline-days">04+</p>
-                        <p class="timeline-tag">Healed</p>
-                    </div>
-                    <div class="timeline-main">
-                        <p class="timeline-title">Fully Healed</p>
-                        <p class="timeline-text">Colors are set. The skin keeps healing for 3
-                            months. Your tattoo is safe!</p>
-                    </div>
+            <div class="ac-timeline-item">
+                <div class="ac-time-label">
+                    <p class="ac-time-days">4–7</p>
+                    <p class="ac-time-sub">Days</p>
+                </div>
+                <div class="ac-time-dot bg-orange-500"></div>
+                <div class="ac-time-info">
+                    <h4 class="text-sm font-black mb-1">Peeling Phase</h4>
+                    <p class="text-xs text-[var(--studio-text-muted)] leading-relaxed">Peeling like a sunburn. Do not peel manually.</p>
+                </div>
+            </div>
+
+            <div class="ac-timeline-item">
+                <div class="ac-time-label">
+                    <p class="ac-time-days">21+</p>
+                    <p class="ac-time-sub">Days</p>
+                </div>
+                <div class="ac-time-dot bg-emerald-500"></div>
+                <div class="ac-time-info">
+                    <h4 class="text-sm font-black mb-1">Maturation</h4>
+                    <p class="text-xs text-[var(--studio-text-muted)] leading-relaxed">Skin settles deep into layers for 3 months.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Emergency Alert -->
-        <div class="emergency-alert">
-            <i class="fas fa-kit-medical emergency-icon"></i>
-            <p class="emergency-title">When to See a Doctor</p>
+        <!-- Long Term & Emergency Container -->
+        <div class="space-y-8 h-full">
+            <!-- Long Term -->
+            <div class="studio-card" style="--accent-color: var(--studio-warning)">
+                <div class="ac-card-header">
+                    <div class="ac-icon-box"><i class="fas fa-shuttle-space"></i></div>
+                    <h3 class="ac-card-title">Forever Care</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="ac-grid-block">
+                        <i class="fas fa-sun text-yellow-500 text-xl mb-2"></i>
+                        <h4 class="text-[10px] font-black uppercase mb-1">SPF 50+</h4>
+                    </div>
+                    <div class="ac-grid-block">
+                        <i class="fas fa-droplet text-blue-400 text-xl mb-2"></i>
+                        <h4 class="text-[10px] font-black uppercase mb-1">Hydrate</h4>
+                    </div>
+                    <div class="ac-grid-block">
+                        <i class="fas fa-sparkles text-purple-400 text-xl mb-2"></i>
+                        <h4 class="text-[10px] font-black uppercase mb-1">Touch-ups</h4>
+                    </div>
+                </div>
+            </div>
 
-            <div class="emergency-list">
-                <div class="emergency-item">Swelling that gets worse after 3 days</div>
-                <div class="emergency-item">Pus or a bad smell from the tattoo</div>
-                <div class="emergency-item">Fever or chills</div>
-                <div class="emergency-item">Pain that keeps getting worse</div>
-                <div class="emergency-item">Red lines spreading from the tattoo</div>
-                <div class="emergency-item">A rash that won't go away</div>
+            <!-- Emergency -->
+            <div class="studio-card bg-rose-950/10" style="--accent-color: var(--studio-danger)">
+                <div class="ac-card-header border-rose-500/10">
+                    <div class="ac-icon-box bg-rose-500 text-white border-none shadow-lg shadow-rose-500/20"><i class="fas fa-kit-medical"></i></div>
+                    <h3 class="ac-card-title text-rose-500">Security Watch</h3>
+                </div>
+                <ul class="ac-list">
+                    <li class="text-rose-100/60"><i class="fas fa-triangle-exclamation text-rose-500"></i> Swelling after Day 3</li>
+                    <li class="text-rose-100/60"><i class="fas fa-triangle-exclamation text-rose-500"></i> Fever or body chills</li>
+                    <li class="text-rose-100/60"><i class="fas fa-triangle-exclamation text-rose-500"></i> Discoloration/Discharge</li>
+                </ul>
             </div>
         </div>
 

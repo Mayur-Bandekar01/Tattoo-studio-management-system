@@ -1,21 +1,15 @@
 <!-- Header Section -->
-<div class="studio-card"
-    style="margin-bottom: 2.5rem; background: var(--studio-indigo-soft); border: 1px solid var(--studio-indigo-soft) !important;">
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
+<div class="studio-card accent-gold">
+    <div class="flex items-center justify-between gap-6 flex-wrap">
         <div>
-            <h2
-                style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary); margin-bottom: 0.5rem;">
-                PORTFOLIO GALLERY 🎨</h2>
-            <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">Showcase your unique artistry and
-                manage your professional canvas</p>
+            <h3 class="card-title mb-1">Portfolio Gallery</h3>
+            <p class="text-[10px] text-muted font-medium mt-1">Exhibit your unique artistry and professional canvas</p>
         </div>
-        <div style="display: flex; gap: 0.75rem;">
-            <a href="/gallery" target="_blank" class="btn-studio btn-outline"
-                style="padding: 0.6rem 1.25rem; font-size: 0.8rem;">
+        <div class="flex items-center gap-3">
+            <a href="/gallery" target="_blank" class="btn-studio btn-secondary">
                 <i class="fas fa-external-link-alt"></i> Public Feed
             </a>
-            <button class="btn-studio btn-primary" onclick="toggleUp()"
-                style="padding: 0.6rem 1.25rem; font-size: 0.8rem;">
+            <button class="btn-studio btn-primary" onclick="toggleUp()">
                 <i class="fas fa-plus-circle"></i> New Upload
             </button>
         </div>
@@ -23,115 +17,72 @@
 </div>
 
 <!-- Upload Panel -->
-<div id="upPanel" style="display: none; margin-bottom: 2.5rem;">
-    <div class="studio-card" style="border-color: var(--studio-indigo);">
-        <h3 class="card-title" style="margin-bottom: 2rem; font-size: 0.75rem; letter-spacing: 0.1em;">UPLOAD NEW
-            ARTWORK</h3>
-        <!-- [DATA-FLOW]: Submits to POST /artist/gallery/upload -->
+<div id="upPanel" class="hidden mb-10 reveal">
+    <div class="studio-card accent-gold">
+        <h3 class="card-title mb-8">Upload New Artwork</h3>
+
         <form method="POST" action="/artist/gallery/upload" enctype="multipart/form-data">
-            <div style="margin-bottom: 2rem;">
-                <label class="form-label">Select Image <span style="color: #FF4757;">*</span></label>
-                <div class="dropz" id="dz" onclick="document.getElementById('gf').click()"
-                    ondragover="event.preventDefault(); this.classList.add('dov')"
-                    ondragleave="this.classList.remove('dov')" ondrop="doDrop(event)">
-                    <div id="dzPh" style="padding: 3rem; text-align: center;">
-                        <i class="fas fa-cloud-upload-alt"
-                            style="font-size: 3rem; color: var(--studio-indigo); margin-bottom: 1rem; opacity: 0.4;"></i>
-                        <p style="font-weight: 700; color: var(--studio-text-primary); margin-bottom: 0.5rem;">Click
-                            to browse or drag & drop</p>
-                        <p style="font-size: 0.75rem; color: var(--studio-text-secondary);">High-quality JPG or PNG
-                            (Max 5MB)</p>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="mb-8">
+                <label class="studio-label">Select Image <span class="text-rose-500">*</span></label>
+                <div class="dropzone-pnl" id="dz" onclick="document.getElementById('gf').click()"
+                    ondragover="event.preventDefault(); this.classList.add('active')"
+                    ondragleave="this.classList.remove('active')"
+                    ondrop="doDrop(event)">
+
+                    <div id="dzPh">
+                        <div class="w-16 h-16 rounded-full bg-studio-gold-soft text-accent flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-text mb-1">Click to browse or drag & drop</p>
+                        <p class="text-[10px] text-muted tracking-wide">High-quality JPG or PNG (Max 5MB)</p>
                     </div>
-                    <div id="dzPv" style="display: none; padding: 1.5rem; text-align: center;">
-                        <img id="dzI"
-                            style="max-height: 250px; max-width: 100%; border-radius: 12px; border: 2px solid var(--studio-border); margin-bottom: 1rem; object-fit: contain;"
-                            src="" alt="">
-                        <div style="display: flex; justify-content: center; gap: 1rem; align-items: center;">
-                            <p id="dzN" style="font-weight: 700; color: var(--studio-indigo); font-size: 0.8rem;">
-                            </p>
-                            <button type="button" onclick="clearDz(event)" class="btn-studio"
-                                style="padding: 0.35rem 0.75rem; font-size: 0.75rem; background: rgba(255, 71, 87, 0.1); color: #FF4757; border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 8px;">✕
-                                Remove</button>
+
+                    <div id="dzPv" class="hidden animate-in fade-in zoom-in duration-300">
+                        <img id="dzI" class="max-h-64 mx-auto rounded-xl border border-studio-border shadow-2xl mb-4 object-contain" src="" alt="">
+                        <div class="flex items-center justify-center gap-3">
+                            <p id="dzN" class="text-[11px] font-mono font-bold text-accent"></p>
+                            <button type="button" onclick="clearDz(event)"
+                                class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 text-[10px] font-black tracking-widest uppercase hover:bg-rose-500 hover:text-white transition-all">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <input type="file" id="gf" name="gallery_image" accept=".jpg,.jpeg,.png" style="display: none;"
-                    onchange="prevFile(this)">
-                <p id="fErr"
-                    style="display: none; color: #FF4757; font-size: 0.75rem; margin-top: 0.75rem; font-weight: 700;">
+                <input type="file" id="gf" name="gallery_image" accept=".jpg,.jpeg,.png" class="hidden" onchange="prevFile(this)">
+                <p id="fErr" class="hidden text-[10px] text-rose-500 font-bold mt-3 pl-1 items-center gap-1">
+                    <i class="fas fa-exclamation-circle"></i> <span></span>
                 </p>
             </div>
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Caption <span
-                            style="font-weight: 400; text-transform: none; opacity: 0.6;">(Optional)</span></label>
-                    <input class="studio-input" type="text" name="caption" placeholder="Describe the piece..."
-                        maxlength="200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="flex flex-col">
+                    <label class="studio-label">Caption <span class="normal-case opacity-40 font-medium">(Optional)</span></label>
+                    <input class="studio-input" type="text" name="caption" placeholder="Describe the masterpiece..." maxlength="200">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Style <span
-                            style="font-weight: 400; text-transform: none; opacity: 0.6;">(Optional)</span></label>
 
-                    <!-- FIX: Show style options based on artist specialisation -->
-                    {% set spec = (artist_profile.specialisation or '') | lower %}
-
-                    {% if 'art' in spec or 'sketch' in spec or 'paint' in spec
-                    or 'digital' in spec or 'illustrat' in spec %}
-
-                    <!-- Sketch / Art artist style options -->
-                    <select class="studio-input" name="style">
-                        <option value="">Select a style category...</option>
-                        <option>Pencil Sketch</option>
-                        <option>Charcoal Drawing</option>
-                        <option>Ink Drawing</option>
-                        <option>Black & White Sketch</option>
-                        <option>Watercolor Painting</option>
-                        <option>Acrylic Painting</option>
-                        <option>Oil Painting</option>
-                        <option>Digital Art</option>
-                        <option>Digital Sketch</option>
-                        <option>Neon Painting</option>
-                        <option>Blood Art</option>
-                        <option>Portrait</option>
-                        <option>Landscape</option>
-                        <option>Abstract</option>
-                        <option>Illustration</option>
-                        <option>Concept Art</option>
-                        <option>Other</option>
-                    </select>
-
-                    {% else %}
-
-                    <!-- Tattoo artist style options -->
-                    <select class="studio-input" name="style">
-                        <option value="">Select a style category...</option>
-                        <option>Blackwork</option>
-                        <option>Fine Line</option>
-                        <option>Japanese</option>
-                        <option>Neo Traditional</option>
-                        <option>Realism</option>
-                        <option>Geometric</option>
-                        <option>Watercolour</option>
-                        <option>Tribal</option>
-                        <option>Minimalist</option>
-                        <option>Traditional</option>
-                        <option>Dotwork</option>
-                        <option>New School</option>
-                        <option>Biomechanical</option>
-                        <option>Other</option>
-                    </select>
-
-                    {% endif %}
-
+                <div class="flex flex-col">
+                    <label class="studio-label">Style</label>
+                    <div class="relative">
+                        <select class="studio-input appearance-none" name="style" required>
+                            <option value="">Select a category...</option>
+                            <option value="Tattoo">Tattoo</option>
+                            <option value="Sketch">Sketch</option>
+                            <option value="Tattoo Removal">Tattoo Removal</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-muted/30 text-[10px] pointer-events-none"></i>
+                    </div>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--studio-border);">
+            <div class="flex items-center gap-4 pt-8 border-t border-studio-border">
                 <button type="submit" class="btn-studio btn-primary">
                     <i class="fas fa-check-circle"></i> Confirm Upload
                 </button>
-                <button type="button" class="btn-studio btn-outline" onclick="toggleUp()">Discard</button>
+                <button type="button" class="btn-studio btn-secondary" onclick="toggleUp()">
+                    Discard
+                </button>
             </div>
         </form>
     </div>
@@ -139,38 +90,40 @@
 
 <!-- Gallery Grid -->
 {% if my_gallery %}
-<div style="margin-bottom: 2rem;">
-    <p style="font-size: 0.85rem; color: var(--studio-text-secondary); font-weight: 600;">
-        Displaying <span style="color: var(--studio-indigo); font-weight: 800;">{{ my_gallery|length }}</span>
+<div class="flex items-center justify-between mb-6 px-1">
+    <p class="text-[11px] font-bold text-muted uppercase tracking-widest">
+        Displaying <span class="text-accent text-lg font-black font-display ml-1">{{ my_gallery|length }}</span>
         portfolio items
     </p>
 </div>
 
 <div class="gal-grid">
     {% for item in my_gallery %}
-    <div class="gal-item">
-        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork' }}"
-            loading="lazy">
+    <div class="gal-item reveal" style="--transition-delay: {{ loop.index0 * 50 }}ms"
+        data-zoom-img="{{ url_for('static', filename=item.image_path) }}"
+        data-zoom-cap="{{ item.caption|replace('\'', '\\\'') if item.caption else '' }}"
+        data-zoom-stl="{{ item.style }}"
+        onclick="openImageZoom(this.dataset.zoomImg, this.dataset.zoomCap, this.dataset.zoomStl)">
+
+        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork' }}" class="lazy">
+
         <div class="gal-ov">
-            <div style="width: 100%;">
-                {% if item.caption %}
-                <p
-                    style="font-size: 0.85rem; color: #fff; font-weight: 700; line-height: 1.4; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-                    {{ item.caption[:60] }}{{ '...' if item.caption|length > 60 else '' }}
-                </p>
-                {% endif %}
-                {% if item.style %}
-                <span class="badge"
-                    style="background: rgba(255, 255, 255, 0.2); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.65rem;">{{
-                    item.style }}</span>
-                {% endif %}
+            {% if item.caption %}
+            <p class="text-xs font-bold text-white mb-2 leading-tight drop-shadow-lg">
+                {{ item.caption[:40] }}{{ '...' if item.caption|length > 40 else '' }}
+            </p>
+            {% endif %}
+            <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-black uppercase tracking-widest">
+                    {{ item.style or 'Tattoo' }}
+                </span>
             </div>
         </div>
-        <!-- [DATA-FLOW]: Submits to POST /artist/gallery/delete/{{ item.gallery_id }} -->
+
         <form method="POST" action="/artist/gallery/delete/{{ item.gallery_id }}"
-            onsubmit="return confirm('Permanently remove this work from your portfolio?')"
-            style="position: absolute; top: 0.75rem; right: 0.75rem; z-index: 10;">
-            <button type="submit" class="gal-del" title="Delete Image">
+            onsubmit="event.stopPropagation(); return confirm('Permanently remove this work from your portfolio?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="gal-del-btn">
                 <i class="fas fa-trash-alt"></i>
             </button>
         </form>
@@ -179,19 +132,19 @@
 </div>
 
 {% else %}
-<div
-    style="text-align: center; padding: 6rem 2rem; background: var(--studio-secondary); border: 2px dashed var(--studio-border); border-radius: 24px;">
+<div class="text-center py-32 px-6 bg-studio-surface/20 border-2 border-dashed border-studio-border rounded-3xl reveal">
     <div
-        style="width: 80px; height: 80px; border-radius: 20px; background: var(--studio-secondary); border: 1px solid var(--studio-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; transform: rotate(-5deg); box-shadow: var(--studio-shadow);">
-        <i class="fas fa-images" style="font-size: 2rem; color: var(--studio-indigo); opacity: 0.4;"></i>
+        class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mx-auto mb-8 transform -rotate-6 shadow-2xl">
+        <i class="fas fa-images text-3xl text-accent opacity-30"></i>
     </div>
-    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--studio-text-primary); margin-bottom: 0.75rem;">
-        Upload Your First Work ⬆️</h3>
-    <p style="color: var(--studio-text-secondary); max-width: 380px; margin: 0 auto 3rem; line-height: 1.6;">
-        Your portfolio is your professional canvas. Start sharing your best work to inspire clients and showcase
-        your unique style.
+    <h3 class="text-2xl font-display text-text mb-4">Upload Your First Work ⬆️</h3>
+    <p class="text-[11px] text-muted max-w-sm mx-auto mb-10 leading-relaxed font-medium">
+        Your portfolio is your professional canvas. Start sharing your best work to inspire clients and showcase your
+        unique style.
     </p>
-    <button class="btn-studio btn-primary" onclick="toggleUp()" style="padding: 1rem 2.5rem;">
+    <button
+        class="h-12 px-10 rounded-2xl bg-studio-gold text-studio-bg text-[10px] font-black uppercase tracking-[0.2em] hover:shadow-xl hover:shadow-studio-gold/20 transition-all active:scale-95"
+        onclick="toggleUp()">
         GET STARTED
     </button>
 </div>

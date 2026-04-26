@@ -1,84 +1,81 @@
-<div style="margin-bottom:2rem;">
-    <h2 style="font-family:'Cinzel',serif;font-size:1.5rem;color:var(--studio-text-primary);">
-        Today's Schedule
-    </h2>
-    <!-- FIX: todayStr and slotCount are now filled by renderScheduleDate() in dashboard.html -->
-    <p id="todayStr" style="color:var(--studio-indigo);font-size:0.85rem;font-weight:700;margin-top:0.25rem;"></p>
-</div>
+<div class="studio-card accent-indigo relative">
+    <div class="absolute top-10 right-10 text-right hidden lg:block">
+        <p id="todayStr" class="text-studio-selection text-[10px] font-black uppercase tracking-[0.2em] mb-2"></p>
+        <span id="slotCount" class="badge badge-info">Loading sessions…</span>
+    </div>
 
-<div class="studio-card">
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;
-                padding-bottom:1.5rem;border-bottom:1px solid var(--studio-border);">
-        <div class="bg-indigo-soft text-indigo" style="width:48px;height:48px;border-radius:12px;
-                                                       display:flex;align-items:center;
-                                                       justify-content:center;">
-            <i class="fas fa-clock" style="font-size:1.2rem;"></i>
+    <div class="flex items-center gap-5 mb-10 pb-8 border-b border-studio-border">
+        <div class="w-14 h-14 rounded-2xl bg-studio-selection-soft text-studio-selection flex items-center justify-center text-2xl">
+            <i class="fas fa-clock"></i>
         </div>
         <div>
-            <h3 style="font-size:1rem;font-weight:700;color:var(--studio-text-primary);">
-                Daily Schedule View</h3>
-            <p id="slotCount" style="font-size:0.75rem;color:var(--studio-text-secondary);">
-                Loading sessions…
-            </p>
+            <h3 class="card-title mb-0">Daily Schedule View</h3>
+            <p id="slotCountMob" class="text-[10px] text-muted font-medium mt-1 lg:hidden">Loading sessions…</p>
+            <p class="text-[10px] text-muted font-medium mt-1 hidden lg:block">Detailed breakdown of today's confirmed sessions</p>
         </div>
     </div>
 
     {% if today_appointments %}
-        <div class="timeline-visual">
-            {% for appt in today_appointments %}
-                <div class="tl-visual-item"
-                     style="--item-index: {{ loop.index0 }}; --dur-height: {{ (appt.duration_hours or 1) * 60 }}px;">
-                    <div class="tl-visual-time">
-                        <i class="far fa-clock" style="margin-right: 0.5rem; opacity: 0.5;"></i>
-                        {{ appt.appointment_time }}
-                    </div>
+    <div
+        class="flex flex-col gap-6 relative before:absolute before:left-[11px] before:top-4 before:bottom-4 before:w-[2px] before:bg-studio-border/30">
+        {% for appt in today_appointments %}
+        <div class="flex gap-6 reveal" style="--transition-delay: {{ loop.index0 * 100 }}ms">
+            <!-- Timeline Marker -->
+            <div class="relative z-10 w-6 flex flex-col items-center">
+                <div
+                    class="w-6 h-6 rounded-full bg-studio-bg border-4 border-indigo-500/40 flex items-center justify-center shadow-lg">
+                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                </div>
+            </div>
 
-                    <div style="flex:1;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                            <span style="font-weight:800; color:var(--studio-text-primary); font-size:1.05rem;">
-                                {{ appt.customer_name }}
+            <!-- Session Content -->
+            <div class="flex-1 studio-card !p-6 !bg-studio-surface/50 border-studio-border hover:border-studio-selection/30 group mb-0 no-accent">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-mono text-studio-selection border border-studio-selection/20 bg-studio-selection-soft px-2 py-0.5 rounded">
+                                {{ appt.appointment_time }}
                             </span>
-                            <span class="badge"
-                                  style="background: var(--studio-indigo-soft); color: var(--studio-indigo); font-size: 0.65rem; border: none; padding: 2px 8px;">
+                            <h4 class="text-base font-bold text-text group-hover:text-accent transition-colors">
+                                {{ appt.customer_name }}
+                            </h4>
+                            <span class="badge badge-warning text-[9px] py-0.5">
                                 {{ appt.duration_hours or '?' }}h Session
                             </span>
                         </div>
-                        <p style="font-size:0.85rem; color:var(--studio-text-secondary); letter-spacing: 0.02em;">
-                            {{ appt.tattoo_concept }}
-                        </p>
+                        <p class="text-[12px] text-muted leading-relaxed">{{ appt.tattoo_concept }}</p>
                     </div>
 
-                    <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="flex items-center gap-3">
                         {% if appt.status == 'Approved' %}
-                            <span class="badge badge-success" style="font-size: 0.65rem; letter-spacing: 0.1em;">ACTIVE</span>
-                <!-- [DATA-FLOW]: Submits to POST /artist/done/{{ appt.appointment_id }} -->
-                            <form method="POST" action="/artist/done/{{ appt.appointment_id }}" style="margin: 0;">
-                                <button type="submit" class="btn-studio btn-primary"
-                                        style="padding: 0.5rem 1rem; font-size: 0.7rem;"
-                                        onclick="return confirm('Complete this session?')">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                            </form>
+                        <span class="badge badge-success text-[9px]">ACTIVE</span>
+                        <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="w-10 h-10 rounded-xl bg-studio-success text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-studio-success/20"
+                                onclick="return confirm('Complete this session?')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
                         {% elif appt.status == 'Done' %}
-                            <span class="badge badge-info" style="font-size: 0.65rem; letter-spacing: 0.1em;">DONE</span>
+                        <span class="badge badge-info text-[9px]">COMPLETE</span>
                         {% endif %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
 
     {% else %}
-        <div style="text-align:center;padding:5rem 2rem;">
-            <div style="width:80px;height:80px;border-radius:50%;background:var(--studio-secondary);
-                        border:1px solid var(--studio-border);display:flex;align-items:center;
-                        justify-content:center;margin:0 auto 2rem;">
-                <i class="far fa-sun" style="font-size:2.5rem;color:var(--studio-indigo);opacity:0.3;"></i>
-            </div>
-            <h3 style="font-size:1.25rem;font-weight:700;color:var(--studio-text-primary);
-                       margin-bottom:0.5rem;">No Sessions Today</h3>
-            <p style="color:var(--studio-text-secondary);max-width:320px;margin:0 auto;line-height:1.6;">
-                No appointments scheduled for today. Take some time to sketch or manage your portfolio!
-            </p>
+    <div class="text-center py-24 flex flex-col items-center">
+        <div
+            class="w-20 h-20 rounded-full bg-studio-surface border border-studio-border flex items-center justify-center mb-6 shadow-inner">
+            <i class="far fa-sun text-4xl text-indigo-400 opacity-30"></i>
         </div>
+        <h3 class="text-xl font-display text-text mb-2">No Sessions Today</h3>
+        <p class="text-[11px] text-muted max-w-[280px] leading-relaxed">
+            No appointments scheduled for today. Take some time to sketch or manage your portfolio!
+        </p>
+    </div>
     {% endif %}
 </div>

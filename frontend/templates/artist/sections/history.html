@@ -1,65 +1,72 @@
-<div style="margin-bottom: 2.5rem;">
-    <h2 style="font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--studio-text-primary);">Archive &
-        History</h2>
-    <p style="color: var(--studio-text-secondary); font-size: 0.85rem;">A comprehensive record of all your completed
-        artistic sessions</p>
-</div>
+<div class="dash-card reveal">
+    <div class="flex items-center justify-between mb-8">
+        <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-text flex items-center gap-2">
+            <span class="w-1.5 h-4 bg-studio-gold rounded-full"></span>
+            Completed Work Log
+        </h3>
+        <div class="flex gap-2">
+            <span
+                class="px-2 py-1 bg-studio-surface border border-studio-border rounded text-[9px] font-bold text-muted uppercase tracking-widest">Archive</span>
+        </div>
+    </div>
 
-<div class="studio-card">
-    <h3 class="card-title" style="margin-bottom: 2rem;">COMPLETED WORK LOG</h3>
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="dash-table-container">
+        <table class="dash-table">
             <thead>
                 <tr>
-                    <th style="width: 100px;">Ref ID</th>
+                    <th class="w-24">Ref ID</th>
                     <th>Client</th>
                     <th>Project Details</th>
                     <th>Date Completed</th>
-                    <th style="width: 120px;">Duration</th>
-                    <th style="width: 120px;">Status</th>
+                    <th class="w-32">Duration</th>
+                    <th class="w-28 text-right">Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% if appointments %}
-                    {% set done_list = appointments | selectattr('status','equalto','Done') | list %}
-                    {% if done_list %}
-                        {% for appt in done_list %}
-                            <tr>
-                                <td
-                                    style="font-family: monospace; font-size: 0.85rem; font-weight: 700; color: var(--studio-text-secondary);">
-                                    #{{ appt.appointment_id }}</td>
-                                <td style="font-weight: 700; color: var(--studio-text-primary);">{{ appt.customer_name }}</td>
-                                <td style="font-size: 0.85rem; font-style: italic; color: var(--studio-text-secondary);">"{{
-                                    appt.tattoo_concept }}"</td>
-                                <td style="font-size: 0.85rem; font-weight: 700;">{{ appt.appointment_date }}</td>
-                                <td>
-                                    <div style="font-family: monospace; font-weight: 700; color: var(--studio-indigo);">
-                                        {{ appt.duration_hours }} <span style="font-size: 0.65rem; opacity: 0.6;">HRS</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge"
-                                          style="background: var(--studio-secondary); color: var(--studio-text-secondary); font-size: 0.65rem; font-weight: 700;">ARCHIVED</span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 5rem; color: var(--studio-text-secondary);">
-                                <i class="fas fa-history"
-                                   style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1.5rem; display: block;"></i>
-                                No completed sessions found in history.
-                            </td>
-                        </tr>
-                    {% endif %}
+                {% set done_list = appointments | selectattr('status', 'in', ['Done', 'Rejected']) | list %}
+                {% if done_list %}
+                {% for appt in done_list %}
+                <tr class="group hover:bg-studio-gold/5 transition-colors">
+                    <td class="font-mono text-[11px] font-bold text-accent">#{{ appt.appointment_id }}</td>
+                    <td class="text-[12px] font-bold text-text">{{ appt.customer_name }}</td>
+                    <td class="text-[11px] italic text-muted">"{{ appt.tattoo_concept }}"</td>
+                    <td class="text-[11px] font-bold text-text">{{ appt.appointment_date }}</td>
+                    <td>
+                        <div class="flex items-center gap-1.5 font-mono text-[11px] font-bold text-accent">
+                            {{ appt.duration_hours }}
+                            <span class="text-[8px] opacity-40 uppercase tracking-tighter">Hrs</span>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <span class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest 
+                                    {% if appt.status == 'Done' %}
+                                        bg-emerald-500/10 text-emerald-500 border border-emerald-500/20
+                                    {% else %}
+                                        bg-rose-500/10 text-rose-500 border border-rose-500/20
+                                    {% endif %}">
+                            {{ appt.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 5rem; color: var(--studio-text-secondary);">
-                            <i class="fas fa-folder-open"
-                               style="font-size: 2.5rem; opacity: 0.2; margin-bottom: 1.5rem; display: block;"></i>
-                            Appointment records are currently empty.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="text-center py-24 opacity-30">
+                        <i class="fas fa-history text-4xl mb-4 text-studio-gold"></i>
+                        <p class="text-[10px] font-black uppercase tracking-widest">No completed sessions found in
+                            history.</p>
+                    </td>
+                </tr>
+                {% endif %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center py-24 opacity-30">
+                        <i class="fas fa-folder-open text-4xl mb-4 text-studio-gold"></i>
+                        <p class="text-[10px] font-black uppercase tracking-widest">Appointment records are currently
+                            empty.</p>
+                    </td>
+                </tr>
                 {% endif %}
             </tbody>
         </table>

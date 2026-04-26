@@ -5,43 +5,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Register</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-
+    <!-- Global tokens + theme engine -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         body {
-            background: #030303;
-            color: #f5f5f7;
+            background: #eceef8;
+            color: #1e1e2e;
             min-height: 100vh;
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', system-ui, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.35s ease, color 0.35s ease;
+        }
+
+        .w-full { width: 100%; }
+        .font-bold { font-weight: 700; }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         /* ── NAVBAR ── */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 200;
-            height: 54px;
-            padding: 0 1.5rem;
+            height: 52px;
+            padding: 0 2rem;
             display: flex;
             align-items: center;
-            background: rgba(3, 3, 3, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            justify-content: space-between;
+            background: #ffffff;
+            border-bottom: 1px solid #e8e8f0;
         }
 
 
+        #navBrand { color: #1a1a2e; }
         .nav-link {
             color: #8b8b93;
             font-size: 0.78rem;
@@ -82,87 +95,79 @@
 
         /* ── CARD ── */
         .card-wrap {
-            position: relative;
-            border-radius: 1.35rem;
-            padding: 2px;
-            background: linear-gradient(145deg, #4f46e5 0%, #6366f1 50%, #4338ca 100%);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-wrap:hover {
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
-            transition: box-shadow 0.3s ease;
+            width: 100%;
+            max-width: 660px;
+            background: #fff;
+            border: 2px solid #b8c4f0;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow:
+                0 2px 0 #b8c4f0,
+                0 8px 32px rgba(99,102,241,0.12),
+                0 24px 64px rgba(99,102,241,0.07);
         }
 
         .card-body {
-            background: #050505;
-            border-radius: calc(1.35rem - 2px);
+            background: #fff;
+            border-radius: 0;
             overflow: hidden;
         }
 
         /* ── INPUTS ── */
         .field {
             width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1.5px solid rgba(99, 102, 241, 0.3);
-            border-radius: 0.65rem;
-            color: #f8fafc;
-            font-size: 0.92rem;
+            padding: 0.7rem 1rem;
+            background: #f4f6ff;
+            border: 1.5px solid #c7d0f5;
+            border-radius: 0.625rem;
+            color: #111827;
+            font-size: 0.82rem;
+            font-weight: 500;
             outline: none;
-            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
-        .field:focus-visible {
-            border-color: #6366f1;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .field::placeholder {
-            color: rgba(148, 163, 184, 0.4);
-        }
-
-        .field:hover {
-            border-color: rgba(99, 102, 241, 0.5);
-            background: rgba(15, 23, 42, 0.6);
-        }
-
+        .field:focus-visible,
         .field:focus {
             border-color: #6366f1;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.14);
         }
 
-        .field.error {
-            border-color: rgba(220, 60, 60, 0.7);
+        .field::placeholder { color: #9ca3af; }
+
+        .field:hover:not(:focus) {
+            border-color: #a5b4fc;
         }
 
-        .field.success {
-            border-color: rgba(60, 200, 100, 0.6);
-        }
+        .field.error  { border-color: rgba(220,60,60,0.7); }
+        .field.success { border-color: rgba(60,200,100,0.6); }
 
         /* ── BUTTONS ── */
         .btn-gold {
             width: 100%;
-            padding: 0.85rem;
+            padding: 0.75rem;
+            font-family: inherit;
             font-weight: 700;
-            font-size: 0.82rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
             border: none;
-            border-radius: 0.65rem;
-            background: #6366f1;
+            border-radius: 0.625rem;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: #fff;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-gold:not(:disabled):hover {
-            background: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
         }
 
         .btn-gold:focus-visible {
@@ -170,15 +175,50 @@
             outline-offset: 2px;
         }
 
-        .btn-gold:active {
-            transform: scale(0.97);
-        }
+        .btn-gold:active { transform: scale(0.98); }
 
         .btn-gold:disabled {
-            opacity: 0.28;
+            background: #c7d0f5;
+            color: #fff;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+        }
+
+        .btn-outline {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.625rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-outline:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+            background: #f5f3ff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+        }
+        [data-theme="noir"] .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+        }
+        [data-theme="noir"] .btn-outline:hover {
+            border-color: #6366f1;
+            color: #818cf8;
+            background: rgba(99, 102, 241, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         /* ── STRENGTH BAR ── */
@@ -199,10 +239,8 @@
 
         /* ── TITLE ── */
         .title-grad {
-            background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #312e81;
+            -webkit-text-fill-color: #312e81;
         }
 
         /* ── STEP INDICATOR ── */
@@ -223,16 +261,102 @@
             background: rgba(60, 200, 100, 0.7);
         }
 
-        label {
-            color: #94a3b8;
-        }
+        label { color: #4b5563; }
 
-        /* ── LIGHT MODE ── */
-        body.light-mode,
-        html.light-mode body {
-            background: #ffffff !important;
-            color: #1f2937 !important;
+        /* ── LIGHT MODE (ivory) ── */
+        /* Light is now the default — these are redundant but kept for safety */
+        html.light-mode body,
+        [data-theme="ivory"] body { background: #eceef8; color: #1e1e2e; }
+        html.light-mode nav, [data-theme="ivory"] nav {
+            background: #fff;
+            border-bottom-color: #e8e8f0;
         }
+        html.light-mode #navBrand, [data-theme="ivory"] #navBrand { color: #1a1a2e; }
+        html.light-mode .card-wrap, [data-theme="ivory"] .card-wrap {
+            background: #fff;
+            border-color: #b8c4f0;
+            box-shadow: 0 2px 0 #b8c4f0, 0 8px 32px rgba(99,102,241,0.12);
+        }
+        html.light-mode .card-body, [data-theme="ivory"] .card-body { background: #fff; }
+        html.light-mode .field, [data-theme="ivory"] .field {
+            background: #f4f6ff;
+            border-color: #c7d0f5;
+            color: #111827;
+        }
+        html.light-mode .field::placeholder { color: #9ca3af; }
+        html.light-mode .field:focus { background: #fff; border-color: #6366f1; }
+        html.light-mode label { color: #4b5563 !important; }
+        html.light-mode .title-grad { color: #312e81; -webkit-text-fill-color: #312e81; }
+        html.light-mode body::before { background: #eceef8; }
+        html.light-mode #cardHeader {
+            background: linear-gradient(180deg, #f5f3ff 0%, #fff 100%) !important;
+            border-bottom-color: #dde3f5 !important;
+        }
+        html.light-mode #logoCircle {
+            background: #f4f5ff !important;
+            border-color: #c7d0f5 !important;
+            box-shadow: none !important;
+        }
+        html.light-mode #cardSubtitle { color: #4b5563 !important; }
+        html.light-mode .info-box {
+            background: #f5f3ff !important;
+            border: 1px solid #c7d0f5 !important;
+            box-shadow: none !important;
+            border-radius: 0.75rem !important;
+        }
+        html.light-mode .info-box p:first-child { color: #312e81 !important; font-weight: 700 !important; }
+        html.light-mode .info-box p { color: #4b5563; }
+        html.light-mode .step-dot { background: #dde3f5; }
+        html.light-mode .step-dot.active { background: #6366f1; box-shadow: 0 0 8px rgba(99,102,241,0.3); }
+        html.light-mode .step-dot.done  { background: rgba(60,200,100,0.7); }
+
+        /* ── DARK MODE (noir) ── */
+        [data-theme="noir"] body {
+            background: #030303;
+            color: #f5f5f7;
+        }
+        [data-theme="noir"] body::before { background: #030303; }
+        [data-theme="noir"] nav {
+            background: rgba(3,3,3,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom-color: rgba(255,255,255,0.06);
+        }
+        [data-theme="noir"] #navBrand { color: #f5f5f7; }
+        [data-theme="noir"] .card-wrap {
+            background: #0d0d18;
+            border: 1.5px solid rgba(99,102,241,0.3);
+            border-radius: 1.5rem;
+            box-shadow: 0 2px 0 rgba(99,102,241,0.25), 0 12px 40px rgba(0,0,0,0.6);
+        }
+        [data-theme="noir"] .card-body { background: #0d0d18; }
+        [data-theme="noir"] .field {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(99,102,241,0.25);
+            color: #F1F5F9;
+        }
+        [data-theme="noir"] .field::placeholder { color: rgba(255,255,255,0.28); }
+        [data-theme="noir"] .field:focus {
+            background: rgba(99,102,241,0.08);
+            border-color: rgba(99,102,241,0.6);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
+        }
+        [data-theme="noir"] label { color: #94a3b8 !important; }
+        [data-theme="noir"] .title-grad {
+            background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        [data-theme="noir"] #cardHeader {
+            background: linear-gradient(180deg,rgba(15,15,30,0.5) 0%,transparent 100%) !important;
+            border-bottom-color: rgba(255,255,255,0.05) !important;
+        }
+        [data-theme="noir"] #logoCircle {
+            background: #0f172a !important;
+            border-color: rgba(99,102,241,0.3) !important;
+        }
+        [data-theme="noir"] #cardSubtitle { color: #94a3b8 !important; }
+        [data-theme="noir"] #globalThemeBtn { color: #CBD5E1; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
 
         html.light-mode nav {
             background: rgba(255, 255, 255, 0.88) !important;
@@ -396,67 +520,63 @@
             transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
         }
     </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-
-    <!-- Offline Assets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- theme.js loaded synchronously above -->
 </head>
 
 <body
-    style="min-height:100vh;padding:1rem;padding-top:4rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:center;">
+    style="min-height:100vh;padding:1rem;padding-top:5.5rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:center;">
 
     <!-- NAVBAR -->
     <nav>
-        <div
-            style="max-width:72rem;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;">
-            <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="32" height="32"
-                    style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
-                <span id="navBrand" class="font-bold"
-                    style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
-                    Tattoos</span>
-            </a>
-            <!-- Main nav links removed for reduced cognitive load on Auth pages (Hick's Law) -->
+        <a href="/" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="32" height="32"
+                style="width:2rem;height:2rem;border-radius:0.375rem;object-fit:cover;"
+                loading="lazy" decoding="async">
+            <span id="navBrand"
+                style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;">Dragon Tattoos</span>
+        </a>
+        <div style="display:flex;align-items:center;gap:0.625rem;">
+            <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle dark / light mode"
+                style="display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:transparent;border:1.5px solid #dde3f5;color:#64748b;font-size:0.8rem;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;"
+                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1';"
+                onmouseout="this.style.borderColor='';this.style.color='';">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
             <a href="/login"
-                style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:700;background:#6366f1;color:#fff;border-radius:20px;text-decoration:none;transition:background 0.2s;"
+                style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:700;background:#6366f1;color:#fff;border-radius:999px;text-decoration:none;transition:background 0.2s;"
                 onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">← Login</a>
         </div>
     </nav>
 
 
     <!-- REGISTER CARD -->
-    <div class="card-wrap w-full" style="max-width:580px;">
+    <div class="card-wrap w-full" style="max-width:680px;">
         <div class="card-body">
 
             <!-- Header -->
             <div id="cardHeader"
-                style="padding:2rem 2.5rem 1.25rem;text-align:center;border-bottom:1px solid rgba(99, 102, 241, 0.1);background:linear-gradient(180deg,rgba(15,23,42,0.5) 0%,transparent 100%);">
+                style="padding:2.5rem 3rem 1.75rem;text-align:center;border-bottom:1.5px solid #dde3f5;background:linear-gradient(180deg,#f5f3ff 0%,#fff 100%);">
                 <div id="logoCircle"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;margin-bottom:0.85rem;overflow:hidden;border:2px solid rgba(99, 102, 241, 0.3);box-shadow:0 8px 16px rgba(0,0,0,0.1);background:#0f172a;">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="64" height="64"
-                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    style="display:inline-flex;align-items:center;justify-content:center;width:4.25rem;height:4.25rem;border-radius:50%;margin-bottom:1rem;overflow:hidden;border:2px solid #c7d0f5;background:#f4f5ff;">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="68" height="68"
+                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                        loading="lazy" decoding="async">
                 </div>
                 <h1 class="title-grad font-bold"
-                    style="font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:0.06em;margin:0 0 0.25rem;">CREATE
-                    ACCOUNT</h1>
+                    style="font-family:'Cinzel',serif;font-size:1.35rem;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 0.2rem;">Create Account</h1>
                 <p id="cardSubtitle"
-                    style="color:#94a3b8;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin:0;">
-                    Dragon
-                    Tattoos — Customer Registration</p>
+                    style="color:#6b7280;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;margin:0;font-weight:700;text-align:center;opacity:0.85;">
+                    Dragon Tattoos — Customer Registration</p>
 
                 <!-- Step dots -->
-                <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;">
+                <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1.25rem;">
                     <div class="step-dot active" id="dot1"></div>
-                    <div style="height:1px;width:28px;background:rgba(99, 102, 241, 0.15);"></div>
+                    <div style="height:1px;width:28px;background:#dde3f5;"></div>
                     <div class="step-dot" id="dot2"></div>
-                    <div style="height:1px;width:28px;background:rgba(99, 102, 241, 0.15);"></div>
+                    <div style="height:1px;width:28px;background:#dde3f5;"></div>
                     <div class="step-dot" id="dot3"></div>
                 </div>
-                <p id="stepLabel" style="font-size:0.68rem;color:#666;margin:0.4rem 0 0;letter-spacing:0.1em;">STEP 1 OF
-                    3 — Personal Info</p>
+                <p id="stepLabel" style="font-size:0.65rem;color:#9ca3af;margin:0.4rem 0 0;letter-spacing:0.12em;font-weight:700;">STEP 1 OF 3 — Personal Info</p>
             </div>
 
             <!-- Flash Messages -->
@@ -479,8 +599,7 @@
             {% endwith %}
 
             <!-- FORM -->
-            <div style="padding:1.75rem 2.5rem 2.25rem;">
-                <!-- [DATA-FLOW]: Submits to POST /register -->
+            <div style="padding:1.25rem 2.25rem 2rem;">
                 <form id="registerForm" method="POST" action="/register" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
@@ -528,10 +647,12 @@
                             </div>
 
                         </div>
-                        <div style="margin-top:1.5rem;">
-                            <button type="button" onclick="goStep2()" class="btn-gold">
-                                NEXT — Security &amp; Password <i class="fa-solid fa-arrow-right"
-                                    style="margin-left:0.5rem;"></i>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:2rem;">
+                            <button type="button" onclick="goStep2()" class="btn-gold" style="max-width:340px; flex:2;">
+                                Next — Security &amp; Password <i class="fa-solid fa-arrow-right" style="margin-left:0.6rem;"></i>
+                            </button>
+                            <button type="button" onclick="resetForm()" class="btn-outline" style="padding: 0.75rem 1.5rem; flex:1; max-width:140px;">
+                                <i class="fa-solid fa-rotate-left" style="font-size:0.7rem;"></i> Clear
                             </button>
                         </div>
                     </div>
@@ -601,15 +722,12 @@
 
                         </div>
 
-                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                            <button type="button" onclick="goBack(1)"
-                                style="padding:0.85rem 1.25rem;border:1px solid rgba(99, 102, 241, 0.25);border-radius:0.65rem;background:transparent;color:#94a3b8;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
-                                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'"
-                                onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.25)';this.style.color='#94a3b8'">
-                                <i class="fa-solid fa-arrow-left"></i>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:2rem;">
+                            <button type="button" onclick="goStep3()" class="btn-gold" style="max-width:280px; flex:2;">
+                                Next — Summary <i class="fa-solid fa-arrow-right" style="margin-left:0.6rem;"></i>
                             </button>
-                            <button type="button" onclick="goStep3()" class="btn-gold" style="flex:1;">
-                                NEXT — Optional Info <i class="fa-solid fa-arrow-right" style="margin-left:0.5rem;"></i>
+                            <button type="button" onclick="goBack(1)" class="btn-outline" style="padding: 0.75rem 1.5rem; flex:1; max-width:140px;">
+                                <i class="fa-solid fa-arrow-left"></i> Back
                             </button>
                         </div>
                     </div>
@@ -677,15 +795,12 @@
 
                         </div>
 
-                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                            <button type="button" onclick="goBack(2)"
-                                style="padding:0.85rem 1.25rem;border:1px solid rgba(99, 102, 241, 0.25);border-radius:0.65rem;background:transparent;color:#94a3b8;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
-                                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'"
-                                onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.25)';this.style.color='#94a3b8'">
-                                <i class="fa-solid fa-arrow-left"></i>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:0.75rem; margin-top:2rem;">
+                            <button type="submit" id="submitBtn" class="btn-gold" style="max-width:280px; flex:2;">
+                                <i class="fa-solid fa-check" style="margin-right:0.5rem;"></i>Create Account
                             </button>
-                            <button type="submit" id="submitBtn" class="btn-gold" style="flex:1;">
-                                <i class="fa-solid fa-check" style="margin-right:0.5rem;"></i>CREATE ACCOUNT
+                            <button type="button" onclick="goBack(2)" class="btn-outline" style="padding: 0.75rem 1.5rem; flex:1; max-width:140px;">
+                                <i class="fa-solid fa-arrow-left"></i> Back
                             </button>
                         </div>
                     </div>
@@ -746,6 +861,21 @@
         }
 
         function goBack(n) { showStep(n); }
+        
+        function resetForm() {
+            if(!confirm('Are you sure you want to clear all fields?')) return;
+            const form = document.getElementById('registerForm');
+            form.reset();
+            // Clear hints
+            document.querySelectorAll('.field-hint').forEach(p => { p.style.display = 'none'; p.textContent = ''; });
+            // Clear strength bar
+            const sb = document.getElementById('strengthBar');
+            if(sb) { sb.style.width = '0%'; sb.className = 'strength-bar'; }
+            const sl = document.getElementById('strengthLabel');
+            if(sl) sl.textContent = '';
+            // Go to step 1
+            showStep(1);
+        }
 
         // ── Live validation ───────────────────────────────────────
         function liveValidate(field) {

@@ -1,0 +1,100 @@
+/* ── ARTIST CARDS ── */
+
+/* ── ARTIST CARDS REFINEMENT ── */
+.artist-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.artist-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+html.light-mode .artist-card:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.artist-image-container {
+    height: 360px;
+    background: var(--surface);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.artist-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.artist-card:hover .artist-img {
+    transform: scale(1.03);
+}
+
+.artist-image-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to top, var(--card-bg), transparent);
+    pointer-events: none;
+}
+
+.artist-info {
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.artist-info h4 {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.artist-info .text-accent {
+    color: var(--accent);
+}
+
+.artist-info p.text-muted {
+    color: var(--muted);
+}
+
+html.light-mode .artist-info h4 {
+    color: #111827;
+}
+
+html.light-mode .artist-info p.text-muted {
+    color: #4b5563;
+}
+.gold-text {
+    background: linear-gradient(135deg, #c8a040 0%, #e8c870 50%, #c8a040 100%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: gold-shimmer 4s ease infinite;
+}
+
+@keyframes gold-shimmer {
+    0% { background-position: -100% 0; }
+    100% { background-position: 100% 0; }
+}
+
+

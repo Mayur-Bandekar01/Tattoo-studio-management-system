@@ -1,167 +1,521 @@
-<div class="studio-card">
-    <div
-        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-        <h3 class="card-title" style="margin-bottom: 0; font-weight: 800; letter-spacing: -0.01em;">My Appointments
-        </h3>
-        <div class="filter-group">
-            <button onclick="filterAppts('all', this)" class="filter-btn active">All</button>
-            <button onclick="filterAppts('Pending', this)" class="filter-btn">Pending</button>
-            <button onclick="filterAppts('Approved', this)" class="filter-btn">Approved</button>
-            <button onclick="filterAppts('Done', this)" class="filter-btn">Done</button>
-            <button onclick="filterAppts('Cancelled', this)" class="filter-btn">Cancelled</button>
-            <button onclick="filterAppts('Rejected', this)" class="filter-btn">Rejected</button>
+<!-- 
+    SECTION: APPOINTMENTS (sec-appointments)
+    Fixed: missing status column header, table overflow, ivory theme text, filter active state, empty state CTA
+-->
+
+<style>
+/* ── Appointments-specific fixes ─────────────────── */
+.appts-wrap {
+    background   : var(--studio-card);
+    border       : 1px solid var(--studio-card-border);
+    border-radius: var(--studio-radius);
+    padding      : 2.5rem;
+    box-shadow   : var(--studio-shadow);
+    position     : relative;
+    overflow     : hidden;
+}
+
+/* Accent line */
+.appts-wrap::before {
+    content      : '';
+    position     : absolute;
+    left         : 0;
+    top          : 0;
+    bottom       : 0;
+    width        : 5px;
+    background   : var(--studio-gold);
+    border-radius: var(--studio-radius) 0 0 var(--studio-radius);
+}
+
+.appts-header {
+    display        : flex;
+    flex-direction : column;
+    gap            : 0.5rem;
+    margin-bottom  : 2rem;
+}
+
+.appts-title-row {
+    display        : flex;
+    flex-wrap      : wrap;
+    align-items    : flex-start;
+    justify-content: space-between;
+    gap            : 1.5rem;
+}
+
+.appts-title {
+    font-size     : 1.75rem;
+    font-weight   : 900;
+    color         : var(--studio-text-primary);
+    letter-spacing: -0.02em;
+    line-height   : 1;
+    margin        : 0;
+}
+
+.appts-subtitle {
+    font-size     : 0.62rem;
+    font-weight   : 700;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color         : var(--studio-gold);
+    margin-top    : 0.4rem;
+}
+
+/* ── Filter Pills ─────────────────────────────────── */
+.appts-filters {
+    display    : flex;
+    flex-wrap  : wrap;
+    gap        : 0.35rem;
+    padding    : 0.35rem;
+    background : rgba(255,255,255,0.03);
+    border     : 1px solid var(--studio-border-light);
+    border-radius: 14px;
+    align-self : flex-start;
+}
+
+[data-theme="ivory"] .appts-filters {
+    background: rgba(0,0,0,0.03);
+}
+
+/* ── Info Alert ───────────────────────────────────── */
+.appts-alert {
+    display      : flex;
+    align-items  : flex-start;
+    gap          : 1rem;
+    padding      : 1.25rem 1.5rem;
+    border-radius: 16px;
+    border       : 1px solid var(--studio-gold-dim);
+    background   : var(--studio-accent-soft);
+    margin-bottom: 2rem;
+}
+
+.appts-alert-icon {
+    width          : 36px;
+    height         : 36px;
+    border-radius  : 10px;
+    background     : var(--studio-gold);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    color          : #000;
+    font-size      : 0.8rem;
+    flex-shrink    : 0;
+    box-shadow     : 0 4px 12px rgba(200,160,64,0.3);
+}
+
+.appts-alert p {
+    font-size  : 0.8rem;
+    line-height: 1.6;
+    color      : var(--studio-text-secondary);
+    font-weight: 500;
+    margin     : 0;
+}
+
+/* ── Table ────────────────────────────────────────── */
+.appts-table-wrap {
+    overflow-x   : auto;
+    border-radius: 12px;
+    border       : 1px solid var(--studio-border-light);
+    /* negative side margin so table flush-fills card */
+    margin       : 0 -0.5rem;
+}
+
+.appts-table {
+    width          : 100%;
+    border-collapse: collapse;
+    text-align     : left;
+    min-width      : 720px;
+}
+
+.appts-table thead th {
+    padding       : 0.85rem 1rem;
+    font-size     : 0.62rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color         : var(--studio-text-muted);
+    border-bottom : 2px solid var(--studio-border-light);
+    background    : rgba(255,255,255,0.02);
+    white-space   : nowrap;
+}
+
+[data-theme="ivory"] .appts-table thead th {
+    background: rgba(0,0,0,0.02);
+    color     : #64748B;
+}
+
+.appts-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.appts-table tbody tr:hover td {
+    background: rgba(255,255,255,0.025);
+}
+
+[data-theme="ivory"] .appts-table tbody tr:hover td {
+    background: rgba(0,0,0,0.025);
+}
+
+.appts-table td {
+    padding      : 1rem;
+    border-bottom: 1px solid var(--studio-border-light);
+    vertical-align: middle;
+}
+
+.appts-table tbody tr:last-child td { border-bottom: none; }
+
+/* column helpers */
+.col-id     { white-space: nowrap; }
+.col-concept{ max-width: 160px; }
+
+.cell-id {
+    font-size     : 0.68rem;
+    font-weight   : 900;
+    font-family   : var(--font-mono, monospace);
+    color         : var(--studio-text-muted);
+    transition    : color 0.2s;
+}
+
+.appts-table tbody tr:hover .cell-id { color: var(--studio-gold); }
+
+.cell-primary {
+    font-size     : 0.78rem;
+    font-weight   : 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color         : var(--studio-text-primary);
+    white-space   : nowrap;
+}
+
+.cell-secondary {
+    font-size     : 0.75rem;
+    font-weight   : 600;
+    color         : var(--studio-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space   : nowrap;
+}
+
+.cell-concept {
+    font-size    : 0.75rem;
+    font-weight  : 600;
+    color        : var(--studio-text-muted);
+    white-space  : nowrap;
+    overflow     : hidden;
+    text-overflow: ellipsis;
+    max-width    : 160px;
+    display      : block;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Reference thumbnail */
+.ref-thumb-wrap {
+    position : relative;
+    display  : inline-block;
+    cursor   : pointer;
+}
+
+.ref-thumb {
+    width        : 40px;
+    height       : 40px;
+    object-fit   : cover;
+    border-radius: 8px;
+    border       : 2px solid var(--studio-border);
+    display      : block;
+    transition   : all 0.25s ease;
+}
+
+.ref-thumb-wrap:hover .ref-thumb {
+    border-color: var(--studio-gold);
+    transform   : scale(1.08);
+}
+
+.ref-thumb-overlay {
+    position       : absolute;
+    inset          : 0;
+    border-radius  : 8px;
+    background     : rgba(200,160,64,0.3);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    opacity        : 0;
+    transition     : opacity 0.2s;
+}
+
+.ref-thumb-wrap:hover .ref-thumb-overlay { opacity: 1; }
+
+.ref-thumb-overlay i { font-size: 0.65rem; color: #fff; }
+
+/* Action buttons */
+.appt-actions {
+    display    : flex;
+    align-items: center;
+    gap        : 0.4rem;
+}
+
+.appt-btn {
+    width          : 34px;
+    height         : 34px;
+    border-radius  : 10px;
+    border         : 1px solid var(--studio-border-light);
+    background     : transparent;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    cursor         : pointer;
+    font-size      : 0.7rem;
+    transition     : all 0.2s ease;
+    color          : var(--studio-text-muted);
+}
+
+.appt-btn:hover {
+    border-color: var(--studio-gold);
+    color       : var(--studio-gold);
+    background  : var(--studio-accent-soft);
+    transform   : translateY(-1px);
+}
+
+.appt-btn-danger {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.2);
+    color: var(--studio-danger);
+}
+
+.appt-btn-danger:hover {
+    background  : var(--studio-danger);
+    border-color: var(--studio-danger);
+    color       : #fff;
+    transform   : translateY(-1px);
+}
+
+/* ── Empty State ──────────────────────────────────── */
+.appts-empty {
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+    padding       : 5rem 2rem;
+    text-align    : center;
+    gap           : 1rem;
+}
+
+.appts-empty-icon {
+    width          : 64px;
+    height         : 64px;
+    border-radius  : 20px;
+    background     : var(--studio-card);
+    border         : 1px solid var(--studio-border-light);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    color          : var(--studio-text-muted);
+    font-size      : 1.5rem;
+    transform      : rotate(6deg);
+    box-shadow     : var(--studio-shadow);
+    margin-bottom  : 0.5rem;
+}
+
+.appts-empty h4 {
+    font-size     : 1.1rem;
+    font-weight   : 900;
+    color         : var(--studio-text-primary);
+    letter-spacing: -0.01em;
+    margin        : 0;
+}
+
+.appts-empty p {
+    font-size     : 0.7rem;
+    font-weight   : 700;
+    color         : var(--studio-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    max-width     : 260px;
+    line-height   : 1.7;
+    margin        : 0;
+}
+
+.appts-empty-link {
+    color          : var(--studio-gold);
+    cursor         : pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--studio-gold-dim);
+    font-weight    : 900;
+    transition     : color 0.2s;
+}
+
+.appts-empty-link:hover { color: var(--studio-text-primary); }
+</style>
+
+<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="appts-wrap">
+
+        <!-- Header Controls -->
+        <div class="appts-header">
+            <div class="appts-title-row" style="justify-content: flex-start;">
+                <div class="appts-filters">
+                    <button onclick="filterAppts('all', this)" class="filter-btn active">All</button>
+                    <button onclick="filterAppts('Pending', this)" class="filter-btn">Pending</button>
+                    <button onclick="filterAppts('Approved', this)" class="filter-btn">Approved</button>
+                    <button onclick="filterAppts('Done', this)" class="filter-btn">Done</button>
+                    <button onclick="filterAppts('Cancelled', this)" class="filter-btn">Cancelled</button>
+                    <button onclick="filterAppts('Rejected', this)" class="filter-btn">Rejected</button>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Info note -->
-    <div class="obs-glass"
-         style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem 1.50rem; margin-bottom: 2rem;">
-        <i class="fas fa-circle-info"
-           style="color: var(--studio-accent); margin-top: 3px; font-size: 1rem; flex-shrink: 0;"></i>
-        <p style="font-size: 0.82rem; color: var(--studio-text-secondary); line-height: 1.6; margin: 0;">
-            You can <strong style="color: var(--studio-text-primary);">cancel</strong> a Pending appointment
-            to stop it going ahead. Once it is Cancelled or Rejected you can
-            <strong style="color: var(--studio-danger);">permanently delete</strong> the record from your history.
-            Use the <i class="fas fa-comment-dots" style="color:var(--studio-accent);"></i> icon to chat with your
-            artist.
-        </p>
-    </div>
+        <!-- Info Alert -->
+        <div class="appts-alert">
+            <div class="appts-alert-icon">
+                <i class="fas fa-info"></i>
+            </div>
+            <p>
+                Manage your studio journey here. You can
+                <strong style="color:var(--studio-text-primary);border-bottom:2px solid var(--studio-gold-dim);">cancel</strong>
+                pending appointments or
+                <strong style="color:var(--studio-danger);border-bottom:2px solid rgba(239,68,68,0.2);">permanently delete</strong>
+                rejected records. Use the <i class="fas fa-comment-dots" style="color:var(--studio-gold);margin:0 2px;"></i> icon to coordinate with your artist.
+            </p>
+        </div>
 
-    <!-- Hidden forms for cancel and delete actions -->
-    {% for a in appointments %}
-    <!-- [DATA-FLOW]: Submits to POST /customer/cancel/{{ a.appointment_id }} -->
-        <form id="cancelForm-{{ a.appointment_id }}" method="POST"
-              action="/customer/cancel/{{ a.appointment_id }}" style="display:none;"></form>
-    <!-- [DATA-FLOW]: Submits to POST /customer/delete/{{ a.appointment_id }} -->
-        <form id="deleteForm-{{ a.appointment_id }}" method="POST"
-              action="/customer/delete/{{ a.appointment_id }}" style="display:none;"></form>
-    {% endfor %}
+        <!-- Hidden action forms -->
+        {% for a in appointments %}
+        <form id="cancelForm-{{ a.appointment_id }}" method="POST" action="/customer/cancel/{{ a.appointment_id }}" style="display:none;"></form>
+        <form id="deleteForm-{{ a.appointment_id }}" method="POST" action="/customer/delete/{{ a.appointment_id }}" style="display:none;"></form>
+        {% endfor %}
 
-    <div class="studio-table-container">
-        <table class="studio-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Artist</th>
-                    <th>Concept</th>
-                    <th>Reference</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if appointments %}
-                    {% for a in appointments %}
-                        <tr class="appt-row" data-status="{{ a.status }}">
-
-                            <td
-                                style="color: var(--studio-text-secondary); font-size: 0.85rem; font-family: monospace; opacity: 0.8;">
-                                #{{ a.appointment_id }}
-                            </td>
-
-                            <td style="font-weight: 700; color: var(--studio-text-primary);">{{ a.artist_name }}</td>
-
-                            <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--studio-text-secondary);"
-                                title="{{ a.tattoo_concept }}">
-                                {{ a.tattoo_concept }}
-                            </td>
-
-                            <td>
-                                {% if a.reference %}
-                                    <img src="{{ url_for('static', filename=a.reference) }}" alt="Reference"
-                                         style="width: 44px; height: 44px; object-fit: cover; border-radius: 12px;
-                                                border: 2px solid var(--studio-border); cursor: pointer; transition: transform 0.2s;"
-                                         onclick="window.openLb(this.src, 'Reference Image', '{{ a.tattoo_concept }}')"
-                                         onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"
-                                         title="View full image">
-                                {% else %}
-                                    <span style="color: var(--studio-text-secondary); opacity: 0.4;">—</span>
-                                {% endif %}
-                            </td>
-
-                            <td style="font-weight: 500;">{{ a.appointment_date }}</td>
-                            <td style="color: var(--studio-text-secondary);">{{ a.appointment_time }}</td>
-
-                            <td>
-                                {% if a.duration_hours %}
-                                    <span style="font-weight: 600;">{{ a.duration_hours }} hrs</span>
-                                {% else %}
-                                    <span style="color: var(--studio-text-secondary); opacity: 0.4;">—</span>
-                                {% endif %}
-                            </td>
-
-                            <td>
-                                {% if a.status == 'Pending' %}
-                                    <span class="badge badge-pending">Pending</span>
-                                {% elif a.status == 'Approved' %}
-                                    <span class="badge badge-success">Approved</span>
-                                {% elif a.status == 'Done' %}
-                                    <span class="badge badge-success">Completed</span>
-                                {% elif a.status == 'Rejected' %}
-                                    <span class="badge badge-danger">Rejected</span>
-                                {% else %}
-                                    <span class="badge badge-danger">Cancelled</span>
-                                {% endif %}
-                            </td>
-
-                    <!-- Action column -->
-                            <td>
-                                <div style="display: flex; gap: 0.5rem; justify-content: center;">
-
-                            <!-- FIX: was calling undefined openChat() — now calls custOpenChatFromAppt() -->
-                                    <button
-                                        onclick="custOpenChatFromAppt('{{ a.artist_id }}', '{{ a.artist_name }}', '{{ a.appointment_id }}')"
-                                        class="btn-studio btn-outline"
-                                        style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px;"
-                                        title="Message Artist">
-                                        <i class="fas fa-comment-dots"></i>
-                                    </button>
-
-                                    {% if a.status == 'Pending' %}
-                            <!-- FIX: was calling undefined cancelAppt() — now submits a real hidden form -->
-                                        <button
-                                            onclick="if(confirm('Cancel this appointment?')) document.getElementById('cancelForm-{{ a.appointment_id }}').submit();"
-                                            class="btn-studio btn-outline"
-                                            style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px; color: var(--studio-danger); border-color: rgba(239, 68, 68, 0.2);"
-                                            title="Cancel Appointment">
-                                            <i class="fas fa-ban"></i>
-                                        </button>
-                                    {% elif a.status in ['Cancelled', 'Rejected'] %}
-                            <!-- FIX: was calling undefined deleteAppt() — now submits a real hidden form -->
-                                        <button
-                                            onclick="if(confirm('Permanently delete this record?')) document.getElementById('deleteForm-{{ a.appointment_id }}').submit();"
-                                            class="btn-studio btn-outline"
-                                            style="padding: 0.5rem; width: 34px; height: 34px; border-radius: 8px; color: var(--studio-danger); border-color: rgba(239, 68, 68, 0.2);"
-                                            title="Delete Record">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
+        <!-- Table -->
+        <div class="appts-table-wrap">
+            <table class="appts-table">
+                <thead>
                     <tr>
-                        <td colspan="9"
-                            style="text-align: center; padding: 6rem 4rem; color: var(--studio-text-secondary);">
-                            <i class="fas fa-calendar-times"
-                               style="font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.2; color: var(--studio-accent);"></i>
-                            <div
-                                style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--studio-text-primary);">
-                                No appointments scheduled yet.</div>
-                            <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Your skin is a waiting canvas.
-                                <span onclick="switchTab('book', document.getElementById('tabBook'))"
-                                      style="color: var(--studio-accent); cursor: pointer; text-decoration: underline;">Book
-                                    your next masterpiece</span>
-                                today.
-                            </p>
+                        <th class="col-id">ID</th>
+                        <th>Artist</th>
+                        <th>Concept</th>
+                        <th style="text-align:center;">Ref</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if appointments %}
+                    {% for a in appointments %}
+                    <tr class="appt-row" data-status="{{ a.status }}">
+
+                        <td class="col-id">
+                            <span class="cell-id">#{{ a.appointment_id }}</span>
+                        </td>
+
+                        <td>
+                            <span class="cell-primary">{{ a.artist_name }}</span>
+                        </td>
+
+                        <td class="col-concept">
+                            <span class="cell-concept" title="{{ a.tattoo_concept }}">{{ a.tattoo_concept }}</span>
+                        </td>
+
+                        <td style="text-align:center;">
+                            {% if a.reference %}
+                            <div class="ref-thumb-wrap" onclick="window.openLb(this.querySelector('img').src,'Reference Image','{{ a.tattoo_concept }}')">
+                                <img src="{{ url_for('static', filename=a.reference) }}" alt="Reference" class="ref-thumb">
+                                <div class="ref-thumb-overlay"><i class="fas fa-search-plus"></i></div>
+                            </div>
+                            {% else %}
+                            <span style="color:var(--studio-border);font-size:1rem;">—</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="cell-primary">{{ a.appointment_date }}</span>
+                        </td>
+
+                        <td>
+                            <span class="cell-secondary">{{ a.appointment_time }}</span>
+                        </td>
+
+                        <td>
+                            {% if a.duration_hours %}
+                            <span class="cell-primary">
+                                {{ a.duration_hours }}
+                                <span style="font-size:0.62rem;font-weight:600;color:var(--studio-text-muted);font-style:italic;">hr</span>
+                            </span>
+                            {% else %}
+                            <span style="color:var(--studio-border);">—</span>
+                            {% endif %}
+                        </td>
+
+                        <td style="text-align:center;">
+                            {% if a.status == 'Pending' %}
+                            <span class="badge badge-warning" style="font-size:0.62rem;letter-spacing:0.08em;">Pending</span>
+                            {% elif a.status == 'Approved' %}
+                            <span class="badge badge-success" style="font-size:0.62rem;letter-spacing:0.08em;">Approved</span>
+                            {% elif a.status == 'Done' %}
+                            <span class="badge badge-success" style="font-size:0.62rem;letter-spacing:0.08em;">Done</span>
+                            {% elif a.status == 'Rejected' %}
+                            <span class="badge badge-danger" style="font-size:0.62rem;letter-spacing:0.08em;">Rejected</span>
+                            {% else %}
+                            <span class="badge badge-danger" style="font-size:0.62rem;letter-spacing:0.08em;">Cancelled</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="appt-actions">
+                                <!-- Message artist -->
+                                <button
+                                    onclick="custOpenChatFromAppt('{{ a.artist_id }}','{{ a.artist_name }}','{{ a.appointment_id }}')"
+                                    class="appt-btn"
+                                    title="Message Artist">
+                                    <i class="fas fa-comment-dots"></i>
+                                </button>
+
+                                {% if a.status == 'Pending' %}
+                                <!-- Cancel -->
+                                <button
+                                    onclick="if(confirm('Cancel this appointment?')) document.getElementById('cancelForm-{{ a.appointment_id }}').submit();"
+                                    class="appt-btn appt-btn-danger"
+                                    title="Cancel Appointment">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+
+                                {% elif a.status in ['Cancelled', 'Rejected'] %}
+                                <!-- Delete -->
+                                <button
+                                    onclick="if(confirm('Permanently delete this record?')) document.getElementById('deleteForm-{{ a.appointment_id }}').submit();"
+                                    class="appt-btn appt-btn-danger"
+                                    title="Delete Record">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                    {% else %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="appts-empty">
+                                <div class="appts-empty-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h4>No appointments yet</h4>
+                                <p>
+                                    Your skin is a waiting canvas.
+                                    <span class="appts-empty-link" onclick="switchTab('book', document.querySelector('[data-section=book]'))">
+                                        Book your next masterpiece
+                                    </span>
+                                    today.
+                                </p>
+                            </div>
                         </td>
                     </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>

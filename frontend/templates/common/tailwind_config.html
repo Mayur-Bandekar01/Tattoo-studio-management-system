@@ -1,0 +1,50 @@
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Outfit', 'system-ui', 'sans-serif'],
+                    display: ['Cinzel', 'serif'],
+                },
+                colors: {
+                    studio: {
+                        bg: 'var(--studio-bg)',
+                        surface: 'var(--studio-surface)',
+                        card: 'var(--studio-card)',
+                        border: 'var(--studio-border)',
+                        cardBorder: 'var(--studio-border)',
+                        input: 'var(--studio-input-bg)',
+                        gold: 'var(--studio-gold)',
+                        'gold-soft': 'var(--studio-gold-soft)',
+                        'gold-dim': 'var(--studio-gold-dim)',
+                    },
+                    // Legacy/Specific aliases for unified compatibility
+                    'studio-bg': 'var(--studio-bg)',
+                    'studio-surface': 'var(--studio-surface)',
+                    'studio-card': 'var(--studio-card)',
+                    'studio-border': 'var(--studio-border)',
+                    'studio-text': 'var(--studio-text-primary)',
+                    'studio-text-secondary': 'var(--studio-text-secondary)',
+                    'studio-gold': 'var(--studio-gold)',
+                    'studio-gold-dim': 'var(--studio-gold-dim)',
+                    'studio-accent': 'var(--studio-accent)',
+                    'studio-success': '#10b981',
+                    'studio-warning': '#f59e0b',
+                    'studio-danger': '#ef4444',
+                    
+                    accent: 'var(--accent, var(--studio-gold))',
+                    text: 'var(--text, var(--studio-text-primary))',
+                    muted: 'var(--text-muted, var(--studio-text-muted))',
+                },
+                borderRadius: {
+                    'studio': '2rem',
+                    'studio-sm': '1rem',
+                    'studio-md': '1.5rem',
+                },
+                backdropBlur: {
+                    'studio': '20px',
+                }
+            }
+        }
+    }
+</script>

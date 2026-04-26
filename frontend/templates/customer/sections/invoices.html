@@ -1,62 +1,379 @@
-<div class="studio-card">
-    <h3 class="card-title" style="font-weight: 800; letter-spacing: -0.01em; margin-bottom: 2rem;">My Invoices</h3>
+<!-- ═══════════════════════════════════════
+     SECTION: INVOICES (sec-invoices) — Enhanced
+═══════════════════════════════════════ -->
 
-    <div class="studio-table-container">
-        <table class="studio-table">
-            <thead>
-                <tr>
-                    <th>Invoice ID</th>
-                    <th>Appointment ID</th>
-                    <th>Service</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if invoices %}
-                    {% for inv in invoices %}
-                        <tr>
-                            <td
-                                style="color: var(--studio-text-secondary); font-size: 0.85rem; font-family: monospace; opacity: 0.8;">
-                                #{{ inv.invoice_id }}</td>
-                            <td style="font-weight: 700; color: var(--studio-text-primary);">#{{ inv.appointment_id }}</td>
-                            <td style="color: var(--studio-text-secondary);">{{ inv.concept_type }}</td>
-                            <td style="font-weight: 800; color: var(--studio-text-primary); font-size: 1.1rem;">₹{{
-                                inv.total_amt }}</td>
-                            <td style="font-weight: 500;">{{ inv.generated_date }}</td>
-                            <td>
-                                {% if inv.pay_status=='Paid' %}
-                                    <span class="badge badge-success">Paid</span>
-                                {% else %}
-                                    <span class="badge badge-pending">Pending</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="/invoice/view/{{ inv.invoice_id }}" target="_blank" class="btn-studio btn-primary"
-                                   style="padding: 0.5rem 1rem; font-size: 0.75rem; text-decoration: none; box-shadow: 0 4px 12px rgba(255, 0, 60, 0.2);">
-                                    <i class="fas fa-file-invoice" style="margin-right: 0.5rem;"></i> View Bill
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
+<style>
+    /* ── Invoice Section Enhancements ── */
+    .inv-section-wrap {
+        animation: invFadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    @keyframes invFadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header card */
+    .inv-header-card {
+        background   : var(--studio-card);
+        border       : 1px solid var(--studio-border);
+        border-radius: var(--studio-radius);
+        padding      : 2.5rem;
+        margin-bottom: 1.5rem;
+        position     : relative;
+        overflow     : hidden;
+    }
+    .inv-header-card::before {
+        content : '';
+        position: absolute;
+        top     : 0; left: 0;
+        width   : 4px; height: 100%;
+        background: var(--studio-grad);
+        border-radius: 0 2px 2px 0;
+    }
+    .inv-header-card::after {
+        content : '';
+        position: absolute;
+        top     : -40%; right: -10%;
+        width   : 300px; height: 300px;
+        background: radial-gradient(circle, var(--studio-gold-dim) 0%, transparent 70%);
+        pointer-events: none;
+        filter : blur(60px);
+    }
+
+    /* Stats row */
+    .inv-stats-row {
+        display: flex;
+        gap    : 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+    .inv-stat-pill {
+        display    : flex;
+        align-items: center;
+        gap        : 0.75rem;
+        padding    : 0.75rem 1.25rem;
+        background : var(--studio-card);
+        border     : 1px solid var(--studio-border);
+        border-radius: 14px;
+        min-width  : 140px;
+        flex       : 1;
+    }
+    .inv-stat-icon {
+        width : 36px; height: 36px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    .inv-stat-value {
+        font-size  : 1.25rem;
+        font-weight: 900;
+        color      : var(--studio-text-primary);
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+    .inv-stat-label {
+        font-size     : 9px;
+        font-weight   : 800;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color         : var(--studio-text-muted);
+        margin-top    : 2px;
+    }
+
+    /* Table card */
+    .inv-table-card {
+        background   : var(--studio-card);
+        border       : 1px solid var(--studio-border);
+        border-radius: var(--studio-radius);
+        overflow     : hidden;
+    }
+
+    /* Table itself */
+    .inv-table {
+        width          : 100%;
+        border-collapse: separate;
+        border-spacing : 0;
+    }
+    .inv-table thead tr {
+        background: rgba(255,255,255,0.02);
+    }
+    .inv-table thead th {
+        padding       : 1rem 1.25rem;
+        font-size     : 9px;
+        font-weight   : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color         : var(--studio-text-muted);
+        border-bottom : 1px solid var(--studio-border);
+        white-space   : nowrap;
+    }
+    .inv-table thead th:first-child { padding-left: 2rem; }
+    .inv-table thead th:last-child  { padding-right: 2rem; text-align: center; }
+
+    .inv-table tbody tr {
+        transition: background 0.2s;
+        border-bottom: 1px solid var(--studio-border-light);
+    }
+    .inv-table tbody tr:last-child { border-bottom: none; }
+    .inv-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+    .inv-table tbody td {
+        padding    : 1.25rem 1.25rem;
+        vertical-align: middle;
+    }
+    .inv-table tbody td:first-child { padding-left: 2rem; }
+    .inv-table tbody td:last-child  { padding-right: 2rem; }
+
+    /* Cell types */
+    .inv-cell-id {
+        font-family  : var(--font-mono, monospace);
+        font-size    : 10px;
+        font-weight  : 800;
+        color        : var(--studio-text-muted);
+        letter-spacing: -0.02em;
+        transition   : color 0.2s;
+    }
+    .inv-table tbody tr:hover .inv-cell-id { color: var(--studio-gold); }
+
+    .inv-cell-appt {
+        font-family  : var(--font-mono, monospace);
+        font-size    : 11px;
+        font-weight  : 900;
+        color        : var(--studio-text-primary);
+        letter-spacing: -0.02em;
+    }
+
+    .inv-cell-service {
+        font-size     : 10px;
+        font-weight   : 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color         : var(--studio-text-secondary);
+    }
+
+    .inv-cell-amount {
+        font-size    : 1rem;
+        font-weight  : 900;
+        color        : var(--studio-text-primary);
+        letter-spacing: -0.02em;
+        white-space  : nowrap;
+    }
+
+    .inv-cell-date {
+        font-size     : 10px;
+        font-weight   : 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color         : var(--studio-text-primary);
+        white-space   : nowrap;
+    }
+
+    /* Status badges */
+    .inv-badge {
+        display      : inline-flex;
+        align-items  : center;
+        gap          : 5px;
+        padding      : 4px 10px;
+        border-radius: 20px;
+        font-size    : 8.5px;
+        font-weight  : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        white-space  : nowrap;
+    }
+    .inv-badge-dot {
+        width        : 5px; height: 5px;
+        border-radius: 50%;
+        flex-shrink  : 0;
+    }
+    .inv-badge.paid {
+        background: rgba(16,185,129,0.1);
+        color     : #10B981;
+        border    : 1px solid rgba(16,185,129,0.25);
+    }
+    .inv-badge.paid .inv-badge-dot   { background: #10B981; box-shadow: 0 0 6px rgba(16,185,129,0.6); }
+    .inv-badge.pending {
+        background: rgba(245,158,11,0.1);
+        color     : #F59E0B;
+        border    : 1px solid rgba(245,158,11,0.25);
+    }
+    .inv-badge.pending .inv-badge-dot { background: #F59E0B; box-shadow: 0 0 6px rgba(245,158,11,0.6); }
+
+    /* Action button */
+    .inv-view-btn {
+        display      : inline-flex;
+        align-items  : center;
+        justify-content: center;
+        gap          : 6px;
+        padding      : 7px 14px;
+        background   : transparent;
+        border       : 1px solid var(--studio-border);
+        border-radius: 10px;
+        color        : var(--studio-text-muted);
+        font-size    : 9px;
+        font-weight  : 900;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        text-decoration: none;
+        transition   : all 0.2s;
+        white-space  : nowrap;
+    }
+    .inv-view-btn:hover {
+        border-color: var(--studio-gold);
+        color       : var(--studio-gold);
+        background  : var(--studio-accent-soft);
+        box-shadow  : 0 0 12px var(--studio-gold-dim);
+    }
+
+    /* Empty state */
+    .inv-empty {
+        display       : flex;
+        flex-direction: column;
+        align-items   : center;
+        justify-content: center;
+        padding       : 5rem 2rem;
+        text-align    : center;
+    }
+    .inv-empty-icon-wrap {
+        width        : 72px; height: 72px;
+        border-radius: 24px;
+        background   : rgba(255,255,255,0.03);
+        border       : 1px solid var(--studio-border);
+        display      : flex;
+        align-items  : center; justify-content: center;
+        font-size    : 1.5rem;
+        color        : var(--studio-text-muted);
+        margin-bottom: 1.5rem;
+        transform    : rotate(6deg);
+    }
+
+    /* Scrollbar for table overflow */
+    .inv-table-scroll { overflow-x: auto; }
+    .inv-table-scroll::-webkit-scrollbar { height: 4px; }
+    .inv-table-scroll::-webkit-scrollbar-track { background: transparent; }
+    .inv-table-scroll::-webkit-scrollbar-thumb { background: var(--studio-border); border-radius: 2px; }
+</style>
+
+<div class="inv-section-wrap space-y-6">
+
+    <!-- ── Header Card ── -->
+    <div class="inv-header-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div>
+                <div class="flex items-center gap-3 mb-3">
+                    <div style="width:36px;height:3px;background:var(--studio-grad);border-radius:2px;"></div>
+                    <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.35em;color:var(--studio-text-muted);">Billing History</span>
+                </div>
+                <h3 style="font-size:1.9rem;font-weight:900;color:var(--studio-text-primary);letter-spacing:-0.03em;line-height:1.1;">My Invoices</h3>
+                <p style="font-size:11px;font-weight:700;color:var(--studio-text-muted);margin-top:6px;">All your billing records in one place</p>
+            </div>
+
+            <!-- Stats pills -->
+            {% if invoices %}
+            <div class="inv-stats-row" style="margin-bottom:0;">
+                <div class="inv-stat-pill">
+                    <div class="inv-stat-icon" style="background:var(--studio-accent-soft);color:var(--studio-gold);">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <div class="inv-stat-value">{{ invoices|length }}</div>
+                        <div class="inv-stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="inv-stat-pill">
+                    <div class="inv-stat-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div class="inv-stat-value" style="color:#10B981;">{{ invoices|selectattr('pay_status','eq','Paid')|list|length }}</div>
+                        <div class="inv-stat-label">Paid</div>
+                    </div>
+                </div>
+                <div class="inv-stat-pill">
+                    <div class="inv-stat-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <div class="inv-stat-value" style="color:#F59E0B;">{{ invoices|selectattr('pay_status','ne','Paid')|list|length }}</div>
+                        <div class="inv-stat-label">Pending</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ── Table Card ── -->
+    <div class="inv-table-card">
+        <div class="inv-table-scroll">
+            <table class="inv-table">
+                <thead>
                     <tr>
-                        <td colspan="7"
-                            style="text-align: center; padding: 6rem 4rem; color: var(--studio-text-secondary);">
-                            <i class="fas fa-file-invoice-dollar"
-                               style="font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.2; color: var(--studio-accent);"></i>
-                            <div
-                                style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--studio-text-primary);">
-                                No invoices generated yet.</div>
-                            <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Once your appointment is
-                                completed, your
-                                invoice will appear here.</p>
+                        <th>Invoice</th>
+                        <th>Session</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if invoices %}
+                    {% for inv in invoices %}
+                    <tr>
+                        <td>
+                            <span class="inv-cell-id">#{{ inv.invoice_id }}</span>
+                        </td>
+                        <td>
+                            <span class="inv-cell-appt">#{{ inv.appointment_id }}</span>
+                        </td>
+                        <td>
+                            <span class="inv-cell-service">{{ inv.concept_type }}</span>
+                        </td>
+                        <td>
+                            <span class="inv-cell-amount">₹{{ inv.total_amt }}</span>
+                        </td>
+                        <td>
+                            <span class="inv-cell-date">{{ inv.generated_date }}</span>
+                        </td>
+                        <td>
+                            {% if inv.pay_status == 'Paid' %}
+                            <span class="inv-badge paid">
+                                <span class="inv-badge-dot"></span>Paid
+                            </span>
+                            {% else %}
+                            <span class="inv-badge pending">
+                                <span class="inv-badge-dot"></span>Pending
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            <a href="/invoice/view/{{ inv.invoice_id }}" target="_blank" class="inv-view-btn">
+                                <i class="fas fa-file-invoice"></i> View Bill
+                            </a>
                         </td>
                     </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="inv-empty">
+                                <div class="inv-empty-icon-wrap">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <h4 style="font-size:1.1rem;font-weight:900;color:var(--studio-text-primary);margin-bottom:8px;letter-spacing:-0.02em;">No Invoices Yet</h4>
+                                <p style="font-size:11px;font-weight:700;color:var(--studio-text-muted);text-transform:uppercase;letter-spacing:0.2em;max-width:220px;line-height:1.7;">
+                                    Once your appointment is completed, your invoice will appear here.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>

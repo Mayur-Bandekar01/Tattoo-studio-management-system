@@ -11,16 +11,15 @@ from flask import (
     session,
     flash,
     current_app,
-    jsonify,
 )
 from ..db import get_db
 
 from ..utils.decorators import role_required
-from ..utils.validators import allowed_file, validate_image_size
+from ..utils.validators import allowed_file, validate_image_size, validate_fields
+from ..utils.serializers import sanitize_for_json
 
 customer_bp = Blueprint("customer", __name__)
 
-import secrets
 
 
 # ── CUSTOMER DASHBOARD ROUTE ──────────────────────────────────
@@ -33,47 +32,40 @@ def customer_dashboard():
 
     customer_id = session["user_id"]
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT a.*, ar.artist_name FROM appointment a
+            JOIN artist ar ON a.artist_id = ar.artist_id
+            WHERE a.customer_id = %s ORDER BY a.appointment_date DESC
+        """,
+            (customer_id,),
+        )
+        appointments = cursor.fetchall()
 
-    cursor.execute(
-        """
-        SELECT a.*, ar.artist_name FROM appointment a
-        JOIN artist ar ON a.artist_id = ar.artist_id
-        WHERE a.customer_id = %s ORDER BY a.appointment_date DESC
-    """,
-        (customer_id,),
-    )
-    appointments = cursor.fetchall()
+        cursor.execute(
+            """
+            SELECT i.* FROM invoice i
+            JOIN appointment a ON i.appointment_id = a.appointment_id
+            WHERE a.customer_id = %s ORDER BY i.generated_date DESC
+        """,
+            (customer_id,),
+        )
+        invoices = cursor.fetchall()
 
-    cursor.execute(
-        """
-        SELECT i.* FROM invoice i
-        JOIN appointment a ON i.appointment_id = a.appointment_id
-        WHERE a.customer_id = %s ORDER BY i.generated_date DESC
-    """,
-        (customer_id,),
-    )
-    invoices = cursor.fetchall()
+        cursor.execute("SELECT * FROM artist")
+        artists = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM artist")
-    artists = cursor.fetchall()
+        cursor.execute("SELECT * FROM customer WHERE customer_id = %s", (customer_id,))
+        customer_profile = cursor.fetchone()
 
-    cursor.execute("SELECT * FROM customer WHERE customer_id = %s", (customer_id,))
-    customer_profile = cursor.fetchone()
+        cursor.execute("""
+            SELECT g.*, a.artist_name FROM gallery g
+            JOIN artist a ON g.artist_id = a.artist_id
+            ORDER BY g.uploaded_at DESC
+        """)
+        gallery = cursor.fetchall()
 
-    cursor.execute("""
-        SELECT g.*, a.artist_name FROM gallery g
-        JOIN artist a ON g.artist_id = a.artist_id
-        ORDER BY g.uploaded_at DESC
-    """)
-    gallery = cursor.fetchall()
-
-    cursor.execute(
-        "SELECT gallery_id FROM gallery_likes WHERE customer_id = %s", (customer_id,)
-    )
-    liked_rows = cursor.fetchall()
-    liked_ids = set(row["gallery_id"] for row in liked_rows)
-    liked_count = len(liked_ids)
 
     total_appointments = len(appointments)
     pending_count = sum(1 for a in appointments if a["status"] == "Pending")
@@ -83,16 +75,14 @@ def customer_dashboard():
     return render_template(
         "customer/dashboard.html",
         name=session["name"],
-        appointments=appointments,
-        invoices=invoices,
-        artists=artists,
-        customer_profile=customer_profile,
-        gallery=gallery,
-        liked_ids=liked_ids,
-        liked_count=liked_count,
-        total_appointments=total_appointments,
+        appointments=sanitize_for_json(appointments),
+        invoices=sanitize_for_json(invoices),
+        artists=sanitize_for_json(artists),
+        customer_profile=sanitize_for_json(customer_profile),
+        gallery=sanitize_for_json(gallery),
         pending_count=pending_count,
         done_count=done_count,
+        total_appointments=total_appointments,
         total_invoices=total_invoices,
     )
 
@@ -105,14 +95,18 @@ def customer_book():
 
     # CSRF verification is handled globally by CSRFProtect(app)
 
+    required = ["service_type", "artist_id", "appointment_date", "appointment_time"]
+    missing = validate_fields(request.form, required)
+    
+    if missing:
+        field_labels = [f.replace("_", " ").title() for f in missing]
+        flash(f"Missing required fields: {', '.join(field_labels)}", "error")
+        return redirect("/customer/dashboard")
+
     service_type = request.form.get("service_type", "").strip()
     artist_id = request.form.get("artist_id", "").strip()
     appt_date = request.form.get("appointment_date", "").strip()
     appt_time = request.form.get("appointment_time", "").strip()
-
-    if not all([service_type, artist_id, appt_date, appt_time]):
-        flash("Please fill in all required fields.", "error")
-        return redirect("/customer/dashboard")
 
     if appt_date < date.today().isoformat():
         flash("Cannot book appointments in the past.", "error")
@@ -190,69 +184,68 @@ def customer_book():
         reference = f"uploads/references/{filename}"
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute(
-        """
-        SELECT appointment_id FROM appointment
-        WHERE artist_id = %s AND appointment_date = %s
-          AND appointment_time = %s
-          AND status NOT IN ('Cancelled', 'Rejected')
-    """,
-        (artist_id, appt_date, appt_time),
-    )
-    if cursor.fetchone():
-        if reference:
-            try:
-                os.remove(os.path.join(current_app.static_folder, reference))
-            except:
-                pass
-        flash(
-            "That time slot is already booked. Please choose a different time.", "error"
-        )
-        return redirect("/customer/dashboard")
-
-    cursor.execute(
-        """
-        SELECT appointment_id FROM appointment
-        WHERE customer_id = %s AND artist_id = %s
-          AND appointment_date = %s AND appointment_time = %s
-          AND status NOT IN ('Cancelled', 'Rejected')
-    """,
-        (session["user_id"], artist_id, appt_date, appt_time),
-    )
-    if cursor.fetchone():
-        if reference:
-            try:
-                os.remove(os.path.join(current_app.static_folder, reference))
-            except:
-                pass
-        flash("You already have a booking with this artist at that time.", "error")
-        return redirect("/customer/dashboard")
-
-    try:
+    with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
             """
-            INSERT INTO appointment
-                (customer_id, artist_id, tattoo_concept, reference,
-                 appointment_date, appointment_time, extra_details)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            SELECT appointment_id FROM appointment
+            WHERE artist_id = %s AND appointment_date = %s
+              AND appointment_time = %s
+              AND status NOT IN ('Cancelled', 'Rejected')
         """,
-            (
-                session["user_id"],
-                artist_id,
-                tattoo_concept,
-                reference,
-                appt_date,
-                appt_time,
-                json.dumps(extra_details),
-            ),
+            (artist_id, appt_date, appt_time),
         )
-        conn.commit()
-        flash("Booking submitted! Waiting for artist approval.", "success")
-    except Exception as e:
-        current_app.logger.error(f"Booking Error: {e}")
-        flash("Something went wrong. Please try again.", "error")
+        if cursor.fetchone():
+            if reference:
+                try:
+                    os.remove(os.path.join(current_app.static_folder, reference))
+                except:
+                    pass
+            flash(
+                "That time slot is already booked. Please choose a different time.", "error"
+            )
+            return redirect("/customer/dashboard")
+
+        cursor.execute(
+            """
+            SELECT appointment_id FROM appointment
+            WHERE customer_id = %s AND artist_id = %s
+              AND appointment_date = %s AND appointment_time = %s
+              AND status NOT IN ('Cancelled', 'Rejected')
+        """,
+            (session["user_id"], artist_id, appt_date, appt_time),
+        )
+        if cursor.fetchone():
+            if reference:
+                try:
+                    os.remove(os.path.join(current_app.static_folder, reference))
+                except:
+                    pass
+            flash("You already have a booking with this artist at that time.", "error")
+            return redirect("/customer/dashboard")
+
+        try:
+            cursor.execute(
+                """
+                INSERT INTO appointment
+                    (customer_id, artist_id, tattoo_concept, reference,
+                     appointment_date, appointment_time, extra_details)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+                (
+                    session["user_id"],
+                    artist_id,
+                    tattoo_concept,
+                    reference,
+                    appt_date,
+                    appt_time,
+                    json.dumps(extra_details),
+                ),
+            )
+            conn.commit()
+            flash("Booking Successfully Submitted! Waiting for artist approval.", "success")
+        except Exception as e:
+            current_app.logger.error(f"Booking Error: {e}")
+            flash("Something went wrong. Please try again.", "error")
 
     return redirect("/customer/dashboard")
 
@@ -262,15 +255,15 @@ def customer_book():
 @role_required("customer")
 def customer_cancel(appointment_id):
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        """
-        UPDATE appointment SET status = 'Cancelled'
-        WHERE appointment_id = %s AND customer_id = %s
-    """,
-        (appointment_id, session["user_id"]),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """
+            UPDATE appointment SET status = 'Cancelled'
+            WHERE appointment_id = %s AND customer_id = %s
+        """,
+            (appointment_id, session["user_id"]),
+        )
+        conn.commit()
     flash("Appointment cancelled.", "success")
     return redirect("/customer/dashboard")
 
@@ -279,36 +272,36 @@ def customer_cancel(appointment_id):
 @role_required("customer")
 def customer_delete(appointment_id):
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """
-        SELECT * FROM appointment
-        WHERE appointment_id = %s AND customer_id = %s
-    """,
-        (appointment_id, session["user_id"]),
-    )
-    appt = cursor.fetchone()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM appointment
+            WHERE appointment_id = %s AND customer_id = %s
+        """,
+            (appointment_id, session["user_id"]),
+        )
+        appt = cursor.fetchone()
 
-    if not appt:
-        flash("Appointment not found!", "error")
-        return redirect("/customer/dashboard")
+        if not appt:
+            flash("Appointment not found!", "error")
+            return redirect("/customer/dashboard")
 
-    if appt["status"] not in ("Cancelled", "Rejected"):
-        flash("Only cancelled or rejected appointments can be deleted.", "error")
-        return redirect("/customer/dashboard")
+        if appt["status"] not in ("Cancelled", "Rejected"):
+            flash("Only cancelled or rejected appointments can be deleted.", "error")
+            return redirect("/customer/dashboard")
 
-    if appt.get("reference"):
-        file_path = os.path.join(current_app.static_folder, appt["reference"])
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-            except Exception:
-                pass
+        if appt.get("reference"):
+            file_path = os.path.join(current_app.static_folder, appt["reference"])
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception:
+                    pass
 
-    cursor.execute(
-        "DELETE FROM appointment WHERE appointment_id = %s", (appointment_id,)
-    )
-    conn.commit()
+        cursor.execute(
+            "DELETE FROM appointment WHERE appointment_id = %s", (appointment_id,)
+        )
+        conn.commit()
     flash("Appointment deleted successfully.", "success")
     return redirect("/customer/dashboard")
 
@@ -354,52 +347,51 @@ def customer_pay(invoice_id):
         stored_method = "Cash"
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute(
-        """
-        SELECT i.*, a.customer_id FROM invoice i
-        JOIN appointment a ON i.appointment_id = a.appointment_id
-        WHERE i.invoice_id = %s
-    """,
-        (invoice_id,),
-    )
-    invoice = cursor.fetchone()
-
-    if not invoice or invoice["customer_id"] != session["user_id"]:
-        flash("Invoice not found!", "error")
-        return redirect("/customer/dashboard")
-
-    if invoice["pay_status"] == "Paid":
-        flash("This invoice is already paid!", "error")
-        return redirect("/customer/dashboard")
-
-    if invoice["pay_status"] == "Under Review":
-        flash(
-            "Your payment is already under review. "
-            "Please wait for owner confirmation.",
-            "error",
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT i.*, a.customer_id FROM invoice i
+            JOIN appointment a ON i.appointment_id = a.appointment_id
+            WHERE i.invoice_id = %s
+        """,
+            (invoice_id,),
         )
-        return redirect("/customer/dashboard")
+        invoice = cursor.fetchone()
 
-    cursor.execute(
-        """
-        INSERT INTO payment
-            (invoice_id, amount_paid, payment_method, payment_date, status)
-        VALUES (%s, %s, %s, CURDATE(), 'Pending Approval')
-    """,
-        (invoice_id, invoice["total_amt"], stored_method),
-    )
+        if not invoice or invoice["customer_id"] != session["user_id"]:
+            flash("Invoice not found!", "error")
+            return redirect("/customer/dashboard")
 
-    cursor.execute(
-        """
-        UPDATE invoice SET pay_status = 'Under Review'
-        WHERE invoice_id = %s
-    """,
-        (invoice_id,),
-    )
+        if invoice["pay_status"] == "Paid":
+            flash("This invoice is already paid!", "error")
+            return redirect("/customer/dashboard")
 
-    conn.commit()
+        if invoice["pay_status"] == "Under Review":
+            flash(
+                "Your payment is already under review. "
+                "Please wait for owner confirmation.",
+                "error",
+            )
+            return redirect("/customer/dashboard")
+
+        cursor.execute(
+            """
+            INSERT INTO payment
+                (invoice_id, amount_paid, payment_method, payment_date, status)
+            VALUES (%s, %s, %s, CURDATE(), 'Pending Approval')
+        """,
+            (invoice_id, invoice["total_amt"], stored_method),
+        )
+
+        cursor.execute(
+            """
+            UPDATE invoice SET pay_status = 'Under Review'
+            WHERE invoice_id = %s
+        """,
+            (invoice_id,),
+        )
+
+        conn.commit()
 
     flash(
         "Payment submitted successfully! "
@@ -417,97 +409,35 @@ def customer_change_password():
     new_pass = request.form.get("new_password", "").strip()
     confirm = request.form.get("confirm_password", "").strip()
 
+    required = ["current_password", "new_password", "confirm_password"]
+    missing = validate_fields(request.form, required)
+    if missing:
+        flash("Please fill in all password fields.", "error")
+        return redirect("/customer/dashboard")
+
     if new_pass != confirm:
-        flash("Passwords do not match!", "error")
+        flash("New passwords do not match!", "error")
         return redirect("/customer/dashboard")
     if len(new_pass) < 8:
         flash("Password must be at least 8 characters!", "error")
         return redirect("/customer/dashboard")
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        "SELECT * FROM customer WHERE customer_id = %s AND password = %s",
-        (session["user_id"], current),
-    )
-    if not cursor.fetchone():
-        flash("Current password is incorrect!", "error")
-        return redirect("/customer/dashboard")
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT * FROM customer WHERE customer_id = %s AND password = %s",
+            (session["user_id"], current),
+        )
+        if not cursor.fetchone():
+            flash("Current password is incorrect!", "error")
+            return redirect("/customer/dashboard")
 
-    cursor.execute(
-        "UPDATE customer SET password = %s WHERE customer_id = %s",
-        (new_pass, session["user_id"]),
-    )
-    conn.commit()
+        cursor.execute(
+            "UPDATE customer SET password = %s WHERE customer_id = %s",
+            (new_pass, session["user_id"]),
+        )
+        conn.commit()
     flash("Password updated successfully!", "success")
     return redirect("/customer/dashboard")
 
 
-@customer_bp.route("/customer/gallery/like/<int:gallery_id>", methods=["POST"])
-@role_required("customer")
-def customer_gallery_like(gallery_id):
-    customer_id = session["user_id"]
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute(
-        "SELECT like_id FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
-        (gallery_id, customer_id),
-    )
-    existing = cursor.fetchone()
-
-    if existing:
-        cursor.execute(
-            "DELETE FROM gallery_likes WHERE gallery_id = %s AND customer_id = %s",
-            (gallery_id, customer_id),
-        )
-        conn.commit()
-        cursor.execute(
-            "SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s",
-            (gallery_id,),
-        )
-        count = cursor.fetchone()["cnt"]
-        return jsonify({"success": True, "liked": False, "count": count})
-    else:
-        cursor.execute(
-            "INSERT INTO gallery_likes (gallery_id, customer_id) VALUES (%s, %s)",
-            (gallery_id, customer_id),
-        )
-        conn.commit()
-        cursor.execute(
-            "SELECT COUNT(*) as cnt FROM gallery_likes WHERE gallery_id = %s",
-            (gallery_id,),
-        )
-        count = cursor.fetchone()["cnt"]
-        return jsonify({"success": True, "liked": True, "count": count})
-
-
-@customer_bp.route("/customer/gallery/liked")
-@role_required("customer")
-def customer_gallery_liked():
-    customer_id = session["user_id"]
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """
-        SELECT g.*, a.artist_name, gl.liked_at FROM gallery_likes gl
-        JOIN gallery g ON gl.gallery_id = g.gallery_id
-        JOIN artist  a ON g.artist_id   = a.artist_id
-        WHERE gl.customer_id = %s ORDER BY gl.liked_at DESC
-    """,
-        (customer_id,),
-    )
-    liked_items = cursor.fetchall()
-
-    result = []
-    for item in liked_items:
-        result.append(
-            {
-                "gallery_id": item["gallery_id"],
-                "image_path": item["image_path"],
-                "caption": item["caption"] or "Untitled",
-                "style": item["style"] or "",
-                "artist_name": item["artist_name"],
-            }
-        )
-    return jsonify({"success": True, "items": result})

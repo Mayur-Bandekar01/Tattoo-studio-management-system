@@ -1,6 +1,6 @@
 <!-- ════════════════════════════════════════════════════════
      OWNER — PAYMENTS SECTION
-     Refactored: Vibrant Obsidian Alignment
+     Refactored: Utility-First Premium
      ════════════════════════════════════════════════════════ -->
 
 {% set pending_approvals_list = payments | selectattr('status', 'equalto', 'Pending Approval') | list %}
@@ -8,76 +8,80 @@
 
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 1 — PENDING APPROVALS
-     Only visible when customers have submitted payments
      ══════════════════════════════════════════════════════════ -->
 {% if pending_approvals_list %}
-<div class="studio-card" style="border-left: 6px solid var(--studio-warning); background: var(--studio-warning-soft);">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div class="bg-warning-soft text-warning"
-                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+<div class="studio-card p-6 border-l-4 border-amber-500 bg-amber-500/5">
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shadow-inner">
                 <i class="fa-solid fa-clock"></i>
             </div>
             <div>
-                <h3 class="studio-title" style="margin:0;">Pending Approvals</h3>
-                <p class="text-warning"
-                    style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin:0;">
+                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Pending Approvals
+                </h3>
+                <p class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mt-0.5">
                     {{ pending_approvals_list | length }} verification(s) required
                 </p>
             </div>
         </div>
-        <span class="badge" style="background:var(--studio-warning); color:white; padding:6px 16px;">URGENT</span>
+        <span
+            class="px-4 py-1.5 rounded-full bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/20">URGENT</span>
     </div>
 
-    <div class="bg-indigo-soft text-primary"
-        style="border: 1px solid var(--studio-warning); border-radius: var(--studio-radius-sm); padding: 1rem; margin-bottom: 2rem; font-size: 0.9rem; display: flex; gap: 1rem; align-items: flex-start;">
-        <span style="font-size:1.2rem;">💡</span>
-        <p style="margin:0; line-height:1.5; font-weight: 500;">
-            Confirm receipts via UPI/Bank before approving. <strong>Approve</strong> marks as Paid.
-            <strong>Reject</strong> resets the invoice.
-        </p>
+    <div class="flex items-start gap-4 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 mb-8 border-dashed">
+        <span class="text-xl">💡</span>
+        <div class="text-xs font-bold leading-relaxed text-studio-text-primary">
+            Confirm receipts via UPI/Bank before approving. <span class="text-emerald-500">Approve</span> marks as Paid.
+            <span class="text-red-500">Reject</span> resets the invoice.
+        </div>
     </div>
 
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="overflow-x-auto -mx-6 px-6">
+        <table class="w-full text-left border-collapse">
             <thead>
-                <tr>
-                    <th style="width: 100px;">Pay ID</th>
-                    <th>Invoice</th>
-                    <th>Customer</th>
-                    <th>Amount</th>
-                    <th>UTR Reference</th>
-                    <th>Submitted</th>
-                    <th style="width: 200px;">Action</th>
+                <tr class="border-b border-amber-500/20 bg-amber-500/5">
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Pay ID</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Invoice</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Customer</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Amount</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">UTR Reference
+                    </th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Submitted</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-amber-500/10">
                 {% for p in pending_approvals_list %}
                 {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
                 {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
                 else none %}
-                <tr>
-                    <td class="font-mono text-indigo" style="font-weight: 800;">#{{ p.payment_id }}</td>
-                    <td class="font-bold text-primary">#INV-{{ p.invoice_id }}</td>
-                    <td class="font-bold">{{ appt.customer_name if appt else '—' }}</td>
-                    <td class="font-bold text-success" style="font-size: 1rem;">₹{{ p.amount_paid }}</td>
-                    <td class="font-mono text-primary" style="font-size:0.85rem; word-break:break-all;">{{
+                <tr class="hover:bg-amber-500/5 transition-colors">
+                    <td class="py-4 px-4 font-mono text-amber-600 font-black text-xs">#{{ p.payment_id }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">#INV-{{ p.invoice_id }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">{{ appt.customer_name if appt else
+                        '—' }}</td>
+                    <td class="py-4 px-4 font-black text-emerald-500 text-lg">₹{{ p.amount_paid }}</td>
+                    <td class="py-4 px-4 font-mono text-studio-text-primary text-[10px] break-all max-w-[200px]">{{
                         p.payment_method }}</td>
-                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ p.payment_date }}</td>
-                    <td>
-                        <div style="display:flex; gap:0.5rem;">
-                            <!-- [DATA-FLOW]: Submits to POST /owner/payment/approve/{{ p.payment_id }} -->
+                    <td class="py-4 px-4 text-[10px] font-black text-studio-text-muted uppercase italic">{{
+                        p.payment_date }}</td>
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-2">
                             <form method="POST" action="/owner/payment/approve/{{ p.payment_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit"
                                     onclick="return confirm('Confirm receipt of ₹{{ p.amount_paid }}?')"
-                                    class="btn-studio btn-primary"
-                                    style="padding:0.4rem 0.85rem; font-size:0.7rem;">Approve</button>
+                                    class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-500/20 active:scale-95">
+                                    Approve
+                                </button>
                             </form>
-                            <!-- [DATA-FLOW]: Submits to POST /owner/payment/reject/{{ p.payment_id }} -->
                             <form method="POST" action="/owner/payment/reject/{{ p.payment_id }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" onclick="return confirm('Reject this payment?')"
-                                    class="btn-studio btn-secondary text-danger bg-danger-soft"
-                                    style="padding:0.4rem 0.85rem; font-size:0.7rem; border-color: var(--studio-danger);">Reject</button>
+                                    class="px-4 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-[10px] font-black uppercase tracking-widest border border-red-500/30 transition-all active:scale-95">
+                                    Reject
+                                </button>
                             </form>
                         </div>
                     </td>
@@ -92,28 +96,26 @@
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 2 — RECORD PAYMENT MANUALLY
      ══════════════════════════════════════════════════════════ -->
-<div class="studio-card" style="border-left: 6px solid var(--studio-indigo);">
-    <div style="display:flex; align-items:center; gap:15px; margin-bottom:2rem;">
-        <div class="bg-indigo-soft text-indigo"
-            style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+<div class="studio-card p-6 mt-8 border-l-4 border-indigo-500">
+    <div class="flex items-center gap-4 mb-8">
+        <div
+            class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shadow-inner">
             <i class="fa-solid fa-pen-to-square"></i>
         </div>
         <div>
-            <h3 class="studio-title" style="margin:0;">Manual Entry</h3>
-            <p class="text-secondary"
-                style="font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-top: 4px;">For offline or
+            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Manual Entry</h3>
+            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">For offline or
                 cash transactions</p>
         </div>
     </div>
 
-    <!-- [DATA-FLOW]: Submits to POST /owner/payment/record -->
-
-    <form method="POST" action="/owner/payment/record">
-        <div
-            style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem; margin-bottom:2rem;">
-            <div>
-                <label>Select Invoice</label>
-                <select name="invoice_id" id="invoiceSelect" class="studio-input" required>
+    <form method="POST" action="/owner/payment/record" class="space-y-6">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Select
+                    Invoice</label>
+                <select name="invoice_id" id="invoiceSelect" class="studio-input w-full" required>
                     <option value="">— Select Invoice —</option>
                     {% for inv in invoices %}
                     {% if inv.pay_status in ('Pending', 'Under Review') %}
@@ -126,96 +128,116 @@
                     {% endfor %}
                 </select>
             </div>
-            <div>
-                <label>Amount (₹)</label>
-                <div style="position: relative;">
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Amount (₹)</label>
+                <div class="relative group">
                     <span
-                        style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--studio-indigo);">₹</span>
-                    <input type="number" name="amount_paid" id="amountPaid" class="studio-input" step="0.01" min="1"
-                        placeholder="0.00" required style="padding-left: 2.5rem;">
+                        class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-indigo-500 group-focus-within:scale-110 transition-transform">₹</span>
+                    <input type="number" name="amount_paid" id="amountPaid" class="studio-input w-full pl-10"
+                        step="0.01" min="1" placeholder="0.00" required>
                 </div>
             </div>
-            <div>
-                <label>Payment Method</label>
-                <select name="payment_method" class="studio-input" required>
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Payment
+                    Method</label>
+                <select name="payment_method" class="studio-input w-full" required>
                     <option value="Cash">Cash</option>
                     <option value="UPI">UPI</option>
                     <option value="Card">Card</option>
                     <option value="Bank Transfer">Bank Transfer</option>
                 </select>
             </div>
-            <div>
-                <label>Date</label>
-                <input type="date" name="payment_date" class="studio-input" required>
+            <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Date</label>
+                <input type="date" name="payment_date" class="studio-input w-full" required>
             </div>
         </div>
-        <button type="submit" class="btn-studio btn-primary">
-            <i class="fas fa-check-circle"></i> Record Transaction
-        </button>
+        <div class="flex justify-end">
+            <button type="submit" class="studio-btn-primary px-8">
+                <i class="fas fa-check-circle mr-2"></i> Record Transaction
+            </button>
+        </div>
     </form>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
      BLOCK 3 — PAYMENT LEDGER
      ══════════════════════════════════════════════════════════ -->
-<div class="studio-card" style="border-left: 6px solid var(--studio-success);">
-    <div
-        style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; flex-wrap:wrap; gap:1.5rem;">
-        <div style="display:flex; align-items:center; gap:15px;">
-            <div class="bg-success-soft text-success"
-                style="width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+<div class="studio-card p-6 mt-8 border-l-4 border-emerald-500">
+    <div class="flex flex-wrap items-center justify-between gap-6 mb-8">
+        <div class="flex items-center gap-4">
+            <div
+                class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl shadow-inner">
                 <i class="fa-solid fa-list-ul"></i>
             </div>
             <div>
-                <h3 class="studio-title" style="margin:0;">Payment Ledger</h3>
-                <p class="text-secondary"
-                    style="font-size:0.75rem; font-weight:700; text-transform:uppercase; margin-top: 4px;">Master
+                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Payment Ledger</h3>
+                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Master
                     transaction archive</p>
             </div>
         </div>
-        <div style="display:flex; gap:1rem;">
-            <span class="badge bg-success-soft text-success">✓ {{ approved_payments | length }} Approved</span>
+        <div class="flex items-center gap-3">
+            <span
+                class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/5 text-emerald-500 border border-emerald-500/20">
+                ✓ {{ approved_payments | length }} Approved
+            </span>
             {% if pending_approvals_list %}
-            <span class="badge bg-warning-soft text-warning">⏳ {{ pending_approvals_list | length }} Pending</span>
+            <span
+                class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/5 text-amber-500 border border-amber-500/20">
+                ⏳ {{ pending_approvals_list | length }} Pending
+            </span>
             {% endif %}
         </div>
     </div>
 
     {% if payments %}
-    <div class="studio-table-container">
-        <table class="studio-table">
+    <div class="overflow-x-auto -mx-6 px-6">
+        <table class="w-full text-left border-collapse">
             <thead>
-                <tr>
-                    <th style="width: 100px;">Pay ID</th>
-                    <th>Invoice</th>
-                    <th>Customer</th>
-                    <th>Amount</th>
-                    <th>Reference</th>
-                    <th>Date</th>
-                    <th style="width: 140px;">Status</th>
+                <tr class="border-b border-studio-border bg-studio-surface-light/30">
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Pay ID
+                    </th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Invoice</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Customer</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Amount
+                    </th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
+                        Reference</th>
+                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Date
+                    </th>
+                    <th
+                        class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest text-center">
+                        Status</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-studio-border">
                 {% for p in payments | sort(attribute='payment_id', reverse=True) %}
                 {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
                 {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
                 else none %}
-                <tr>
-                    <td class="font-mono text-indigo" style="font-weight: 800;">#{{ p.payment_id }}</td>
-                    <td class="font-bold text-primary">#INV-{{ p.invoice_id }}</td>
-                    <td class="font-bold">{{ appt.customer_name if appt else '—' }}</td>
-                    <td class="font-bold text-success">₹{{ p.amount_paid }}</td>
-                    <td class="font-mono text-secondary" style="font-size:0.85rem;">{{ p.payment_method }}</td>
-                    <td class="text-secondary" style="font-size: 0.85rem; font-weight: 700;">{{ p.payment_date }}</td>
-                    <td>
+                <tr class="group hover:bg-white/5 transition-colors duration-200">
+                    <td class="py-4 px-4 font-mono text-indigo-500 font-black text-xs">#{{ p.payment_id }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">#INV-{{ p.invoice_id }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs truncate max-w-[150px]">{{
+                        appt.customer_name if appt else '—' }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-primary">₹{{ p.amount_paid }}</td>
+                    <td class="py-4 px-4 font-black text-studio-text-muted text-[10px] uppercase tracking-wider">{{
+                        p.payment_method }}</td>
+                    <td class="py-4 px-4 text-[10px] font-bold text-studio-text-muted">{{ p.payment_date }}</td>
+                    <td class="py-4 px-4 text-center">
                         {% if p.status == 'Approved' %}
-                        <span class="badge bg-success-soft text-success">Approved</span>
+                        <span
+                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500">Approved</span>
                         {% elif p.status == 'Pending Approval' %}
-                        <span class="badge bg-warning-soft text-warning">Pending</span>
+                        <span
+                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500">Under
+                            Review</span>
                         {% else %}
-                        <span class="badge"
-                            style="background:var(--studio-border-light); color:var(--studio-text-muted);">{{ p.status
-                            }}</span>
+                        <span
+                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-studio-surface-light text-studio-text-muted">{{
+                            p.status }}</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -224,10 +246,9 @@
         </table>
     </div>
     {% else %}
-    <div style="text-align:center; padding:5rem 2rem;">
-        <i class="fas fa-ghost text-muted"
-            style="display: block; font-size: 3rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
-        <p class="text-secondary" style="font-weight: 500;">No payments recorded in ledger.</p>
+    <div class="py-32 text-center opacity-20 flex flex-col items-center">
+        <i class="fas fa-ghost text-6xl mb-6"></i>
+        <p class="text-xs font-black uppercase tracking-[0.3em]">No payments recorded in ledger</p>
     </div>
     {% endif %}
 </div>

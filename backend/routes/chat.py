@@ -15,40 +15,36 @@ def chat_get_messages():
     user_id = str(session["user_id"])
     other_id = request.args.get("other_id", "").strip()
     other_role = request.args.get("other_role", "").strip()
-    appt_id = request.args.get("appointment_id", "").strip() or None
 
     if not other_id or other_role not in ("customer", "artist"):
         return jsonify({"error": "Invalid params"}), 400
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT * FROM messages
+            WHERE (
+                    (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+                 OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
+              )
+            ORDER BY sent_at ASC LIMIT 300
+        """,
+            (user_id, role, other_id, other_role, other_id, other_role, user_id, role),
+        )
+        rows = cursor.fetchall()
 
-    cursor.execute(
-        """
-        SELECT * FROM messages
-        WHERE (
-                (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-             OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-          )
-        ORDER BY sent_at ASC LIMIT 300
-    """,
-        (user_id, role, other_id, other_role, other_id, other_role, user_id, role),
-    )
-
-    rows = cursor.fetchall()
-
-    # Mark incoming messages in this thread as read
-    cursor.execute(
-        """
-        UPDATE messages SET is_read = 1
-        WHERE receiver_id=%s AND receiver_role=%s
-          AND sender_id=%s AND sender_role=%s
-          AND is_read=0
-    """,
-        (user_id, role, other_id, other_role),
-    )
-
-    conn.commit()
+        # Mark incoming messages in this thread as read
+        cursor.execute(
+            """
+            UPDATE messages SET is_read = 1
+            WHERE receiver_id=%s AND receiver_role=%s
+              AND sender_id=%s AND sender_role=%s
+              AND is_read=0
+        """,
+            (user_id, role, other_id, other_role),
+        )
+        conn.commit()
 
     messages = [
         {
@@ -83,16 +79,16 @@ def chat_send():
         return jsonify({"error": "Message too long"}), 400
 
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        """
-        INSERT INTO messages
-            (sender_id, sender_role, receiver_id, receiver_role, appointment_id, content)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """,
-        (str(session["user_id"]), role, other_id, other_role, appt_id, content),
-    )
-    conn.commit()
+    with conn.cursor() as cursor:
+        cursor.execute(
+            """
+            INSERT INTO messages
+                (sender_id, sender_role, receiver_id, receiver_role, appointment_id, content)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+            (str(session["user_id"]), role, other_id, other_role, appt_id, content),
+        )
+        conn.commit()
     return jsonify({"success": True})
 
 
@@ -104,15 +100,15 @@ def chat_unread_count():
         return jsonify({"count": 0})
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """
-        SELECT COUNT(*) AS cnt FROM messages
-        WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
-    """,
-        (str(session["user_id"]), role),
-    )
-    row = cursor.fetchone()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS cnt FROM messages
+            WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
+        """,
+            (str(session["user_id"]), role),
+        )
+        row = cursor.fetchone()
     return jsonify({"count": int(row["cnt"]) if row else 0})
 
 
@@ -124,17 +120,17 @@ def chat_unread_threads():
         return jsonify({"threads": []})
 
     conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """
-        SELECT sender_id, COUNT(*) AS cnt
-        FROM messages
-        WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
-        GROUP BY sender_id
-    """,
-        (str(session["user_id"]), role),
-    )
-    rows = cursor.fetchall()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            """
+            SELECT sender_id, COUNT(*) AS cnt
+            FROM messages
+            WHERE receiver_id=%s AND receiver_role=%s AND is_read=0
+            GROUP BY sender_id
+        """,
+            (str(session["user_id"]), role),
+        )
+        rows = cursor.fetchall()
 
     return jsonify(
         {
@@ -157,23 +153,18 @@ def chat_delete_msg(message_id):
         return jsonify({"error": "Unauthorized"}), 401
 
     conn = get_db()
-    cursor = conn.cursor()
-
-    # Allow deleting if you are sender OR receiver
-    cursor.execute(
-        """
-        DELETE FROM messages 
-        WHERE message_id = %s 
-          AND (
-            (sender_id = %s AND sender_role = %s)
-            OR (receiver_id = %s AND receiver_role = %s)
-          )
-    """,
-        (message_id, str(session["user_id"]), role, str(session["user_id"]), role),
-    )
-
-    deleted = cursor.rowcount
-    conn.commit()
+    with conn.cursor() as cursor:
+        # Allow deleting ONLY if you are the sender
+        cursor.execute(
+            """
+            DELETE FROM messages 
+            WHERE message_id = %s 
+              AND sender_id = %s AND sender_role = %s
+        """,
+            (message_id, str(session["user_id"]), role),
+        )
+        deleted = cursor.rowcount
+        conn.commit()
 
     if deleted > 0:
         return jsonify({"success": True})
@@ -197,19 +188,15 @@ def chat_delete_thread():
 
     user_id = str(session["user_id"])
     conn = get_db()
-    cursor = conn.cursor()
-
-    # Delete all messages in the thread
-    cursor.execute(
-        """
-        DELETE FROM messages
-        WHERE (
-                (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-             OR (sender_id=%s AND sender_role=%s AND receiver_id=%s AND receiver_role=%s)
-          )
-    """,
-        (user_id, role, other_id, other_role, other_id, other_role, user_id, role),
-    )
-
-    conn.commit()
+    with conn.cursor() as cursor:
+        # Delete ONLY messages sent by the current user in this thread
+        cursor.execute(
+            """
+            DELETE FROM messages
+            WHERE sender_id=%s AND sender_role=%s
+              AND receiver_id=%s AND receiver_role=%s
+        """,
+            (user_id, role, other_id, other_role),
+        )
+        conn.commit()
     return jsonify({"success": True})

@@ -6,90 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Studio Login</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-
-    <!-- Offline Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
-
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
-                    colors: {
-                        primary: '#6366f1',
-                        primaryLt: '#818cf8',
-                        primaryDk: '#4f46e5',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+    <!-- Global design tokens (noir/ivory variables + body ambient) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <!-- Theme engine: runs before body paint to prevent flicker -->
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
 
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: #030303;
-            color: #f5f5f7;
             min-height: 100vh;
-            margin: 0;
-            font-family: 'Inter', sans-serif;
+            background: #eceef8;
+            font-family: 'Outfit', system-ui, sans-serif;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 200;
-            height: 54px;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            background: rgba(3, 3, 3, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-
-        .nav-link {
-            color: #8b8b93;
-            font-size: 0.78rem;
-            text-decoration: none;
-            position: relative;
-            padding-bottom: 2px;
-            transition: color 0.25s;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            right: 50%;
-            height: 1px;
-            background: #6366f1;
-            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .nav-link:hover {
-            color: #f5f5f7;
-        }
-
-        .nav-link:hover::after {
-            left: 0;
-            right: 0;
+            padding: 4.5rem 1rem 2rem;
+            color: #1e1e2e;
+            transition: background 0.35s ease, color 0.35s ease;
         }
 
         /* Simplified Background */
@@ -101,57 +38,165 @@
             background: #030303;
         }
 
-        .card-wrap {
-            position: relative;
-            border-radius: 1.35rem;
-            padding: 2px;
-            background: linear-gradient(145deg, #4f46e5 0%, #6366f1 50%, #4338ca 100%);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        /* ── NAVBAR ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            height: 52px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border-bottom: 1px solid #e8e8f0;
         }
 
-        .card-wrap:hover {
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
-            transition: box-shadow 0.3s ease;
+        #navBrand { color: #1a1a2e; }
+
+        .btn-home {
+            padding: 0.4rem 1.1rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: #6366f1;
+            color: #fff;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-home:hover { background: #4f46e5; }
+
+        /* ── CARD ── */
+        .card-wrap {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border: 2px solid #b8c4f0;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow:
+                0 2px 0 #b8c4f0,
+                0 8px 32px rgba(99,102,241,0.12),
+                0 24px 64px rgba(99,102,241,0.07);
         }
 
         .card-body {
-            background: #050505;
-            border-radius: calc(1.35rem - 2px);
+            padding: 1.25rem 2.25rem 2rem;
+            background: #fff;
+        }
+
+        /* ── CARD HEADER ── */
+        .card-header {
+            padding: 2.5rem 3rem 1.75rem;
+            text-align: center;
+            border-bottom: 1.5px solid #dde3f5;
+            background: linear-gradient(180deg, #f5f3ff 0%, #fff 100%);
+        }
+
+        .logo-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 4.25rem;
+            height: 4.25rem;
+            border-radius: 50%;
+            margin-bottom: 1rem;
             overflow: hidden;
-            box-shadow: inset 0 0 80px 20px rgba(0, 0, 0, 0.95);
+            border: 2px solid #c7d0f5;
+            background: #f4f5ff;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .title-grad {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            color: #312e81;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+            -webkit-text-fill-color: #312e81;
+            line-height: 1.2;
+        }
+
+        .card-subtitle {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #6b7280;
+            opacity: 0.85;
+        }
+
+        /* ── INPUTS ── */
+        .field-group { margin-bottom: 1rem; }
+
+        .field-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #4b5563;
         }
 
         .field {
             width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(5, 5, 5, 0.85);
-            border: 1.5px solid rgba(99, 102, 241, 0.3);
-            border-radius: 0.65rem;
-            color: #f8fafc;
-            font-size: 0.92rem;
+            padding: 0.7rem 1rem;
+            background: #f4f6ff;
+            border: 1.5px solid #c7d0f5;
+            border-radius: 0.625rem;
+            color: #111827;
+            font-size: 0.82rem;
+            font-weight: 500;
             outline: none;
-            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-        }
-
-        .field:focus-visible {
-            border-color: #6366f1;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .field::placeholder {
-            color: rgba(148, 163, 184, 0.4);
-        }
-
-        .field:hover {
-            border-color: rgba(99, 102, 241, 0.5);
-            background: rgba(15, 23, 42, 0.6);
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
         .field:focus {
             border-color: #6366f1;
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.14);
+        }
+
+        .field::placeholder { color: #9ca3af; }
+
+        .field:hover:not(:focus) {
+            border-color: #a5b4fc;
+        }
+
+        .pw-wrap { position: relative; }
+        .pw-wrap .field { padding-right: 2.75rem; }
+
+        .pw-eye {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 0;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .pw-eye:hover { color: #6366f1; }
+
+        /* ── ROLE SELECTOR ── */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .role-card {
@@ -159,552 +204,518 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
             padding: 0.85rem 0.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 0.75rem;
-            background: rgba(8, 6, 2, 0.85);
-            color: #555250;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.625rem;
+            background: #f8fafc;
+            color: #64748b;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            user-select: none;
         }
 
         .role-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(200, 160, 64, 0.35);
-            color: #a89060;
-            background: rgba(12, 9, 2, 0.9);
+            border-color: #6366f1;
+            color: #6366f1;
+            background: #f5f3ff;
         }
 
         .role-card.active {
+            background: #6366f1;
             border-color: #6366f1;
             color: #ffffff;
-            background: #6366f1;
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.25);
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+            transform: translateY(-1px);
         }
 
-        .form-section {
-            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(0);
-            opacity: 1;
+        .role-card.active i, .role-card.active span { color: #ffffff; }
+
+        .role-card i { font-size: 1.1rem; margin-bottom: 0.35rem; }
+
+        .role-card span {
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
         }
 
-        .form-section.slide-out {
-            opacity: 0;
-            transform: translateY(12px);
-            pointer-events: none;
+        /* ── BUTTONS ── */
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+            width: 100%;
         }
-
-        .form-section.slide-in {
-            opacity: 0;
-            transform: translateY(12px);
-            pointer-events: none;
-        }
-
-        .reg-prompt {
-            display: none;
-            margin-top: 0.75rem;
-            padding: 0.65rem 1rem;
-            background: rgba(99, 102, 241, 0.08);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            border-radius: 0.75rem;
-            text-align: center;
-        }
-
-        .reg-prompt.show {
-            display: block;
-        }
-
 
         .btn-gold {
             flex: 1;
-            padding: 0.8rem;
-            font-weight: 700;
-            font-size: 0.8rem;
-            letter-spacing: 0.15em;
+            max-width: 220px;
+            padding: 0.85rem;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
             border: none;
-            border-radius: 0.6rem;
-            background: #6366f1;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: #fff;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .btn-gold:not(:disabled):hover {
-            background: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-gold:focus-visible,
-        .btn-outline:focus-visible {
-            outline: 2px solid #6366f1;
-            outline-offset: 2px;
-        }
-
-        .btn-gold:active {
-            transform: scale(0.97);
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
         }
 
         .btn-gold:disabled {
-            opacity: 0.28;
+            background: #c7d0f5;
+            color: #fff;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
 
         .btn-outline {
-            padding: 0.8rem 1.75rem;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 0.6rem;
-            background: transparent;
-            color: #94a3b8;
-            font-size: 0.8rem;
+            flex: 1;
+            max-width: 220px;
+            padding: 0.85rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-family: inherit;
+            font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            letter-spacing: 0.05em;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-outline:hover {
             border-color: #6366f1;
             color: #6366f1;
+            background: #f5f3ff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
         }
 
-        .title-grad {
+        /* ── Register Prompt ── */
+        .reg-prompt {
+            display: none;
+            margin-top: 0.75rem;
+        }
+        .reg-prompt.show { display: block; }
+
+        .reg-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.875rem 1.125rem;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .reg-box-left {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
+        .reg-box-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: #f4f5ff;
+            border: 1px solid #c7d0f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6366f1;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .reg-box-label {
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 0.1rem;
+        }
+
+        .reg-box-desc {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .reg-box-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.9rem;
+            background: #6366f1;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 999px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.18s, transform 0.15s;
+            flex-shrink: 0;
+        }
+        .reg-box-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        /* ── Forgot Link ── */
+        .forgot-link {
+            display: block;
+            text-align: right;
+            margin-top: 0.35rem;
+            font-size: 0.72rem;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .forgot-link:hover { color: #6366f1; }
+
+        /* ── Flash Messages ── */
+        .flash-box {
+            padding: 0.6rem 0.9rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+        .flash-error  { background: rgba(239,68,68,0.08);  border:1px solid rgba(239,68,68,0.2);  color:#ef4444; }
+        .flash-info   { background: rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); color:#6366f1; }
+        .flash-success{ background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); color:#10b981; }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px;
+            padding: 0; margin: -1px; overflow: hidden;
+            clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+        }
+
+        /* ── DARK MODE (noir) ── */
+        [data-theme="noir"] body {
+            background: #030303;
+            color: #f5f5f7;
+        }
+        [data-theme="noir"] body::before { background: #030303; }
+        [data-theme="noir"] nav {
+            background: rgba(3,3,3,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom-color: rgba(255,255,255,0.06);
+        }
+        [data-theme="noir"] #navBrand { color: #f5f5f7; }
+
+        [data-theme="noir"] .card-wrap {
+            background: #0d0d18;
+            border: 1.5px solid rgba(99,102,241,0.3);
+            box-shadow:
+                0 2px 0 rgba(99,102,241,0.25),
+                0 12px 40px rgba(0,0,0,0.6);
+        }
+        [data-theme="noir"] .card-body { background: #0d0d18; }
+        [data-theme="noir"] .card-header {
+            background: linear-gradient(180deg, rgba(20,15,50,0.6) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        [data-theme="noir"] .logo-circle {
+            background: rgba(99,102,241,0.08);
+            border-color: rgba(99,102,241,0.25);
+        }
+        [data-theme="noir"] .title-grad {
             background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        /* ── LIGHT MODE ── */
-        body.light-mode,
-        html.light-mode body {
-            background: #ffffff !important;
-            color: #1f2937 !important;
+        [data-theme="noir"] .card-subtitle { color: #94a3b8; }
+        [data-theme="noir"] .field-label  { color: #94a3b8; }
+        [data-theme="noir"] .field {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(99,102,241,0.25);
+            color: #F1F5F9;
         }
+        [data-theme="noir"] .field::placeholder { color: rgba(255,255,255,0.28); }
+        [data-theme="noir"] .field:focus {
+            background: rgba(99,102,241,0.08);
+            border-color: rgba(99,102,241,0.6);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
+        }
+        [data-theme="noir"] .role-card {
+            background: transparent;
+            border-color: rgba(255,255,255,0.07);
+            color: #64748B;
+        }
+        [data-theme="noir"] .role-card:hover {
+            border-color: rgba(99,102,241,0.35);
+            background: rgba(99,102,241,0.07);
+            color: #818cf8;
+        }
+        [data-theme="noir"] .role-card.active {
+            background: #6366f1;
+            border-color: #6366f1;
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(99,102,241,0.45);
+        }
+        [data-theme="noir"] .btn-outline {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+        }
+        [data-theme="noir"] .btn-outline:hover {
+            border-color: #6366f1;
+            color: #818cf8;
+            background: rgba(99, 102, 241, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        [data-theme="noir"] .reg-box {
+            background: rgba(99,102,241,0.06);
+            border-color: rgba(99,102,241,0.2);
+            box-shadow: none;
+        }
+        [data-theme="noir"] .reg-box-icon {
+            background: rgba(99,102,241,0.1);
+            border-color: rgba(99,102,241,0.2);
+            color: #818cf8;
+        }
+        [data-theme="noir"] .reg-box-label { color: #64748B; }
+        [data-theme="noir"] .reg-box-desc  { color: #CBD5E1; }
+        [data-theme="noir"] .forgot-link { color: #64748B; }
+        [data-theme="noir"] .forgot-link:hover { color: #818cf8; }
+        [data-theme="noir"] .pw-eye { color: rgba(255,255,255,0.25); }
+        [data-theme="noir"] .pw-eye:hover { color: #818cf8; }
+        [data-theme="noir"] #globalThemeBtn { color: #CBD5E1; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+        [data-theme="noir"] .flash-error  { background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.3); color:#fca5a5; }
+        [data-theme="noir"] .flash-info   { background:rgba(99,102,241,0.12); border-color:rgba(99,102,241,0.3); color:#a5b4fc; }
+        [data-theme="noir"] .flash-success{ background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.3); color:#6ee7b7; }
 
+        /* ── LIGHT MODE (ivory) transitions ── */
         html.light-mode nav {
             background: rgba(255, 255, 255, 0.88) !important;
             border-bottom: 1px solid rgba(99, 102, 241, 0.2) !important;
         }
-
-        html.light-mode #navBrand {
-            color: #1f2937 !important;
-        }
-
-        html.light-mode .nav-link {
-            color: #6b7280;
-        }
-
-        html.light-mode .nav-link:hover {
-            color: #6366f1;
-        }
-
-        html.light-mode .nav-link::after {
-            background: #6366f1;
-        }
-
-        /* slate card border */
-        html.light-mode .card-wrap {
-            background: #4169E1;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-        }
-
-        /* solid white card body — no inner glow */
-        html.light-mode .card-body {
-            background: #ffffff;
-            box-shadow: none;
-        }
-
-        html.light-mode .field {
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            color: #1e293b;
-        }
-
-        html.light-mode .field:hover {
-            background: #ffffff;
-            border-color: #cbd5e1;
-        }
-
-        html.light-mode .field:focus {
-            background: #ffffff;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        html.light-mode .field::placeholder {
-            color: #94a3b8;
-        }
-
-        html.light-mode .role-card {
-            background: #f8fafc;
-            color: #64748b;
-            border-color: #e2e8f0;
-        }
-
-        html.light-mode .role-card:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-            border-color: #cbd5e1;
-        }
-
-        html.light-mode .role-card.active {
-            background: #6366f1;
-            color: #ffffff;
-            border-color: #6366f1;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-        }
-
-        html.light-mode .reg-prompt {
-            background: #f8fafc;
-            border-color: #e2e8f0;
-        }
-
-        html.light-mode .btn-outline {
-            color: #475569;
-            border-color: #e2e8f0;
-        }
-
-        html.light-mode .btn-outline:hover {
-            border-color: #6366f1;
-            color: #6366f1;
-            background: rgba(99, 102, 241, 0.05);
-        }
-
+        html.light-mode #navBrand { color: #1f2937 !important; }
+        html.light-mode .card-wrap { background: #ffffff; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
+        html.light-mode .card-body { background: #ffffff; }
+        html.light-mode .field { background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b; }
+        html.light-mode .field:hover { background: #ffffff; border-color: #cbd5e1; }
+        html.light-mode .field:focus { background: #ffffff; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        html.light-mode .field::placeholder { color: #94a3b8; }
+        html.light-mode label { color: #64748b !important; }
         html.light-mode .title-grad {
             background: linear-gradient(135deg, #6366f1, #4f46e5, #6366f1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        html.light-mode body::before { background: #f9fafb; }
+        html.light-mode .card-header { background: transparent !important; border-bottom-color: #f1f5f9 !important; }
+        html.light-mode .logo-circle { background: #ffffff !important; border-color: #f1f5f9 !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; }
+        html.light-mode .card-subtitle { color: #94a3b8 !important; }
+        html.light-mode .reg-box { background: #ffffff !important; border: 1px solid #e0e0e0 !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important; border-radius: 16px !important; }
 
-        /* Simplified light mode background */
-        html.light-mode body::before {
-            background: #f9fafb;
-        }
-
-        /* remove dark overlay from card header */
-        html.light-mode #cardHeader {
-            background: transparent !important;
-            border-bottom-color: #f1f5f9 !important;
-        }
-
-        /* remove dark logo circle bg */
-        html.light-mode #logoCircle {
-            background: #ffffff !important;
-            border-color: #f1f5f9 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-        }
-
-        /* fix dark-gold subtitle text in light mode */
-        html.light-mode #cardSubtitle {
-            color: #6b7280 !important;
-        }
-
-        *,
-        *::before,
-        *::after {
+        *, *::before, *::after {
             transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
         }
-
-        /* ── PRELOADER ── */
-        #dragon-preloader {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: #030303;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.8s;
-        }
-
-        #dragon-preloader.loaded {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loader-ring {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid rgba(200, 160, 64, 0.1);
-            border-top-color: #c8a040;
-            animation: dragon-spin 1s linear infinite;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        @keyframes dragon-spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loader-logo {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse-gold 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-gold {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(0.95);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-        }
     </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
 </head>
 
-<body style="min-height:100vh;padding:1rem;padding-top:4rem;padding-bottom:2rem;">
-    <!-- ── PRELOADER ── -->
-    <div id="dragon-preloader">
-        <div class="loader-ring">
-            <div class="loader-logo">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon" width="40" height="40"
-                    style="width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid rgba(200,160,64,0.2);">
-            </div>
-        </div>
-        <p
-            style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(200,160,64,0.6);opacity:0.8;">
-            Dragon Tattoos</p>
-    </div>
+<body>
 
-    <!-- NAVBAR -->
+    <!-- Top Bar -->
     <nav>
-        <div
-            style="max-width:72rem;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;">
-            <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="32" height="32"
-                    style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
-                <span id="navBrand" class="font-bold"
-                    style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
-                    Tattoos</span>
-            </a>
-            <!-- Main nav links removed for reduced cognitive load on Auth pages (Hick's Law) -->
-            <a href="/"
-                style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:700;background:#6366f1;color:#fff;border-radius:20px;text-decoration:none;transition:background 0.2s;"
-                onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">← Home</a>
+        <a href="/" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="32" height="32"
+                style="width:2rem;height:2rem;border-radius:0.375rem;object-fit:cover;"
+                loading="lazy" decoding="async">
+            <span id="navBrand"
+                style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;">Dragon Tattoos</span>
+        </a>
+        <div style="display:flex;align-items:center;gap:0.625rem;">
+            <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle dark / light mode"
+                style="display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:transparent;border:1.5px solid #dde3f5;color:#64748b;font-size:0.8rem;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;"
+                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1';"
+                onmouseout="this.style.borderColor='';this.style.color='';">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <a href="/" class="btn-home">← Home</a>
         </div>
     </nav>
 
+    <!-- Login Card -->
+    <div class="card-wrap">
 
-    <!-- LOGIN CARD -->
-    <div class="card-wrap w-full" style="max-width:620px;">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="logo-circle">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
+                    loading="lazy" decoding="async">
+            </div>
+            <h1 class="title-grad font-bold">Dragon Tattoos</h1>
+            <div class="card-subtitle">Studio Management System</div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div style="padding:1rem 2.5rem 0;">
+            {% for category, message in messages %}
+            <div class="flash-box {% if category == 'error' %}flash-error{% elif category == 'success' %}flash-success{% else %}flash-info{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Form -->
         <div class="card-body">
+            <form id="loginForm" method="POST" action="/login" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <!-- Header -->
-            <div id="cardHeader"
-                style="padding:2.25rem 2.5rem 1.5rem;text-align:center;border-bottom:1px solid rgba(99, 102, 241, 0.1);background:linear-gradient(180deg,rgba(15,23,42,0.5) 0%,transparent 100%);">
-                <div id="logoCircle"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:4.75rem;height:4.75rem;border-radius:50%;margin-bottom:1rem;overflow:hidden;border:2px solid rgba(99, 102, 241, 0.3);box-shadow:0 8px 24px rgba(0,0,0,0.2);background:#0f172a;">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="76" height="76"
-                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                </div>
-                <h1 class="title-grad font-bold"
-                    style="font-family:'Cinzel',serif;font-size:1.85rem;letter-spacing:0.06em;margin:0 0 0.3rem;">DRAGON
-                    TATTOOS</h1>
-                <p id="cardSubtitle"
-                    style="color:#94a3b8;font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;margin:0;">
-                    Studio Management System</p>
-            </div>
-
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div style="padding:0.75rem 1.5rem 0;">
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:#fca5a5;">
-                    {{ message }}</div>
-                {% else %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(99, 102, 241, 0.1);border:1px solid rgba(99, 102, 241, 0.3);color:#818cf8;">
-                    {{ message }}</div>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <!-- Form -->
-            <div style="padding:2rem 2.5rem 2.5rem;">
-                <!-- [DATA-FLOW]: Submits to POST /login -->
-                <form id="loginForm" method="POST" action="/login" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <!-- Role Selector -->
-                    <div style="margin-bottom:1.25rem;">
-                        <label
-                            style="display:block;font-size:0.72rem;font-weight:700;color:#94a3b8;margin-bottom:0.6rem;letter-spacing:0.10em;text-transform:uppercase;">Select
-                            Your Role</label>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">
-                            <div>
-                                <input type="radio" name="role" id="r-cust" value="customer" class="sr-only" required
-                                    onchange="handleRole(this)">
-                                <label for="r-cust" class="role-card" id="lbl-cust">
-                                    <i class="fa-regular fa-user"
-                                        style="font-size:1.15rem;margin-bottom:0.3rem;transition:color 0.25s;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Customer</span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" name="role" id="r-art" value="artist" class="sr-only"
-                                    onchange="handleRole(this)">
-                                <label for="r-art" class="role-card" id="lbl-art">
-                                    <i class="fa-solid fa-pen-nib"
-                                        style="font-size:1.15rem;margin-bottom:0.3rem;transition:color 0.25s;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Artist</span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" name="role" id="r-own" value="owner" class="sr-only"
-                                    onchange="handleRole(this)">
-                                <label for="r-own" class="role-card" id="lbl-own">
-                                    <i class="fa-solid fa-crown"
-                                        style="font-size:1.15rem;margin-bottom:0.3rem;transition:color 0.25s;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Owner</span>
-                                </label>
-                            </div>
+                <!-- Role Selector -->
+                <div style="margin-bottom:1.25rem;">
+                    <label class="field-label">Select Your Role</label>
+                    <div class="role-grid">
+                        <div>
+                            <input type="radio" name="role" id="r-cust" value="customer"
+                                class="sr-only" required onchange="handleRole(this)">
+                            <label for="r-cust" class="role-card" id="lbl-cust">
+                                <i class="fa-regular fa-user"></i>
+                                <span>Customer</span>
+                            </label>
                         </div>
-
-                        <!-- Register Prompt (customer only) -->
-                        <div class="reg-prompt" id="registerPrompt">
-                            <p style="font-size:0.8rem;color:#8b8b93;margin:0;">
-                                New customer? <a href="/register"
-                                    style="color:#6366f1;font-weight:700;text-decoration:none;"
-                                    onmouseover="this.style.color='#818cf8'"
-                                    onmouseout="this.style.color='#6366f1'">Register here →</a>
-                            </p>
+                        <div>
+                            <input type="radio" name="role" id="r-art" value="artist"
+                                class="sr-only" onchange="handleRole(this)">
+                            <label for="r-art" class="role-card" id="lbl-art">
+                                <i class="fa-solid fa-pen-nib"></i>
+                                <span>Artist</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="role" id="r-own" value="owner"
+                                class="sr-only" onchange="handleRole(this)">
+                            <label for="r-own" class="role-card" id="lbl-own">
+                                <i class="fa-solid fa-crown"></i>
+                                <span>Owner</span>
+                            </label>
                         </div>
                     </div>
 
-                    <!-- Form Fields -->
-                    <div class="form-section" id="formSection" style="display:flex;flex-direction:column;gap:1rem;">
-                        <div>
-                            <label for="username"
-                                style="display:block;font-size:0.7rem;font-weight:700;color:#94a3b8;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">Email
-                                / ID</label>
-                            <input type="email" id="username" name="email" class="field"
-                                placeholder="Enter your email address" required oninput="validate()"
-                                autocomplete="username" spellcheck="false">
-                        </div>
-                        <div>
-                            <label for="password"
-                                style="display:block;font-size:0.7rem;font-weight:700;color:#94a3b8;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">Password</label>
-                            <div style="position:relative;">
-                                <input type="password" id="password" name="password" class="field"
-                                    placeholder="Enter your password" required oninput="validate()"
-                                    autocomplete="current-password" style="padding-right:2.75rem;">
-                                <button type="button" onclick="toggleEye()" id="eyeBtn"
-                                    style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;transition:color 0.2s;padding:0;"
-                                    onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#94a3b8'"
-                                    aria-label="Toggle password visibility">
-                                    <i class="fa-regular fa-eye" id="eyeIcon"></i>
-                                </button>
+                    <!-- Register prompt (customer only) -->
+                    <div class="reg-prompt" id="registerPrompt">
+                        <div class="reg-box">
+                            <div class="reg-box-left">
+                                <div class="reg-box-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="reg-box-text">
+                                    <span class="reg-box-label">New here?</span>
+                                    <span class="reg-box-desc">Create your customer account</span>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- ✅ FORGOT PASSWORD LINK — only shown for customer role -->
-                        <div id="forgotPasswordContainer" style="text-align:right;margin-top:-0.25rem;display:none;">
-                            <a href="/forgot-password"
-                                style="font-size:0.72rem;color:#94a3b8;text-decoration:none;transition:color 0.2s;"
-                                onmouseover="this.style.color='#6366f1'" onmouseout="this.style.color='#94a3b8'">
-                                Forgot password?
+                            <a href="/register" class="reg-box-btn">
+                                Register <i class="fas fa-arrow-right" style="font-size:0.55rem;"></i>
                             </a>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Buttons -->
-                    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                        <button type="submit" id="submitBtn" class="btn-gold" disabled>LOGIN</button>
-                        <button type="button" class="btn-outline" onclick="resetForm()">RESET</button>
+                <!-- Email / ID -->
+                <div class="field-group">
+                    <label for="username" class="field-label">Email / ID</label>
+                    <input type="email" id="username" name="email" class="field"
+                        placeholder="Enter your email address" required oninput="validate()"
+                        autocomplete="username">
+                </div>
+
+                <!-- Password -->
+                <div class="field-group">
+                    <label for="password" class="field-label">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="password" name="password" class="field"
+                            placeholder="Enter your password" required oninput="validate()"
+                            autocomplete="current-password">
+                        <button type="button" class="pw-eye" onclick="toggleEye()"
+                            aria-label="Toggle password visibility">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
                     </div>
-                </form>
-            </div>
+                    <div id="forgotPasswordContainer" style="display:none;">
+                        <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-row">
+                    <button type="submit" id="submitBtn" class="btn-gold" disabled>Login</button>
+                    <button type="button" class="btn-outline" onclick="resetForm()">Reset</button>
+                </div>
+
+            </form>
         </div>
     </div>
 
     <script>
         const labelMap = { customer: 'lbl-cust', artist: 'lbl-art', owner: 'lbl-own' };
-        let isAnimating = false;
         let eyeVisible = false;
 
         function handleRole(input) {
-            if (isAnimating) return;
-            isAnimating = true;
             Object.values(labelMap).forEach(id => {
-                document.getElementById(id).classList.remove('active', 'pop');
+                document.getElementById(id).classList.remove('active');
             });
-            const lbl = document.getElementById(labelMap[input.value]);
-            lbl.classList.add('active');
-            void lbl.offsetWidth;
-            lbl.classList.add('pop');
-            const sec = document.getElementById('formSection');
-            sec.classList.remove('slide-in');
-            sec.classList.add('slide-out');
-            setTimeout(() => {
-                const u = document.getElementById('username');
-                if (input.value === 'artist') {
-                    u.placeholder = 'Artist ID (e.g. DRAG-ART-001)';
-                    u.name = 'artist_id';
-                    u.type = 'text';
-                    u.required = true;
-                } else {
-                    u.placeholder = 'Email address';
-                    u.name = 'email';
-                    u.type = 'email';
-                    u.required = true;
-                }
-                u.value = '';
-                document.getElementById('password').value = '';
-                resetEye();
-                const prompt = document.getElementById('registerPrompt');
-                const forgotContainer = document.getElementById('forgotPasswordContainer');
-                if (input.value === 'customer') {
-                    prompt.classList.add('show');
-                    forgotContainer.style.display = 'block';
-                } else {
-                    prompt.classList.remove('show');
-                    forgotContainer.style.display = 'none';
-                }
-                sec.classList.remove('slide-out');
-                sec.classList.add('slide-in');
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        sec.classList.remove('slide-in');
-                    });
-                });
-                isAnimating = false;
-                validate();
-            }, 350);
+            document.getElementById(labelMap[input.value]).classList.add('active');
+
+            const u = document.getElementById('username');
+            if (input.value === 'artist') {
+                u.placeholder = 'Artist ID (e.g. DRAG-ART-001)';
+                u.name = 'artist_id';
+                u.type = 'text';
+            } else {
+                u.placeholder = 'Enter your email address';
+                u.name = 'email';
+                u.type = 'email';
+            }
+            u.value = '';
+            document.getElementById('password').value = '';
+            resetEye();
+
+            const prompt = document.getElementById('registerPrompt');
+            const forgot = document.getElementById('forgotPasswordContainer');
+            if (input.value === 'customer') {
+                prompt.classList.add('show');
+                forgot.style.display = 'block';
+            } else {
+                prompt.classList.remove('show');
+                forgot.style.display = 'none';
+            }
+            validate();
         }
 
         function toggleEye() {
@@ -717,8 +728,10 @@
 
         function resetEye() {
             eyeVisible = false;
-            document.getElementById('password').type = 'password';
-            document.getElementById('eyeIcon').className = 'fa-regular fa-eye';
+            const p = document.getElementById('password');
+            if (p) p.type = 'password';
+            const i = document.getElementById('eyeIcon');
+            if (i) i.className = 'fa-regular fa-eye';
         }
 
         function validate() {
@@ -731,37 +744,29 @@
         function resetForm() {
             document.getElementById('loginForm').reset();
             Object.values(labelMap).forEach(id => {
-                document.getElementById(id).classList.remove('active', 'pop');
+                document.getElementById(id).classList.remove('active');
             });
             document.getElementById('registerPrompt').classList.remove('show');
             document.getElementById('forgotPasswordContainer').style.display = 'none';
             const u = document.getElementById('username');
-            u.placeholder = 'Email address';
+            u.placeholder = 'Enter your email address';
             u.name = 'email';
             u.type = 'email';
             resetEye();
             validate();
         }
 
-        // ── Preloader Hider
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('dragon-preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.classList.add('loaded');
-                }, 400);
-            }
-        });
-
-        // Safety timeout
-        setTimeout(() => {
-            const preloader = document.getElementById('dragon-preloader');
-            if (preloader && !preloader.classList.contains('loaded')) {
-                preloader.classList.add('loaded');
-            }
-        }, 3500);
+        // ── Theme icon sync ──
+        function syncThemeIcon() {
+            const theme = document.documentElement.getAttribute('data-theme') || 'ivory';
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'noir' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        // Sync on load
+        syncThemeIcon();
+        // Sync when theme changes
+        window.addEventListener('themeChanged', syncThemeIcon);
     </script>
 
 </body>
-
 </html>

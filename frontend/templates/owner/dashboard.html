@@ -4,39 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Owner Dashboard</title>
+    <title>Owner Command | Dragon Tattoos Studio</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/owner_dashboard.css') }}?v=7">
-
-
-    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
-    <!-- Offline Assets -->
+    <!-- Core Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
-    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/owner_dashboard.css') }}">
+
+    <!-- Tailwind CDN for utility classes used in sections -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% include 'common/tailwind_config.html' %}
+
+    <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}" defer></script>
 </head>
 
-<body>
+<body style="background:#f7f3ec;">
     <div class="dashboard-container">
 
-        <!-- ── SIDEBAR ────────────────────────────────────────── -->
-        <aside class="studio-sidebar">
-            <div class="sidebar-header">
-                <div class="logo-text">
-                    <div class="logo-icon">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="40"
-                            height="40">
-                    </div>
-                    <div class="logo-info">
-                        <span class="logo-name">DRAGON TATTOOS</span>
-                        <span class="logo-subtitle">Owner Portal</span>
-                    </div>
+        <!-- ── SIDEBAR OVERLAY (Mobile) ── -->
+        <div id="sidebarOverlay"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[250] hidden"
+            onclick="toggleSidebar()"></div>
+
+        <!-- ── SIDEBAR ── -->
+        <aside id="mainSidebar" class="studio-sidebar">
+
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    loading="lazy" decoding="async">
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-name">Dragon Tattoos</span>
+                    <span class="sidebar-brand-sub">Owner Portal</span>
                 </div>
             </div>
 
-            <nav class="sidebar-nav">
+            <!-- Navigation -->
+            <nav style="flex:1;display:flex;flex-direction:column;">
+
                 <div class="nav-section">Main</div>
                 <button onclick="switchTab('dashboard')" class="nav-link active" data-section="dashboard">
                     <i class="fas fa-chart-line"></i> Dashboard
@@ -47,13 +56,13 @@
                     <i class="fas fa-users"></i> Artists
                 </button>
                 <button onclick="switchTab('bookings')" class="nav-link" data-section="bookings">
-                    <i class="fas fa-calendar-alt"></i> Bookings
+                    <i class="fas fa-calendar-check"></i> Bookings
                     {% if pending_count > 0 %}
                     <span class="nav-badge">{{ pending_count }}</span>
                     {% endif %}
                 </button>
                 <button onclick="switchTab('inventory')" class="nav-link" data-section="inventory">
-                    <i class="fas fa-box"></i> Inventory
+                    <i class="fas fa-boxes-stacked"></i> Inventory
                 </button>
 
                 <div class="nav-section">Finance</div>
@@ -61,324 +70,150 @@
                     <i class="fas fa-file-invoice-dollar"></i> Invoicing
                 </button>
                 <button onclick="switchTab('payment')" class="nav-link" data-section="payment">
-                    <i class="fas fa-hand-holding-usd"></i> Payments
+                    <i class="fas fa-hand-holding-dollar"></i> Payments
                 </button>
                 <button onclick="switchTab('reports')" class="nav-link" data-section="reports">
-                    <i class="fas fa-file-contract"></i> Reports
+                    <i class="fas fa-chart-pie"></i> Reports
                 </button>
 
                 <div class="nav-section">System</div>
                 <button onclick="switchTab('profile')" class="nav-link" data-section="profile">
-                    <i class="fas fa-user-shield"></i> Profile
+                    <i class="fas fa-user-gear"></i> Profile
                 </button>
-                <a href="/logout" class="nav-link nav-logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+
+                <!-- Theme Toggle -->
+                <div style="padding:0.75rem 1.25rem;margin-top:0.5rem;">
+                    <button id="globalThemeBtn" onclick="toggleTheme()"
+                        style="width:100%;padding:0.45rem;background:rgba(255,255,255,0.03);border:1px solid var(--studio-border);border-radius:0.5rem;color:var(--studio-text-secondary);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                        <i class="fas fa-moon"></i> Theme
+                    </button>
+                </div>
+
+                <!-- Account section at bottom -->
+                <div style="margin-top:auto;">
+                    <div class="nav-section">Account</div>
+                    <a href="/logout" class="nav-link nav-logout" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+                        <i class="fas fa-power-off"></i> Logout
+                    </a>
+                </div>
             </nav>
         </aside>
 
-        <!-- ── MAIN CONTENT ───────────────────────────────────── -->
+        <!-- ── MAIN CONTENT ── -->
         <main class="main-content">
-            <header class="top-header">
-                <div class="welcome-msg">
-                    <h1 id="pageTitle">Good Morning, Boss</h1>
-                    <p id="pageSubtitle">Welcome back, {{ name }}! Here's what's happening today.</p>
-                </div>
-                <div class="header-actions">
-                    <div id="header-actions-context" class="header-actions-context"
-                        style="display: flex; gap: 10px; margin-right: 15px;">
-                        <!-- Reports Context -->
-                        <div id="ctx-reports" style="display: none;">
-                            <button class="btn-studio btn-secondary" onclick="window.print()">
-                                <i class="fas fa-print"></i> Print Report
-                            </button>
-                        </div>
-                        <!-- Inventory Context -->
-                        <div id="ctx-inventory" style="display: none;">
-                            <select id="ctx-inventory-month" class="studio-input"
-                                style="padding: 6px 12px; height: 36px; min-width: 140px; font-size: 0.75rem;"
-                                onchange="filterInventoryByMonth(this.value)">
-                                <option value="all">All Months</option>
-                                <!-- Months will be populated or filtered manually -->
-                            </select>
-                        </div>
-                    </div>
-                    <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
-                        <i class="fas fa-sun"></i>
-                    </button>
-                    <!-- Header elements refined for better focus -->
-                </div>
-            </header>
 
-            <!-- Flash messages -->
-            <div id="flashContainer">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex items-center justify-between mb-6"
+                style="position:sticky;top:0;z-index:100;background:var(--studio-bg);padding:0.75rem 0;border-bottom:1px solid var(--studio-border);margin-bottom:1.25rem;">
+                <button onclick="toggleSidebar()"
+                    style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:var(--studio-surface);border:1px solid var(--studio-border);color:var(--studio-text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-bars text-sm"></i>
+                </button>
+                <span style="font-family:'Cinzel',serif;font-size:0.65rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--studio-text-primary);">Dragon Tattoos</span>
+                <button id="mobileThemeBtn" onclick="toggleTheme()"
+                    style="width:2.25rem;height:2.25rem;border-radius:0.5rem;background:var(--studio-surface);border:1px solid var(--studio-border);color:var(--studio-gold);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-sun text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <div class="page-header-title" id="pageTitle">Good Morning, Boss</div>
+                    <div id="pageSubtitle">Here's what's happening today.</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <!-- Inventory filter -->
+                    <div id="ctx-inventory" class="hidden">
+                        <select id="ctx-inventory-month"
+                            style="background:#fff;border:1.5px solid #ece8e0;border-radius:0.5rem;padding:0.4rem 0.75rem;font-size:0.65rem;font-weight:700;color:#1a1a2e;outline:none;cursor:pointer;"
+                            onchange="filterInventoryByMonth(this.value)">
+                            <option value="all">All Cycles</option>
+                        </select>
+                    </div>
+                    <div id="ctx-reports" class="hidden">
+                        <button onclick="window.print()"
+                            style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.875rem;background:#fff;border:1.5px solid #ece8e0;border-radius:0.5rem;font-size:0.65rem;font-weight:700;color:#64748b;cursor:pointer;">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                    <!-- Theme toggle -->
+                    <button class="header-action-btn" onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div id="flashContainer" style="position:fixed;top:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:0.5rem;max-width:20rem;">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 {% for category, message in messages %}
-                <div class="flash-msg {{ category }}" onclick="this.remove()">
-                    <i class="fas {% if category == 'success' %}fa-check-circle
-                              {% elif category == 'error' %}fa-exclamation-circle
-                              {% else %}fa-info-circle{% endif %}"></i>
-                    <span>{{ message }}</span>
-                    <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
+                <div class="flash-msg flash-{{ category }}"
+                    onclick="this.remove()">
+                    <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} flash-icon"></i>
+                    <span class="flash-text">{{ message }}</span>
+                    <i class="fas fa-times flash-close"></i>
                 </div>
                 {% endfor %}
                 {% endif %}
                 {% endwith %}
             </div>
 
-            <!-- ── Sections ── -->
-            <section id="section-dashboard" class="content-section">
-                {% include 'owner/sections/overview.html' %}
-            </section>
-            <section id="section-artists" class="content-section">
-                {% include 'owner/sections/artists.html' %}
-            </section>
-            <section id="section-bookings" class="content-section">
-                {% include 'owner/sections/appointments.html' %}
-            </section>
-            <section id="section-inventory" class="content-section">
-                {% include 'owner/sections/inventory.html' %}
-            </section>
-            <section id="section-reports" class="content-section">
-                {% include 'owner/sections/reports.html' %}
-            </section>
-            <section id="section-invoice" class="content-section">
-                {% include 'owner/sections/invoice.html' %}
-            </section>
-            <section id="section-payment" class="content-section">
-                {% include 'owner/sections/payment.html' %}
-            </section>
-            <section id="section-profile" class="content-section">
-                {% include 'owner/sections/profile.html' %}
-            </section>
+            <!-- ── CONTENT SECTIONS ── -->
+            <div>
+                <section id="section-dashboard" class="content-section active">
+                    {% include 'owner/sections/overview.html' %}
+                </section>
+                <section id="section-artists" class="content-section">
+                    {% include 'owner/sections/artists.html' %}
+                </section>
+                <section id="section-bookings" class="content-section">
+                    {% include 'owner/sections/appointments.html' %}
+                </section>
+                <section id="section-inventory" class="content-section">
+                    {% include 'owner/sections/inventory.html' %}
+                </section>
+                <section id="section-reports" class="content-section">
+                    {% include 'owner/sections/reports.html' %}
+                </section>
+                <section id="section-invoice" class="content-section">
+                    {% include 'owner/sections/invoice.html' %}
+                </section>
+                <section id="section-payment" class="content-section">
+                    {% include 'owner/sections/payment.html' %}
+                </section>
+                <section id="section-profile" class="content-section">
+                    {% include 'owner/sections/profile.html' %}
+                </section>
+            </div>
         </main>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════
-     SCRIPTS
-════════════════════════════════════════════════════════ -->
+    <script src="{{ url_for('static', filename='js/dashboards/owner_dashboard.js') }}"></script>
     <script>
-
-        /* ── Tab metadata ── */
-        const TAB_META = {
-            dashboard: { title: 'Good Morning, Boss', subtitle: "Here's what's happening today." },
-            artists: { title: 'Creative Team', subtitle: 'Manage your studio talent' },
-            bookings: { title: 'Studio Sessions', subtitle: 'Global appointment overview' },
-            inventory: { title: 'Supply Chain', subtitle: 'Track studio stock and reorder levels' },
-            reports: { title: 'Financial Analytics', subtitle: 'Deep dive into studio performance' },
-            invoice: { title: 'Client Billing', subtitle: 'Generate and send professional invoices' },
-            payment: { title: 'Cash Flow', subtitle: 'Record and track incoming payments' },
-            profile: { title: 'Master Security', subtitle: 'Owner account and system credentials' },
-        };
-
-        /* ────────────────────────────────────────────────────────
-           switchTab — show the requested section, update nav+header
-        ──────────────────────────────────────────────────────── */
-        function switchTab(name) {
-            /* hide all sections */
-            document.querySelectorAll('.content-section').forEach(s => {
-                s.style.display = 'none';
-            });
-
-            /* show the target section */
-            const target = document.getElementById('section-' + name);
-            if (target) target.style.display = 'block';
-
-            /* update nav active state */
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const link = document.querySelector(`.nav-link[data-section="${name}"]`);
-            if (link) link.classList.add('active');
-
-            /* update header text */
-            const info = TAB_META[name];
-            if (info) {
-                document.getElementById('pageTitle').textContent = info.title;
-                document.getElementById('pageSubtitle').textContent = info.subtitle;
-            }
-
-            /* update context actions */
-            const ctxReports = document.getElementById('ctx-reports');
-            const ctxInventory = document.getElementById('ctx-inventory');
-            if (ctxReports) ctxReports.style.display = (name === 'reports') ? 'block' : 'none';
-            if (ctxInventory) ctxInventory.style.display = (name === 'inventory') ? 'block' : 'none';
-
-            localStorage.setItem('ownerTab', name);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- CONTEXT: INVENTORY FILTERING ---
-        function populateInventoryMonths() {
-            const select = document.getElementById('ctx-inventory-month');
-            if (!select) return;
-
-            // Keep "All Months"
-            select.innerHTML = '<option value="all">All Months</option>';
-
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const now = new Date();
-
-            for (let i = 0; i < 12; i++) {
-                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const val = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-                const opt = document.createElement('option');
-                opt.value = val;
-                opt.textContent = label;
-                select.appendChild(opt);
-            }
-        }
-
-        function filterInventoryByMonth(month) {
-            console.log("Filtering inventory by month:", month);
-            const rows = document.querySelectorAll('.inv-row');
-            rows.forEach(row => {
-                if (month === 'all') {
-                    row.style.display = '';
-                } else {
-                    const rowDate = row.getAttribute('data-date');
-                    if (rowDate && rowDate.startsWith(month)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            });
-        }
-
-        // Initialize Context
-        document.addEventListener('DOMContentLoaded', () => {
-            populateInventoryMonths();
-        });
-
-        /* ────────────────────────────────────────────────────────
-           filterTable — generic row filter used in Bookings section
-           rowClass  : CSS class on each <tr>  e.g. 'appt-row'
-           status    : value to match against row's data-status attr
-           btn       : the clicked button (for active state)
-        ──────────────────────────────────────────────────────── */
-        function filterTable(rowClass, status, btn) {
-            /* update active button — only toggle buttons inside the same
-               parent container to avoid touching unrelated filter groups */
-            const container = btn.closest('div');
-            if (container) {
-                container.querySelectorAll('button').forEach(b => {
-                    b.classList.remove('btn-primary');
-                    b.classList.add('btn-secondary');
-                });
-                btn.classList.remove('btn-secondary');
-                btn.classList.add('btn-primary');
-            }
-
-            /* show/hide rows */
-            document.querySelectorAll('.' + rowClass).forEach(row => {
-                if (status === 'all') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = (row.dataset.status === status) ? '' : 'none';
-                }
-            });
-        }
-
-        /* ────────────────────────────────────────────────────────
-           prefillInvoice — jump to Invoice tab and pre-select the
-           appointment in the dropdown
-        ──────────────────────────────────────────────────────── */
-        function prefillInvoice(appointmentId) {
-            switchTab('invoice');
-
-            /* wait one tick for the section to be visible before
-               trying to set the select value */
-            setTimeout(function () {
-                const sel = document.getElementById('apptSelect');
-                if (sel) {
-                    sel.value = appointmentId;
-                    /* highlight so the owner sees the pre-filled field */
-                    sel.style.borderColor = '#FF003C';
-                    sel.style.boxShadow = '0 0 0 3px rgba(255,0,60,0.15)';
-                    sel.focus();
-                    setTimeout(() => {
-                        sel.style.borderColor = '';
-                        sel.style.boxShadow = '';
-                    }, 2000);
-                }
-            }, 50);
-        }
-
-        /* ────────────────────────────────────────────────────────
-           prefillPayment — jump to Payment tab and pre-select the
-           invoice + fill in the amount
-        ──────────────────────────────────────────────────────── */
-        function prefillPayment(invoiceId, amount) {
-            switchTab('payment');
-
-            setTimeout(function () {
-                /* select the invoice */
-                const invSel = document.getElementById('invoiceSelect');
-                if (invSel) {
-                    invSel.value = invoiceId;
-                    invSel.style.borderColor = '#FF003C';
-                    invSel.style.boxShadow = '0 0 0 3px rgba(255,0,60,0.15)';
-                    setTimeout(() => {
-                        invSel.style.borderColor = '';
-                        invSel.style.boxShadow = '';
-                    }, 2000);
-                }
-
-                /* fill in the amount */
-                const amtInput = document.getElementById('amountPaid');
-                if (amtInput && amount) {
-                    amtInput.value = amount;
-                    amtInput.style.borderColor = '#22c55e';
-                    amtInput.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.1)';
-                    setTimeout(() => {
-                        amtInput.style.borderColor = '';
-                        amtInput.style.boxShadow = '';
-                    }, 2000);
-                }
-
-                /* focus the first unfilled field */
-                if (invSel) invSel.focus();
-            }, 50);
-        }
-
-        /* ────────────────────────────────────────────────────────
-           togglePw — show/hide password in profile section
-           (also defined locally inside profile.html but keeping
-            it here so it's always available from any section)
-        ──────────────────────────────────────────────────────── */
-        function togglePw(inputId, btn) {
-            const input = document.getElementById(inputId);
-            const icon = btn.querySelector('i');
-            if (!input || !icon) return;
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'fa-regular fa-eye-slash';
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('open');
+            if (!isOpen) {
+                sidebar.classList.add('open');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             } else {
-                input.type = 'password';
-                icon.className = 'fa-regular fa-eye';
+                sidebar.classList.remove('open');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
             }
         }
 
-        /* ────────────────────────────────────────────────────────
-           Init on page load
-        ──────────────────────────────────────────────────────── */
-        (function init() {
-            /* restore last active tab, or fall back to dashboard */
-            const last = localStorage.getItem('ownerTab') || 'dashboard';
-            switchTab(last);
-
-            /* auto-dismiss flash messages after 5 s */
-            setTimeout(function () {
-                document.querySelectorAll('.flash-msg').forEach(f => {
-                    f.style.opacity = '0';
-                    setTimeout(() => f.remove(), 500);
-                });
-            }, 5000);
-        })();
-
+        // Auto-dismiss flash messages after 6s
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.flash-msg').forEach(m => m.remove());
+            }, 6000);
+        });
     </script>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </body>
 
 </html>
