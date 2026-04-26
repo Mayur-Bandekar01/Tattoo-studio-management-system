@@ -7,217 +7,273 @@
     <title>Dragon Tattoos | Customer Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
-    <!-- Core Design System (Required for Flow) -->
+    <!-- Core Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_base.css') }}?v=1.1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}?v=3.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer_dashboard.css') }}?v=3.0">
 
-    <!-- Offline Assets & Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    
+
+    <!-- Dashboard Section Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/dashboard_shared.css') }}?v=1.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/overview.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/book.css') }}?v=1.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/appointments.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/gallery.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/aftercare.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/messages.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/invoices.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/profile.css') }}?v=1.0">
+
+    <!-- JS Core -->
     <script src="{{ url_for('static', filename='js/core/tailwind.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
-    
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    <!-- Theme Engine (Must be in head) -->
+
+    <!-- Theme Engine — must stay in <head> -->
     <script src="{{ url_for('static', filename='js/core/theme.js') }}?v=1.0"></script>
-    
+
     {% include 'common/tailwind_config.html' ignore missing %}
 </head>
 
-
 <body data-customer-name="{{ name }}">
 
-    <div class="dashboard-container">
+<div class="dashboard-container">
 
-        <!-- MOBILE HEADER -->
-        <header class="mobile-nav-header">
-            <div class="mobile-logo">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
-                <span class="text-[var(--studio-text-primary)]">DRAGON TATTOOS</span>
+    <!-- ══════════════════════════════════════
+         MOBILE HEADER
+    ══════════════════════════════════════ -->
+    <header class="mobile-nav-header">
+        <div class="mobile-logo">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos">
+            <span>DRAGON TATTOOS</span>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Mobile sidebar backdrop -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ══════════════════════════════════════
+         SIDEBAR
+    ══════════════════════════════════════ -->
+    <aside id="mainSidebar" class="studio-sidebar">
+
+        <div class="sidebar-header">
+            <div class="logo-text">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
+                </div>
+                <div class="logo-info">
+                    <span class="logo-name">DRAGON TATTOOS</span>
+                    <span class="logo-subtitle">Customer Portal</span>
+                </div>
             </div>
-            <button class="mobile-menu-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
+        </div>
+
+        <nav class="sidebar-nav" role="navigation" aria-label="Dashboard navigation">
+
+            <div class="nav-section">Main</div>
+            <button class="nav-link active" onclick="switchTab('overview', this)" data-section="overview">
+                <i class="fas fa-home"></i> Overview
             </button>
+            <button class="nav-link" onclick="switchTab('book', this)" data-section="book">
+                <i class="fas fa-calendar-plus"></i> Book Tattoo
+            </button>
+
+            <div class="nav-section">History</div>
+            <button class="nav-link" onclick="switchTab('appointments', this)" data-section="appointments">
+                <i class="fas fa-calendar-check"></i> My Sessions
+            </button>
+            <button class="nav-link" onclick="switchTab('invoices', this)" data-section="invoices">
+                <i class="fas fa-file-invoice-dollar"></i> Invoices
+            </button>
+
+            <div class="nav-section">Studio</div>
+            <button class="nav-link" onclick="switchTab('gallery', this)" data-section="gallery">
+                <i class="fas fa-images"></i> Studio Gallery
+                {% if gallery %}<span class="nav-badge">{{ gallery | length }}</span>{% endif %}
+            </button>
+            <button class="nav-link" onclick="switchTab('aftercare', this)" data-section="aftercare">
+                <i class="fas fa-heart-pulse"></i> Aftercare
+            </button>
+
+            <div class="nav-section">Account</div>
+            <button class="nav-link" onclick="switchTab('messages', this)" data-section="messages">
+                <i class="fas fa-comment-dots"></i> Messages
+                <span id="cust-msgs-badge" class="nav-badge" style="display:none;">0</span>
+            </button>
+            <button class="nav-link" onclick="switchTab('profile', this)" data-section="profile">
+                <i class="fas fa-user-circle"></i> Profile
+            </button>
+            <button class="nav-link nav-logout" onclick="window.location.href='/logout'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+
+        </nav>
+    </aside>
+
+    <!-- ══════════════════════════════════════
+         MAIN CONTENT AREA
+    ══════════════════════════════════════ -->
+    <main class="main-content">
+
+        <!-- Sticky top header -->
+        <header class="top-header">
+            <div class="header-content-wrapper">
+                <div class="welcome-msg">
+                    <h1 id="pageTitle" class="animate-header-text">Welcome</h1>
+                    <p id="pageSubtitle" class="animate-header-text">Your artistic journey at a glance</p>
+                </div>
+                <div class="header-actions">
+                    <button id="globalThemeBtn" class="header-theme-btn"
+                            onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <!-- SIDEBAR OVERLAY (Mobile) -->
-        <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-        <!-- SIDEBAR -->
-        <aside id="mainSidebar" class="studio-sidebar">
-            <div class="sidebar-header">
-                <div class="logo-text">
-                    <div class="logo-icon">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
-                    </div>
-                    <div class="logo-info">
-                        <span class="logo-name">DRAGON TATTOOS</span>
-                        <span class="logo-subtitle">Customer Portal</span>
-                    </div>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-section">Main</div>
-                <button class="nav-link active" onclick="switchTab('overview', this)" data-section="overview">
-                    <i class="fas fa-home"></i> Overview
-                </button>
-                <button class="nav-link" onclick="switchTab('book', this)" data-section="book">
-                    <i class="fas fa-calendar-plus"></i> Book Tattoo
-                </button>
-
-                <div class="nav-section">History</div>
-                <button class="nav-link" onclick="switchTab('appointments', this)" data-section="appointments">
-                    <i class="fas fa-calendar-check"></i> My Sessions
-                </button>
-                <button class="nav-link" onclick="switchTab('invoices', this)" data-section="invoices">
-                    <i class="fas fa-file-invoice-dollar"></i> Invoices
-                </button>
-
-                <div class="nav-section">Studio</div>
-                <button class="nav-link" onclick="switchTab('gallery', this)" data-section="gallery">
-                    <i class="fas fa-images"></i> Studio Gallery
-                    {% if gallery %}<span class="nav-badge">{{ gallery|length }}</span>{% endif %}
-                </button>
-                <button class="nav-link" onclick="switchTab('aftercare', this)" data-section="aftercare">
-                    <i class="fas fa-heart-pulse"></i> Aftercare
-                </button>
-
-                <div class="nav-section">Account</div>
-                <button class="nav-link" onclick="switchTab('messages', this)" data-section="messages">
-                    <i class="fas fa-comment-dots"></i> Messages
-                    <span id="cust-msgs-badge" class="nav-badge" style="display:none;">0</span>
-                </button>
-                <button class="nav-link" onclick="switchTab('profile', this)" data-section="profile">
-                    <i class="fas fa-user-circle"></i> Profile
-                </button>
-                <button class="nav-link nav-logout" onclick="window.location.href='/logout'">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </nav>
-
-        </aside>
-
-
-        <!-- MAIN -->
-        <main class="main-content">
-            <header class="top-header">
-                <div class="header-content-wrapper">
-                    <div class="welcome-msg">
-                        <h1 id="pageTitle" class="animate-header-text">Welcome</h1>
-                        <p id="pageSubtitle" class="animate-header-text">Your artistic journey at a glance</p>
-                    </div>
-                    <div class="header-actions">
-                        <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
-                            <i class="fas fa-moon"></i>
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Flash messages -->
-            <div id="flashContainer">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
+        <!-- Flash messages -->
+        <div id="flashContainer" style="padding: 0 var(--studio-spacing);">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
                 {% for category, message in messages %}
-                <div class="flash-msg {{ category }}" onclick="this.remove()">
-                    <i class="fas {% if category == 'success' %}fa-check-circle
-                              {% elif category == 'error' %}fa-exclamation-circle
-                              {% else %}fa-info-circle{% endif %}"></i>
+                <div class="flash-msg {{ category }}" onclick="this.remove()" role="alert">
+                    <i class="fas
+                        {% if category == 'success' %}fa-check-circle
+                        {% elif category == 'error' %}fa-exclamation-circle
+                        {% else %}fa-info-circle{% endif %}">
+                    </i>
                     <span>{{ message }}</span>
-                    <i class="fas fa-times" style="margin-left:auto;font-size:0.7rem;opacity:0.5;"></i>
+                    <i class="fas fa-times" style="margin-left:auto; font-size:0.7rem; opacity:0.5;"></i>
                 </div>
                 {% endfor %}
-                {% endif %}
-                {% endwith %}
-            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
 
-            <div class="section-container">
-                <section id="sec-overview" class="content-section active">
-                    {% include 'customer/sections/overview.html' %}
-                </section>
-                <section id="sec-book" class="content-section">
-                    {% include 'customer/sections/book.html' %}
-                </section>
-                <section id="sec-appointments" class="content-section">
-                    {% include 'customer/sections/appointments.html' %}
-                </section>
-                <section id="sec-invoices" class="content-section">
-                    {% include 'customer/sections/invoices.html' %}
-                </section>
-                <section id="sec-gallery" class="content-section">
-                    {% include 'customer/sections/gallery.html' %}
-                </section>
-                <section id="sec-aftercare" class="content-section">
-                    {% include 'customer/sections/aftercare.html' %}
-                </section>
-                <section id="sec-messages" class="content-section">
-                    {% include 'customer/sections/messages.html' %}
-                </section>
-                <section id="sec-profile" class="content-section">
-                    {% include 'customer/sections/profile.html' %}
-                </section>
-            </div>
-        </main>
+        <!-- All dashboard sections -->
+        <div class="section-container">
 
-    </div>
+            <section id="sec-overview" class="content-section active">
+                {% include 'customer/sections/overview.html' %}
+            </section>
+
+            <section id="sec-book" class="content-section">
+                {% include 'customer/sections/book.html' %}
+            </section>
+
+            <section id="sec-appointments" class="content-section">
+                {% include 'customer/sections/appointments.html' %}
+            </section>
+
+            <section id="sec-invoices" class="content-section">
+                {% include 'customer/sections/invoices.html' %}
+            </section>
+
+            <section id="sec-gallery" class="content-section">
+                {% include 'customer/sections/gallery.html' %}
+            </section>
+
+            <section id="sec-aftercare" class="content-section">
+                {% include 'customer/sections/aftercare.html' %}
+            </section>
+
+            <section id="sec-messages" class="content-section">
+                {% include 'customer/sections/messages.html' %}
+            </section>
+
+            <section id="sec-profile" class="content-section">
+                {% include 'customer/sections/profile.html' %}
+            </section>
+
+        </div><!-- /section-container -->
+
+    </main>
+</div><!-- /dashboard-container -->
 
 
-    
+<!-- ══════════════════════════════════════
+     GLOBAL LIGHTBOX
+══════════════════════════════════════ -->
+<div id="lb" role="dialog" aria-modal="true" aria-label="Image lightbox"
+     style="display:none; position:fixed; inset:0; z-index:9999;
+            background:var(--studio-bg-glass); backdrop-filter:blur(20px);
+            align-items:center; justify-content:center; flex-direction:column;
+            opacity:0; transition:all 0.4s cubic-bezier(0.4,0,0.2,1);">
 
-    <!-- Global Lightbox -->
-    <div id="lb"
-        style="display: none; position: fixed; inset: 0; z-index: 9999; background: var(--studio-bg-glass); backdrop-filter: blur(20px); align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
-        <button onclick="closeLb()"
-            style="position: absolute; top: 2rem; right: 2rem; background: none; border: none; color: var(--studio-text-primary); font-size: 2rem; cursor: pointer; transition: transform 0.2s;"><i
-                class="fa-solid fa-xmark"></i></button>
-        <div style="text-align:center; max-width: 90vw;">
-            <img id="lbImg" src="" alt=""
-                style="max-height: 75vh; max-width: 100%; border-radius: 24px; box-shadow: 0 30px 100px rgba(0,0,0,0.5); object-fit: contain; border: 1px solid var(--studio-border);">
-            <div style="margin-top: 2rem;">
-                <p id="lbTitle"
-                    style="font-family:'Cinzel',serif; font-size: 1.8rem; font-weight: 800; color: var(--studio-text-primary); margin: 0 0 0.5rem 0; letter-spacing: 0.1em; text-transform: uppercase;">
-                </p>
-                <p id="lbSub"
-                    style="font-size: 0.85rem; color: var(--studio-text-muted); margin: 0; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600;">
-                </p>
-            </div>
+    <button onclick="closeLb()" aria-label="Close lightbox"
+            style="position:absolute; top:2rem; right:2rem; background:none; border:none;
+                   color:var(--studio-text-primary); font-size:2rem; cursor:pointer;
+                   transition:transform 0.2s;">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div style="text-align:center; max-width:90vw;">
+        <img id="lbImg" src="" alt=""
+             style="max-height:75vh; max-width:100%; border-radius:24px;
+                    box-shadow:0 30px 100px rgba(0,0,0,0.5); object-fit:contain;
+                    border:1px solid var(--studio-border);">
+        <div style="margin-top:2rem;">
+            <p id="lbTitle"
+               style="font-family:'Cinzel',serif; font-size:1.8rem; font-weight:800;
+                      color:var(--studio-text-primary); margin:0 0 0.5rem 0;
+                      letter-spacing:0.1em; text-transform:uppercase;"></p>
+            <p id="lbSub"
+               style="font-size:0.85rem; color:var(--studio-text-muted); margin:0;
+                      text-transform:uppercase; letter-spacing:0.15em; font-weight:600;"></p>
         </div>
     </div>
+</div>
 
-    
-    <!-- Premium Success Modal -->
-    <div id="bookingSuccessModal" class="premium-modal-overlay" style="display:none;">
-        <div class="premium-modal-content">
-            <div class="success-anim-container">
-                <div class="checkmark-circle">
-                    <div class="checkmark draw"></div>
-                </div>
-            </div>
-            <h2 class="modal-premium-title">Booking Confirmed</h2>
-            <p class="modal-premium-text">Your masterpiece is one step closer. The artist will review your request and
-                confirm the session shortly.</p>
-            <div class="modal-actions">
-                <button class="btn-studio btn-primary" onclick="closeSuccessModal(); switchTab('appointments')">
-                    <i class="fas fa-calendar-check"></i> Manage My Sessions
-                </button>
-                <button class="btn-studio btn-outline" onclick="closeSuccessModal()">Close</button>
+
+<!-- ══════════════════════════════════════
+     BOOKING SUCCESS MODAL
+══════════════════════════════════════ -->
+<div id="bookingSuccessModal" class="premium-modal-overlay"
+     role="dialog" aria-modal="true" aria-labelledby="bsModalTitle"
+     style="display:none;">
+    <div class="premium-modal-content">
+        <div class="success-anim-container">
+            <div class="checkmark-circle">
+                <div class="checkmark draw"></div>
             </div>
         </div>
+        <h2 id="bsModalTitle" class="modal-premium-title">Booking Confirmed</h2>
+        <p class="modal-premium-text">
+            Your masterpiece is one step closer. The artist will review your request
+            and confirm the session shortly.
+        </p>
+        <div class="modal-actions">
+            <button class="btn-studio btn-primary"
+                    onclick="closeSuccessModal(); switchTab('appointments')">
+                <i class="fas fa-calendar-check"></i> Manage My Sessions
+            </button>
+            <button class="btn-studio btn-outline" onclick="closeSuccessModal()">
+                Close
+            </button>
+        </div>
     </div>
+</div>
 
-    
-    <!-- Customer Dashboard Modules -->
-    <script src="{{ url_for('static', filename='js/dashboards/customer_dashboard.js') }}?v=1.1"></script>
-    <script src="{{ url_for('static', filename='js/dashboards/customer_book.js') }}?v=1.1"></script>
-    <script src="{{ url_for('static', filename='js/dashboards/customer_gallery.js') }}?v=1.1"></script>
-    <script src="{{ url_for('static', filename='js/dashboards/customer_messages.js') }}?v=1.1"></script>
+
+<!-- ══════════════════════════════════════
+     JS MODULES
+══════════════════════════════════════ -->
+<script src="{{ url_for('static', filename='js/dashboards/customer/dashboard.js') }}?v=1.1"></script>
+<script src="{{ url_for('static', filename='js/dashboards/customer/sections/book.js') }}?v=1.1"></script>
+<script src="{{ url_for('static', filename='js/dashboards/customer/sections/gallery.js') }}?v=1.1"></script>
+<script src="{{ url_for('static', filename='js/dashboards/customer/sections/messages.js') }}?v=1.1"></script>
+<script src="{{ url_for('static', filename='js/dashboards/customer/sections/appointments.js') }}?v=1.0"></script>
+
 </body>
-
 </html>

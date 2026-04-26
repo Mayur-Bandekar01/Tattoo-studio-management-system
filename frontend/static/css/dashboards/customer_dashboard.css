@@ -1,7 +1,7 @@
-/* ══════════════════════════════════════════════════════════════
-   CUSTOMER DASHBOARD — Vibrant Obsidian Dark System
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CUSTOMER DASHBOARD â€” Vibrant Obsidian Dark System
    Design tokens IDENTICAL to Owner Dashboard
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 
 :root {
@@ -13,7 +13,7 @@
     --studio-secondary   : #0F0F0F;
     --studio-sidebar     : #050505;
 
-    /* Accent — Premium Gold (Matched to Landing Page) */
+    /* Accent â€” Premium Gold (Matched to Landing Page) */
     --studio-accent      : #c8a040;
     --studio-accent-soft : rgba(200, 160, 64, 0.1);
     --studio-gold        : #c8a040;
@@ -22,12 +22,12 @@
     --studio-grad-glow   : linear-gradient(135deg, rgba(200, 160, 64, 0.2) 0%, rgba(200, 160, 64, 0.05) 100%);
     --dash-gold          : #cfa844;
 
-    /* Layout Parameters — FIXED Source of Truth */
+    /* Layout Parameters â€” FIXED Source of Truth */
     --sidebar-width      : 280px;
-    --content-max-width  : 1400px;
+    --content-max-width  : none;
     --studio-spacing     : 2rem;
 
-    /* Selection Accent — Red/Orange (High Contrast) */
+    /* Selection Accent â€” Red/Orange (High Contrast) */
     --studio-selection      : #FF003C;
     --studio-selection-soft : rgba(255, 0, 60, 0.1);
     --studio-selection-glow : 0 0 20px rgba(255, 0, 60, 0.2);
@@ -102,26 +102,33 @@ select option {
     color: #0F172A !important;
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESET & BASE
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 *, *::before, *::after {
     margin    : 0;
     padding   : 0;
     box-sizing: border-box;
 }
 
-html { scroll-behavior: smooth; }
+html { 
+    scroll-behavior: smooth; 
+    overflow-y: auto !important; /* Force scroll visibility */
+    height: auto !important;
+}
 
 body {
     background-color       : var(--studio-bg);
     color                  : var(--studio-text-primary);
-    font-family            : var(--font-heading); /* Outfit — matches sidebar */
+    font-family            : var(--font-heading); /* Outfit â€” matches sidebar */
     font-size              : 15px;
     line-height            : 1.6;
     -webkit-font-smoothing : antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x             : hidden;
+    overflow-y             : visible !important; /* Ensure vertical scrolling */
+    height: auto !important;
+    min-height: 100vh;
 }
 
 body::before {
@@ -133,18 +140,20 @@ body::before {
     filter: contrast(120%) brightness(100%);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LAYOUT
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .dashboard-container {
     min-height: 100vh;
     width     : 100%;
+    display   : flex;
+    overflow: visible !important;
 }
 
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SIDEBAR (Owner-identical)
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .studio-sidebar {
     background    : linear-gradient(175deg,
                         var(--sidebar-grad-start)  0%,
@@ -346,25 +355,30 @@ body::before {
 
 
 .main-content {
-    margin-left: var(--sidebar-width);
-    padding    : 0;
+    margin-left: var(--sidebar-width) !important;
+    padding    : 0 !important;
     min-height : 100vh;
     background : var(--studio-bg);
     position   : relative;
     z-index    : 1;
     transition : all 0.3s ease;
-    display    : flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    display    : flex !important;
+    flex-direction: column !important;
+    width      : calc(100% - var(--sidebar-width)) !important;
+    max-width  : none !important;
+    overflow-x : hidden !important;
+    box-sizing : border-box !important;
 }
 
 /* Centralized container system for all dashboard sections */
 .section-container {
-    padding: 0.75rem var(--studio-spacing) var(--studio-spacing) var(--studio-spacing);
-    width: 100%;
-    max-width: 1600px;
-    margin-left: 0;
-    display: block; /* Removed flex restrictions */
+    padding: 0.75rem var(--studio-spacing, 2rem) var(--studio-spacing, 2rem) var(--studio-spacing, 2rem) !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    display: block !important;
+    flex: 1 !important;
+    box-sizing: border-box !important;
 }
 
 .top-header {
@@ -381,9 +395,9 @@ body::before {
 
 .header-content-wrapper {
     padding: 2.25rem var(--studio-spacing) 1rem var(--studio-spacing);
-    width: 100%;
-    max-width: 1600px;
-    margin-left: 0;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -419,7 +433,7 @@ body::before {
     gap: 1rem;
 }
 
-/* Right-side header button — larger, more legible */
+/* Right-side header button â€” larger, more legible */
 .header-theme-btn {
     width: 44px;
     height: 44px;
@@ -442,11 +456,15 @@ body::before {
 .content-section {
     display: none;
     animation: studioFadeIn 0.3s ease-out forwards;
-    width: 100%;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
 }
 
 .content-section.active {
-    display: block;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
 }
 
 @keyframes studioFadeIn {
@@ -483,7 +501,7 @@ body::before {
     transition   : background 0.3s ease;
 }
 
-/* Hero card manages its own height — don't inherit studio-card min-height */
+/* Hero card manages its own height â€” don't inherit studio-card min-height */
 .studio-card.hero-premium {
     min-height: unset;
 }
@@ -755,10 +773,15 @@ body::before {
 
 .content-section {
     display: none;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
 }
 
 .content-section.active {
-    display: block;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
     animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform, opacity;
 }
@@ -1142,7 +1165,7 @@ body::before {
 }
 
 .svc-card.selected::after {
-    content: '✓';
+    content: 'âœ“';
     position: absolute;
     top: 15px;
     right: 20px;
@@ -1614,9 +1637,9 @@ textarea:focus {
     display: block;
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    METRIC / SUMMARY CARDS (Matched to Owner Dashboard)
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .summary-grid {
     display              : grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1684,12 +1707,12 @@ textarea:focus {
     color          : var(--studio-accent);
     border         : 1px solid var(--studio-gold-dim);
     flex-shrink    : 0;
-    /* No margin-bottom here — context-specific spacing handles it */
+    /* No margin-bottom here â€” context-specific spacing handles it */
 }
 
-/* ══════════════════════════════════════════════════════════════
-   LIGHT THEME — [data-theme="ivory"]  (Owner-identical)
-   ══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LIGHT THEME â€” [data-theme="ivory"]  (Owner-identical)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 [data-theme="ivory"] {
     --studio-bg          : #F8F7F4;
     --studio-card        : #FFFFFF;
@@ -1747,11 +1770,11 @@ textarea:focus {
     color           : var(--studio-text-primary);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    AFTERCARE PROTOCOL REFINED
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Aftercare Hero ─────────────────────────────── */
+/* â”€â”€ Aftercare Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero-alert {
     background: linear-gradient(135deg, rgba(200, 160, 64, 0.15) 0%, rgba(200, 160, 64, 0.05) 100%);
     border: 1px solid var(--studio-gold-dim);
@@ -1797,7 +1820,7 @@ textarea:focus {
     line-height: 1.6;
 }
 
-/* ── Phases Grid ────────────────────────────────── */
+/* â”€â”€ Phases Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .aftercare-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1867,7 +1890,7 @@ textarea:focus {
     line-height: 1.5;
 }
 
-/* ── Do & Don't ─────────────────────────────────── */
+/* â”€â”€ Do & Don't â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .protocol-box {
     background: rgba(16, 185, 129, 0.05);
     border: 1px solid rgba(16, 185, 129, 0.2);
@@ -1962,7 +1985,7 @@ textarea:focus {
 
 .prohibition-list li i { color: #EF4444; }
 
-/* ── Preservation ────────────────────────────────── */
+/* â”€â”€ Preservation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .preservation-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -2004,7 +2027,7 @@ textarea:focus {
     line-height: 1.6;
 }
 
-/* ── Long Term Timeline ───────────────────────────── */
+/* â”€â”€ Long Term Timeline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .timeline-container {
     display: flex;
     flex-direction: column;
@@ -2079,7 +2102,7 @@ textarea:focus {
     line-height: 1.5;
 }
 
-/* ── Emergency Action ──────────────────────────── */
+/* â”€â”€ Emergency Action â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .emergency-alert {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
     border: 2px solid #EF4444;
@@ -2136,9 +2159,9 @@ textarea:focus {
     border-radius: 50%;
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MESSAGING / CHAT SYSTEM REFINED
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .messages-container {
     height          : calc(100vh - 85px);
@@ -2464,7 +2487,7 @@ textarea:focus {
     -webkit-text-fill-color: transparent;
 }
 
-/* ── Ivory Theme Synchronization ── */
+/* â”€â”€ Ivory Theme Synchronization â”€â”€ */
 
 [data-theme="ivory"] .hero-alert {
     background: linear-gradient(135deg, rgba(200, 160, 64, 0.05) 0%, rgba(200, 160, 64, 0.02) 100%);
@@ -2721,12 +2744,12 @@ textarea:focus {
     color: #FFFFFF; /* Keep white on colored background */
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-   ══════════════════════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════════════════════
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MOBILE HEADER & NAVIGATION
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .mobile-nav-header {
     display: none;
     position: fixed;
@@ -2829,9 +2852,9 @@ textarea:focus {
     .summary-grid { grid-template-columns: 1fr; }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PREMIUM SUCCESS MODAL
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .premium-modal-overlay {
     position: fixed;
     inset: 0;
@@ -2952,7 +2975,7 @@ textarea:focus {
     position      : relative;
     overflow      : hidden;
     min-height    : 260px;
-    /* Reset studio-card's flex-column — we manage layout here */
+    /* Reset studio-card's flex-column â€” we manage layout here */
     display       : flex !important;
     flex-direction: row !important;
     align-items   : stretch !important;
@@ -2973,7 +2996,7 @@ textarea:focus {
     z-index        : 10;
 }
 
-/* Remove any browser/Tailwind margin from direct children — gap handles it */
+/* Remove any browser/Tailwind margin from direct children â€” gap handles it */
 .hero-premium .hero-content > * {
     margin-top    : 0 !important;
     margin-bottom : 0 !important;
@@ -2988,7 +3011,7 @@ textarea:focus {
     background: #ffffff !important;
     color: #0f172a !important;
     border: none !important;
-    /* No padding override — respect the inline classes (px-5 py-2.5) */
+    /* No padding override â€” respect the inline classes (px-5 py-2.5) */
     font-size: 0.75rem !important;
     font-weight: 900 !important;
     border-radius: 12px !important;
@@ -3014,7 +3037,7 @@ textarea:focus {
     z-index: 1;
 }
 
-/* White left accent line — overrides the invisible gold line on the gold background */
+/* White left accent line â€” overrides the invisible gold line on the gold background */
 .hero-premium::after {
     content: '';
     position: absolute;
@@ -3058,7 +3081,7 @@ textarea:focus {
 .accent-orange { --accent-color: #ea580c; }
 .accent-emerald { --accent-color: #0d9488; } 
 
-/* Stat Badge — base pill style */
+/* Stat Badge â€” base pill style */
 .stat-badge {
     display      : inline-flex;
     align-items  : center;
@@ -3075,7 +3098,7 @@ textarea:focus {
     flex-shrink  : 0;
 }
 
-/* Stat Badge Refinements — per-type colors */
+/* Stat Badge Refinements â€” per-type colors */
 .stat-badge-bookings {
     background: rgba(59, 130, 246, 0.12) !important;
     color     : #3b82f6 !important;
@@ -3107,7 +3130,7 @@ textarea:focus {
     margin-top           : 0;
 }
 
-/* Global Layout — page title + subtitle */
+/* Global Layout â€” page title + subtitle */
 #pageTitle {
     font-size  : 1.6rem !important;
     line-height: 1.1;
@@ -3119,6 +3142,38 @@ textarea:focus {
     opacity   : 0.8;
 }
 
-/* Dedup — remove old override block that was added mid-session */
+/* Dedup â€” remove old override block that was added mid-session */
 /* (header-theme-btn is now defined at line ~229 with correct 44px size) */
 
+
+/* NUCLEAR WIDTH FIX: FORCING FULL BLEED ON ALL DASHBOARD COMPONENTS */
+.dashboard-container,
+.main-content,
+.section-container,
+.content-section,
+.content-section.active,
+.inv-section-wrap,
+.appts-wrap,
+.msg-shell,
+.book-outer-card,
+.ov-wrap,
+.header-content-wrapper,
+.top-header {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.main-content {
+    margin-left: var(--sidebar-width, 280px) !important;
+    width: calc(100% - var(--sidebar-width, 280px)) !important;
+    box-sizing: border-box !important;
+}
+
+/* Ensure inner cards also stretch */
+.inv-header-card, .inv-table-card, .studio-card, .summary-card, .ov-hero {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+}

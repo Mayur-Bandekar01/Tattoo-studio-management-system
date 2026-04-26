@@ -556,8 +556,12 @@
                     return isLight ? 'rgba(255, 0, 60, 0.35)' : 'rgba(255, 0, 60, 0.22)';
                 });
 
-                const ctx = document.getElementById('rc-revenue').getContext('2d');
-                if (S.charts.rev) S.charts.rev.destroy();
+                const canvas = document.getElementById('rc-revenue');
+                if (!canvas) return;
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+
+                const ctx = canvas.getContext('2d');
                 S.charts.rev = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -645,8 +649,12 @@
                 const total = entries.reduce((s, e) => s + e.val, 0);
                 document.getElementById('status-center-val').textContent = total;
 
-                const ctx = document.getElementById('rc-status').getContext('2d');
-                if (S.charts.status) S.charts.status.destroy();
+                const canvas = document.getElementById('rc-status');
+                if (!canvas) return;
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+
+                const ctx = canvas.getContext('2d');
                 S.charts.status = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -703,9 +711,10 @@
                 const methods = data.payment_methods || [];
                 const canvas = document.getElementById('rc-payment');
                 if (!canvas) return;
-                
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+
                 const wrap = document.getElementById('rc-payment-wrap') || canvas.parentElement;
-                if (S.charts.pay) S.charts.pay.destroy();
 
                 if (!methods.length) {
                     if (wrap) {
@@ -825,10 +834,10 @@
                 const canvas = document.getElementById('rc-trends');
                 if (!canvas) return;
                 
-                const wrap = canvas.parentElement;
-                if (!wrap) return;
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
 
-                if (S.charts.trends) S.charts.trends.destroy();
+                const wrap = canvas.parentElement;
 
                 let emptyMsg = wrap.querySelector('.trends-empty');
 
@@ -908,8 +917,12 @@
                 const done = sorted.map(a => a.done_appts || 0);
                 const total = sorted.map(a => a.total_appts || 0);
 
-                const ctx = document.getElementById('rc-artist').getContext('2d');
-                if (S.charts.artist) S.charts.artist.destroy();
+                const canvas = document.getElementById('rc-artist');
+                if (!canvas) return;
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+
+                const ctx = canvas.getContext('2d');
                 S.charts.artist = new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -1167,13 +1180,6 @@
 
             // Expose so switchTab can trigger it when reports tab is opened
             window.initReports = initReports;
-
-            // Also try on DOMContentLoaded in case reports is the default tab
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initReports);
-            } else {
-                initReports();
-            }
 
         })();
     </script>
