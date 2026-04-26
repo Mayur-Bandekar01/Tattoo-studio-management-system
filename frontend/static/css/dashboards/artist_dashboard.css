@@ -736,3 +736,102 @@
     background: var(--studio-gold-soft);
     transform: rotate(15deg);
 }
+/* ════════════════════════ IVORY THEME SYNC ════════════════════════ */
+
+[data-theme="ivory"] {
+    --studio-bg          : #F8F9FA;
+    --studio-card        : #FFFFFF;
+    --studio-card-border : rgba(0, 0, 0, 0.08);
+    --studio-secondary   : #F1F4F9;
+    --studio-sidebar     : #FFFFFF;
+    
+    --sidebar-grad-start : #FFFFFF;
+    --sidebar-grad-mid   : #F8FAF8;
+    --sidebar-grad-end   : #FFFFFF;
+    --sidebar-text       : #0F172A;
+    --sidebar-muted      : #64748B;
+    --sidebar-hover-bg   : rgba(0, 0, 0, 0.04);
+    
+    --studio-text-primary  : #0F172A;
+    --studio-text-secondary: #334155;
+    --studio-text-muted    : #64748B;
+    
+    --studio-border      : rgba(0, 0, 0, 0.1);
+    --studio-border-light: rgba(0, 0, 0, 0.05);
+    --studio-shadow      : 0 4px 24px rgba(0, 0, 0, 0.06);
+    --studio-input       : #FFFFFF;
+}
+
+[data-theme="ivory"] .studio-sidebar {
+    background: linear-gradient(175deg, 
+        var(--sidebar-grad-start) 0%, 
+        var(--sidebar-grad-mid) 45%, 
+        var(--sidebar-grad-end) 100%) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="ivory"] .studio-sidebar::after {
+    opacity: 0.2; /* Subtle accent in light mode */
+}
+
+[data-theme="ivory"] .sidebar-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="ivory"] .logo-name {
+    color: #0F172A;
+}
+
+[data-theme="ivory"] .nav-section {
+    color: #94A3B8;
+}
+
+[data-theme="ivory"] .nav-link {
+    color: #475569;
+}
+
+[data-theme="ivory"] .nav-link:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #0F172A;
+}
+
+[data-theme="ivory"] .nav-link.active {
+    color: #FFFFFF;
+}
+
+[data-theme="ivory"] .top-header {
+    background: #FFFFFF !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="ivory"] .card-title {
+    color: #0F172A;
+}
+
+[data-theme="ivory"] .studio-input {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #0F172A;
+}
+
+[data-theme="ivory"] .studio-input:focus {
+    border-color: var(--studio-gold);
+    box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.08);
+}
+
+[data-theme="ivory"] .studio-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="ivory"] .studio-table-container {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="ivory"] .studio-table th {
+    background: #F8FAFC;
+    color: #475569;
+}
