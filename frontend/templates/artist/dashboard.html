@@ -13,11 +13,10 @@
     <!-- Unified Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind_output.css') }}">
-    <!-- Tailwind Play CDN (Migration Fallback) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    {% include 'common/tailwind_config.html' %}
+    <!-- Unified Vanilla Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}?v=2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_vanilla.css') }}?v=2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}?v=3.0">
 
     <style>
         /* ══════════════════════════════════════════════════════════════

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Studio Login</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <title>Dragon Tattoos | Login</title>
+    <!-- Global tokens + theme engine -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
     <!-- Global design tokens (noir/ivory variables + body ambient) -->
@@ -14,759 +14,642 @@
     <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── LOGIN-SPECIFIC STYLES ── */
+/* Inherits core variables from main_design.css */
 
-        body {
-            min-height: 100vh;
-            background: #eceef8;
-            font-family: 'Outfit', system-ui, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4.5rem 1rem 2rem;
-            color: #1e1e2e;
-            transition: background 0.35s ease, color 0.35s ease;
-        }
+.auth-page {
+    background: var(--studio-bg);
+    color: var(--studio-text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    padding-top: 5rem;
+}
 
-        /* Simplified Background */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: -10;
-            background: #030303;
-        }
+.auth-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    height: 60px;
+    background: var(--studio-sidebar);
+    backdrop-filter: var(--studio-blur);
+    border-bottom: 1px solid var(--studio-border);
+    display: flex;
+    align-items: center;
+}
 
-        /* ── NAVBAR ── */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 200;
-            height: 52px;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #ffffff;
-            border-bottom: 1px solid #e8e8f0;
-        }
+.auth-nav-container {
+    max-width: 72rem;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+}
 
-        #navBrand { color: #1a1a2e; }
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+}
 
-        .btn-home {
-            padding: 0.4rem 1.1rem;
-            font-size: 0.72rem;
-            font-weight: 700;
-            background: #6366f1;
-            color: #fff;
-            border-radius: 999px;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .btn-home:hover { background: #4f46e5; }
+.brand-logo {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        /* ── CARD ── */
-        .card-wrap {
-            width: 100%;
-            max-width: 600px;
-            background: #fff;
-            border: 2px solid #b8c4f0;
-            border-radius: 1.5rem;
-            overflow: hidden;
-            box-shadow:
-                0 2px 0 #b8c4f0,
-                0 8px 32px rgba(99,102,241,0.12),
-                0 24px 64px rgba(99,102,241,0.07);
-        }
+.brand-text {
+    font-family: var(--font-tech);
+    color: #f5f5f7;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
 
-        .card-body {
-            padding: 1.25rem 2.25rem 2rem;
-            background: #fff;
-        }
+.btn-home-back {
+    padding: 0.4rem 1.1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--studio-gold);
+    color: #000;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
 
-        /* ── CARD HEADER ── */
-        .card-header {
-            padding: 2.5rem 3rem 1.75rem;
-            text-align: center;
-            border-bottom: 1.5px solid #dde3f5;
-            background: linear-gradient(180deg, #f5f3ff 0%, #fff 100%);
-        }
+.btn-home-back:hover {
+    background: var(--studio-selection);
+}
 
-        .logo-circle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 4.25rem;
-            height: 4.25rem;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            border: 2px solid #c7d0f5;
-            background: #f4f5ff;
-        }
+/* Auth Card */
+.auth-card {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
 
-        .logo-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
+.auth-header {
+    padding: 2.25rem 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--studio-border);
+    background: linear-gradient(180deg, rgba(200, 160, 64, 0.05) 0%, transparent 100%);
+}
 
-        .title-grad {
-            font-family: 'Cinzel', serif;
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            color: #312e81;
-            text-transform: uppercase;
-            margin-bottom: 0.3rem;
-            -webkit-text-fill-color: #312e81;
-            line-height: 1.2;
-        }
+.header-logo-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.75rem;
+    height: 4.75rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border: 2px solid var(--studio-gold-dim);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    background: var(--studio-surface);
+}
 
-        .card-subtitle {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: #6b7280;
-            opacity: 0.85;
-        }
+.header-logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        /* ── INPUTS ── */
-        .field-group { margin-bottom: 1rem; }
+.title-grad {
+    font-family: var(--font-tech);
+    background: var(--studio-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
 
-        .field-label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #4b5563;
-        }
+.header-subtitle {
+    color: var(--studio-text-secondary);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin: 0.3rem 0 0;
+}
 
-        .field {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            background: #f4f6ff;
-            border: 1.5px solid #c7d0f5;
-            border-radius: 0.625rem;
-            color: #111827;
-            font-size: 0.82rem;
-            font-weight: 500;
-            outline: none;
-            font-family: inherit;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-        }
+.flash-container {
+    padding: 0.75rem 1.5rem 0;
+}
 
-        .field:focus {
-            border-color: #6366f1;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.14);
-        }
+.auth-content {
+    padding: 2rem 2.5rem 2.5rem;
+}
 
-        .field::placeholder { color: #9ca3af; }
+.role-selector-wrap {
+    margin-bottom: 1.25rem;
+}
 
-        .field:hover:not(:focus) {
-            border-color: #a5b4fc;
-        }
+.selector-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--studio-text-muted);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+}
 
-        .pw-wrap { position: relative; }
-        .pw-wrap .field { padding-right: 2.75rem; }
+.role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+}
 
-        .pw-eye {
-            position: absolute;
-            right: 0.9rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #94a3b8;
-            padding: 0;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .pw-eye:hover { color: #6366f1; }
+.role-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 0.5rem;
+    border: 1px solid var(--studio-border);
+    border-radius: var(--studio-radius-sm);
+    background: var(--studio-card-inner-bg);
+    color: var(--studio-text-muted);
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
 
-        /* ── ROLE SELECTOR ── */
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1.25rem;
-        }
+.role-card:hover {
+    border-color: var(--studio-gold-dim);
+    color: var(--studio-text-secondary);
+}
 
-        .role-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.85rem 0.5rem;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 0.625rem;
-            background: #f8fafc;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none;
-        }
+.role-card.active {
+    border-color: var(--studio-gold);
+    color: var(--studio-text-primary);
+    background: var(--studio-gold-soft);
+    box-shadow: 0 4px 12px var(--studio-gold-dim);
+}
 
-        .role-card:hover {
-            border-color: #6366f1;
-            color: #6366f1;
-            background: #f5f3ff;
-        }
+.role-card.pop {
+    animation: rolePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-        .role-card.active {
-            background: #6366f1;
-            border-color: #6366f1;
-            color: #ffffff;
-            font-weight: 700;
-            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
-            transform: translateY(-1px);
-        }
+@keyframes rolePop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 
-        .role-card.active i, .role-card.active span { color: #ffffff; }
+.role-card i {
+    font-size: 1.15rem;
+    margin-bottom: 0.3rem;
+}
 
-        .role-card i { font-size: 1.1rem; margin-bottom: 0.35rem; }
+.role-card span {
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
-        .role-card span {
-            font-size: 0.6rem;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
+.reg-prompt {
+    display: none;
+    margin-top: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: var(--studio-gold-soft);
+    border: 1px solid var(--studio-gold-dim);
+    border-radius: 0.75rem;
+    text-align: center;
+}
 
-        /* ── BUTTONS ── */
-        .btn-row {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-            justify-content: center;
-            width: 100%;
-        }
+.reg-prompt p {
+    font-size: 0.75rem;
+    color: var(--studio-text-secondary);
+    margin: 0;
+}
 
-        .btn-gold {
-            flex: 1;
-            max-width: 220px;
-            padding: 0.85rem;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 0.75rem;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 14px rgba(99,102,241,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+.reg-prompt a {
+    color: var(--studio-gold);
+    font-weight: 700;
+    text-decoration: none;
+}
 
-        .btn-gold:not(:disabled):hover {
-            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
-        }
+.reg-prompt.show {
+    display: block;
+}
 
-        .btn-gold:disabled {
-            background: #c7d0f5;
-            color: #fff;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
-        .btn-outline {
-            flex: 1;
-            max-width: 220px;
-            padding: 0.85rem 1.25rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 0.75rem;
-            background: #f8fafc;
-            color: #64748b;
-            font-family: inherit;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.slide-out {
+    opacity: 0;
+    transform: translateX(-10px);
+}
 
-        .btn-outline:hover {
-            border-color: #6366f1;
-            color: #6366f1;
-            background: #f5f3ff;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
-        }
+.slide-in {
+    opacity: 0;
+    transform: translateX(10px);
+    animation: slideIn 0.35s forwards;
+}
 
-        /* ── Register Prompt ── */
-        .reg-prompt {
-            display: none;
-            margin-top: 0.75rem;
-        }
-        .reg-prompt.show { display: block; }
+@keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+}
 
-        .reg-box {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.875rem 1.125rem;
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
 
-        .reg-box-left {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-        }
+.input-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--studio-text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
-        .reg-box-icon {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 0.5rem;
-            background: #f4f5ff;
-            border: 1px solid #c7d0f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6366f1;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-        }
+.field {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--studio-input-bg);
+    border: 1px solid var(--studio-border);
+    border-radius: var(--studio-radius-sm);
+    color: var(--studio-text-primary);
+    font-size: 0.92rem;
+    outline: none;
+    transition: all 0.22s ease;
+}
 
-        .reg-box-label {
-            font-size: 0.6rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 0.1rem;
-        }
+.field:focus {
+    border-color: var(--studio-selection);
+    background: var(--studio-card-inner-bg);
+    box-shadow: 0 0 0 4px var(--studio-selection-soft);
+}
 
-        .reg-box-desc {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: #4b5563;
-        }
+.password-wrap {
+    position: relative;
+}
 
-        .reg-box-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.4rem 0.9rem;
-            background: #6366f1;
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            border-radius: 999px;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: background 0.18s, transform 0.15s;
-            flex-shrink: 0;
-        }
-        .reg-box-btn:hover {
-            background: #4f46e5;
-            transform: translateY(-1px);
-        }
+.toggle-eye {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--studio-text-muted);
+    padding: 0;
+}
 
-        /* ── Forgot Link ── */
-        .forgot-link {
-            display: block;
-            text-align: right;
-            margin-top: 0.35rem;
-            font-size: 0.72rem;
-            color: #9ca3af;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .forgot-link:hover { color: #6366f1; }
+.forgot-pass-wrap {
+    text-align: right;
+    margin-top: -0.25rem;
+}
 
-        /* ── Flash Messages ── */
-        .flash-box {
-            padding: 0.6rem 0.9rem;
-            border-radius: 0.5rem;
-            font-size: 0.8rem;
-            margin-bottom: 0.4rem;
-        }
-        .flash-error  { background: rgba(239,68,68,0.08);  border:1px solid rgba(239,68,68,0.2);  color:#ef4444; }
-        .flash-info   { background: rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); color:#6366f1; }
-        .flash-success{ background: rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); color:#10b981; }
+.forgot-pass-wrap a {
+    font-size: 0.72rem;
+    color: var(--studio-text-muted);
+    text-decoration: none;
+}
 
-        .sr-only {
-            position: absolute; width: 1px; height: 1px;
-            padding: 0; margin: -1px; overflow: hidden;
-            clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
-        }
+.auth-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
 
-        /* ── DARK MODE (noir) ── */
-        [data-theme="noir"] body {
-            background: #030303;
-            color: #f5f5f7;
-        }
-        [data-theme="noir"] body::before { background: #030303; }
-        [data-theme="noir"] nav {
-            background: rgba(3,3,3,0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom-color: rgba(255,255,255,0.06);
-        }
-        [data-theme="noir"] #navBrand { color: #f5f5f7; }
+.btn-gold {
+    flex: 1;
+    padding: 0.8rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: var(--studio-radius-sm);
+    background: var(--studio-grad);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--studio-selection-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        [data-theme="noir"] .card-wrap {
-            background: #0d0d18;
-            border: 1.5px solid rgba(99,102,241,0.3);
-            box-shadow:
-                0 2px 0 rgba(99,102,241,0.25),
-                0 12px 40px rgba(0,0,0,0.6);
-        }
-        [data-theme="noir"] .card-body { background: #0d0d18; }
-        [data-theme="noir"] .card-header {
-            background: linear-gradient(180deg, rgba(20,15,50,0.6) 0%, transparent 100%);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        [data-theme="noir"] .logo-circle {
-            background: rgba(99,102,241,0.08);
-            border-color: rgba(99,102,241,0.25);
-        }
-        [data-theme="noir"] .title-grad {
-            background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        [data-theme="noir"] .card-subtitle { color: #94a3b8; }
-        [data-theme="noir"] .field-label  { color: #94a3b8; }
-        [data-theme="noir"] .field {
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(99,102,241,0.25);
-            color: #F1F5F9;
-        }
-        [data-theme="noir"] .field::placeholder { color: rgba(255,255,255,0.28); }
-        [data-theme="noir"] .field:focus {
-            background: rgba(99,102,241,0.08);
-            border-color: rgba(99,102,241,0.6);
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
-        }
-        [data-theme="noir"] .role-card {
-            background: transparent;
-            border-color: rgba(255,255,255,0.07);
-            color: #64748B;
-        }
-        [data-theme="noir"] .role-card:hover {
-            border-color: rgba(99,102,241,0.35);
-            background: rgba(99,102,241,0.07);
-            color: #818cf8;
-        }
-        [data-theme="noir"] .role-card.active {
-            background: #6366f1;
-            border-color: #6366f1;
-            color: #ffffff;
-            box-shadow: 0 4px 18px rgba(99,102,241,0.45);
-        }
-        [data-theme="noir"] .btn-outline {
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
-        }
-        [data-theme="noir"] .btn-outline:hover {
-            border-color: #6366f1;
-            color: #818cf8;
-            background: rgba(99, 102, 241, 0.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        [data-theme="noir"] .reg-box {
-            background: rgba(99,102,241,0.06);
-            border-color: rgba(99,102,241,0.2);
-            box-shadow: none;
-        }
-        [data-theme="noir"] .reg-box-icon {
-            background: rgba(99,102,241,0.1);
-            border-color: rgba(99,102,241,0.2);
-            color: #818cf8;
-        }
-        [data-theme="noir"] .reg-box-label { color: #64748B; }
-        [data-theme="noir"] .reg-box-desc  { color: #CBD5E1; }
-        [data-theme="noir"] .forgot-link { color: #64748B; }
-        [data-theme="noir"] .forgot-link:hover { color: #818cf8; }
-        [data-theme="noir"] .pw-eye { color: rgba(255,255,255,0.25); }
-        [data-theme="noir"] .pw-eye:hover { color: #818cf8; }
-        [data-theme="noir"] #globalThemeBtn { color: #CBD5E1; border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
-        [data-theme="noir"] .flash-error  { background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.3); color:#fca5a5; }
-        [data-theme="noir"] .flash-info   { background:rgba(99,102,241,0.12); border-color:rgba(99,102,241,0.3); color:#a5b4fc; }
-        [data-theme="noir"] .flash-success{ background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.3); color:#6ee7b7; }
+.btn-gold:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--studio-selection-soft);
+}
 
-        /* ── LIGHT MODE (ivory) transitions ── */
-        html.light-mode nav {
-            background: rgba(255, 255, 255, 0.88) !important;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.2) !important;
-        }
-        html.light-mode #navBrand { color: #1f2937 !important; }
-        html.light-mode .card-wrap { background: #ffffff; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
-        html.light-mode .card-body { background: #ffffff; }
-        html.light-mode .field { background: #f8fafc; border: 1.5px solid #e2e8f0; color: #1e293b; }
-        html.light-mode .field:hover { background: #ffffff; border-color: #cbd5e1; }
-        html.light-mode .field:focus { background: #ffffff; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-        html.light-mode .field::placeholder { color: #94a3b8; }
-        html.light-mode label { color: #64748b !important; }
-        html.light-mode .title-grad {
-            background: linear-gradient(135deg, #6366f1, #4f46e5, #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        html.light-mode body::before { background: #f9fafb; }
-        html.light-mode .card-header { background: transparent !important; border-bottom-color: #f1f5f9 !important; }
-        html.light-mode .logo-circle { background: #ffffff !important; border-color: #f1f5f9 !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; }
-        html.light-mode .card-subtitle { color: #94a3b8 !important; }
-        html.light-mode .reg-box { background: #ffffff !important; border: 1px solid #e0e0e0 !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important; border-radius: 16px !important; }
+.btn-gold:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+    transform: none;
+}
 
-        *, *::before, *::after {
-            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
-        }
+.btn-outline {
+    padding: 0.8rem 1.75rem;
+    border: 1px solid var(--studio-border);
+    border-radius: var(--studio-radius-sm);
+    background: transparent;
+    color: var(--studio-text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
+
+.btn-outline:hover {
+    border-color: var(--studio-gold);
+    color: var(--studio-gold);
+    background: var(--studio-gold-soft);
+}
+
+.card-wrap {
+    position: relative;
+    border-radius: var(--studio-radius);
+    padding: 1px;
+    background: var(--studio-border);
+    box-shadow: var(--studio-shadow);
+}
+
+.card-body {
+    background: var(--studio-surface);
+    border-radius: calc(var(--studio-radius) - 1px);
+    overflow: hidden;
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+.flash-error {
+    padding: 0.65rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--studio-danger-dim);
+    background: var(--studio-danger-soft);
+    color: #fca5a5;
+}
+
+.flash-success {
+    padding: 0.65rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--studio-gold-dim);
+    background: var(--studio-gold-soft);
+    color: var(--studio-gold);
+}
     </style>
 </head>
 
-<body>
+<body class="auth-page">
 
     <!-- Top Bar -->
-    <nav>
-        <a href="/" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="32" height="32"
-                style="width:2rem;height:2rem;border-radius:0.375rem;object-fit:cover;"
-                loading="lazy" decoding="async">
-            <span id="navBrand"
-                style="font-family:'Cinzel',serif;font-size:0.72rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;">Dragon Tattoos</span>
-        </a>
-        <div style="display:flex;align-items:center;gap:0.625rem;">
-            <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle dark / light mode"
-                style="display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:transparent;border:1.5px solid #dde3f5;color:#64748b;font-size:0.8rem;cursor:pointer;transition:background 0.2s,border-color 0.2s,color 0.2s;"
-                onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1';"
-                onmouseout="this.style.borderColor='';this.style.color='';">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </button>
-            <a href="/" class="btn-home">← Home</a>
+    <nav class="auth-nav">
+        <div class="auth-nav-container">
+            <a href="/" class="brand-link">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" class="brand-logo"
+                    loading="lazy" decoding="async">
+                <span class="brand-text">Dragon Tattoos</span>
+            </a>
+            <div style="display:flex;align-items:center;gap:0.625rem;">
+                <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle theme"
+                    style="display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:50%;background:transparent;border:1.5px solid var(--studio-border);color:var(--studio-text-muted);font-size:0.8rem;cursor:pointer;transition:all 0.2s;">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <a href="/" class="btn-home-back">← Home</a>
+            </div>
         </div>
     </nav>
 
     <!-- Login Card -->
-    <div class="card-wrap">
-
-        <!-- Header -->
-        <div class="card-header">
-            <div class="logo-circle">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
-                    loading="lazy" decoding="async">
-            </div>
-            <h1 class="title-grad font-bold">Dragon Tattoos</h1>
-            <div class="card-subtitle">Studio Management System</div>
-        </div>
-
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div style="padding:1rem 2.5rem 0;">
-            {% for category, message in messages %}
-            <div class="flash-box {% if category == 'error' %}flash-error{% elif category == 'success' %}flash-success{% else %}flash-info{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
-
-        <!-- Form -->
-        <div class="card-body">
-            <form id="loginForm" method="POST" action="/login" autocomplete="off">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <!-- Role Selector -->
-                <div style="margin-bottom:1.25rem;">
-                    <label class="field-label">Select Your Role</label>
-                    <div class="role-grid">
-                        <div>
-                            <input type="radio" name="role" id="r-cust" value="customer"
-                                class="sr-only" required onchange="handleRole(this)">
-                            <label for="r-cust" class="role-card" id="lbl-cust">
-                                <i class="fa-regular fa-user"></i>
-                                <span>Customer</span>
-                            </label>
-                        </div>
-                        <div>
-                            <input type="radio" name="role" id="r-art" value="artist"
-                                class="sr-only" onchange="handleRole(this)">
-                            <label for="r-art" class="role-card" id="lbl-art">
-                                <i class="fa-solid fa-pen-nib"></i>
-                                <span>Artist</span>
-                            </label>
-                        </div>
-                        <div>
-                            <input type="radio" name="role" id="r-own" value="owner"
-                                class="sr-only" onchange="handleRole(this)">
-                            <label for="r-own" class="role-card" id="lbl-own">
-                                <i class="fa-solid fa-crown"></i>
-                                <span>Owner</span>
-                            </label>
-                        </div>
+    <div class="auth-card">
+        <div class="card-wrap">
+            <div class="card-body">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="header-logo-circle">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                            loading="lazy" decoding="async">
                     </div>
+                    <h1 class="title-grad">Dragon Tattoos</h1>
+                    <p class="header-subtitle">Studio Management System</p>
+                </div>
 
-                    <!-- Register prompt (customer only) -->
-                    <div class="reg-prompt" id="registerPrompt">
-                        <div class="reg-box">
-                            <div class="reg-box-left">
-                                <div class="reg-box-icon">
-                                    <i class="fas fa-user-plus"></i>
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                    <div class="{{ 'flash-error' if category == 'error' else 'flash-success' }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Form Content -->
+                <div class="auth-content">
+                    <form id="loginForm" method="POST" action="/login" autocomplete="off">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <!-- Role Selector -->
+                        <div class="role-selector-wrap">
+                            <label class="selector-label">Select Your Role</label>
+                            <div class="role-grid">
+                                <div>
+                                    <input type="radio" name="role" id="r-cust" value="customer" class="sr-only" required onchange="handleRole(this)">
+                                    <label for="r-cust" class="role-card" id="lbl-cust">
+                                        <i class="fa-regular fa-user"></i>
+                                        <span>Customer</span>
+                                    </label>
                                 </div>
-                                <div class="reg-box-text">
-                                    <span class="reg-box-label">New here?</span>
-                                    <span class="reg-box-desc">Create your customer account</span>
+                                <div>
+                                    <input type="radio" name="role" id="r-art" value="artist" class="sr-only" onchange="handleRole(this)">
+                                    <label for="r-art" class="role-card" id="lbl-art">
+                                        <i class="fa-solid fa-pen-nib"></i>
+                                        <span>Artist</span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="role" id="r-own" value="owner" class="sr-only" onchange="handleRole(this)">
+                                    <label for="r-own" class="role-card" id="lbl-own">
+                                        <i class="fa-solid fa-crown"></i>
+                                        <span>Owner</span>
+                                    </label>
                                 </div>
                             </div>
-                            <a href="/register" class="reg-box-btn">
-                                Register <i class="fas fa-arrow-right" style="font-size:0.55rem;"></i>
-                            </a>
+
+                            <!-- Register prompt (customer only) -->
+                            <div class="reg-prompt" id="registerPrompt">
+                                <p>New here? <a href="/register">Create a customer account</a></p>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Email / ID -->
-                <div class="field-group">
-                    <label for="username" class="field-label">Email / ID</label>
-                    <input type="email" id="username" name="email" class="field"
-                        placeholder="Enter your email address" required oninput="validate()"
-                        autocomplete="username">
-                </div>
+                        <!-- Form Fields Section -->
+                        <div id="formSection" class="form-section">
+                            <div class="input-group">
+                                <label for="username" class="input-label">Email / ID</label>
+                                <input type="email" id="username" name="email" class="field" placeholder="Enter email address" required oninput="validate()" autocomplete="username">
+                            </div>
 
-                <!-- Password -->
-                <div class="field-group">
-                    <label for="password" class="field-label">Password</label>
-                    <div class="pw-wrap">
-                        <input type="password" id="password" name="password" class="field"
-                            placeholder="Enter your password" required oninput="validate()"
-                            autocomplete="current-password">
-                        <button type="button" class="pw-eye" onclick="toggleEye()"
-                            aria-label="Toggle password visibility">
-                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
-                        </button>
-                    </div>
-                    <div id="forgotPasswordContainer" style="display:none;">
-                        <a href="/forgot-password" class="forgot-link">Forgot password?</a>
-                    </div>
-                </div>
+                            <div class="input-group">
+                                <label for="password" class="input-label">Password</label>
+                                <div class="password-wrap">
+                                    <input type="password" id="password" name="password" class="field" placeholder="Enter password" required oninput="validate()" autocomplete="current-password">
+                                    <button type="button" class="toggle-eye" onclick="toggleEye()">
+                                        <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                                <div class="forgot-pass-wrap" id="forgotPasswordContainer" style="display:none;">
+                                    <a href="/forgot-password">Forgot password?</a>
+                                </div>
+                            </div>
 
-                <!-- Buttons -->
-                <div class="btn-row">
-                    <button type="submit" id="submitBtn" class="btn-gold" disabled>Login</button>
-                    <button type="button" class="btn-outline" onclick="resetForm()">Reset</button>
+                            <div class="auth-actions">
+                                <button type="submit" id="submitBtn" class="btn-gold" disabled>Login</button>
+                                <button type="button" class="btn-outline" onclick="resetForm()">Reset</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-
-            </form>
+            </div>
         </div>
     </div>
 
     <script>
-        const labelMap = { customer: 'lbl-cust', artist: 'lbl-art', owner: 'lbl-own' };
-        let eyeVisible = false;
+const labelMap = { customer: 'lbl-cust', artist: 'lbl-art', owner: 'lbl-own' };
+let isAnimating = false;
+let eyeVisible = false;
 
-        function handleRole(input) {
-            Object.values(labelMap).forEach(id => {
-                document.getElementById(id).classList.remove('active');
-            });
-            document.getElementById(labelMap[input.value]).classList.add('active');
-
-            const u = document.getElementById('username');
-            if (input.value === 'artist') {
-                u.placeholder = 'Artist ID (e.g. DRAG-ART-001)';
-                u.name = 'artist_id';
-                u.type = 'text';
-            } else {
-                u.placeholder = 'Enter your email address';
-                u.name = 'email';
-                u.type = 'email';
-            }
-            u.value = '';
-            document.getElementById('password').value = '';
-            resetEye();
-
-            const prompt = document.getElementById('registerPrompt');
-            const forgot = document.getElementById('forgotPasswordContainer');
-            if (input.value === 'customer') {
-                prompt.classList.add('show');
-                forgot.style.display = 'block';
-            } else {
-                prompt.classList.remove('show');
-                forgot.style.display = 'none';
-            }
-            validate();
-        }
-
-        function toggleEye() {
-            const p = document.getElementById('password');
-            const i = document.getElementById('eyeIcon');
-            eyeVisible = !eyeVisible;
-            p.type = eyeVisible ? 'text' : 'password';
-            i.className = eyeVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
-        }
-
-        function resetEye() {
-            eyeVisible = false;
-            const p = document.getElementById('password');
-            if (p) p.type = 'password';
-            const i = document.getElementById('eyeIcon');
-            if (i) i.className = 'fa-regular fa-eye';
-        }
-
-        function validate() {
-            const u = document.getElementById('username').value.trim();
-            const pw = document.getElementById('password').value;
-            const role = document.querySelector('input[name="role"]:checked');
-            document.getElementById('submitBtn').disabled = !(u.length >= 1 && pw.length >= 6 && !!role);
-        }
-
-        function resetForm() {
-            document.getElementById('loginForm').reset();
-            Object.values(labelMap).forEach(id => {
-                document.getElementById(id).classList.remove('active');
-            });
-            document.getElementById('registerPrompt').classList.remove('show');
-            document.getElementById('forgotPasswordContainer').style.display = 'none';
-            const u = document.getElementById('username');
-            u.placeholder = 'Enter your email address';
+function handleRole(input) {
+    if (isAnimating) return;
+    isAnimating = true;
+    Object.values(labelMap).forEach(id => {
+        document.getElementById(id).classList.remove('active', 'pop');
+    });
+    const lbl = document.getElementById(labelMap[input.value]);
+    lbl.classList.add('active');
+    void lbl.offsetWidth;
+    lbl.classList.add('pop');
+    const sec = document.getElementById('formSection');
+    sec.classList.remove('slide-in');
+    sec.classList.add('slide-out');
+    setTimeout(() => {
+        const u = document.getElementById('username');
+        if (input.value === 'artist') {
+            u.placeholder = 'Artist ID (e.g. DRAG-ART-001)';
+            u.name = 'artist_id';
+            u.type = 'text';
+            u.required = true;
+        } else if (input.value === 'owner') {
+            u.placeholder = 'Owner Email / ID';
+            u.name = 'email';
+            u.type = 'text';
+            u.required = true;
+        } else {
+            u.placeholder = 'Email address';
             u.name = 'email';
             u.type = 'email';
-            resetEye();
-            validate();
+            u.required = true;
         }
+        u.value = '';
+        document.getElementById('password').value = '';
+        resetEye();
+        const prompt = document.getElementById('registerPrompt');
+        const forgotContainer = document.getElementById('forgotPasswordContainer');
+        if (input.value === 'customer') {
+            prompt.classList.add('show');
+            forgotContainer.style.display = 'block';
+        } else {
+            prompt.classList.remove('show');
+            forgotContainer.style.display = 'none';
+        }
+        sec.classList.remove('slide-out');
+        sec.classList.add('slide-in');
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                sec.classList.remove('slide-in');
+            });
+        });
+        isAnimating = false;
+        validate();
+    }, 350);
+}
 
-        // ── Theme icon sync ──
-        function syncThemeIcon() {
-            const theme = document.documentElement.getAttribute('data-theme') || 'ivory';
-            const icon = document.getElementById('themeIcon');
-            if (icon) icon.className = theme === 'noir' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        // Sync on load
-        syncThemeIcon();
-        // Sync when theme changes
-        window.addEventListener('themeChanged', syncThemeIcon);
+function toggleEye() {
+    const p = document.getElementById('password');
+    const i = document.getElementById('eyeIcon');
+    eyeVisible = !eyeVisible;
+    p.type = eyeVisible ? 'text' : 'password';
+    i.className = eyeVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+}
+
+function resetEye() {
+    eyeVisible = false;
+    document.getElementById('password').type = 'password';
+    document.getElementById('eyeIcon').className = 'fa-regular fa-eye';
+}
+
+function validate() {
+    const u = document.getElementById('username').value.trim();
+    const pw = document.getElementById('password').value;
+    const role = document.querySelector('input[name="role"]:checked');
+    document.getElementById('submitBtn').disabled = !(u.length >= 1 && pw.length >= 6 && !!role);
+}
+
+function resetForm() {
+    document.getElementById('loginForm').reset();
+    Object.values(labelMap).forEach(id => {
+        document.getElementById(id).classList.remove('active', 'pop');
+    });
+    document.getElementById('registerPrompt').classList.remove('show');
+    document.getElementById('forgotPasswordContainer').style.display = 'none';
+    const u = document.getElementById('username');
+    u.placeholder = 'Email address';
+    u.name = 'email';
+    u.type = 'email';
+    resetEye();
+    validate();
+}
+
+// ── Theme icon sync ──
+function syncThemeIcon() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'ivory';
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = theme === 'noir' ? 'fas fa-sun' : 'fas fa-moon';
+}
+syncThemeIcon();
+window.addEventListener('themeChanged', syncThemeIcon);
     </script>
-
 </body>
+
 </html>

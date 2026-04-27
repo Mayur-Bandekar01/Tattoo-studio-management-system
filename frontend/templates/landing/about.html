@@ -12,38 +12,115 @@ uncompromising safety.">
     <!-- Global CSS & Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    <!-- Tailwind Output (Local Build) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind_output.css') }}">
-    <!-- Tailwind Play CDN (Migration Fallback) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        studio: {
-                            bg: 'var(--studio-bg)',
-                            surface: 'var(--studio-surface)',
-                            card: 'var(--studio-card)',
-                            gold: 'var(--studio-gold)',
-                            'gold-soft': 'var(--studio-gold-soft)',
-                            'gold-dim': 'var(--studio-gold-dim)',
-                            border: 'var(--studio-border)',
-                        },
-                        accent: 'var(--accent, var(--studio-gold))',
-                        text: 'var(--text, var(--studio-text-primary))',
-                        muted: 'var(--text-muted, var(--studio-text-muted))',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Optimized Vanilla Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}?v=2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_vanilla.css') }}?v=2.1">
 
-    <!-- Legacy CSS (Will be removed after verification) -->
+    <!-- Project Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing/about.css') }}">
-<script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
+    
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
+
+    <style>
+/* ── ARTIST CARDS ── */
+
+.artist-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.artist-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+html.light-mode .artist-card:hover {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.artist-image-container {
+    height: 360px;
+    background: var(--surface);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.artist-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.artist-card:hover .artist-img {
+    transform: scale(1.03);
+}
+
+.artist-image-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to top, var(--card-bg), transparent);
+    pointer-events: none;
+}
+
+.artist-info {
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.artist-info h4 {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.artist-info .text-accent {
+    color: var(--accent);
+}
+
+.artist-info p.text-muted {
+    color: var(--muted);
+}
+
+html.light-mode .artist-info h4 {
+    color: #111827;
+}
+
+html.light-mode .artist-info p.text-muted {
+    color: #4b5563;
+}
+.gold-text {
+    background: linear-gradient(135deg, #c8a040 0%, #e8c870 50%, #c8a040 100%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: gold-shimmer 4s ease infinite;
+}
+
+@keyframes gold-shimmer {
+    0% { background-position: -100% 0; }
+    100% { background-position: 100% 0; }
+}
+    </style>
 </head>
 
 <body class="landing-page">
@@ -71,135 +148,125 @@ uncompromising safety.">
 
         <!-- CONTENT SECTIONS -->
         <section class="py-24 px-6 border-t border-white/5">
-            <div class="max-w-6xl mx-auto">
-                <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-16 items-center mb-24">
-                    <div class="reveal">
-                        <h2 class="font-display text-4xl md:text-5xl text-text mb-8 tracking-tight">Our Philosophy</h2>
-                        <p class="text-muted text-sm leading-relaxed mb-6 font-light">
-                            We believe that a tattoo is more than just ink on skin; it's a piece of your identity, a
-                            story
-                            told through art. Our studio was founded on the principles of creativity, precision, and
-                            respect
-                            for the medium.
-                        </p>
-                        <p class="text-muted text-sm leading-relaxed font-light">
-                            Every artist at Dragon Tattoos is a specialist in their craft, dedicated to pushing the
-                            boundaries of what's possible in modern tattooing while honoring the rich history of the art
-                            form.
-                        </p>
-                    </div>
-                    <div class="reveal reveal-d1">
-                        <div
-                            class="p-10 bg-studio-card border border-studio-border rounded-studio backdrop-blur-studio hover:-translate-y-1 transition-all">
-                            <i class="fa-solid fa-shield-alt text-accent text-3xl mb-6"></i>
-                            <h3 class="text-accent font-display text-2xl mb-4">Uncompromising Safety</h3>
-                            <p class="text-muted text-xs leading-relaxed font-light">
-                                Your safety is our absolute priority. We maintain hospital-grade sterilization
-                                standards,
-                                using only the highest quality inks and world-class equipment to ensure a safe and
-                                comfortable experience.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MASTERY & EXPERTISE SECTION -->
-                <div class="max-w-3xl mx-auto text-center mb-16 px-6">
-                    <h2 class="font-display text-4xl md:text-5xl text-text mb-8 tracking-tight">Masters Behind the Art</h2>
-                    <p class="text-muted text-lg leading-relaxed font-light">
-                        Every masterpiece at Dragon Tattoos is born from a legacy of mastery and artistic excellence. Our studio is home to world-class artists who bring unmatched precision and creative soul to every design. With a dedication to crafting high-quality, timeless tattoo art, we transform your vision into a reality that demands to be seen.
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+                <div class="reveal">
+                    <div class="pill-tag mb-6">Our Philosophy</div>
+                    <h2 class="font-display text-4xl md:text-5xl text-text mb-8 leading-tight tracking-tight">Art That
+                        Lives with You</h2>
+                    <p class="text-muted text-lg mb-8 leading-relaxed font-light">
+                        We believe a tattoo is more than just ink—it's a narrative, a milestone, and a piece of your
+                        identity. Our approach combines traditional craftsmanship with modern design aesthetics.
                     </p>
-                </div>
-
-                <!-- ARTISTS GRID -->
-                <div class="text-center mb-12 scroll-reveal">
-                    <span class="text-accent text-xs uppercase tracking-[0.3em] font-bold">The Collective</span>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8">
-                    {% if artists %}
-                    {% for artist in artists %}
-                    <div class="artist-card reveal">
-                        <div class="artist-image-container">
-                            {% if 'arjun' in artist.artist_name.lower() or artist.profile_image == 'images/artist1.jpg'
-                            %}
-                            <img src="{{ url_for('static', filename='images/artist1.jpg') }}" alt="Arjun Mehta" class="artist-img" loading="lazy" decoding="async">
-                            {% elif 'priya' in artist.artist_name.lower() or artist.profile_image ==
-                            'images/artist2.jpg' %}
-                            <img src="{{ url_for('static', filename='images/artist2.jpg') }}" alt="Priya Sharma" class="artist-img" loading="lazy" decoding="async">
-                            {% elif 'verma' in artist.artist_name.lower() or 'rahul' in artist.artist_name.lower() or
-                            artist.profile_image == 'images/artist3.jpg' %}
-                            <img src="{{ url_for('static', filename='images/artist3.jpg') }}" alt="Rahul Verma" class="artist-img" loading="lazy" decoding="async">
-                            {% elif artist.profile_image %}
-                            <img src="{{ url_for('static', filename=artist.profile_image) }}"
-                alt="{{ artist.artist_name }}" class="artist-img" loading="lazy" decoding="async">
-                            {% else %}
-                            <div class="w-full h-full flex items-center justify-center bg-white/5">
-                                <i class="fa-solid fa-user text-5xl text-muted opacity-20 artist-fallback-icon"></i>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+                                <i class="fa-solid fa-paintbrush"></i>
                             </div>
-                            {% endif %}
+                            <div>
+                                <h3 class="text-text font-bold mb-1">Custom Mastery</h3>
+                                <p class="text-muted text-sm leading-relaxed">Every piece is custom-designed from
+                                    scratch to fit your anatomical flow and personal story.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0">
+                                <i class="fa-solid fa-shield-virus"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-text font-bold mb-1">Safety First</h3>
+                                <p class="text-muted text-sm leading-relaxed">We maintain hospital-grade sanitation
+                                    standards using only premium, single-use sterilized equipment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 reveal">
+                    <div class="space-y-4">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Studio"
+                            class="rounded-3xl border border-white/5 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+                        <div class="stat-card p-8 aspect-square flex flex-col justify-center">
+                            <div class="text-accent font-display text-4xl mb-2">5+</div>
+                            <div class="text-[10px] text-muted uppercase tracking-[0.2em] font-bold">Years of Trust</div>
+                        </div>
+                    </div>
+                    <div class="space-y-4 pt-8">
+                        <div class="stat-card p-8 aspect-square flex flex-col justify-center">
+                            <div class="text-accent font-display text-4xl mb-2">3k</div>
+                            <div class="text-[10px] text-muted uppercase tracking-[0.2em] font-bold">Designs Created
+                            </div>
+                        </div>
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Studio"
+                            class="rounded-3xl border border-white/5 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARTISTS -->
+        <section class="py-24 px-6 bg-surface/30">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <div class="pill-tag mb-6 mx-auto">The Team</div>
+                    <h2 class="font-display text-4xl md:text-5xl text-text tracking-tight">Masters of Ink</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Artist 001 -->
+                    <div class="artist-card reveal" style="transition-delay: 100ms;">
+                        <div class="artist-image-container">
+                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
+                                class="artist-img">
                         </div>
                         <div class="artist-info">
-                            <h4 class="font-display text-xl text-text mb-1">{{ artist.artist_name }}</h4>
-                            <p class="text-accent text-[10px] uppercase tracking-widest mb-4 font-bold">{{ artist.specialisation }}
+                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Founder & Lead
                             </p>
-                            <p class="text-muted text-xs leading-relaxed font-light">Expert in {{ artist.specialisation.lower()
-                                }} and custom artistry.</p>
+                            <h4 class="text-xl mb-2">Mayur Bandekar</h4>
+                            <p class="text-muted text-xs font-medium">Japanese & Traditional Specialization</p>
                         </div>
                     </div>
-                    {% endfor %}
-                    {% else %}
-                    <!-- Fallback Artists -->
-                    <div class="artist-card reveal">
+
+                    <!-- Artist 002 -->
+                    <div class="artist-card reveal" style="transition-delay: 200ms;">
                         <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/artist1.jpg') }}" alt="Arjun" class="artist-img" loading="lazy" decoding="async">
+                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
+                                class="artist-img">
                         </div>
                         <div class="artist-info">
-                            <h4 class="font-display text-xl text-text mb-1">Arjun</h4>
-                            <p class="text-accent text-[10px] uppercase tracking-widest mb-4 font-bold">Realism Master</p>
-                            <p class="text-muted text-xs leading-relaxed font-light">Specializing in hyper-realistic portraits and
-                                intricate detail work.</p>
+                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Senior Artist
+                            </p>
+                            <h4 class="text-xl mb-2">Ananya Rao</h4>
+                            <p class="text-muted text-xs font-medium">Fine Line & Geometric Mastery</p>
                         </div>
                     </div>
-                    <div class="artist-card reveal reveal-d1">
+
+                    <!-- Artist 003 -->
+                    <div class="artist-card reveal" style="transition-delay: 300ms;">
                         <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/artist2.jpg') }}" alt="Priya" class="artist-img" loading="lazy" decoding="async">
+                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
+                                class="artist-img">
                         </div>
                         <div class="artist-info">
-                            <h4 class="font-display text-xl text-text mb-1">Priya</h4>
-                            <p class="text-accent text-[10px] uppercase tracking-widest mb-4 font-bold">Fine Line Expert</p>
-                            <p class="text-muted text-xs leading-relaxed font-light">Known for delicate structural work and
-                                minimalist
-                                geometric designs.</p>
+                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Illustrator</p>
+                            <h4 class="text-xl mb-2">Vikram Das</h4>
+                            <p class="text-muted text-xs font-medium">Dark Art & Bio-Mechanical Concepts</p>
                         </div>
                     </div>
-                    <div class="artist-card reveal reveal-d2">
-                        <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/artist3.jpg') }}" alt="Raj" class="artist-img" loading="lazy" decoding="async">
-                        </div>
-                        <div class="artist-info">
-                            <h4 class="font-display text-xl text-text mb-1">Raj</h4>
-                            <p class="text-accent text-[10px] uppercase tracking-widest mb-4 font-bold">Blackwork Specialist</p>
-                            <p class="text-muted text-xs leading-relaxed font-light">A master of bold contrast and traditional
-                                blackwork
-                                patterns.</p>
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- ── FOOTER ── -->
-    <footer class="main-footer">
+    <!-- FOOTER -->
+    <footer class="py-16 px-6 border-t border-white/5">
         <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
                 <div class="col-span-2 md:col-span-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="24" height="24"
-              loading="lazy" class="w-6 h-6 rounded-full object-cover opacity-80" decoding="async">
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="28" height="28"
+                            class="rounded-full shadow-lg">
                         <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
                             Tattoos
                             Studio</span>
@@ -247,6 +314,27 @@ uncompromising safety.">
         </div>
     </footer>
 
-    </body>
+    <script>
+// ── Scroll reveal
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Hamburger
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('burgerBtn');
+    if(menu && btn) {
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    }
+}
+document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+    </script>
+</body>
 
 </html>

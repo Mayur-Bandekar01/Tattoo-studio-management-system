@@ -8,11 +8,12 @@
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
     <!-- Core Design System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_base.css') }}?v=1.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}?v=2.1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_vanilla.css') }}?v=2.1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}?v=3.0">
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/customer_dashboard.css') }}?v=3.0"> -->
 
-    <!-- Fonts & Icons -->
+    <!-- Optimized Vanilla Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
@@ -224,15 +225,12 @@
     <!-- Sub-section assets will be moved directly into their HTML templates -->
 
     <!-- JS Core -->
-    <script src="{{ url_for('static', filename='js/core/tailwind.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Theme Engine — must stay in <head> -->
     <script src="{{ url_for('static', filename='js/core/theme.js') }}?v=1.0"></script>
-
-    {% include 'common/tailwind_config.html' ignore missing %}
 </head>
 
 <body data-customer-name="{{ name }}">
