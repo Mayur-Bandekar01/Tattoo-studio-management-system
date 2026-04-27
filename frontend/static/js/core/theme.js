@@ -41,27 +41,26 @@
     };
 
     function applyThemeIcons(theme) {
-        const btn = document.getElementById('globalThemeBtn');
-        if (!btn) return;
+        // Update all theme buttons with the specific class
+        const buttons = document.querySelectorAll('.header-theme-btn, #globalThemeBtn');
+        buttons.forEach(btn => {
+            if (btn.classList.contains('header-theme-btn')) {
+                btn.innerHTML = `<i class="fas ${theme === 'ivory' ? 'fa-sun' : 'fa-moon'}"></i>`;
+            } else {
+                // Floating button variant (landing pages)
+                const configs = {
+                    noir:  { icon: 'fa-moon', color: '#C9A84C', bg: 'rgba(8,8,26,0.92)',    border: 'rgba(201,168,76,0.45)', label: 'Royal Noir'  },
+                    ivory: { icon: 'fa-sun',  color: '#8B1A2E', bg: 'rgba(250,248,243,0.95)', border: 'rgba(139,26,46,0.4)',  label: 'Ivory Regal' },
+                };
+                const c = configs[theme] || configs.noir;
 
-        // Dashboard header variant
-        if (btn.classList.contains('header-theme-btn')) {
-            btn.innerHTML = `<i class="fas ${theme === 'ivory' ? 'fa-sun' : 'fa-moon'}"></i>`;
-            return;
-        }
-
-        // Floating button variant (landing pages)
-        const configs = {
-            noir:  { icon: 'fa-moon', color: '#C9A84C', bg: 'rgba(8,8,26,0.92)',    border: 'rgba(201,168,76,0.45)', label: 'Royal Noir'  },
-            ivory: { icon: 'fa-sun',  color: '#8B1A2E', bg: 'rgba(250,248,243,0.95)', border: 'rgba(139,26,46,0.4)',  label: 'Ivory Regal' },
-        };
-        const c = configs[theme] || configs.noir;
-
-        btn.innerHTML = `<i class="fa-solid ${c.icon}" style="font-size:1.1rem;"></i>`;
-        btn.style.background = c.bg;
-        btn.style.color = c.color;
-        btn.style.border = `1px solid ${c.border}`;
-        btn.title = `Theme: ${c.label} — click to switch`;
+                btn.innerHTML = `<i class="fa-solid ${c.icon}" style="font-size:1.1rem;"></i>`;
+                btn.style.background = c.bg;
+                btn.style.color = c.color;
+                btn.style.border = `1px solid ${c.border}`;
+                btn.title = `Theme: ${c.label} — click to switch`;
+            }
+        });
     }
 
     function injectThemeButton() {

@@ -7,19 +7,155 @@
     <title>Dragon Tattoos | Artist Dashboard</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
+    <!-- Premium Font Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
     <!-- Unified Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    <!-- Tailwind Output (Local Build) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind_output.css') }}">
     <!-- Tailwind Play CDN (Migration Fallback) -->
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'common/tailwind_config.html' %}
 
-    <!-- Legacy CSS (Will be removed after verification) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/artist_dashboard.css') }}?v=10">
+    <style>
+        /* ══════════════════════════════════════════════════════════════
+           ARTIST DASHBOARD — Harmonized with Owner Command UI
+           Fonts: Fraunces (display) + DM Sans (body) + DM Mono (code)
+           ══════════════════════════════════════════════════════════════ */
+        :root {
+            --gold: #b8922a;
+            --gold-light: #d4a84b;
+            --gold-dim: rgba(184, 146, 42, 0.12);
+            --gold-glow: rgba(184, 146, 42, 0.25);
+            --bg: #0c0a09;
+            --surface: #1c1917;
+            --surface-2: #292524;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-soft: rgba(255, 255, 255, 0.05);
+            --text-1: #fafaf9;
+            --text-2: #d6d3d1;
+            --text-3: #78716c;
+            --radius-sm: 0.5rem;
+            --radius: 0.875rem;
+            --radius-lg: 1.25rem;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --studio-spacing: 2rem;
+            --sidebar-width: 210px;
+        }
+
+        [data-theme="ivory"] {
+            --bg: #f8f5f0;
+            --surface: #ffffff;
+            --surface-2: #f2ede6;
+            --border: #e8e0d5;
+            --border-soft: #f0ead8;
+            --text-1: #1c1917;
+            --text-2: #57534e;
+            --text-3: #a8a29e;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.09), 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-1);
+            margin: 0;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* ── SIDEBAR ── */
+        .studio-sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            z-index: 400;
+            overflow-y: auto;
+            padding-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.375rem 1.25rem 1.125rem;
+            border-bottom: 1px solid var(--border-soft);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-brand img { width: 2.125rem; height: 2.125rem; border-radius: 0.5rem; object-fit: cover; }
+        .sidebar-brand-text { display: flex; flex-direction: column; line-height: 1.2; gap: 0.1rem; }
+        .sidebar-brand-name { font-family: 'Fraunces', Georgia, serif; font-size: 0.75rem; font-weight: 700; color: var(--text-1); letter-spacing: 0.06em; text-transform: uppercase; }
+        .sidebar-brand-sub { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; font-weight: 600; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; }
+
+        .nav-section { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-2); padding: 1.25rem 1.25rem 0.5rem; opacity: 0.9; }
+        .nav-link { display: flex; align-items: center; gap: 0.7rem; margin: 0.15rem 0.65rem; padding: 0.6rem 1rem; width: calc(100% - 1.3rem); background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-1); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-align: left; text-decoration: none; transition: all 0.2s; }
+        .nav-link i { width: 1.1rem; text-align: center; font-size: 0.82rem; flex-shrink: 0; opacity: 0.7; }
+        .nav-link:hover { background: var(--surface-2); color: var(--gold); }
+        .nav-link.active { background: var(--gold); color: #fff !important; font-weight: 700; box-shadow: 0 4px 12px var(--gold-glow); }
+        .nav-link.active i { opacity: 1; }
+        .nav-badge { margin-left: auto; background: var(--text-1); color: var(--bg); font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 99px; line-height: 1.6; }
+        .nav-link.active .nav-badge { background: #fff; color: var(--gold); }
+        .nav-logout { display: flex; align-items: center; gap: 0.625rem; margin: 0.125rem 0.625rem; padding: 0.575rem 0.875rem; width: calc(100% - 1.25rem); background: rgba(220, 38, 38, 0.1); border: none; border-radius: var(--radius-sm); color: #dc2626; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration:none; }
+
+        /* ── MAIN CONTENT ── */
+        .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 0; min-height: 100vh; transition: all 0.3s ease; }
+        
+        .top-header { 
+            position: sticky; top: 0; z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-soft);
+            padding: 1.25rem var(--studio-spacing);
+            margin-bottom: 0 !important;
+        }
+
+        .header-content-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+        .header-action-btn { width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .header-action-btn:hover { background: var(--surface-2); color: var(--gold); border-color: var(--gold-light); }
+
+        .section-container { padding: 2rem var(--studio-spacing); max-width: 1440px; margin: 0 auto; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.375rem; border-bottom: 1px solid var(--border-soft); }
+        .page-header-title { font-family: 'Fraunces', Georgia, serif; font-size: 1.9rem; font-weight: 700; color: var(--text-1); letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 0.25rem; }
+        .page-header-subtitle { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text-3); font-weight: 400; }
+
+        /* ── COMPONENTS ── */
+        .studio-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+        .studio-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        
+        /* Specific content-section transitions */
+        .content-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+        .content-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* Tables */
+        .dash-table { width: 100%; border-collapse: collapse; }
+        .dash-table thead tr { border-bottom: 1.5px solid var(--border-soft); background: var(--surface-2); }
+        .dash-table th { padding: 0.75rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-3); text-align: left; }
+        .dash-table td { padding: 0.8rem 1rem; font-size: 0.8rem; color: var(--text-2); vertical-align: middle; border-bottom: 1px solid var(--border-soft); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .studio-sidebar { transform: translateX(-100%); width: 280px; }
+            .studio-sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+        }
+    </style>
 
     <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
@@ -37,9 +173,14 @@
                     class="w-8 h-8 rounded-full border border-studio-border">
                 <span class="font-display text-text text-[10px] tracking-[0.2em] font-bold">DRAGON TATTOOS</span>
             </div>
-            <button class="text-accent text-xl" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="flex items-center gap-4">
+                <button class="header-theme-btn text-studio-text-secondary hover:text-studio-selection transition-colors" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="text-studio-selection text-xl" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </header>
 
         <!-- SIDEBAR OVERLAY (Mobile) -->
@@ -49,15 +190,11 @@
 
         <!-- ── SIDEBAR ────────────────────────────────────────── -->
         <aside id="mainSidebar" class="studio-sidebar">
-            <div class="sidebar-header">
-                <div class="logo-text">
-                    <div class="logo-icon">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
-                    </div>
-                    <div class="logo-info">
-                        <span class="logo-name">DRAGON TATTOOS</span>
-                        <span class="logo-subtitle">Artist Portal</span>
-                    </div>
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" loading="lazy" decoding="async">
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-name">Dragon Tattoos</span>
+                    <span class="sidebar-brand-sub">Artist Portal</span>
                 </div>
             </div>
 
@@ -110,13 +247,13 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="header-content-wrapper">
-                    <div class="welcome-msg">
-                        <h1 id="pageTitle" class="animate-header-text">Welcome</h1>
-                        <p id="pageSubtitle" class="animate-header-text">Artist production workspace</p>
+                    <div>
+                        <h1 class="page-header-title" id="pageTitle">Welcome</h1>
+                        <p id="pageSubtitle">Artist production workspace</p>
                     </div>
                     <div class="header-actions">
                         <div id="header-actions-context" class="flex gap-2"></div>
-                        <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
+                        <button id="globalThemeBtn" class="header-action-btn header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
                             <i class="fas fa-sun"></i>
                             <i class="fas fa-moon"></i>
                         </button>
@@ -125,10 +262,10 @@
             </header>
 
             <!-- Flash messages -->
-            <div id="flashMessages" class="px-[var(--studio-spacing)]">
-                <div id="flashContainer" class="flex flex-col gap-3 mb-8">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div id="flashMessages" class="px-[var(--studio-spacing)] pt-6">
+                <div id="flashContainer" class="flex flex-col gap-3">
                     {% for category, message in messages %}
                     <div class="flex items-center gap-3 p-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest border shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2 {{ 'bg-studio-gold/10 text-studio-gold border-studio-gold/20' if category == 'success' else 'bg-red-500/10 text-red-500 border-red-500/20' }}"
                         onclick="this.remove()">
@@ -138,12 +275,13 @@
                         <i class="fas fa-times opacity-40 hover:opacity-100 cursor-pointer"></i>
                     </div>
                     {% endfor %}
-                    {% endif %}
-                    {% endwith %}
                 </div>
             </div>
+            {% endif %}
+            {% endwith %}
 
             <div class="section-container">
+
                 <section id="sec-overview" class="content-section active">
                     {% include 'artist/sections/overview.html' %}
                 </section>
@@ -172,16 +310,9 @@
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='js/dashboards/artist_dashboard.js') }}"></script>
+    <!-- Consolidated Script Logic -->
 
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('mainSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('open');
-            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
-        }
 
         // Close sidebar when clicking links on mobile
         document.querySelectorAll('.studio-sidebar .nav-link').forEach(link => {
@@ -193,12 +324,13 @@
         });
 
         /* ── Image Zoom Logic ── */
-        function openImageZoom(src, caption, style) {
+        window.openImageZoom = function(src, caption, style) {
             const modal = document.getElementById('studioImageModal');
             const img = document.getElementById('zoomImg');
             const cap = document.getElementById('zoomCap');
             const stl = document.getElementById('zoomStl');
-            const meta = document.getElementById('zoomMeta');
+
+            if (!modal || !img) return;
 
             img.src = src;
 
@@ -218,15 +350,13 @@
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-        }
+        };
 
-        function closeImageZoom() {
+        window.closeImageZoom = function() {
             const modal = document.getElementById('studioImageModal');
-            modal.classList.remove('active');
-            if (!document.getElementById('mainSidebar').classList.contains('open')) {
-                document.body.style.overflow = '';
-            }
-        }
+            if (modal) modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
 
         // Close on Esc
         document.addEventListener('keydown', (e) => {
@@ -384,6 +514,132 @@
             }
         }
     </style>
+    <script>
+        const TAB_META = {
+            overview: ['Overview', 'Your artistic journey at a glance'],
+            appointments: ['My Appointments', 'Manage and confirm artist sessions'],
+            schedule: ["Today's Schedule", 'Timeline of your daily sessions'],
+            inventory: ['Inventory Control', 'Track studio supplies and stock'],
+            logusage: ['Log Usage', 'Record consumption during sessions'],
+            gallery: ['My Portfolio', 'Exhibit your unique artistry'],
+            messages: ['Messages', 'Client communication hub'],
+            profile: ['My Profile', 'Manage your artist identity'],
+            history: ['History', 'Chronicle of completed masterpieces']
+        };
+
+        function switchTab(id, el) {
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            const targetLink = el || document.querySelector(`.nav-link[data-section="${id}"]`);
+            if (targetLink) targetLink.classList.add('active');
+
+            requestAnimationFrame(() => {
+                const sections = document.querySelectorAll('.content-section');
+                sections.forEach(s => s.classList.remove('active'));
+                
+                const sec = document.getElementById('sec-' + id);
+                if (sec) {
+                    sec.classList.add('active');
+                } else if (sections.length > 0) {
+                    sections[0].classList.add('active');
+                    id = sections[0].id.replace('sec-', '');
+                }
+
+                const meta = TAB_META[id];
+                if (meta) {
+                    const titleEl = document.getElementById('pageTitle');
+                    const subtitleEl = document.getElementById('pageSubtitle');
+                    if (titleEl) titleEl.textContent = meta[0];
+                    if (subtitleEl) subtitleEl.textContent = meta[1];
+                }
+
+                localStorage.setItem('artist_active_tab', id);
+                if (id === 'schedule' && typeof renderScheduleDate === 'function') renderScheduleDate();
+                
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            });
+        }
+
+        function nav(id, el) { switchTab(id, el); }
+
+        function toggleSidebar() {
+            const s = document.getElementById('mainSidebar');
+            const o = document.getElementById('sidebarOverlay');
+            const isOpen = s.classList.contains('open');
+            if (!isOpen) {
+                s.classList.add('open');
+                o.style.opacity = '1';
+                o.style.pointerEvents = 'auto';
+                document.body.style.overflow = 'hidden';
+            } else {
+                s.classList.remove('open');
+                o.style.opacity = '0';
+                o.style.pointerEvents = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        /* ── Shared Logic ── */
+        window.artShowDetails = function(btn) {
+            const dataStr = btn.getAttribute('data-appt');
+            if (!dataStr) return;
+            try {
+                const appt = JSON.parse(dataStr);
+                const modal = document.getElementById('apptDetailsModal');
+                const content = document.getElementById('apptDetailsContent');
+
+                let extra = appt.extra_details || {};
+                if (typeof extra === 'string') { try { extra = JSON.parse(extra); } catch(e) { extra = {}; } }
+
+                let html = `
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
+                            <label class="studio-label">Concept</label>
+                            <div class="text-text font-bold">${appt.tattoo_concept}</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
+                                <label class="studio-label">Customer</label>
+                                <div class="text-text font-medium">${appt.customer_name}</div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
+                                <label class="studio-label">Size</label>
+                                <div class="text-text font-medium">${extra.size || '—'}</div>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
+                            <label class="studio-label">Artist Notes</label>
+                            <div class="text-muted text-xs italic">${extra.notes || 'No specific notes.'}</div>
+                        </div>
+                    </div>
+                `;
+                content.innerHTML = html;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } catch (e) { console.error("Failed to parse appt data", e); }
+        };
+
+        window.closeApptDetails = function() {
+            document.getElementById('apptDetailsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.replace('#', '');
+            const saved = localStorage.getItem('artist_active_tab');
+            const target = hash || saved || 'overview';
+            switchTab(target);
+
+            // Flash Cleanup
+            setTimeout(() => {
+                document.querySelectorAll('.flash-msg').forEach(f => {
+                    f.style.opacity = '0';
+                    setTimeout(() => f.remove(), 500);
+                });
+            }, 5000);
+        });
+    </script>
 </body>
 
 </html>

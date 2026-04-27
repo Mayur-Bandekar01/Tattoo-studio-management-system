@@ -1,3 +1,81 @@
+<!-- ═══════════════════════════════════════
+     SECTION: OVERVIEW
+     ═══════════════════════════════════════ -->
+
+<style>
+/* ── Quick Actions Grid ── */
+.qa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+    width: 100%;
+}
+
+.qa-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    padding: 1.5rem 1rem;
+    min-height: 140px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--studio-border-light);
+    border-radius: var(--studio-radius-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.qa-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--studio-gold-dim);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.qa-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.qa-card:hover .qa-icon-box { transform: scale(1.1) rotate(5deg); }
+
+.qa-icon-box.gold    { background: var(--studio-gold-soft);      color: var(--studio-gold); }
+.qa-icon-box.indigo  { background: var(--studio-indigo-soft);    color: var(--studio-indigo); }
+.qa-icon-box.success { background: var(--studio-success-soft);   color: var(--studio-success); }
+.qa-icon-box.info    { background: var(--studio-info-soft);      color: var(--studio-info); }
+
+.qa-label {
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--studio-text-muted);
+    word-break: break-word;
+}
+
+.qa-card:hover .qa-label { color: var(--studio-text-primary); }
+
+[data-theme="ivory"] .qa-card {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="ivory"] .qa-card:hover {
+    background: #FAFAFA;
+}
+</style>
+
 <!-- Flashed Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
@@ -172,37 +250,33 @@
         <!-- Quick Actions -->
         <div class="studio-card mb-0 accent-indigo">
             <h3 class="card-title mb-6 text-accent">Quick Actions</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-gold transition-all duration-300 group cursor-pointer"
-                    onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">
-                    <div class="w-12 h-12 rounded-xl bg-studio-gold-soft text-accent flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+            <div class="qa-grid">
+                <div class="qa-card" onclick="nav('gallery', document.querySelector('button[onclick*=\'gallery\']'))">
+                    <div class="qa-icon-box gold">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Upload Art</span>
+                    <span class="qa-label">Upload Art</span>
                 </div>
-                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-indigo transition-all duration-300 group cursor-pointer"
-                    onclick="nav('inventory', document.querySelector('button[onclick*=\'inventory\']'))">
-                    <div class="w-12 h-12 rounded-xl bg-studio-selection-soft text-studio-selection flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <div class="qa-card" onclick="nav('inventory', document.querySelector('button[onclick*=\'inventory\']'))">
+                    <div class="qa-icon-box indigo">
                         <i class="fas fa-boxes"></i>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Stock</span>
+                    <span class="qa-label">Stock</span>
                 </div>
-                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-success transition-all duration-300 group cursor-pointer"
-                    onclick="nav('schedule', document.querySelector('button[onclick*=\'schedule\']'))">
-                    <div class="w-12 h-12 rounded-xl bg-studio-success-soft text-studio-success flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <div class="qa-card" onclick="nav('schedule', document.querySelector('button[onclick*=\'schedule\']'))">
+                    <div class="qa-icon-box success">
                         <i class="fas fa-calendar-day"></i>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Schedule</span>
+                    <span class="qa-label">Schedule</span>
                 </div>
-                <div class="qa-card !p-5 !flex-col !gap-3 text-center rounded-2xl bg-studio-surface/50 border border-studio-border hover:border-studio-info transition-all duration-300 group cursor-pointer"
-                    onclick="nav('profile', document.querySelector('button[onclick*=\'profile\']'))">
-                    <div class="w-12 h-12 rounded-xl bg-studio-info-soft text-studio-info flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <div class="qa-card" onclick="nav('profile', document.querySelector('button[onclick*=\'profile\']'))">
+                    <div class="qa-icon-box info">
                         <i class="fas fa-user-circle"></i>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-muted group-hover:text-text">Profile</span>
+                    <span class="qa-label">Profile</span>
                 </div>
+            </div>
         </div>
-    </div>
 
         <!-- Portfolio Glimpse -->
         <div class="studio-card mb-0 accent-success">

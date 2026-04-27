@@ -1,8 +1,268 @@
 <!-- ═══════════════════════════════════════════════════
      SECTION: BOOK APPOINTMENT (sec-book)
      Included by: dashboard.html → #sec-book
-     Requires: book.css, dashboard_shared.css, book.js
 ═══════════════════════════════════════════════════ -->
+
+<style>
+/* ── Container / Wrap ── */
+.book-section-wrap {
+    animation: bookFadeUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes bookFadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.book-outer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3.5rem;
+    box-shadow: var(--shadow);
+    width: 100% !important;
+    max-width: none !important;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="ivory"] .book-outer-card {
+    background: #FFFFFF;
+    border-color: rgba(0,0,0,0.06);
+}
+
+.book-outer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--gold-dim) 0%, transparent 70%);
+    filter: blur(60px);
+    opacity: 0.3;
+    z-index: 0;
+}
+
+.book-outer-card > * { position: relative; z-index: 1; }
+
+/* ── Steps ── */
+.book-step-block { margin-bottom: 2rem; }
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.step-num {
+    width: 32px; height: 32px;
+    background: var(--text-1);
+    color: var(--studio-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 950;
+    flex-shrink: 0;
+}
+
+[data-theme="ivory"] .step-num { background: #0F172A; color: #FFFFFF; }
+
+.step-title {
+    font-size: 0.82rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-1);
+    white-space: nowrap;
+}
+
+.step-divider {
+    flex: 1; height: 1px;
+    background: var(--border-soft);
+}
+
+.book-step-sep {
+    height: 1px; width: 100%;
+    background: var(--border-soft);
+    margin: 3rem 0;
+}
+
+/* ── Service Cards ── */
+.svc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+@media(max-width: 900px) { .svc-grid { grid-template-columns: 1fr; } }
+
+.svc-card-new {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--studio-border);
+    border-radius: 18px;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex; gap: 1.25rem; align-items: center;
+}
+
+.svc-card-new:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--studio-border-hot);
+    transform: translateY(-4px);
+}
+
+[data-theme="ivory"] .svc-card-new { background: #F8FAFC; border-color: rgba(0,0,0,0.06); }
+[data-theme="ivory"] .svc-card-new:hover { background: #FFFFFF; border-color: var(--gold-dim); }
+
+.svc-card-new.selected {
+    background: var(--studio-accent-soft) !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 10px 30px rgba(200, 160, 64, 0.15);
+}
+
+.svc-check {
+    position: absolute; top: 12px; right: 12px;
+    width: 22px; height: 22px;
+    background: var(--gold); color: #000;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; opacity: 0; transform: scale(0.5);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.svc-card-new.selected .svc-check { opacity: 1; transform: scale(1); }
+
+.svc-icon-box {
+    width: 54px; height: 54px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0;
+}
+
+.svc-name {
+    font-size: 1.05rem; font-weight: 900;
+    color: var(--text-1); margin-bottom: 2px;
+}
+
+.svc-desc-text {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-3); line-height: 1.4;
+}
+
+/* ── Form Fields ── */
+.book-field-label {
+    display: block; font-size: 0.62rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-3); margin-bottom: 0.75rem;
+}
+
+.book-input, .book-select, .book-textarea {
+    width: 100%; background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--studio-border); border-radius: 14px;
+    padding: 0.9rem 1.25rem; color: var(--text-1);
+    font-size: 0.88rem; font-family: inherit;
+    transition: all 0.25s ease; outline: none;
+}
+
+[data-theme="ivory"] .book-input, 
+[data-theme="ivory"] .book-select, 
+[data-theme="ivory"] .book-textarea { 
+    background: #F8FAFC; border-color: rgba(0,0,0,0.08); color: #0F172A; 
+}
+
+.book-input:focus, .book-select:focus, .book-textarea:focus {
+    background: rgba(255, 255, 255, 0.06); border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
+}
+
+[data-theme="ivory"] .book-input:focus, 
+[data-theme="ivory"] .book-select:focus, 
+[data-theme="ivory"] .book-textarea:focus { 
+    background: #FFFFFF; 
+}
+
+.book-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+@media(max-width: 600px) { .book-grid-2 { grid-template-columns: 1fr; } }
+
+/* ── Drop Zone ── */
+.drop-zone-new {
+    border: 2px dashed var(--studio-border); border-radius: 18px;
+    padding: 2.5rem; text-align: center; cursor: pointer;
+    transition: all 0.3s ease; background: rgba(255, 255, 255, 0.01);
+}
+
+.drop-zone-new:hover, .drop-zone-new.drag-over {
+    border-color: var(--gold); background: var(--studio-accent-soft);
+}
+
+.dz-remove-btn {
+    background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 6px 14px; border-radius: 8px; font-size: 10px; font-weight: 800;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+}
+
+.dz-remove-btn:hover { background: #ef4444; color: #fff; }
+
+/* ── Pills for Art Type ── */
+.sketch-pills-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.sketch-pill-new {
+    padding: 0.75rem 1.25rem; border-radius: 12px; border: 1px solid var(--studio-border);
+    background: rgba(255, 255, 255, 0.02); color: var(--studio-text-secondary);
+    font-size: 0.78rem; font-weight: 750; cursor: pointer; transition: all 0.25s;
+    display: flex; align-items: center; gap: 0.6rem;
+}
+
+[data-theme="ivory"] .sketch-pill-new { background: #F8FAFC; border-color: rgba(0,0,0,0.06); }
+
+.sketch-pill-new:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-1); }
+.sketch-pill-new.selected {
+    background: var(--gold) !important; color: #000 !important;
+    border-color: var(--gold) !important; box-shadow: 0 4px 15px rgba(200, 160, 64, 0.25);
+}
+
+/* ── Info Box ── */
+.book-info-box {
+    display: flex; gap: 1rem; align-items: flex-start; padding: 1.25rem 1.5rem;
+    background: rgba(200, 160, 64, 0.05); border: 1px solid var(--gold-dim); border-radius: 14px;
+}
+
+.book-info-icon {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--gold);
+    color: #000; display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 900; flex-shrink: 0;
+}
+
+.book-info-box p { font-size: 0.78rem; color: var(--studio-text-secondary); line-height: 1.6; margin: 0; font-weight: 500; }
+
+/* ── Submit Button ── */
+.book-submit-btn {
+    width: 100%; padding: 1.25rem; border-radius: 16px; border: none;
+    background: var(--text-1); color: var(--studio-bg);
+    font-size: 0.88rem; font-weight: 950; text-transform: uppercase;
+    letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-top: 2rem;
+}
+
+[data-theme="ivory"] .book-submit-btn { background: #0F172A; color: #FFFFFF; }
+
+.book-submit-btn:hover {
+    transform: translateY(-3px); box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+    background: var(--studio-gold); color: #000;
+}
+
+.book-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.book-err { color: #f43f5e; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+
+.dyn-block { display: none; animation: dynFadeIn 0.4s ease both; }
+@keyframes dynFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+#commonFields { display: none; }
+</style>
 
 <div class="book-section-wrap">
 <div class="book-outer-card">
@@ -611,3 +871,117 @@
 
 </div><!-- /book-outer-card -->
 </div><!-- /book-section-wrap -->
+
+<script>
+    /**
+     * Booking Logic
+     */
+    function selectService(type, el) {
+        document.querySelectorAll('.svc-card-new').forEach(c => c.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+        document.getElementById('serviceType').value = type;
+        document.getElementById('svcErr').style.display = 'none';
+
+        // Filters artists
+        const artistSelect = document.getElementById('artistSelect');
+        const options = Array.from(artistSelect.options);
+        let count = 0;
+        options.forEach(opt => {
+            if (opt.value === '') { 
+                opt.style.display = ''; 
+                return; 
+            }
+            const spec = opt.dataset.specialisation || '';
+            let show = false;
+            if (type === 'tattoo') show = spec.includes('tattoo') || spec.includes('ink') || spec.includes('realism') || spec.includes('traditional');
+            else if (type === 'art') show = spec.includes('art') || spec.includes('paint') || spec.includes('sketch') || spec.includes('digital');
+            else if (type === 'removal') show = spec.includes('removal') || spec.includes('laser');
+
+            opt.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+        artistSelect.value = '';
+        document.getElementById('noArtistMsg').style.display = (count === 0 && type !== '') ? 'block' : 'none';
+
+        // Reveals blocks
+        document.getElementById('commonFields').style.display = 'block';
+        document.querySelectorAll('.dyn-block').forEach(b => b.style.display = 'none');
+        const block = document.getElementById('block-' + type);
+        if (block) block.style.display = 'block';
+
+        // Tips
+        document.getElementById('tipTattoo').style.display = type === 'tattoo' ? 'flex' : 'none';
+        document.getElementById('tipArt').style.display = type === 'art' ? 'flex' : 'none';
+        document.getElementById('tipRemoval').style.display = type === 'removal' ? 'flex' : 'none';
+
+        requestAnimationFrame(() => {
+            const common = document.getElementById('commonFields');
+            common.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    function setArtType(el, val) {
+        document.querySelectorAll('.sketch-pill-new').forEach(p => p.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('tc-art').value = val;
+        document.getElementById('artTypeErr').style.display = 'none';
+    }
+
+    function previewDz(input, type) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('dzPh-' + type).style.display = 'none';
+            document.getElementById('dzPv-' + type).style.display = 'block';
+            document.getElementById('dzImg-' + type).src = e.target.result;
+            document.getElementById('dzName-' + type).textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearDz(e, type) {
+        e.stopPropagation();
+        document.getElementById('ref-' + type).value = '';
+        document.getElementById('dzPh-' + type).style.display = 'block';
+        document.getElementById('dzPv-' + type).style.display = 'none';
+        document.getElementById('dzImg-' + type).src = '';
+    }
+
+    function handleDrop(e, type) {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            const input = document.getElementById('ref-' + type);
+            input.files = files;
+            previewDz(input, type);
+        }
+        document.getElementById('dz-' + type).classList.remove('drag-over');
+    }
+
+    function submitBooking() {
+        const type = document.getElementById('serviceType').value;
+        const btn = document.getElementById('submitBtn');
+        const form = document.getElementById('bookingForm');
+
+        if (!type) {
+            document.getElementById('svcErr').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // Basic validation
+        if (type === 'art') {
+            const artType = document.getElementById('tc-art').value;
+            if (!artType) {
+                document.getElementById('artTypeErr').style.display = 'block';
+                document.getElementById('artPills').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
+        form.submit();
+    }
+</script>

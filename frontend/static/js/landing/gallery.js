@@ -25,8 +25,22 @@ let currentIndex = 0;
         }
 
         function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('open');
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lbImg');
+            
+            // reset zoom if open
+            if (lbImg) {
+                lbImg.style.transform = 'scale(1)';
+                lbImg.style.cursor = 'zoom-in';
+            }
+            
+            lb.classList.remove('open');
             document.body.style.overflow = '';
+        }
+        
+        function handleLightboxBgClick(e) {
+            const inner = document.getElementById('lbInner');
+            if (inner && !inner.contains(e.target)) closeLightbox();
         }
 
         function changeLightbox(dir) {
@@ -36,6 +50,14 @@ let currentIndex = 0;
 
             const lbImg = document.getElementById('lbImg');
             lbImg.style.opacity = '0';
+            
+            // reset zoom
+            lbImg.style.transform = 'scale(1)';
+            lbImg.style.cursor = 'zoom-in';
+            
+            setTimeout(() => {
+                lbImg.style.transformOrigin = 'center center';
+            }, 200);
 
             setTimeout(() => {
                 lbImg.src = nextEl.getAttribute('data-img');
@@ -91,4 +113,82 @@ let currentIndex = 0;
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowLeft') changeLightbox(-1);
             if (e.key === 'ArrowRight') changeLightbox(1);
+        });
+
+        // Interactive Image Zoom (Click/Pan)
+        document.addEventListener('DOMContentLoaded', () => {
+            const lbImgContainer = document.getElementById('lbImgContainer');
+            const lbImg = document.getElementById('lbImg');
+
+            if (lbImgContainer && lbImg) {
+                let isZoomed = false;
+
+                lbImgContainer.addEventListener('click', (e) => {
+                    if (e.target.closest('.lb-nav')) return; // ignore clicks on arrows
+                    
+                    if (!isZoomed) {
+                        isZoomed = true;
+                        lbImg.style.cursor = 'zoom-out';
+                        
+                        const rect = lbImgContainer.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const xPercent = (x / rect.width) * 100;
+                        const yPercent = (y / rect.height) * 100;
+                        
+                        lbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                        lbImg.style.transform = 'scale(2.5)';
+                    } else {
+                        isZoomed = false;
+                        lbImg.style.cursor = 'zoom-in';
+                        lbImg.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            if (!isZoomed) lbImg.style.transformOrigin = 'center center';
+                        }, 200);
+                    }
+                });
+
+                lbImgContainer.addEventListener('mousemove', (e) => {
+                    if (!isZoomed) return;
+                    const rect = lbImgContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+                    
+                    lbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                });
+
+                lbImgContainer.addEventListener('mouseleave', () => {
+                    if (isZoomed) {
+                        isZoomed = false;
+                        lbImg.style.cursor = 'zoom-in';
+                        lbImg.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            if (!isZoomed) lbImg.style.transformOrigin = 'center center';
+                        }, 200);
+                    }
+                });
+                
+                // Override changeLightbox to reset zoom state
+                const origChangeLightbox = changeLightbox;
+                window.changeLightbox = function(dir) {
+                    isZoomed = false;
+                    lbImg.style.cursor = 'zoom-in';
+                    lbImg.style.transform = 'scale(1)';
+                    lbImg.style.transformOrigin = 'center center';
+                    origChangeLightbox(dir);
+                };
+                
+                // Override closeLightbox to reset zoom state
+                const origCloseLightbox = closeLightbox;
+                window.closeLightbox = function() {
+                    isZoomed = false;
+                    lbImg.style.cursor = 'zoom-in';
+                    lbImg.style.transform = 'scale(1)';
+                    lbImg.style.transformOrigin = 'center center';
+                    origCloseLightbox();
+                };
+            }
         });

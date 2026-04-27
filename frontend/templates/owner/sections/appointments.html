@@ -130,3 +130,37 @@
         </table>
     </div>
 </div>
+
+<script>
+    function filterTable(status, btn) {
+        const rows = document.querySelectorAll('#appointmentsTable tbody tr');
+        const btns = document.querySelectorAll('.filter-pill');
+        
+        btns.forEach(b => b.classList.remove('bg-studio-gold', 'text-white'));
+        btns.forEach(b => b.classList.add('bg-studio-surface-light/50', 'text-studio-text-muted'));
+        
+        if (btn) {
+            btn.classList.remove('bg-studio-surface-light/50', 'text-studio-text-muted');
+            btn.classList.add('bg-studio-gold', 'text-white');
+        }
+
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute('data-status');
+            if (status === 'all' || rowStatus === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Inline search handler
+    document.getElementById('apptSearch')?.addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#appointmentsTable tbody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(term) ? '' : 'none';
+        });
+    });
+</script>

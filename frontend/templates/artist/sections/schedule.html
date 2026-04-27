@@ -1,3 +1,40 @@
+<!-- ═══════════════════════════════════════
+     SECTION: SCHEDULE
+     ═══════════════════════════════════════ -->
+
+<script>
+function renderScheduleDate() {
+    const todayEl = document.getElementById('todayStr');
+    const slotEl = document.getElementById('slotCount');
+    const slotElMob = document.getElementById('slotCountMob');
+    
+    if (todayEl) {
+        const now = new Date();
+        const formatted = now.toLocaleDateString('en-IN', {
+            weekday: 'long', year: 'numeric',
+            month: 'long', day: 'numeric',
+        });
+        todayEl.textContent = formatted;
+    }
+    
+    const items = document.querySelectorAll('#sec-schedule .studio-card.no-accent');
+    const count = items.length;
+    const text = count === 0
+        ? 'No sessions booked for today'
+        : count + ' session' + (count === 1 ? '' : 's') + ' scheduled today';
+        
+    if (slotEl) slotEl.textContent = text;
+    if (slotElMob) slotElMob.textContent = text;
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('sec-schedule').classList.contains('active')) {
+        renderScheduleDate();
+    }
+});
+</script>
+
 <div class="studio-card accent-indigo relative">
     <div class="absolute top-10 right-10 text-right hidden lg:block">
         <p id="todayStr" class="text-studio-selection text-[10px] font-black uppercase tracking-[0.2em] mb-2"></p>

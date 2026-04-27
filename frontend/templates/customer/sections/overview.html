@@ -1,122 +1,127 @@
-<!-- ═══════════════════════════════════════
-     SECTION: OVERVIEW (sec-overview) — Fixed & Enhanced
-═══════════════════════════════════════ -->
-
+<!-- SECTION: CUSTOMER OVERVIEW — Harmonized with Owner Premium Design -->
 
 <div class="ov-wrap">
 
-    <!-- ── 3 Metric cards ── -->
-    <div class="ov-metrics">
+    <!-- ── 3 Metric Cards ── -->
+    <div class="metric-grid">
 
         <!-- Total Bookings -->
-        <div class="summary-card accent-gold ov-metric">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                <div class="icon-box" style="background:var(--ov-gold-soft);color:var(--studio-gold);border-color:rgba(200,160,64,0.2);">
-                    <i class="fa-solid fa-calendar-check"></i>
+        <div class="metric-card" style="border-top:3px solid var(--gold);">
+            <div class="metric-card-header">
+                <div class="metric-card-icon" style="background:rgba(184, 146, 42, 0.1);color:var(--gold);">
+                    <i class="fas fa-calendar-check"></i>
                 </div>
-                <span class="stat-badge stat-badge-bookings">Bookings</span>
+                <span class="metric-card-tag" style="background:rgba(184, 146, 42, 0.1);color:var(--gold);">History</span>
             </div>
-            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Total Bookings</p>
-            <div class="card-value">{{ appointments|length if appointments else 0 }}</div>
+            <div class="metric-card-label">Total Bookings</div>
+            <div class="metric-card-value">{{ appointments|length if appointments else 0 }}</div>
         </div>
 
-        <!-- Pending -->
-        <div class="summary-card ov-metric" style="--accent-color:#F59E0B;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                <div class="icon-box" style="background:var(--ov-pending-bg);color:var(--ov-pending-color);border-color:rgba(245,158,11,0.2);">
-                    <i class="fa-solid fa-clock"></i>
+        <!-- Pending Approvals -->
+        <div class="metric-card" style="border-top:3px solid #f59e0b;">
+            <div class="metric-card-header">
+                <div class="metric-card-icon" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b;">
+                    <i class="fas fa-clock"></i>
                 </div>
-                <span class="stat-badge stat-badge-pending">Pending</span>
+                <span class="metric-card-tag" style="background:rgba(245, 158, 11, 0.1);color:#f59e0b;">Pending</span>
             </div>
-            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Pending Approvals</p>
-            <div class="card-value">{{ appointments|selectattr('status','equalto','Pending')|list|length if appointments else 0 }}</div>
+            <div class="metric-card-label">Awaiting Approval</div>
+            <div class="metric-card-value">{{ appointments|selectattr('status','equalto','Pending')|list|length if appointments else 0 }}</div>
         </div>
 
-        <!-- Completed -->
-        <div class="summary-card ov-metric" style="--accent-color:#10B981;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                <div class="icon-box" style="background:var(--ov-done-bg);color:var(--ov-done-color);border-color:rgba(16,185,129,0.2);">
-                    <i class="fas fa-check-double"></i>
+        <!-- Active Sessions -->
+        <div class="metric-card" style="border-top:3px solid #10b981;">
+            <div class="metric-card-header">
+                <div class="metric-card-icon" style="background:rgba(16, 185, 129, 0.1);color:#10b981;">
+                    <i class="fas fa-check-circle"></i>
                 </div>
-                <span class="stat-badge stat-badge-completed">Completed</span>
+                <span class="metric-card-tag" style="background:rgba(16, 185, 129, 0.1);color:#10b981;">Completed</span>
             </div>
-            <p style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--studio-text-muted);margin-bottom:4px;">Finished Sessions</p>
-            <div class="card-value">{{ appointments|rejectattr('status','equalto','Pending')|rejectattr('status','equalto','Approved')|rejectattr('status','equalto','Cancelled')|rejectattr('status','equalto','Rejected')|list|length if appointments else 0 }}</div>
+            <div class="metric-card-label">Finished Sessions</div>
+            <div class="metric-card-value">{{ appointments|rejectattr('status','equalto','Pending')|rejectattr('status','equalto','Approved')|rejectattr('status','equalto','Cancelled')|rejectattr('status','equalto','Rejected')|list|length if appointments else 0 }}</div>
         </div>
-
     </div>
 
-    <!-- ── Hero: Upcoming Session ── -->
-    <div class="ov-hero">
-        <div class="ov-hero-blob1"></div>
-        <div class="ov-hero-blob2"></div>
-
-        <div class="ov-hero-content">
-            <p class="ov-hero-label">
-                <i class="fas fa-bolt" style="animation:pulse 2s infinite;"></i>
-                Upcoming Session
-            </p>
-
-            {% set upcoming = appointments|selectattr('status','equalto','Pending')|list + appointments|selectattr('status','equalto','Approved')|list %}
-            {% if upcoming %}
+    <!-- ── Premium Hero Banner ── -->
+    <div class="master-banner">
+        <div class="master-banner-eyebrow" style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+            <i class="fas fa-sparkles"></i> Welcome back, {{ name }}
+        </div>
+        {% if upcoming %}
             {% set next_appt = upcoming[0] %}
-
-            <h2 class="ov-hero-date">{{ next_appt.appointment_date }}</h2>
-            <p class="ov-hero-artist">
-                with Artist <strong>{{ next_appt.artist_name }}</strong>
-                &mdash; "{{ next_appt.tattoo_concept }}"
-            </p>
-            <div class="ov-hero-pills">
-                <span class="ov-status-pill">
-                    <i class="fas fa-shield-check" style="margin-right:5px;"></i>{{ next_appt.status }}
-                </span>
-                <span class="ov-time-row">
-                    <i class="far fa-clock"></i> {{ next_appt.appointment_time }}
-                </span>
-            </div>
-
+            <h1>Next Session.</h1>
+            <p>Your next artistic journey is scheduled for <strong>{{ next_appt.appointment_date }}</strong> at <strong>{{ next_appt.appointment_time }}</strong> with Artist <strong>{{ next_appt.artist_name }}</strong>.</p>
+        {% else %}
+            <h1>Your Canvas Awaits.</h1>
+            <p>Our world-class artists are ready to transform your vision into a permanent masterpiece. Explore our portfolio or start your next booking today.</p>
+        {% endif %}
+        
+        <div class="master-banner-actions">
+            {% if upcoming %}
+                <button onclick="switchTab('appointments')" class="btn-gold">
+                    <i class="fas fa-calendar-alt"></i> View My Sessions
+                </button>
             {% else %}
-
-            <h2 class="ov-hero-empty-title">Ready for your next piece?</h2>
-            <p class="ov-hero-empty-sub">Your skin is a waiting canvas. Our artists are ready to transform your vision into a permanent masterpiece.</p>
-            <button onclick="switchTab('book')" class="ov-hero-btn">
-                <i class="fas fa-calendar-plus"></i> Schedule Studio Session
-            </button>
-
+                <button onclick="switchTab('book')" class="btn-gold">
+                    <i class="fas fa-calendar-plus"></i> Start New Booking
+                </button>
             {% endif %}
+            <button onclick="switchTab('gallery')" class="btn-outline-white">
+                <i class="fas fa-images"></i> Studio Gallery
+            </button>
         </div>
     </div>
 
-    <!-- ── Info cards ── -->
-    <div class="ov-info-grid">
+    <!-- ── Quick Action Cards ── -->
+    <div class="quick-actions-grid">
 
-        <!-- Past Tattoos → Gallery -->
-        <div class="ov-info-card c-info" onclick="switchTab('gallery')">
-            <div class="ov-card-icon c-info"><i class="fas fa-history"></i></div>
-            <div class="ov-card-title">Past Tattoos</div>
-            <div class="ov-card-subtitle c-info">Masterpiece History</div>
-            <p class="ov-card-body">Review your completed masterpieces and session history. Build your personal art portfolio.</p>
-            <div class="ov-card-footer c-info">View History <i class="fas fa-arrow-right"></i></div>
+        <!-- My Sessions -->
+        <div class="quick-action-card" onclick="switchTab('appointments')">
+            <div class="quick-action-icon-wrap">
+                <div class="quick-action-icon" style="background:rgba(184, 146, 42, 0.1);color:var(--gold);">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="quick-action-title">Session History</div>
+            </div>
+            <div class="quick-action-desc">
+                Review your completed masterpieces, track healing progress, and access your personal art portfolio.
+            </div>
+            <div class="quick-action-link">
+                View History <i class="fas fa-arrow-right"></i>
+            </div>
         </div>
 
-        <!-- Favorite Artists → Book -->
-        <div class="ov-info-card c-gold" onclick="switchTab('book')">
-            <div class="ov-card-icon c-gold"><i class="fas fa-users"></i></div>
-            <div class="ov-card-title">Favourite Artists</div>
-            <div class="ov-card-subtitle c-gold">Studio Talent</div>
-            <p class="ov-card-body">Browse our roster of world-class tattoo talent and find the perfect creative match for your concept.</p>
-            <div class="ov-card-footer c-gold">Explore Team <i class="fas fa-arrow-right"></i></div>
+        <!-- Book Artist -->
+        <div class="quick-action-card" onclick="switchTab('book')">
+            <div class="quick-action-icon-wrap">
+                <div class="quick-action-icon" style="background:rgba(184, 146, 42, 0.1);color:var(--gold);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="quick-action-title">Studio Talent</div>
+            </div>
+            <div class="quick-action-desc">
+                Browse our team of specialized artists and find the perfect creative match for your next tattoo concept.
+            </div>
+            <div class="quick-action-link">
+                Explore Team <i class="fas fa-arrow-right"></i>
+            </div>
         </div>
 
         <!-- Aftercare -->
-        <div class="ov-info-card c-warn" onclick="switchTab('aftercare')">
-            <div class="ov-card-icon c-warn"><i class="fas fa-notes-medical"></i></div>
-            <div class="ov-card-title">Aftercare Guide</div>
-            <div class="ov-card-subtitle c-warn">Healing Protocols</div>
-            <p class="ov-card-body">Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.</p>
-            <div class="ov-card-footer c-warn">Read Guide <i class="fas fa-arrow-right"></i></div>
+        <div class="quick-action-card" onclick="switchTab('aftercare')">
+            <div class="quick-action-icon-wrap">
+                <div class="quick-action-icon" style="background:rgba(239, 68, 68, 0.1);color:#ef4444;">
+                    <i class="fas fa-notes-medical"></i>
+                </div>
+                <div class="quick-action-title">Aftercare Protocols</div>
+            </div>
+            <div class="quick-action-desc">
+                Essential healing guidelines and post-session protocols to ensure your newly acquired ink stays vibrant.
+            </div>
+            <div class="quick-action-link" style="color:#ef4444;">
+                Read Guide <i class="fas fa-arrow-right"></i>
+            </div>
         </div>
-
     </div>
 
 </div>

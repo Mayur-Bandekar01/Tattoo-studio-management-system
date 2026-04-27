@@ -1,9 +1,10 @@
 <!-- Chat Layout -->
-<div class="studio-card p-0 overflow-hidden border border-studio-border bg-studio-surface/20 backdrop-blur-xl h-[calc(100vh-160px)] min-h-[600px] flex no-accent">
+<div class="studio-card p-0 overflow-hidden border border-studio-border bg-studio-surface/20 backdrop-blur-xl flex flex-col lg:flex-row no-accent" 
+     style="height: calc(100vh - 160px); min-height: 600px; flex-direction: row;">
 
     <!-- Sidebar: Thread List -->
     <div class="w-72 md:w-80 border-r border-studio-border flex flex-col shrink-0 bg-studio-bg/50">
-        <div class="px-6 py-5 border-bottom border-studio-border bg-studio-surface/30">
+        <div class="px-6 py-5 border-b border-studio-border bg-studio-surface/30">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted">Conversations</h3>
         </div>
 
@@ -12,116 +13,234 @@
             {% for customer_id, appts in appointments | groupby('customer_id') %}
             {% set first = appts | first %}
 
-            <div class="group flex items-center gap-3 px-5 py-4 cursor-pointer border-b border-studio-border transition-all hover:bg-studio-gold/5 relative"
+            <div class="ch-item group flex items-center gap-3 px-5 py-4 cursor-pointer border-b border-studio-border/50 transition-all hover:bg-studio-gold/5 relative"
                 onclick="artOpenThread('{{ customer_id }}','{{ first.customer_name }}',null)"
                 id="athread-{{ customer_id }}-gen">
 
-                <div
-                    class="w-10 h-10 rounded-full bg-studio-gold text-studio-bg flex items-center justify-center font-bold text-sm shadow-lg group-hover:scale-110 transition-transform">
+                <div class="w-10 h-10 rounded-full bg-studio-gold text-studio-bg flex items-center justify-center font-bold text-sm shadow-lg group-hover:scale-110 transition-transform shrink-0">
                     {{ (first.customer_name or 'C')[0] | upper }}
                 </div>
 
                 <div class="flex-1 min-w-0">
-                    <div class="text-[12px] font-bold text-text truncate group-hover:text-accent transition-colors">{{
-                        first.customer_name }}</div>
+                    <div class="text-[12px] font-bold text-text truncate group-hover:text-accent transition-colors">{{ first.customer_name }}</div>
                     <div class="text-[9px] text-muted uppercase tracking-widest font-bold mt-0.5">Conversation</div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 shrink-0">
                     <button
-                        class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white"
+                        class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-500 hover:text-white flex items-center justify-center"
                         onclick="event.stopPropagation(); artDeleteThread('{{ customer_id }}','customer')"
                         title="Delete Chat">
                         <i class="fas fa-trash-alt text-[10px]"></i>
                     </button>
-                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse" id="adot-{{ customer_id }}-gen"
-                        style="display:none;"></span>
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse hidden" id="adot-{{ customer_id }}-gen"></span>
                 </div>
             </div>
             {% endfor %}
             {% else %}
             <div class="flex flex-col items-center justify-center p-12 text-center opacity-30">
                 <i class="fas fa-user-clock text-4xl mb-4"></i>
-                <p class="text-[10px] font-bold uppercase tracking-widest leading-relaxed">No appointments
-                    yet.<br>Conversations will appear here once bookings come in.</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest leading-relaxed">No appointments yet.<br>Conversations will appear here once bookings come in.</p>
             </div>
             {% endif %}
         </div>
     </div>
 
     <!-- Main Chat Window -->
-    <div class="flex-1 flex flex-col bg-studio-bg/20 relative">
+    <div class="flex-1 flex flex-col bg-studio-bg/20 relative overflow-hidden">
 
         <!-- Empty State -->
         <div id="art-chat-empty"
-            class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 z-10 bg-studio-bg/40 backdrop-blur-sm">
-            <div
-                class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mb-6 shadow-2xl opacity-20">
+            class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 bg-studio-bg/40 backdrop-blur-sm"
+            style="z-index: 5;">
+            <div class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mb-6 shadow-2xl opacity-20">
                 <i class="fas fa-comments text-3xl text-accent"></i>
             </div>
-            <h3 class="text-lg font-display text-text mb-2">Select a conversation</h3>
-            <p class="text-[10px] uppercase font-bold tracking-widest text-muted">Click any thread on the left to start
-                chatting</p>
+            <h3 class="text-lg font-display text-text mb-2 opacity-60">Select a conversation</h3>
+            <p class="text-[10px] uppercase font-bold tracking-widest text-muted opacity-50">Click any thread on the left to start chatting</p>
         </div>
 
-        <!-- Active Chat -->
-        <div id="art-chat-active" class="hidden flex-col h-full overflow-hidden animate-in fade-in duration-500">
+        <!-- Active Chat — uses display:none / display:flex toggled by JS -->
+        <div id="art-chat-active" class="flex-col h-full overflow-hidden animate-in fade-in duration-500" style="display:none;">
+
             <!-- Chat Header -->
-            <div
-                class="px-6 py-4 border-b border-studio-border bg-studio-surface/50 backdrop-blur-md flex items-center justify-between z-20">
+            <div class="px-6 py-4 border-b border-studio-border bg-studio-surface/50 backdrop-blur-md flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-4">
-                    <div class="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs ring-2 ring-accent/20"
+                    <div class="w-9 h-9 rounded-full bg-accent text-white flex items-center justify-center font-bold text-xs ring-2 ring-accent/20 shrink-0"
                         id="art-chat-av">C</div>
                     <div>
                         <div class="text-[13px] font-black text-text" id="art-chat-name">—</div>
-                        <div id="art-chat-tag" class="flex gap-2"></div>
+                        <div id="art-chat-tag" class="flex gap-2 mt-0.5"></div>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
                     <button
-                        class="w-8 h-8 rounded-lg bg-studio-surface border border-studio-border text-muted hover:text-text hover:border-studio-gold transition-all">
+                        class="w-8 h-8 rounded-lg bg-studio-surface border border-studio-border text-muted hover:text-text hover:border-studio-gold transition-all flex items-center justify-center">
                         <i class="fas fa-ellipsis-v text-[10px]"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Messages Area -->
-            <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 flex flex-col custom-scrollbar bg-pattern-dots"
-                id="art-msgs-area"></div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar"
+                id="art-msgs-area"
+                style="display:flex; flex-direction:column; gap:6px; padding: 24px 28px; overflow-x:hidden;"></div>
 
             <!-- Selection Toolbar -->
             <div id="art-sel-bar"
-                class="hidden items-center justify-between px-6 py-3 bg-studio-gold/10 border-t border-studio-gold/20 animate-in slide-in-from-bottom duration-300">
-                <span id="art-sel-count" class="text-[10px] font-black uppercase tracking-widest text-text">0
-                    selected</span>
+                class="items-center justify-between px-6 py-3 bg-studio-gold/10 border-t border-studio-gold/20 shrink-0"
+                style="display:none;">
+                <span id="art-sel-count" class="text-[10px] font-black uppercase tracking-widest text-text">0 selected</span>
                 <div class="flex gap-2">
                     <button onclick="artCancelSelection()"
-                        class="px-4 py-1.5 rounded-lg bg-studio-surface border border-studio-border text-muted text-[10px] font-black uppercase tracking-widest hover:text-text">Cancel</button>
+                        class="px-4 py-1.5 rounded-lg bg-studio-surface border border-studio-border text-muted text-[10px] font-black uppercase tracking-widest hover:text-text transition-colors">Cancel</button>
                     <button onclick="artDeleteSelected()"
-                        class="px-4 py-1.5 rounded-lg bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 shadow-lg shadow-rose-500/20">Delete</button>
+                        class="px-4 py-1.5 rounded-lg bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest hover:bg-rose-600 shadow-lg shadow-rose-500/20 transition-colors">Delete</button>
                 </div>
             </div>
 
             <!-- Input Bar -->
-            <div class="p-5 border-t border-studio-border bg-studio-surface/50 backdrop-blur-md">
-                <div
-                    class="flex items-end gap-3 bg-studio-bg rounded-2xl border border-studio-border p-2 focus-within:border-studio-gold transition-all">
+            <div class="p-5 border-t border-studio-border bg-studio-surface/50 backdrop-blur-md shrink-0">
+                <div class="flex items-end gap-3 bg-studio-bg rounded-2xl border border-studio-border p-2 focus-within:border-studio-gold transition-all duration-200">
                     <textarea
-                        class="flex-1 bg-transparent border-none outline-none resize-none px-4 py-2.5 text-[12px] text-text placeholder:text-muted/30 leading-relaxed max-h-32 custom-scrollbar"
-                        id="art-chat-input" placeholder="Type a message…" rows="1"
+                        class="flex-1 bg-transparent border-none outline-none resize-none px-4 py-2.5 text-[13px] text-text placeholder:text-muted/40 leading-relaxed custom-scrollbar"
+                        id="art-chat-input"
+                        placeholder="Type a message…"
+                        rows="1"
+                        style="max-height: 128px;"
                         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();artSend();}"
                         oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,128)+'px'"></textarea>
 
                     <button
-                        class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20"
-                        id="art-send-btn" onclick="artSend()" title="Send">
+                        class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20 shrink-0"
+                        id="art-send-btn" onclick="artSend()" title="Send (Enter)">
                         <i class="fas fa-paper-plane text-xs"></i>
                     </button>
                 </div>
+                <p class="text-[9px] text-muted/40 mt-2 pl-2 font-medium">Enter to send · Shift+Enter for new line</p>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Chat Styles -->
+<style>
+    /* Active thread highlight */
+    .ch-item.active {
+        background: rgba(200, 160, 64, 0.1) !important;
+        border-right: 3px solid var(--studio-gold, #c8a040) !important;
+    }
+    .ch-item.active .text-text {
+        color: var(--studio-gold, #c8a040) !important;
+    }
+    .ch-item.active .text-muted {
+        color: var(--studio-gold, #c8a040) !important;
+        opacity: 0.7;
+    }
+
+    /* ── Message rows: full width, flex, align left or right ── */
+    .ch-row {
+        display: flex;
+        width: 100%;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 2px 0;
+    }
+    /* Theirs: avatar + bubble on the LEFT */
+    .ch-row.theirs {
+        justify-content: flex-start;
+    }
+    /* Mine: bubble on the RIGHT, no avatar */
+    .ch-row.mine {
+        justify-content: flex-end;
+    }
+
+    /* Bubble wrapper constrains max width */
+    .ch-bubble-wrap {
+        display: flex;
+        flex-direction: column;
+        max-width: 65%;
+    }
+    .ch-row.mine  .ch-bubble-wrap { align-items: flex-end; }
+    .ch-row.theirs .ch-bubble-wrap { align-items: flex-start; }
+
+    /* Bubble base */
+    .ch-bubble {
+        padding: 9px 14px;
+        border-radius: 18px;
+        font-size: 0.84rem;
+        line-height: 1.55;
+        word-break: break-word;
+        white-space: pre-wrap;
+    }
+
+    /* MY messages — gold, right side */
+    .ch-bubble.mine {
+        background: linear-gradient(135deg, #c8a040 0%, #ddb040 100%);
+        color: #1a1000;
+        border-bottom-right-radius: 4px;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(200,160,64,0.25);
+    }
+
+    /* THEIR messages — subtle surface, left side */
+    .ch-bubble.theirs {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--studio-text-primary, #f1f5f9);
+        border-bottom-left-radius: 4px;
+    }
+    /* Light theme override */
+    [data-theme="ivory"] .ch-bubble.theirs {
+        background: #f0f2f5;
+        border-color: rgba(0,0,0,0.08);
+        color: #1a1a2e;
+    }
+
+    /* Timestamp */
+    .ch-time {
+        font-size: 0.62rem;
+        color: var(--studio-text-muted, #94a3b8);
+        opacity: 0.55;
+        padding: 2px 4px 0;
+        letter-spacing: 0.02em;
+    }
+
+    /* Small avatar next to theirs bubble */
+    .ch-av.sm {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--studio-gold, #c8a040);
+        color: #0a0a0a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.6rem;
+        flex-shrink: 0;
+        margin-bottom: 2px;
+    }
+
+    /* Selection */
+    .ch-selectable { cursor: pointer; transition: opacity 0.15s; }
+    .ch-selectable:hover { opacity: 0.85; }
+    .ch-selected .ch-bubble {
+        outline: 2px solid var(--studio-gold, #c8a040);
+        outline-offset: 2px;
+    }
+
+    /* Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.1);
+        border-radius: 100px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(200,160,64,0.35);
+    }
+</style>
 
 <script>
     (function () {
@@ -140,20 +259,24 @@
             _custName = custName;
             _apptId = apptId || null;
 
+            /* Highlight active thread */
             document.querySelectorAll('#art-thread-list .ch-item').forEach(function (el) {
                 el.classList.remove('active');
             });
-            var key = apptId ? custId + '-' + apptId : custId + '-gen';
-            var threadEl = document.getElementById('athread-' + key);
+            var threadEl = document.getElementById('athread-' + custId + '-gen');
             if (threadEl) threadEl.classList.add('active');
 
+            /* Show chat, hide empty state */
             document.getElementById('art-chat-empty').style.display = 'none';
             var active = document.getElementById('art-chat-active');
             active.style.display = 'flex';
 
-            document.getElementById('art-chat-av').textContent = custName[0].toUpperCase();
+            /* Populate header */
+            var initials = (custName || 'C')[0].toUpperCase();
+            document.getElementById('art-chat-av').textContent = initials;
             document.getElementById('art-chat-name').textContent = custName;
-            document.getElementById('art-chat-tag').innerHTML = '<span class="ch-tag"><i class="fas fa-comment-dots"></i>&nbsp;Active Chat</span>';
+            document.getElementById('art-chat-tag').innerHTML =
+                '<span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1"><i class="fas fa-circle text-[6px] animate-pulse"></i> Active Chat</span>';
 
             clearInterval(_poll);
             artFetchMsgs();
@@ -162,29 +285,26 @@
             document.getElementById('art-chat-input').focus();
         };
 
-        /* ── Open thread from Appointments table ────────────── */
+        /* ── Open thread from Appointments table ── */
         window.artOpenChatFromAppt = function (custId, custName, apptId) {
             nav('messages', document.getElementById('nav-messages-artist'));
             setTimeout(function () { artOpenThread(String(custId), custName, String(apptId)); }, 80);
         };
 
-        /* ── Delete a message ───────────────────────────────── */
+        /* ── Delete a single message ── */
         window.artDeleteMsg = function (msgId) {
             if (!confirm('Are you sure you want to delete this message?')) return;
             fetch('/chat/message/' + msgId, {
                 method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
+                headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
             })
                 .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (d.success) artFetchMsgs();
-                });
+                .then(function (d) { if (d.success) artFetchMsgs(); });
         };
 
-        /* ── Selection Mode (WhatsApp-style) ─────────────────── */
+        /* ── Selection mode ── */
         var _artSelectedIds = new Set();
+
         window.artToggleSelect = function (el) {
             var id = el.getAttribute('data-id');
             if (_artSelectedIds.has(id)) {
@@ -217,9 +337,7 @@
             var promises = ids.map(function (id) {
                 return fetch('/chat/message/' + id, {
                     method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
+                    headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
                 }).then(function (r) { return r.json(); });
             });
             Promise.all(promises).then(function () {
@@ -229,7 +347,7 @@
             });
         };
 
-        /* ── Delete thread ─────────────────────────────────── */
+        /* ── Delete thread ── */
         window.artDeleteThread = function (otherId, otherRole) {
             if (!confirm("Delete this entire conversation? This cannot be undone.")) return;
             fetch('/chat/thread/delete', {
@@ -249,7 +367,9 @@
                             clearInterval(_poll);
                             _custId = null;
                         }
-                        artFetchMsgs();
+                        /* Reload page to refresh thread list, or just remove the item */
+                        var threadEl = document.getElementById('athread-' + otherId + '-gen');
+                        if (threadEl) threadEl.remove();
                     } else {
                         alert(data.error || "Failed to delete thread");
                     }
@@ -257,7 +377,7 @@
                 .catch(function (err) { console.error("Thread delete failed:", err); });
         };
 
-        /* ── Fetch messages ─────────────────────────────────── */
+        /* ── Fetch & render messages ── */
         function artFetchMsgs() {
             if (!_custId) return;
             var url = '/chat/messages?other_id=' + encodeURIComponent(_custId) + '&other_role=customer';
@@ -267,30 +387,72 @@
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     var area = document.getElementById('art-msgs-area');
-                    var atBottom = area.scrollHeight - area.clientHeight <= area.scrollTop + 60;
+                    var atBottom = area.scrollHeight - area.clientHeight <= area.scrollTop + 80;
 
                     if (!data.messages || !data.messages.length) {
-                        area.innerHTML = '<div style="text-align:center;color:var(--studio-text-secondary);font-size:0.82rem;padding:3rem;opacity:0.7;">No messages yet — say hello! 👋</div>';
+                        area.innerHTML = '<div style="margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0.4;padding:3rem;text-align:center;">' +
+                            '<i class="fas fa-comment-slash" style="font-size:2rem;color:var(--studio-gold);"></i>' +
+                            '<p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--studio-text-muted);">No messages yet — say hello!</p>' +
+                            '</div>';
                     } else {
-                        area.innerHTML = data.messages.map(function (m) {
-                            var cls = m.is_mine ? 'mine' : 'theirs';
-                            var avatar = !m.is_mine ? '<div class="ch-av sm" style="margin-right:8px; margin-top:4px;">' + (_custName[0] || 'C').toUpperCase() + '</div>' : '';
+                        var prevDate = null;
+                        var html = '<div style="flex:1;min-height:16px;"></div>'; /* spacer pushes msgs to bottom */
+                        html += data.messages.map(function (m) {
+                            /* Date separator — only when sent_at has a real date part */
+                            var dateSep = '';
+                            if (m.sent_at) {
+                                var parts = m.sent_at.trim().split(' ');
+                                var datePart = (parts.length > 1 && (parts[0].indexOf('-') !== -1 || parts[0].indexOf('/') !== -1)) ? parts[0] : null;
+                                if (datePart && datePart !== prevDate) {
+                                    prevDate = datePart;
+                                    dateSep = '<div style="display:flex;align-items:center;gap:12px;margin:20px 0 10px;">' +
+                                        '<div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>' +
+                                        '<span style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:var(--studio-text-muted);white-space:nowrap;padding:3px 10px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;opacity:0.6;">' + escHtml(datePart) + '</span>' +
+                                        '<div style="flex:1;height:1px;background:rgba(255,255,255,0.08);"></div>' +
+                                        '</div>';
+                                }
+                            }
 
-                            // Only allow selection if the message is mine
-                            var selectableAttr = m.is_mine ? ' class="ch-row mine ch-selectable" onclick="artToggleSelect(this)"' : ' class="ch-row theirs"';
+                            var isMine = !!m.is_mine;
+                            var avatar = !isMine
+                                ? '<div class="ch-av sm">' + (_custName[0] || 'C').toUpperCase() + '</div>'
+                                : '';
 
-                            return '<div ' + selectableAttr + ' data-id="' + m.message_id + '" style="display:flex; align-items:flex-start;">' +
+                            var rowStyle = isMine
+                                ? 'display:flex;width:100%;justify-content:flex-end;align-items:flex-end;gap:8px;padding:2px 0;'
+                                : 'display:flex;width:100%;justify-content:flex-start;align-items:flex-end;gap:8px;padding:2px 0;';
+
+                            var wrapStyle = isMine
+                                ? 'display:flex;flex-direction:column;align-items:flex-end;max-width:65%;'
+                                : 'display:flex;flex-direction:column;align-items:flex-start;max-width:65%;';
+
+                            var bubbleStyle = isMine
+                                ? 'padding:9px 14px;border-radius:18px 18px 4px 18px;font-size:0.84rem;line-height:1.55;word-break:break-word;background:linear-gradient(135deg,#c8a040,#ddb040);color:#1a1000;font-weight:500;box-shadow:0 2px 8px rgba(200,160,64,0.2);'
+                                : 'padding:9px 14px;border-radius:18px 18px 18px 4px;font-size:0.84rem;line-height:1.55;word-break:break-word;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:var(--studio-text-secondary,#e2e8f0);';
+
+                            var timeStyle = isMine
+                                ? 'font-size:0.62rem;color:var(--studio-text-muted,#94a3b8);opacity:0.55;padding:2px 4px 0;text-align:right;'
+                                : 'font-size:0.62rem;color:var(--studio-text-muted,#94a3b8);opacity:0.55;padding:2px 4px 0;';
+
+                            var selectAttrs = isMine
+                                ? 'onclick="artToggleSelect(this)"'
+                                : '';
+
+                            return dateSep +
+                                '<div style="' + rowStyle + '" data-id="' + m.message_id + '" ' + selectAttrs + '>' +
                                 avatar +
-                                '<div class="ch-bubble-wrap">' +
-                                '<div class="ch-bubble ' + cls + '" style="max-width:80%;">' + escHtml(m.content) + '</div>' +
-                                '<div class="ch-time" style="margin-top:2px;">' + escHtml(m.sent_at) + '</div>' +
+                                '<div style="' + wrapStyle + '">' +
+                                '<div style="' + bubbleStyle + '">' + escHtml(m.content) + '</div>' +
+                                '<div style="' + timeStyle + '">' + escHtml(m.sent_at) + '</div>' +
                                 '</div>' +
                                 '</div>';
                         }).join('');
+                        area.innerHTML = html;
                     }
 
                     if (atBottom) area.scrollTop = area.scrollHeight;
 
+                    /* Hide unread dot for open thread */
                     var dotKey = _custId + '-gen';
                     var dot = document.getElementById('adot-' + dotKey);
                     if (dot) dot.style.display = 'none';
@@ -298,7 +460,7 @@
                 .catch(function () { });
         }
 
-        /* ── Send ───────────────────────────────────────────── */
+        /* ── Send message ── */
         window.artSend = function () {
             var input = document.getElementById('art-chat-input');
             var content = input.value.trim();
@@ -306,6 +468,7 @@
 
             var btn = document.getElementById('art-send-btn');
             btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i>';
 
             fetch('/chat/send', {
                 method: 'POST',
@@ -328,10 +491,14 @@
                         artFetchMsgs();
                     }
                 })
-                .finally(function () { btn.disabled = false; input.focus(); });
+                .finally(function () {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i>';
+                    input.focus();
+                });
         };
 
-        /* ── Poll unread dots + nav badge ───────────────────── */
+        /* ── Poll unread dots + nav badge ── */
         function pollUnreadDots() {
             fetch('/chat/unread-threads')
                 .then(function (r) { return r.json(); })
@@ -342,7 +509,7 @@
                         total += t.count;
                         var key = t.sender_id + '-gen';
                         var dot = document.getElementById('adot-' + key);
-                        if (dot && t.count > 0) dot.style.display = 'block';
+                        if (dot) dot.style.display = t.count > 0 ? 'block' : 'none';
                     });
                     var badge = document.getElementById('artist-msgs-badge');
                     if (badge) {
@@ -356,10 +523,11 @@
         pollUnreadDots();
         setInterval(pollUnreadDots, 8000);
 
-        document.querySelectorAll('.nav-item').forEach(function (btn) {
+        /* Stop polling when leaving messages tab */
+        document.querySelectorAll('.nav-link').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                var oc = btn.getAttribute('onclick') || '';
-                if (oc.indexOf("'messages'") === -1) clearInterval(_poll);
+                var oc = btn.getAttribute('onclick') || btn.getAttribute('data-section') || '';
+                if (oc.indexOf('messages') === -1) clearInterval(_poll);
             });
         });
     })();

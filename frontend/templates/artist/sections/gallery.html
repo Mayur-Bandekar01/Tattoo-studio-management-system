@@ -1,3 +1,125 @@
+<!-- ═══════════════════════════════════════
+     SECTION: GALLERY / PORTFOLIO
+     ═══════════════════════════════════════ -->
+
+<style>
+/* ── Gallery Layout ── */
+.gal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--studio-spacing);
+}
+
+.gal-item {
+    border-radius: var(--studio-radius);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1;
+    cursor: pointer;
+    background: var(--studio-card);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.gal-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.gal-item:hover img { transform: scale(1.1); }
+
+.gal-ov {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 70%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.5rem; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gal-item:hover .gal-ov { opacity: 1; }
+
+.gal-del-btn {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(239, 68, 68, 0.9); color: white;
+    display: flex; align-items: center; justify-content: center;
+    border: none; cursor: pointer; opacity: 0;
+    transform: translateY(-10px); transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.gal-item:hover .gal-del-btn { opacity: 1; transform: translateY(0); }
+
+/* ── Upload & Dropzone ── */
+.dropzone-pnl {
+    border: 2px dashed var(--studio-border);
+    border-radius: var(--studio-radius);
+    padding: 4rem 2rem; text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer; transition: all 0.3s ease;
+}
+
+.dropzone-pnl:hover, .dropzone-pnl.active {
+    border-color: var(--studio-gold);
+    background: rgba(200, 160, 64, 0.05);
+}
+</style>
+
+<script>
+function toggleUp() {
+    const p = document.getElementById('upPanel');
+    if (p) p.classList.toggle('hidden');
+}
+
+function prevFile(input) {
+    const f = input.files[0];
+    const err = document.getElementById('fErr');
+    const ph = document.getElementById('dzPh');
+    const pv = document.getElementById('dzPv');
+
+    if (f) {
+        if (f.size > 5 * 1024 * 1024) {
+            if (err) { err.querySelector('span').textContent = 'File too large. Max 5 MB allowed.'; err.classList.remove('hidden'); }
+            input.value = '';
+            if (ph) ph.style.display = 'block';
+            if (pv) pv.classList.add('hidden');
+            return;
+        }
+        if (err) err.classList.add('hidden');
+        const img = document.getElementById('dzI');
+        if (img) img.src = URL.createObjectURL(f);
+        const nm = document.getElementById('dzN');
+        if (nm) nm.textContent = f.name;
+        if (ph) ph.style.display = 'none';
+        if (pv) pv.classList.remove('hidden');
+    }
+}
+
+function clearDz(e) {
+    if (e) e.stopPropagation();
+    const input = document.getElementById('gf');
+    if (input) input.value = '';
+    const ph = document.getElementById('dzPh');
+    const pv = document.getElementById('dzPv');
+    const er = document.getElementById('fErr');
+    if (ph) ph.style.display = 'block';
+    if (pv) pv.classList.add('hidden');
+    if (er) er.classList.add('hidden');
+}
+
+function doDrop(e) {
+    e.preventDefault();
+    const dz = document.getElementById('dz');
+    if (dz) dz.classList.remove('active');
+    const files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files.length > 0) {
+        const input = document.getElementById('gf');
+        if (input) {
+            input.files = files;
+            prevFile(input);
+        }
+    }
+}
+</script>
+
 <!-- Header Section -->
 <div class="studio-card accent-gold">
     <div class="flex items-center justify-between gap-6 flex-wrap">

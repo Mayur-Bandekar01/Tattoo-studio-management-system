@@ -2,10 +2,10 @@
      SECTION: OWNER PROFILE
      Refactored: Utility-First Premium
      ═══════════════════════════════════════ -->
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+<div class="flex flex-col md:flex-row gap-8 items-start">
 
     <!-- ── Profile Info Card ── -->
-    <div class="studio-card p-6 border-l-4 border-indigo-500">
+    <div class="studio-card p-6 border-l-4 border-indigo-500 flex-1">
         <div class="flex items-center gap-4 mb-8">
             <div
                 class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shadow-inner">
@@ -54,7 +54,7 @@
     </div>
 
     <!-- ── Security Settings ── -->
-    <div class="studio-card p-6 border-l-4 border-red-500">
+    <div class="studio-card p-6 border-l-4 border-red-500 flex-1">
         <div class="flex items-center gap-4 mb-8">
             <div
                 class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl shadow-inner">
@@ -90,7 +90,10 @@
                     Password</label>
                 <div class="relative group">
                     <input class="studio-input w-full" type="password" name="new_password" id="ownerNewPw"
-                        placeholder="Minimal 8 characters" required oninput="checkOwnerPwStrength()">
+                        placeholder="Minimal 8 characters" required 
+                        pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+                        title="Must contain at least 8 characters, including one uppercase letter, one number, and one special character."
+                        oninput="checkOwnerPwStrength()">
                     <button type="button"
                         class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
                         onclick="togglePw('ownerNewPw', this)">

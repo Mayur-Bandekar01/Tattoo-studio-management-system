@@ -10,25 +10,218 @@
     <!-- Core Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_base.css') }}?v=1.1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}?v=3.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer_dashboard.css') }}?v=3.0">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/customer_dashboard.css') }}?v=3.0"> -->
 
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
 
-    <!-- Dashboard Section Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/dashboard_shared.css') }}?v=1.1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/overview.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/book.css') }}?v=1.1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/appointments.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/gallery.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/aftercare.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/messages.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/invoices.css') }}?v=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards/customer/sections/profile.css') }}?v=1.0">
+    <style>
+        /* ══════════════════════════════════════════════════════════════
+           CUSTOMER DASHBOARD — Harmonized with Owner Command UI
+           Fonts: Fraunces (display) + DM Sans (body) + DM Mono (code)
+           ══════════════════════════════════════════════════════════════ */
+        :root {
+            --gold: #b8922a;
+            --gold-light: #d4a84b;
+            --gold-dim: rgba(184, 146, 42, 0.12);
+            --gold-glow: rgba(184, 146, 42, 0.25);
+            --bg: #0c0a09;
+            --surface: #1c1917;
+            --surface-2: #292524;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-soft: rgba(255, 255, 255, 0.05);
+            --text-1: #fafaf9;
+            --text-2: #d6d3d1;
+            --text-3: #78716c;
+            --radius-sm: 0.5rem;
+            --radius: 0.875rem;
+            --radius-lg: 1.25rem;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --dt-font-display: 'Fraunces', Georgia, serif;
+            --dt-font-ui: 'DM Sans', system-ui, sans-serif;
+            --studio-spacing: 2.25rem;
+            --sidebar-width: 215px;
+        }
+
+        [data-theme="ivory"] {
+            --bg: #f8f5f0;
+            --surface: #ffffff;
+            --surface-2: #f2ede6;
+            --border: #e8e0d5;
+            --border-soft: #f0ead8;
+            --text-1: #1c1917;
+            --text-2: #57534e;
+            --text-3: #a8a29e;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.09), 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-1);
+            margin: 0;
+            font-family: var(--dt-font-ui);
+            font-size: 14px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* ── SIDEBAR ── */
+        .studio-sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 400;
+            overflow-y: auto;
+            padding-bottom: 2rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.375rem 1.25rem 1.125rem;
+            border-bottom: 1px solid var(--border-soft);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-brand img { width: 2.125rem; height: 2.125rem; border-radius: 0.5rem; object-fit: cover; border: 1px solid var(--border-soft); }
+        .sidebar-brand-text { display: flex; flex-direction: column; line-height: 1.2; gap: 0.1rem; }
+        .sidebar-brand-name { font-family: var(--dt-font-display); font-size: 0.75rem; font-weight: 700; color: var(--text-1); letter-spacing: 0.06em; text-transform: uppercase; }
+        .sidebar-brand-sub { font-family: var(--dt-font-ui); font-size: 0.58rem; font-weight: 600; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; }
+
+        .nav-section { font-family: var(--dt-font-ui); font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-3); padding: 1.25rem 1.25rem 0.5rem; opacity: 0.8; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; margin: 0.15rem 0.65rem; padding: 0.65rem 1rem; width: calc(100% - 1.3rem); background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-1); font-family: var(--dt-font-ui); font-size: 0.88rem; font-weight: 600; cursor: pointer; text-align: left; text-decoration: none; transition: all 0.2s; }
+        .nav-link i { width: 1.1rem; text-align: center; font-size: 0.82rem; flex-shrink: 0; opacity: 0.7; }
+        .nav-link:hover { background: var(--surface-2); color: var(--gold); }
+        .nav-link.active { background: var(--gold); color: #fff !important; font-weight: 700; box-shadow: 0 4px 12px var(--gold-glow); }
+        .nav-link.active i { opacity: 1; }
+        .nav-badge { margin-left: auto; background: var(--text-1); color: var(--bg); font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 99px; line-height: 1.6; }
+
+        /* ── MAIN CONTENT ── */
+        .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 0; min-height: 100vh; transition: all 0.3s ease; }
+        
+        .top-header { 
+            position: sticky; top: 0; z-index: 100;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-soft);
+            padding: 1.25rem var(--studio-spacing);
+            margin-bottom: 0 !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .header-action-btn { width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .header-action-btn:hover { background: var(--surface-2); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-dim); }
+
+        .section-container { padding: 2rem var(--studio-spacing) 1rem; max-width: 1440px; margin: 0 auto; }
+        .page-header-title { font-family: var(--dt-font-display); font-size: 1.95rem; font-weight: 700; color: var(--text-1); letter-spacing: -0.03em; line-height: 1.1; margin: 0; }
+        .page-header-subtitle { font-family: var(--dt-font-ui); font-size: 0.85rem; color: var(--text-3); font-weight: 400; margin-top: 0.25rem; }
+
+        /* ── PREMIUM OWNER-STYLE COMPONENTS ── */
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+        .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.375rem 1.5rem 1.25rem; box-shadow: var(--shadow-sm); transition: transform 0.2s; position: relative; overflow: hidden; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .metric-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .metric-card-icon { width: 2.25rem; height: 2.25rem; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .metric-card-tag { font-family: var(--dt-font-ui); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.625rem; border-radius: 99px; }
+        .metric-card-label { font-family: var(--dt-font-ui); font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-3); margin-bottom: 0.4rem; }
+        .metric-card-value { font-family: var(--dt-font-display); font-size: 2.1rem; font-weight: 700; color: var(--text-1); letter-spacing: -0.04em; line-height: 1; }
+
+        .master-banner { background: linear-gradient(135deg, #b8922a 0%, #d4a84b 60%, #c9992e 100%); border-radius: var(--radius-lg); padding: 2.25rem 2.5rem; margin-bottom: 1.25rem; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(184,146,42,0.3); }
+        .master-banner h1 { font-family: var(--dt-font-display); font-size: 2.25rem; font-weight: 700; color: #fff; letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 0.625rem; }
+        .master-banner p { font-family: var(--dt-font-ui); font-size: 0.875rem; color: rgba(255,255,255,0.82); max-width: 500px; line-height: 1.6; margin-bottom: 1.5rem; }
+        
+        .btn-gold { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.6rem 1.375rem; background: #fff; color: var(--text-1); font-family: var(--dt-font-ui); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; border: none; border-radius: var(--radius-sm); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: all 0.2s; text-decoration: none; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: #f8f8f8; }
+        .btn-outline-white { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.6rem 1.375rem; background: transparent; color: #fff; font-family: var(--dt-font-ui); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; border: 1.5px solid rgba(255,255,255,0.45); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-outline-white:hover { background: rgba(255,255,255,0.08); border-color: #fff; }
+
+        .quick-actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .quick-action-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.18s; position: relative; overflow: hidden; }
+        .quick-action-card:hover { transform: translateY(-3px); border-color: var(--gold-light); box-shadow: var(--shadow); }
+        .quick-action-icon-wrap { display: flex; align-items: center; gap: 0.875rem; margin-bottom: 0.875rem; }
+        .quick-action-icon { width: 2.5rem; height: 2.5rem; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .quick-action-title { font-family: var(--dt-font-display); font-size: 1rem; font-weight: 600; color: var(--text-1); }
+        .quick-action-desc { font-family: var(--dt-font-ui); font-size: 0.8rem; color: var(--text-2); line-height: 1.55; margin-bottom: 1.25rem; }
+        .quick-action-link { font-family: var(--dt-font-ui); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); display: flex; align-items: center; gap: 0.5rem; }
+
+        /* ── SHARED UTILITIES ── */
+        .studio-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+        .dash-table { width: 100%; border-collapse: collapse; }
+        .dash-table thead tr { border-bottom: 1.5px solid var(--border-soft); background: var(--surface-2); }
+        .dash-table th { padding: 0.75rem 1rem; font-family: var(--dt-font-ui); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-3); text-align: left; }
+        .dash-table td { padding: 0.8rem 1rem; font-size: 0.8rem; color: var(--text-2); border-bottom: 1px solid var(--border-soft); }
+
+        /* Theme toggles */
+        [data-theme="noir"]  #globalThemeBtn .fa-sun  { display: none; }
+        [data-theme="ivory"] #globalThemeBtn .fa-moon { display: none; }
+        [data-theme="ivory"] #globalThemeBtn .fa-sun  { display: flex; }
+
+        .sidebar-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 350; 
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+
+        /* ── Global Layout Resets ── */
+        .ov-wrap, .appts-wrap, .gal-wrap, .ac-wrap, .profile-layout-grid {
+            display: block !important;
+            width: 100% !important;
+        }
+
+        /* ── MODALS & LIGHTBOXES (FIX FOR BOTTOM GAPS) ── */
+        .global-lightbox, #galLightbox, .premium-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none; /* Controlled by JS */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-inner, .premium-modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .premium-modal-content {
+            width: 420px;
+            padding: 3rem;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--surface), var(--bg));
+        }
+
+        @media (max-width: 1024px) {
+            .studio-sidebar { transform: translateX(-100%); width: 280px; }
+            .studio-sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+            .main-content { margin-left: 0 !important; }
+            .metric-grid, .quick-actions-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <!-- Sub-section assets will be moved directly into their HTML templates -->
 
     <!-- JS Core -->
     <script src="{{ url_for('static', filename='js/core/tailwind.js') }}"></script>
@@ -54,9 +247,14 @@
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos">
             <span>DRAGON TATTOOS</span>
         </div>
-        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
-            <i class="fas fa-bars"></i>
-        </button>
+        <div class="flex items-center gap-3">
+            <button class="mobile-menu-btn header-theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
     </header>
 
     <!-- Mobile sidebar backdrop -->
@@ -67,15 +265,11 @@
     ══════════════════════════════════════ -->
     <aside id="mainSidebar" class="studio-sidebar">
 
-        <div class="sidebar-header">
-            <div class="logo-text">
-                <div class="logo-icon">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo">
-                </div>
-                <div class="logo-info">
-                    <span class="logo-name">DRAGON TATTOOS</span>
-                    <span class="logo-subtitle">Customer Portal</span>
-                </div>
+        <div class="sidebar-brand">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" loading="lazy" decoding="async">
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Dragon Tattoos</span>
+                <span class="sidebar-brand-sub">Customer Portal</span>
             </div>
         </div>
 
@@ -126,24 +320,24 @@
     ══════════════════════════════════════ -->
     <main class="main-content">
 
-        <!-- Sticky top header -->
         <header class="top-header">
             <div class="header-content-wrapper">
-                <div class="welcome-msg">
-                    <h1 id="pageTitle" class="animate-header-text">Welcome</h1>
-                    <p id="pageSubtitle" class="animate-header-text">Your artistic journey at a glance</p>
+                <div>
+                    <h1 class="page-header-title" id="pageTitle">Welcome</h1>
+                    <p class="page-header-subtitle" id="pageSubtitle">Your artistic journey at a glance</p>
                 </div>
                 <div class="header-actions">
-                    <button id="globalThemeBtn" class="header-theme-btn"
+                    <button id="globalThemeBtn" class="header-action-btn header-theme-btn"
                             onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle theme">
                         <i class="fas fa-moon"></i>
+                        <i class="fas fa-sun"></i>
                     </button>
                 </div>
             </div>
         </header>
 
         <!-- Flash messages -->
-        <div id="flashContainer" style="padding: 0 var(--studio-spacing);">
+        <div id="flashContainer" style="padding: 0 var(--dt-spacing-md);">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -203,34 +397,23 @@
 
 
 <!-- ══════════════════════════════════════
-     GLOBAL LIGHTBOX
+     GLOBAL INTERACTIVE LIGHTBOX
 ══════════════════════════════════════ -->
-<div id="lb" role="dialog" aria-modal="true" aria-label="Image lightbox"
-     style="display:none; position:fixed; inset:0; z-index:9999;
-            background:var(--studio-bg-glass); backdrop-filter:blur(20px);
-            align-items:center; justify-content:center; flex-direction:column;
-            opacity:0; transition:all 0.4s cubic-bezier(0.4,0,0.2,1);">
-
-    <button onclick="closeLb()" aria-label="Close lightbox"
-            style="position:absolute; top:2rem; right:2rem; background:none; border:none;
-                   color:var(--studio-text-primary); font-size:2rem; cursor:pointer;
-                   transition:transform 0.2s;">
-        <i class="fa-solid fa-xmark"></i>
+<div id="lb" class="global-lightbox" role="dialog" aria-modal="true" onclick="handleGlobalLbClick(event)">
+    <button class="glb-close" onclick="closeLb()" title="Close">
+        <i class="fas fa-times"></i>
     </button>
-
-    <div style="text-align:center; max-width:90vw;">
-        <img id="lbImg" src="" alt=""
-             style="max-height:75vh; max-width:100%; border-radius:24px;
-                    box-shadow:0 30px 100px rgba(0,0,0,0.5); object-fit:contain;
-                    border:1px solid var(--studio-border);">
-        <div style="margin-top:2rem;">
-            <p id="lbTitle"
-               style="font-family:'Cinzel',serif; font-size:1.8rem; font-weight:800;
-                      color:var(--studio-text-primary); margin:0 0 0.5rem 0;
-                      letter-spacing:0.1em; text-transform:uppercase;"></p>
-            <p id="lbSub"
-               style="font-size:0.85rem; color:var(--studio-text-muted); margin:0;
-                      text-transform:uppercase; letter-spacing:0.15em; font-weight:600;"></p>
+    <div class="glb-inner" id="glbInner">
+        <!-- Image side (70%) -->
+        <div class="glb-img-side" id="glbImgContainer">
+            <img id="lbImg" src="" alt="">
+        </div>
+        <!-- Info side (30%) -->
+        <div class="glb-info-side">
+            <p class="glb-label">Preview</p>
+            <h2 class="glb-title" id="lbTitle">—</h2>
+            <div class="glb-divider"></div>
+            <p class="glb-value" id="lbSub" style="white-space: pre-wrap;">—</p>
         </div>
     </div>
 </div>
@@ -267,13 +450,265 @@
 
 
 <!-- ══════════════════════════════════════
+     GALLERY LIGHTBOX — outside dashboard stacking context
+══════════════════════════════════════ -->
+<div id="galLightbox" onclick="handleLbBgClick(event)" aria-modal="true" role="dialog" tabindex="-1">
+    <button class="lb-global-close" onclick="closeGalLb()" title="Close (Esc)" aria-label="Close Lightbox">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="lb-inner" id="lbInner">
+        <div class="lb-img-side">
+            <button class="lb-arrow lb-arrow-prev" id="lbPrev" onclick="lbNav(-1)" title="Previous" aria-label="Previous">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lb-arrow lb-arrow-next" id="lbNext" onclick="lbNav(1)" title="Next" aria-label="Next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <img id="lbMainImg" src="" alt="Gallery Zoom View">
+        </div>
+        <div class="lb-info-side">
+            <div class="lb-panel-header">
+                <p class="lb-label">Artwork Profile</p>
+                <h2 class="lb-title" id="lbTitle">—</h2>
+                <div class="lb-divider"></div>
+            </div>
+            <div class="lb-scroll-content">
+                <div class="lb-meta-row" id="row-desc">
+                    <p class="lb-label">Description</p>
+                    <p class="lb-value lb-desc" id="lbDesc"></p>
+                </div>
+                <div class="lb-meta-grid">
+                    <div class="lb-meta-row" id="row-artist">
+                        <p class="lb-label">Artist</p>
+                        <p class="lb-value" id="lbArtist">—</p>
+                    </div>
+                    <div class="lb-meta-row" id="row-style">
+                        <p class="lb-label">Style</p>
+                        <span class="lb-style-pill" id="lbStyle">None</span>
+                    </div>
+                    <div class="lb-meta-row" id="row-date">
+                        <p class="lb-label">Completed</p>
+                        <p class="lb-value" id="lbDate">—</p>
+                    </div>
+                </div>
+                <div class="lb-meta-row mt-8" id="row-tags">
+                    <p class="lb-label">Discovery Keywords</p>
+                    <div class="lb-tags-container" id="lbTags"></div>
+                </div>
+            </div>
+            <div class="lb-footer">
+                <p class="lb-counter" id="lbCounter">1 / 1</p>
+                <p class="lb-hint">Click image to zoom · Arrows to navigate</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
      JS MODULES
 ══════════════════════════════════════ -->
-<script src="{{ url_for('static', filename='js/dashboards/customer/dashboard.js') }}?v=1.1"></script>
-<script src="{{ url_for('static', filename='js/dashboards/customer/sections/book.js') }}?v=1.1"></script>
-<script src="{{ url_for('static', filename='js/dashboards/customer/sections/gallery.js') }}?v=1.1"></script>
-<script src="{{ url_for('static', filename='js/dashboards/customer/sections/messages.js') }}?v=1.1"></script>
-<script src="{{ url_for('static', filename='js/dashboards/customer/sections/appointments.js') }}?v=1.0"></script>
+<!-- ══════════════════════════════════════
+     CONSOLIDATED CUSTOMER DASHBOARD JS
+     ══════════════════════════════════════ -->
+<script>
+    const TAB_META = {
+        overview: { title: 'Welcome', subtitle: "Your artistic journey at a glance" },
+        book: { title: 'Secure Session', subtitle: 'Reserve your next masterpiece' },
+        appointments: { title: 'My Sessions', subtitle: 'Track your studio history & upcoming ink' },
+        invoices: { title: 'Billing Center', subtitle: 'Secure payments & digital receipts' },
+        gallery: { title: 'Studio Portfolio', subtitle: 'Artistic inspiration for your next piece' },
+        aftercare: { title: 'Healing Protocol', subtitle: 'Professional aftercare for longevity' },
+        messages: { title: 'Artist Connect', subtitle: 'Direct collaboration with your creators' },
+        profile: { title: 'Vault Settings', subtitle: 'Manage your profile & security' },
+    };
+
+    window.toggleSidebar = function() {
+        const sb = document.getElementById('mainSidebar');
+        const ov = document.getElementById('sidebarOverlay');
+        if (sb) sb.classList.toggle('open');
+        if (ov) ov.classList.toggle('open');
+    };
+
+    window.switchTab = function(name, btn) {
+        if (window.innerWidth <= 1024) {
+            const sb = document.getElementById('mainSidebar');
+            const ov = document.getElementById('sidebarOverlay');
+            if (sb) sb.classList.remove('open');
+            if (ov) ov.classList.remove('open');
+        }
+        document.querySelectorAll('.content-section').forEach(s => {
+            s.style.display = 'none';
+            s.classList.remove('active');
+            s.scrollTop = 0;
+        });
+        const target = document.getElementById('sec-' + name);
+        if (target) {
+            target.style.display = 'block';
+            target.classList.add('active');
+            target.scrollTop = 0;
+        }
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const link = btn || document.querySelector(`.nav-link[data-section="${name}"]`);
+        if (link) link.classList.add('active');
+
+        const info = TAB_META[name];
+        if (info) {
+            const pageTitle = document.getElementById('pageTitle');
+            const pageSubtitle = document.getElementById('pageSubtitle');
+            if (pageTitle) {
+                pageTitle.style.opacity = '0';
+                setTimeout(() => {
+                    let titleText = info.title;
+                    if (name === 'overview') {
+                        const customerName = document.body.getAttribute('data-customer-name') || '';
+                        titleText = 'Welcome' + (customerName ? ', ' + customerName : '');
+                    }
+                    pageTitle.textContent = titleText;
+                    pageTitle.style.opacity = '1';
+                }, 150);
+            }
+            if (pageSubtitle) {
+                pageSubtitle.style.opacity = '0';
+                setTimeout(() => {
+                    pageSubtitle.textContent = info.subtitle;
+                    pageSubtitle.style.opacity = '1';
+                }, 150);
+            }
+        }
+        localStorage.setItem('customerTab', name);
+        requestAnimationFrame(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    };
+
+    window.filterAppts = function(status, btn) {
+        const container = btn.closest('.filter-group');
+        if (container) {
+            container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        document.querySelectorAll('.appt-row').forEach(row => {
+            row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+        });
+    };
+
+    window.openLb = function (src, title, sub) {
+        const lb = document.getElementById('lb');
+        if (!lb) return;
+        const img = document.getElementById('lbImg');
+        if (img) {
+            img.style.transform = 'scale(1)';
+            img.style.transformOrigin = 'center center';
+            img.src = src || '';
+        }
+        const t = document.getElementById('lbTitle');
+        if (t) t.textContent = title || '';
+        const s = document.getElementById('lbSub');
+        if (s) s.textContent = sub || '';
+        lb.classList.add('lb-open');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => { lb.classList.add('lb-visible'); });
+        });
+    };
+
+    window.closeLb = function () {
+        const lb = document.getElementById('lb');
+        if (lb) {
+            lb.classList.remove('lb-visible');
+            document.body.style.overflow = '';
+            setTimeout(() => { lb.classList.remove('lb-open'); }, 370);
+        }
+    };
+
+    window.handleGlobalLbClick = function(e) {
+        const inner = document.getElementById('glbInner');
+        if (inner && !inner.contains(e.target)) closeLb();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const glbImgContainer = document.getElementById('glbImgContainer');
+        const glbImg = document.getElementById('lbImg');
+        if (glbImgContainer && glbImg) {
+            let isZoomed = false;
+            glbImgContainer.addEventListener('click', (e) => {
+                if (!isZoomed) {
+                    isZoomed = true;
+                    glbImg.style.cursor = 'zoom-out';
+                    const rect = glbImgContainer.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+                    glbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                    glbImg.style.transform = 'scale(2.5)';
+                } else {
+                    isZoomed = false;
+                    glbImg.style.cursor = 'zoom-in';
+                    glbImg.style.transform = 'scale(1)';
+                    setTimeout(() => { if (!isZoomed) glbImg.style.transformOrigin = 'center center'; }, 200);
+                }
+            });
+            glbImgContainer.addEventListener('mousemove', (e) => {
+                if (!isZoomed) return;
+                const rect = glbImgContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                glbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            });
+            glbImgContainer.addEventListener('mouseleave', () => {
+                if (isZoomed) {
+                    isZoomed = false;
+                    glbImg.style.cursor = 'zoom-in';
+                    glbImg.style.transform = 'scale(1)';
+                    setTimeout(() => { if (!isZoomed) glbImg.style.transformOrigin = 'center center'; }, 200);
+                }
+            });
+            const origClose = window.closeLb;
+            window.closeLb = function() {
+                isZoomed = false;
+                if (glbImg) {
+                    glbImg.style.cursor = 'zoom-in';
+                    glbImg.style.transform = 'scale(1)';
+                    glbImg.style.transformOrigin = 'center center';
+                }
+                origClose();
+            };
+        }
+    });
+
+    window.closeSuccessModal = function() {
+        const modal = document.getElementById('bookingSuccessModal');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    };
+
+    window.showSuccessModal = function() {
+        const modal = document.getElementById('bookingSuccessModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const last = localStorage.getItem('customerTab') || 'overview';
+        window.switchTab(last);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeLb(); });
+        const lbEl = document.getElementById('lb');
+        if (lbEl) { lbEl.addEventListener('click', function (e) { if (e.target === this) window.closeLb(); }); }
+        const successMessages = Array.from(document.querySelectorAll('.flash-msg.success span')).map(s => s.textContent.toLowerCase());
+        if (successMessages.some(m => m.includes('booking') || m.includes('submitted'))) {
+            document.querySelectorAll('.flash-msg.success').forEach(f => {
+                if (f.textContent.toLowerCase().includes('booking')) f.style.display = 'none';
+            });
+            window.showSuccessModal();
+        }
+    });
+</script>
 
 </body>
 </html>

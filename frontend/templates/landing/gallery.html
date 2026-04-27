@@ -53,26 +53,29 @@ surgical precision.">
 
     <main>
         <!-- LIGHTBOX -->
-        <div class="lightbox" id="lightbox">
+        <div class="lightbox" id="lightbox" onclick="handleLightboxBgClick(event)">
             <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
 
-            <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i
-                    class="fa-solid fa-chevron-left"></i></button>
-            <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i
-                    class="fa-solid fa-chevron-right"></i></button>
+            <div class="lb-inner" id="lbInner">
+                <!-- Image side (70%) -->
+                <div class="lb-img-side" id="lbImgContainer">
+                    <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i
+                            class="fa-solid fa-chevron-left"></i></button>
+                    <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i
+                            class="fa-solid fa-chevron-right"></i></button>
+                    
+                    <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image" loading="lazy" decoding="async">
+                </div>
 
-            <div class="lightbox-img-wrapper">
-                <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image" loading="lazy" decoding="async">
-            </div>
-
-            <div class="lightbox-info">
-                <div class="max-w-xl mx-auto">
+                <!-- Info side (30%) -->
+                <div class="lb-info-side">
                     <span id="lbStyle" class="stat-badge mb-3 pointer-events-none"></span>
                     <h2 id="lbTitle" class="font-display text-2xl md:text-3xl text-white mt-1 leading-tight"></h2>
-                    <div class="flex items-center justify-center gap-4 mt-3">
-                        <p id="lbArtist" class="gold-text text-base tracking-wide uppercase font-bold"></p>
-                        <div class="w-1 h-1 bg-white/20 rounded-full"></div>
-                        <p id="lbSpec" class="text-white/50 text-sm italic"></p>
+                    
+                    <div class="mt-8">
+                        <p class="text-[10px] text-white/40 tracking-widest uppercase font-bold mb-1">Artist</p>
+                        <p id="lbArtist" class="gold-text text-lg tracking-wide uppercase font-bold"></p>
+                        <p id="lbSpec" class="text-white/50 text-sm italic mt-1"></p>
                     </div>
                 </div>
             </div>

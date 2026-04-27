@@ -2,19 +2,142 @@
      SECTION: AFTERCARE PROTOCOL (sec-aftercare)
 ═══════════════════════════════════════ -->
 
+<style>
+/* ── Aftercare Wrap ── */
+.ac-wrap {
+    animation: acFadeUp 0.6s cubic-bezier(0.2,0.8,0.2,1) both;
+    width: 100% !important;
+}
+
+@keyframes acFadeUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Specific Cards ── */
+.ac-card {
+    background: var(--surface);
+    border: 1px solid var(--ac-border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+[data-theme="ivory"] .ac-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); }
+
+.ac-card::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 100% 0%, var(--ac-glow) 0%, transparent 60%);
+    z-index:0;
+}
+
+.ac-card > * { position:relative; z-index:1; }
+
+.ac-card-header { display:flex; align-items:center; gap:1.25rem; margin-bottom:2.5rem; }
+.ac-icon-box {
+    width:48px; height:48px; border-radius:14px;
+    background: var(--ac-icon-bg); color: var(--ac-accent);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem;
+}
+
+.ac-card-title { font-size:1.25rem; font-weight:900; color:var(--text-1); margin-bottom:0.25rem; letter-spacing:-0.02em; }
+.ac-card-subtitle { font-size:8.5px; font-weight:950; text-transform:uppercase; letter-spacing:0.2em; color:var(--ac-accent); }
+
+/* ── Steps ── */
+.ac-step { display:flex; gap:1.25rem; margin-bottom:1.5rem; }
+.ac-step-num {
+    width:24px; height:24px; border-radius:50%;
+    background: var(--ac-accent); color:#000;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.7rem; font-weight:950; flex-shrink:0;
+}
+
+.ac-step-content h4 { font-size:0.9rem; font-weight:800; color:var(--text-1); margin-bottom:0.4rem; }
+.ac-step-content p { font-size:0.82rem; color:var(--text-3); line-height:1.6; margin:0; }
+
+/* ── List Pair ── */
+.ac-list-pair { display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-top:0.5rem; }
+@media(max-width:600px) { .ac-list-pair { grid-template-columns: 1fr; } }
+
+.ac-list-box { padding:1.5rem; border-radius:16px; border:1px solid transparent; }
+.ac-list-box.yes-box { background: rgba(16,185,129,0.035); border-color: rgba(16,185,129,0.1); }
+.ac-list-box.no-box { background: rgba(239,68,68,0.035); border-color: rgba(239,68,68,0.1); }
+
+.ac-list-title { display:flex; align-items:center; gap:0.6rem; font-size:0.78rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1.25rem; }
+.ac-list-box.yes-box .ac-list-title { color:#10B981; }
+.ac-list-box.no-box .ac-list-title { color:#ef4444; }
+
+.ac-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.8rem; }
+.ac-list li { font-size:0.8rem; color:var(--text-2); display:flex; align-items:flex-start; gap:0.7rem; line-height:1.4; }
+.ac-list li i { font-size:0.75rem; margin-top:0.15rem; }
+.ac-list-box.yes-box .ac-list li i { color:#10B981; }
+.ac-list-box.no-box .ac-list li i { color:#ef4444; }
+
+/* ── Grid ── */
+.ac-grid { display:grid; grid-template-columns: 1fr 1.15fr; gap:1.5rem; }
+@media(max-width:1100px) { .ac-grid { grid-template-columns: 1fr; } }
+
+/* ── Timeline ── */
+.ac-timeline { display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem; }
+.ac-timeline-item { display:flex; align-items:flex-start; gap:1.25rem; position:relative; min-height:80px; }
+.ac-timeline-item:not(:last-child)::after {
+    content:''; position:absolute; left:62px; top:35px; bottom:-15px; width:1px;
+    background: linear-gradient(to bottom, var(--border) 0%, transparent 100%);
+}
+
+.ac-time-label { width:50px; flex-shrink:0; text-align:right; padding-top:4px; }
+.ac-time-days { font-size:0.95rem; font-weight:950; color:var(--text-1); letter-spacing:-0.03em; line-height:1; }
+.ac-time-sub { font-size:8px; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); margin-top:3px; }
+
+.ac-time-dot { width:12px; height:12px; border-radius:50%; border:2px solid var(--studio-bg); margin-top:8px; flex-shrink:0; position:relative; z-index:2; }
+.ac-time-dot.d-blue { background:#3B82F6; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(59,130,246,0.4); }
+.ac-time-dot.d-orange { background:#F59E0B; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(245,158,11,0.4); }
+.ac-time-dot.d-green { background:#10B981; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(16,185,129,0.4); }
+
+.ac-time-info { padding-top:2px; }
+.ac-time-info h4 { font-size:0.88rem; font-weight:850; color:var(--text-1); margin-bottom:0.25rem; }
+.ac-time-info p { font-size:0.78rem; color:var(--text-3); line-height:1.5; margin:0; }
+
+/* ── Care Grid ── */
+.ac-care-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; margin-top:0.5rem; }
+.ac-care-block { background: rgba(0,0,0,0.2); border:1px solid var(--border-soft); border-radius:18px; padding:1.25rem; text-align:center; }
+[data-theme="ivory"] .ac-care-block { background:#F8FAFC; border-color:rgba(0,0,0,0.06); }
+
+.ac-care-icon { width:32px; height:32px; border-radius:10px; margin:0 auto 0.75rem; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
+.ac-care-label { font-size:0.8rem; font-weight:900; color:var(--text-1); margin-bottom:0.25rem; }
+.ac-care-desc { font-size:8px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.05em; line-height:1.3; }
+
+/* ── Danger Card ── */
+.ac-danger-card { background:#7f1d1d; border-radius:var(--radius); padding:2rem 2.5rem; color:#fecaca; margin-top:2rem; overflow:hidden; position:relative; box-shadow:0 15px 40px rgba(127,29,29,0.3); border:1px solid rgba(254,202,202,0.1); }
+.ac-danger-header { display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem; position:relative; z-index:2; }
+.ac-danger-icon { width:52px; height:52px; border-radius:16px; background:#fecaca; color:#7f1d1d; display:flex; align-items:center; justify-content:center; font-size:1.5rem; box-shadow:0 10px 20px rgba(0,0,0,0.2); }
+.ac-danger-title { font-size:1.5rem; font-weight:950; color:#fff; letter-spacing:-0.03em; margin-bottom:0.25rem; }
+.ac-danger-sub { font-size:0.85rem; font-weight:700; opacity:0.8; }
+.ac-danger-list { list-style:none; padding:0; margin:0 0 2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.25rem; position:relative; z-index:2; }
+.ac-danger-list li { background:rgba(0,0,0,0.2); padding:1rem 1.25rem; border-radius:12px; border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:1rem; font-size:0.82rem; font-weight:600; color:#fff; }
+.ac-danger-list li i { color:#f87171; font-size:1rem; }
+.ac-danger-note { background:rgba(255,255,255,0.06); padding:1.25rem 1.5rem; border-radius:12px; display:flex; align-items:flex-start; gap:1rem; font-size:0.75rem; line-height:1.6; color:#ef4444; font-weight:700; position:relative; z-index:2; border-left:4px solid #ef4444; }
+
+/* ── Reminder Bar ── */
+.ac-reminder-bar { background:var(--text-1); color:var(--studio-bg); border-radius:18px; padding:1.1rem 2rem; margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+[data-theme="ivory"] .ac-reminder-bar { background:#0F172A; color:#fff; }
+.ac-reminder-bar-text { display:flex; align-items:center; gap:1.25rem; }
+.ac-reminder-bar-icon { font-size:1.25rem; color:var(--studio-gold); }
+.ac-reminder-bar-text p { font-size:0.85rem; font-weight:600; margin:0; line-height:1.4; opacity:0.9; }
+.ac-reminder-bar-text strong { color:#fff; }
+.ac-reminder-btn { background:var(--studio-gold); color:#000; border:none; border-radius:12px; padding:0.75rem 1.5rem; font-size:0.75rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; cursor:pointer; display:flex; align-items:center; gap:0.75rem; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+.ac-reminder-btn:hover { background:#fff; transform:translateX(5px); }
+.ac-right-col { display: flex; flex-direction: column; gap: 1.5rem; }
+</style>
+
 <div class="ac-wrap space-y-6">
 
     <!-- ── Page Header ── -->
-    <div class="ac-page-header">
-        <div style="position:relative;z-index:1;">
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-                <div style="width:36px;height:3px;background:var(--studio-grad);border-radius:2px;"></div>
-                <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.35em;color:var(--studio-text-muted);">Post-Session Care</span>
-            </div>
-            <h2 style="font-size:2rem;font-weight:900;color:var(--studio-text-primary);letter-spacing:-0.04em;line-height:1.1;margin-bottom:0.5rem;">Aftercare Protocol</h2>
-            <p style="font-size:11px;font-weight:700;color:var(--studio-text-muted);text-transform:uppercase;letter-spacing:0.25em;">Follow these guidelines to protect your investment &amp; accelerate healing</p>
-        </div>
-    </div>
+
 
     <!-- ── Main 2-col Grid ── -->
     <div class="ac-grid">

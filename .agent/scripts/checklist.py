@@ -23,8 +23,13 @@ Priority Order:
 import sys
 import subprocess
 import argparse
+import os
 from pathlib import Path
 from typing import List, Tuple, Optional
+
+# Ensure UTF-8 output for Windows terminals
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # ANSI colors for terminal output
 class Colors:
