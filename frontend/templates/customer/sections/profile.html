@@ -163,6 +163,7 @@
         </div>
 
         <form method="POST" action="/customer/change-password" class="profile-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <!-- Current password -->
             <div class="form-field">

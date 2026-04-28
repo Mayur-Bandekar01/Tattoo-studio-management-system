@@ -4,336 +4,732 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | About Our Studio</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-    <meta name="description" content="Bengaluru's premier destination for custom body art, blending artistic mastery with
-uncompromising safety.">
-
-    <!-- Global CSS & Assets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    <!-- Optimized Vanilla Design System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}?v=2.1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_vanilla.css') }}?v=2.1">
-
-    <!-- Project Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
-    
-    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
-
+    <title>Dragon Tattoos | About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)',
+                            text: 'var(--text)',
+                            muted: 'var(--muted)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--border)',
+                            gold: 'var(--accent, #c8a040)',
+                            goldLight: '#e0b84a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-/* ── ARTIST CARDS ── */
+        * {
+            -webkit-font-smoothing: antialiased;
+        }
 
-.artist-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-}
+        body {
+            background: #000;
+            color: #f5f5f7;
+            overflow-x: hidden;
+        }
 
-.artist-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
 
-html.light-mode .artist-card:hover {
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
 
-.artist-image-container {
-    height: 360px;
-    background: var(--surface);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+        }
 
-.artist-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent, #c8a040);
+        }
 
-.artist-card:hover .artist-img {
-    transform: scale(1.03);
-}
+        /* hamburger */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
 
-.artist-image-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background: linear-gradient(to top, var(--card-bg), transparent);
-    pointer-events: none;
-}
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #8b8b93;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
 
-.artist-info {
-    padding: 1.75rem 1.5rem;
-    text-align: center;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
 
-.artist-info h4 {
-    color: var(--text);
-    font-weight: 700;
-}
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
 
-.artist-info .text-accent {
-    color: var(--accent);
-}
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
 
-.artist-info p.text-muted {
-    color: var(--muted);
-}
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
 
-html.light-mode .artist-info h4 {
-    color: #111827;
-}
+        /* mobile menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(3, 3, 3, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
 
-html.light-mode .artist-info p.text-muted {
-    color: #4b5563;
-}
-.gold-text {
-    background: linear-gradient(135deg, #c8a040 0%, #e8c870 50%, #c8a040 100%) !important;
-    background-size: 200% auto !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    animation: gold-shimmer 4s ease infinite;
-}
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
 
-@keyframes gold-shimmer {
-    0% { background-position: -100% 0; }
-    100% { background-position: 100% 0; }
-}
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #8b8b93;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
+
+        .mobile-menu-divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(200, 160, 64, 0.3);
+        }
+
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
+        }
+
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.3s;
+        }
+
+        /* timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
+            padding-bottom: 2.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0.45rem;
+            top: 1.5rem;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #1d1d1f;
+            border: 2px solid #c8a040;
+            box-shadow: 0 0 8px rgba(200, 160, 64, 0.3);
+        }
+
+        .timeline-dot.active {
+            background: #c8a040;
+            box-shadow: 0 0 12px rgba(200, 160, 64, 0.5);
+        }
+
+        /* value cards */
+        .value-card {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 1.75rem;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .value-card:hover {
+            background: #2a2a2d;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(200, 160, 64, 0.12);
+        }
+
+        .value-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(200, 160, 64, 0.1);
+            border: 1px solid rgba(200, 160, 64, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .value-card:hover .value-icon {
+            transform: scale(1.1);
+        }
+
+        /* artist cards */
+        .artist-card {
+            background: #1d1d1f;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .artist-card:hover {
+            background: #2a2a2d;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .artist-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d1d1f, #2a2a2d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: #c8a040;
+            margin: 0 auto;
+            border: 2px solid rgba(200, 160, 64, 0.3);
+        }
+
+        footer {
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-link {
+            color: #86868b;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #c8a040;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8a040
+        }
+
+        /* ── LIGHT THEME (White + Orange Energetic) ── */
+        html.light-mode body {
+            --bg: #ffffff;
+            --bg-grad: rgba(249, 115, 22, 0.05);
+            --sidebar-bg: rgba(255, 255, 255, 0.96);
+            --topbar-bg: rgba(255, 255, 255, 0.96);
+            --card-bg: #fffaf5;
+            --card-hover: #ffedd5;
+            --border: #fdba74;
+            --border-h: #f97316;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --accent: #f97316;
+            --nav-muted: #9ca3af;
+            --nav-item: #4b5563;
+            --nav-hover: #f97316;
+            --shadow: rgba(249, 115, 22, 0.1);
+
+            background-color: var(--bg) !important;
+            color: var(--text) !important;
+        }
+
+        html.light-mode .navbar,
+        html.light-mode nav {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .nav-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .nav-link:hover,
+        html.light-mode .nav-link.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .mobile-menu {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        html.light-mode .mobile-menu a {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .mobile-menu a:hover,
+        html.light-mode .mobile-menu a.active {
+            color: var(--accent) !important;
+        }
+
+        html.light-mode .hero-section,
+        html.light-mode .page-hero,
+        html.light-mode section,
+        html.light-mode .section-dark,
+        html.light-mode .section-surface {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode .feature-card,
+        html.light-mode .testi-card,
+        html.light-mode .value-card,
+        html.light-mode .artist-card,
+        html.light-mode .stat-card {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 4px 20px var(--shadow) !important;
+        }
+
+        html.light-mode .feature-card:hover,
+        html.light-mode .testi-card:hover,
+        html.light-mode .value-card:hover,
+        html.light-mode .artist-card:hover,
+        html.light-mode .stat-card:hover {
+            background: var(--card-hover) !important;
+            border-color: var(--border-h) !important;
+        }
+
+        html.light-mode .testi-quote,
+        html.light-mode .testi-detail,
+        html.light-mode .footer-link {
+            color: var(--muted) !important;
+        }
+
+        html.light-mode .testi-name,
+        html.light-mode .footer-brand {
+            color: var(--text) !important;
+        }
+
+        html.light-mode footer,
+        html.light-mode nav~* footer {
+            background: #fffaf5 !important;
+            border-top: 1px solid var(--border) !important;
+        }
+
+        html.light-mode .btn-outline {
+            border-color: var(--border) !important;
+            color: var(--text) !important;
+            background: rgba(249, 115, 22, 0.05) !important;
+        }
+
+        html.light-mode .burger span {
+            background: var(--muted) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-track {
+            background: var(--bg) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-thumb {
+            background: var(--accent) !important;
+        }
+
+        /* global transition */
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
+        }
     </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </head>
 
-<body class="landing-page">
+<body>
 
-    {% include 'landing/_navbar.html' %}
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+        <a href="/">Home</a><a href="/about" class="active">About</a><a href="/services">Services</a>
+        <a href="/gallery">Gallery</a><a href="/contact">Contact</a>
+        <div class="mobile-menu-divider"></div>
+        <div class="flex gap-4">
+            <a href="/login"
+                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+            <a href="/register"
+                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+        </div>
+    </div>
 
-    <main>
-        <!-- HERO -->
-        <div
-            class="min-h-[50vh] flex flex-col items-center justify-center relative py-32 px-6 text-center overflow-hidden">
-            <div
-                class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[length:40px_40px] pointer-events-none transition-opacity opacity-30">
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-8 h-8 rounded-full object-cover">
+                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
             </div>
-            <div class="relative z-10 reveal">
-                <p class="text-accent text-[10px] uppercase tracking-[0.2em] mb-4 font-bold">Since 2025</p>
-                <h1 class="font-display text-5xl md:text-7xl text-text mb-6 tracking-tight leading-none">About Our
-                    Studio</h1>
-                <p class="text-muted text-lg max-w-xl mx-auto leading-relaxed font-light">
-                    Dragon Tattoos is Bengaluru's premier destination for custom body art, blending artistic mastery
-                    with
-                    uncompromising safety.
-                </p>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link active">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex gap-3">
+                    <a href="/login"
+                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                    <a href="/register"
+                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                </div>
+                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
+                    aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
             </div>
         </div>
+    </nav>
 
-        <!-- CONTENT SECTIONS -->
-        <section class="py-24 px-6 border-t border-white/5">
-            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-                <div class="reveal">
-                    <div class="pill-tag mb-6">Our Philosophy</div>
-                    <h2 class="font-display text-4xl md:text-5xl text-text mb-8 leading-tight tracking-tight">Art That
-                        Lives with You</h2>
-                    <p class="text-muted text-lg mb-8 leading-relaxed font-light">
-                        We believe a tattoo is more than just ink—it's a narrative, a milestone, and a piece of your
-                        identity. Our approach combines traditional craftsmanship with modern design aesthetics.
-                    </p>
-                    <div class="space-y-6">
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0">
-                                <i class="fa-solid fa-paintbrush"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-text font-bold mb-1">Custom Mastery</h3>
-                                <p class="text-muted text-sm leading-relaxed">Every piece is custom-designed from
-                                    scratch to fit your anatomical flow and personal story.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0">
-                                <i class="fa-solid fa-shield-virus"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-text font-bold mb-1">Safety First</h3>
-                                <p class="text-muted text-sm leading-relaxed">We maintain hospital-grade sanitation
-                                    standards using only premium, single-use sterilized equipment.</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- PAGE HERO -->
+    <div class="page-hero text-center">
+        <div class="page-hero-grid"></div>
+        <div class="relative z-10">
+            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium">Who We Are</p>
+            <h1 class="font-display text-5xl md:text-6xl text-apple-text mb-4 tracking-tight">About Us</h1>
+            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed">
+                Born from passion, driven by art. Dragon Tattoos Studio has been creating meaningful ink since 2019.
+            </p>
+        </div>
+    </div>
+
+    <!-- STORY -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">Our Story</p>
+                <h2 class="font-display text-4xl text-apple-text mb-6 tracking-tight">Where It All Began</h2>
+                <p class="text-apple-muted text-sm leading-relaxed mb-4">
+                    Dragon Tattoos Studio was founded in 2019 by a group of passionate artists who believed that
+                    tattooing is more than just ink on skin — it is a powerful form of self-expression and storytelling.
+                </p>
+                <p class="text-apple-muted text-sm leading-relaxed mb-4">
+                    What started as a small studio with one artist has grown into a full creative space with multiple
+                    talented artists, each specialising in different styles and techniques.
+                </p>
+                <p class="text-apple-muted text-sm leading-relaxed">
+                    Today we are proud to have served over 500 happy clients, creating thousands of unique tattoos that
+                    tell their individual stories.
+                </p>
+            </div>
+
+            <!-- timeline -->
+            <div class="reveal reveal-d1">
+                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-8">Our Journey</p>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2019</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Studio Founded</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Started with one artist and a dream to create
+                        meaningful tattoo art.</p>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4 reveal">
-                    <div class="space-y-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Studio"
-                            class="rounded-3xl border border-white/5 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
-                        <div class="stat-card p-8 aspect-square flex flex-col justify-center">
-                            <div class="text-accent font-display text-4xl mb-2">5+</div>
-                            <div class="text-[10px] text-muted uppercase tracking-[0.2em] font-bold">Years of Trust</div>
-                        </div>
-                    </div>
-                    <div class="space-y-4 pt-8">
-                        <div class="stat-card p-8 aspect-square flex flex-col justify-center">
-                            <div class="text-accent font-display text-4xl mb-2">3k</div>
-                            <div class="text-[10px] text-muted uppercase tracking-[0.2em] font-bold">Designs Created
-                            </div>
-                        </div>
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Studio"
-                            class="rounded-3xl border border-white/5 shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
-                    </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2020</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Team Expanded</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Welcomed two more specialist artists — fine line
+                        and realism.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2022</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">100+ Happy Clients</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Reached our first major milestone of 100
+                        satisfied customers.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2024</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">500+ Tattoos Done</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Crossed 500 completed sessions with glowing
+                        reviews.</p>
+                </div>
+                <div class="timeline-item" style="padding-bottom:0">
+                    <div class="timeline-dot active"></div>
+                    <p class="text-apple-gold text-xs mb-0.5">2025</p>
+                    <h4 class="font-semibold text-apple-text text-sm mb-1">Online Booking Launched</h4>
+                    <p class="text-apple-muted text-xs leading-relaxed">Studio management system for easy online
+                        appointment booking.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ARTISTS -->
-        <section class="py-24 px-6 bg-surface/30">
-            <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-16 reveal">
-                    <div class="pill-tag mb-6 mx-auto">The Team</div>
-                    <h2 class="font-display text-4xl md:text-5xl text-text tracking-tight">Masters of Ink</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Artist 001 -->
-                    <div class="artist-card reveal" style="transition-delay: 100ms;">
-                        <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
-                                class="artist-img">
-                        </div>
-                        <div class="artist-info">
-                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Founder & Lead
-                            </p>
-                            <h4 class="text-xl mb-2">Mayur Bandekar</h4>
-                            <p class="text-muted text-xs font-medium">Japanese & Traditional Specialization</p>
-                        </div>
-                    </div>
-
-                    <!-- Artist 002 -->
-                    <div class="artist-card reveal" style="transition-delay: 200ms;">
-                        <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
-                                class="artist-img">
-                        </div>
-                        <div class="artist-info">
-                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Senior Artist
-                            </p>
-                            <h4 class="text-xl mb-2">Ananya Rao</h4>
-                            <p class="text-muted text-xs font-medium">Fine Line & Geometric Mastery</p>
-                        </div>
-                    </div>
-
-                    <!-- Artist 003 -->
-                    <div class="artist-card reveal" style="transition-delay: 300ms;">
-                        <div class="artist-image-container">
-                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Mayur"
-                                class="artist-img">
-                        </div>
-                        <div class="artist-info">
-                            <p class="text-accent text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Illustrator</p>
-                            <h4 class="text-xl mb-2">Vikram Das</h4>
-                            <p class="text-muted text-xs font-medium">Dark Art & Bio-Mechanical Concepts</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="py-16 px-6 border-t border-white/5">
+    <!-- VALUES -->
+    <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-                <div class="col-span-2 md:col-span-1">
-                    <div class="flex items-center gap-3 mb-6">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="28" height="28"
-                            class="rounded-full shadow-lg">
-                        <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
-                            Tattoos
-                            Studio</span>
-                    </div>
-                    <p class="text-muted text-xs max-w-xs leading-relaxed">Premium tattoo studio. Engineered for
-                        perfection, one
-                        design at a time.</p>
+            <div class="text-center mb-16 reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">What We Stand For</p>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Our Values</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="value-card reveal reveal-d1">
+                    <div class="value-icon"><i class="fa-solid fa-shield-halved text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Safety First</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">All equipment is sterilized before every
+                        session. We follow strict hygiene protocols at every step.</p>
                 </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Studio
-                    </h4>
-                    <ul class="space-y-2.5">
-                        <li><a href="/about" class="footer-link">About Us</a></li>
-                        <li><a href="/services" class="footer-link">Services</a></li>
-                        <li><a href="/gallery" class="footer-link">Portfolio</a></li>
-                        <li><a href="/contact" class="footer-link">Contact</a></li>
-                    </ul>
+                <div class="value-card reveal reveal-d2">
+                    <div class="value-icon"><i class="fa-solid fa-palette text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Artistic Excellence</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Every tattoo is crafted with precision,
+                        attention to detail and genuine passion for the art form.</p>
                 </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Account
-                    </h4>
-                    <ul class="space-y-2.5">
-                        <li><a href="/register" class="footer-link">Create Account</a></li>
-                        <li><a href="/login" class="footer-link">Login</a></li>
-                    </ul>
+                <div class="value-card reveal reveal-d3">
+                    <div class="value-icon"><i class="fa-solid fa-handshake text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Client First</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Your vision is our priority. We listen carefully
+                        and work until the design matches exactly what you imagined.</p>
                 </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Follow
-                    </h4>
-                    <div class="flex gap-3">
-                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"
-                            class="text-muted hover:text-accent transition-colors"><i
-                                class="fa-brands fa-instagram text-lg"></i></a>
-                    </div>
+                <div class="value-card reveal reveal-d1">
+                    <div class="value-icon"><i class="fa-solid fa-leaf text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Eco Conscious</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">We use vegan-friendly inks and eco-conscious
+                        materials wherever possible.</p>
+                </div>
+                <div class="value-card reveal reveal-d2">
+                    <div class="value-icon"><i class="fa-solid fa-lightbulb text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Always Innovating</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">We stay updated with the latest techniques and
+                        trends to bring you the best.</p>
+                </div>
+                <div class="value-card reveal reveal-d3">
+                    <div class="value-icon"><i class="fa-solid fa-heart text-apple-gold text-lg"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-2">Passion Driven</h3>
+                    <p class="text-apple-muted text-xs leading-relaxed">Tattooing is not just our job — it is our
+                        passion. That love shows in every piece we create.</p>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="border-t border-white/5 pt-8 flex justify-between items-center text-[10px] text-muted">
-                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
-                <a href="#" class="back-to-top">↑ Back to top</a>
+    <!-- TEAM -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-apple-gold text-xs font-semibold uppercase tracking-widest mb-3">The People Behind The
+                    Art</p>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Meet Our Artists</h2>
             </div>
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="artist-card p-8 text-center reveal reveal-d1">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Raj Kumar</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Blackwork Specialist</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Blackwork</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Geometric</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Tribal</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">5 years crafting bold blackwork and
+                        intricate geometric patterns.</p>
+                    <a href="https://instagram.com/rajkumar.ink" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @rajkumar.ink
+                    </a>
+                </div>
+                <div class="artist-card p-8 text-center reveal reveal-d2">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-paintbrush"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Priya Sharma</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Fine Line Artist</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Fine
+                            Line</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Floral</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Minimal</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">Specialises in delicate fine-line and
+                        botanical designs.</p>
+                    <a href="https://instagram.com/priya.fineline" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @priya.fineline
+                    </a>
+                </div>
+                <div class="artist-card p-8 text-center reveal reveal-d3">
+                    <div class="artist-avatar mb-4"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3 class="font-display text-apple-text text-base mb-1">Arjun Mehta</h3>
+                    <p class="text-xs text-apple-muted uppercase tracking-widest mb-3">Realism Expert</p>
+                    <div class="flex flex-wrap justify-center gap-1 mb-4">
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Realism</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Portraits</span>
+                        <span
+                            class="px-2 py-1 rounded-full text-xs text-apple-muted border border-apple-border">Nature</span>
+                    </div>
+                    <p class="text-xs text-apple-muted leading-relaxed mb-4">Creates stunning photorealistic portraits
+                        with incredible detail.</p>
+                    <a href="https://instagram.com/arjun.realism" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1.5 text-xs text-apple-muted hover:text-apple-gold transition-colors">
+                        <i class="fa-brands fa-instagram"></i> @arjun.realism
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-7 h-7 rounded-full object-cover opacity-80">
+                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
+                    Studio</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/services" class="footer-link">Services</a>
+                <a href="/gallery" class="footer-link">Gallery</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+            <p class="text-apple-muted/40 text-xs">© 2025 Dragon Tattoos Studio</p>
         </div>
     </footer>
 
     <script>
-// ── Scroll reveal
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ── Hamburger
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobileMenu');
-    const btn = document.getElementById('burgerBtn');
-    if(menu && btn) {
-        menu.classList.toggle('open');
-        btn.classList.toggle('open');
-        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-    }
-}
-document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('burgerBtn');
+            const isOpen = menu.classList.toggle('open');
+            btn.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            menu.setAttribute('aria-hidden', !isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
     </script>
 </body>
 

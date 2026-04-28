@@ -7,6 +7,7 @@
 .ac-wrap {
     animation: acFadeUp 0.6s cubic-bezier(0.2,0.8,0.2,1) both;
     width: 100% !important;
+    min-height: 100%;
 }
 
 @keyframes acFadeUp {
@@ -93,10 +94,10 @@
 .ac-time-days { font-size:0.95rem; font-weight:950; color:var(--text-1); letter-spacing:-0.03em; line-height:1; }
 .ac-time-sub { font-size:8px; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); margin-top:3px; }
 
-.ac-time-dot { width:12px; height:12px; border-radius:50%; border:2px solid var(--studio-bg); margin-top:8px; flex-shrink:0; position:relative; z-index:2; }
-.ac-time-dot.d-blue { background:#3B82F6; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(59,130,246,0.4); }
-.ac-time-dot.d-orange { background:#F59E0B; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(245,158,11,0.4); }
-.ac-time-dot.d-green { background:#10B981; box-shadow:0 0 0 4px var(--studio-bg), 0 0 10px rgba(16,185,129,0.4); }
+.ac-time-dot { width:12px; height:12px; border-radius:50%; border:2px solid var(--bg,#0c0a09); margin-top:8px; flex-shrink:0; position:relative; z-index:2; }
+.ac-time-dot.d-blue { background:#3B82F6; box-shadow:0 0 0 4px var(--bg,#0c0a09), 0 0 10px rgba(59,130,246,0.4); }
+.ac-time-dot.d-orange { background:#F59E0B; box-shadow:0 0 0 4px var(--bg,#0c0a09), 0 0 10px rgba(245,158,11,0.4); }
+.ac-time-dot.d-green { background:#10B981; box-shadow:0 0 0 4px var(--bg,#0c0a09), 0 0 10px rgba(16,185,129,0.4); }
 
 .ac-time-info { padding-top:2px; }
 .ac-time-info h4 { font-size:0.88rem; font-weight:850; color:var(--text-1); margin-bottom:0.25rem; }
@@ -104,7 +105,7 @@
 
 /* ── Care Grid ── */
 .ac-care-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; margin-top:0.5rem; }
-.ac-care-block { background: rgba(0,0,0,0.2); border:1px solid var(--border-soft); border-radius:18px; padding:1.25rem; text-align:center; }
+.ac-care-block { background: var(--surface-2); border:1px solid var(--border-soft); border-radius:18px; padding:1.25rem; text-align:center; }
 [data-theme="ivory"] .ac-care-block { background:#F8FAFC; border-color:rgba(0,0,0,0.06); }
 
 .ac-care-icon { width:32px; height:32px; border-radius:10px; margin:0 auto 0.75rem; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
@@ -123,13 +124,13 @@
 .ac-danger-note { background:rgba(255,255,255,0.06); padding:1.25rem 1.5rem; border-radius:12px; display:flex; align-items:flex-start; gap:1rem; font-size:0.75rem; line-height:1.6; color:#ef4444; font-weight:700; position:relative; z-index:2; border-left:4px solid #ef4444; }
 
 /* ── Reminder Bar ── */
-.ac-reminder-bar { background:var(--text-1); color:var(--studio-bg); border-radius:18px; padding:1.1rem 2rem; margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
-[data-theme="ivory"] .ac-reminder-bar { background:#0F172A; color:#fff; }
+.ac-reminder-bar { background:var(--text-1); color:var(--bg); border-radius:18px; padding:1.1rem 2rem; margin-top:2.5rem; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+[data-theme="ivory"] .ac-reminder-bar { background:#1c1917; color:#fff; }
 .ac-reminder-bar-text { display:flex; align-items:center; gap:1.25rem; }
-.ac-reminder-bar-icon { font-size:1.25rem; color:var(--studio-gold); }
+.ac-reminder-bar-icon { font-size:1.25rem; color:var(--gold); }
 .ac-reminder-bar-text p { font-size:0.85rem; font-weight:600; margin:0; line-height:1.4; opacity:0.9; }
 .ac-reminder-bar-text strong { color:#fff; }
-.ac-reminder-btn { background:var(--studio-gold); color:#000; border:none; border-radius:12px; padding:0.75rem 1.5rem; font-size:0.75rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; cursor:pointer; display:flex; align-items:center; gap:0.75rem; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+.ac-reminder-btn { background:var(--gold); color:#000; border:none; border-radius:12px; padding:0.75rem 1.5rem; font-size:0.75rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; cursor:pointer; display:flex; align-items:center; gap:0.75rem; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 .ac-reminder-btn:hover { background:#fff; transform:translateX(5px); }
 .ac-right-col { display: flex; flex-direction: column; gap: 1.5rem; }
 </style>
@@ -269,7 +270,7 @@
                             <div class="ac-time-days">21+</div>
                             <div class="ac-time-sub">Days</div>
                         </div>
-                        <div class="ac-time-dot" style="background:var(--studio-gold);box-shadow:0 0 0 4px var(--studio-bg),0 0 10px rgba(200,160,64,0.4);"></div>
+                        <div class="ac-time-dot" style="background:var(--gold);box-shadow:0 0 0 4px var(--bg,#0c0a09),0 0 10px rgba(200,160,64,0.4);"></div>
                         <div class="ac-time-info">
                             <h4>Deep Maturation</h4>
                             <p>Ink settles into the deeper skin layers. Full maturation can take up to 3 months.</p>

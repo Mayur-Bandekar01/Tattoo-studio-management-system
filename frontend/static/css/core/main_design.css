@@ -16,7 +16,6 @@
     --studio-sidebar: #020202;
     
     /* 2. Brand Accents */
-    /* Primary Accent — Indigo (True Vanilla) */
     --studio-gold: #cfa844;
     --studio-gold-soft: rgba(207, 168, 68, 0.1);
     --studio-gold-dim: rgba(207, 168, 68, 0.3);
@@ -29,70 +28,49 @@
     --studio-selection-glow: 0 0 25px rgba(99, 102, 241, 0.3);
     --studio-selection-grad: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
     
-    /* Legacy Alias support */
-    --studio-indigo: var(--studio-selection);
-    --studio-indigo-soft: var(--studio-selection-soft);
-    --studio-accent: var(--studio-selection);
-    
-    /* 3. Utility Accents & Status */
+    /* Status Tokens */
     --studio-success: #10B981;
-    --studio-success-soft: rgba(16, 185, 129, 0.1);
     --studio-danger: #EF4444;
-    --studio-danger-soft: rgba(239, 68, 68, 0.1);
     --studio-warning: #F59E0B;
-    --studio-warning-soft: rgba(245, 158, 11, 0.1);
     --studio-info: #3B82F6;
-    --studio-info-soft: rgba(59, 130, 246, 0.1);
 
-    /* Status Tokens - Noir Pro */
-    --studio-status-pending: #CA8A04;
-    --studio-status-pending-soft: rgba(202, 138, 4, 0.1);
-    --studio-status-approved: #10B981;
-    --studio-status-approved-soft: rgba(16, 185, 129, 0.1);
-    --studio-status-cancelled: #EF4444;
-    --studio-status-cancelled-soft: rgba(239, 68, 68, 0.1);
+    /* Text & Neutral */
+    --bg: #030303;
+    --text: #f5f5f7;
+    --muted: #86868b;
+    --accent: #cfa844;
+    --border: rgba(255, 255, 255, 0.06);
+    --card-bg: rgba(15, 15, 20, 0.6);
+    --card-border: rgba(200, 160, 64, 0.12);
 
-    /* 4. Text & Neutral */
     --studio-text-primary: #FFFFFF;
     --studio-text-secondary: #CBD5E1;
     --studio-text-muted: #64748B;
     --studio-border: rgba(255, 255, 255, 0.1);
-    --studio-border-light: rgba(255, 255, 255, 0.05);
 
-    /* 5. Metrics & FX */
-    --studio-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --studio-input-bg: rgba(255, 255, 255, 0.05);
-    --studio-input: var(--studio-input-bg);
-    --studio-card-inner-bg: rgba(255, 255, 255, 0.02);
-    --studio-select-option-bg: #1A1A1A;
-    --studio-select-option-text: #E5E7EB;
-    --studio-shadow-glow: 0 0 20px rgba(255, 0, 60, 0.15);
-    --studio-hero-grad: linear-gradient(135deg, #2A1E0F 0%, #3A2A14 100%);
-    --studio-hero-text: #FFFFFF;
-    --studio-hero-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    --studio-blur: blur(8px);
-    --studio-radius: 12px;
-    --studio-radius-sm: 8px;
-    --studio-radius-md: 10px;
-    
-    /* Hero & Standout */
-    --studio-hero-grad: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-    --studio-hero-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    
-    /* Animation Tokens */
-    --transition-fast: none;
-    --transition-smooth: none;
-    --transition-bounce: none;
-
-    /* Typography */
-    --font-heading: 'Bodoni Moda', serif;
-    --font-body: 'Jost', sans-serif;
-    --font-tech: 'Bodoni Moda', serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    
+    /* Sizing & Radius */
     --studio-radius: 20px;
     --studio-radius-sm: 12px;
     --studio-radius-md: 16px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+
+    /* Typography */
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-tech: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Transitions */
+    --transition-base: all 0.3s ease;
+    --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Layout Tokens */
+    --container-px: clamp(1.5rem, 6vw, 8rem);
+    --content-max-width: 1280px;
+    --section-py: clamp(4rem, 10vh, 10rem);
 }
 
 /* ════════════════════════ RESET & BASE ════════════════════════ */
@@ -577,7 +555,6 @@ select.studio-input, select {
     --studio-text-muted: #64748b;
     --studio-border: rgba(0, 0, 0, 0.08);
     --studio-border-light: rgba(0, 0, 0, 0.04);
-    --sidebar-text: #0f172a;
     --studio-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
     --studio-input-bg: #f1f5f9;
     --studio-card-inner-bg: #f8fafc;
@@ -589,6 +566,14 @@ select.studio-input, select {
     --dash-white: #FFFFFF;
     --dash-border: rgba(0, 0, 0, 0.06);
     --dash-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+
+    /* Landing Page Logic Sync */
+    --text: #0f172a;
+    --muted: #475569;
+    --accent: #8B1A2E; /* Deep Crimson for Ivory Regal */
+    --border: rgba(0, 0, 0, 0.08);
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-border: rgba(139, 26, 46, 0.15);
 }
 
 [data-theme="ivory"] .studio-input::placeholder, .light-mode .studio-input::placeholder {
@@ -1380,86 +1365,7 @@ select:focus, input:focus, textarea:focus {
 }
 
 
-/* ==================== MERGED FROM LANDING_PAGES.CSS ==================== */
-:root {
-    --bg: #030303;
-    --text: #f5f5f7;
-    --muted: #86868b;
-    --accent: #6366f1;
-    --border: rgba(255, 255, 255, 0.06);
-    --card-bg: rgba(15, 15, 20, 0.6);
-    --card-border: rgba(99, 102, 241, 0.12);
-    --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%), #030303;
-}
-
-/* ── REVEAL SYSTEM ── */
-.reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.reveal-d1 { transition-delay: 0.1s; }
-.reveal-d2 { transition-delay: 0.2s; }
-.reveal-d3 { transition-delay: 0.3s; }
-.reveal-d4 { transition-delay: 0.4s; }
-.reveal-d5 { transition-delay: 0.5s; }
-
-:root {
-    --surface: #000000;
-    --text-muted: #888888;
-    --muted: var(--text-muted);
-    --accent-glow: rgba(200, 160, 64, 0.2);
-    --card-bg: rgba(20, 20, 20, 0.6);
-
-    --font-heading: 'Cinzel', serif;
-    --font-body: 'Inter', sans-serif;
-
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-
-    --transition-base: all 0.3s ease;
-    
-    /* Layout Tokens */
-    --container-px: clamp(1.5rem, 6vw, 8rem);
-    --content-max-width: 1280px;
-    --section-py: clamp(4rem, 10vh, 10rem);
-}
-
-html.light-mode {
-    --bg: #ffffff;
-    --surface: #f8f8f8;
-    --text: #111827; /* Darker for better contrast */
-    --text-muted: #4b5563; /* Improved contrast for visibility */
-    --muted: var(--text-muted);
-    --accent: #e67e22;
-    --accent-glow: rgba(230, 126, 34, 0.3);
-    --border: rgba(0, 0, 0, 0.15); /* Sharper border for light mode */
-    --card-bg: #fcfcfc; /* Subtle grey-white for card depth */
-    --card-border: rgba(0, 0, 0, 0.22); /* More visible border for better box definition */
-    --hero-bg: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(230, 126, 34, 0.05) 0%, transparent 60%), #ffffff;
-}
-
-* {
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-}
-
-body {
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    font-family: var(--font-body);
-    scroll-behavior: smooth;
-}
-
-/* Base Dark Mode Values - Overridden by Phase 2 edits where needed */
+/* Base Dark Mode Values */
 :root {
     --bento-dark-bg: rgba(20, 20, 20, 0.6);
     --testi-dark-bg: rgba(29, 29, 31, 0.4);

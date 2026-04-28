@@ -1,20 +1,26 @@
 ---
-status: investigating
+status: resolved
 trigger: "Scroll is not working in the Aftercare page of the customer dashboard."
 symptoms:
   - "User cannot scroll down to see the full content of the Aftercare section."
   - "The layout seems frozen or restricted in height."
 created: 2026-04-27
+resolved: 2026-04-28
 ---
 
 # Root Cause Investigation: Aftercare Scroll Issue
 
-## Hypotheses
-1. [ ] **Hypothesis 1**: An element with `overflow: hidden` is wrapping the aftercare content or the entire dashboard.
-2. [ ] **Hypothesis 2**: The `main-content` or `.section-container` has a fixed height that is preventing the document from expanding.
-3. [ ] **Hypothesis 3**: The recent addition of `display: flex !important` and `flex-direction: column !important` to `.ac-wrap` is causing a layout conflict.
-4. [ ] **Hypothesis 4**: A modal or lightbox (even if hidden) has `pointer-events: auto` or is otherwise blocking interaction.
-5. [x] **Hypothesis 5**: The `body` or `html` tags have `overflow: hidden` applied, possibly left over from a lightbox session.
+## Root Cause
+The issue was caused by:
+1. Missing CSS for `.content-section` - hidden sections weren't properly collapsed with `display: none`
+2. CSS variable mismatches - aftercare used `--studio-bg` and `--studio-gold` which weren't defined in the dashboard context
+3. Missing `min-height: 100%` on `.ac-wrap`
 
-## Evidence
-- None yet.
+## Fixes Applied
+1. Added `.content-section { display: none; }` and `.content-section.active { display: block; }` to dashboard.html
+2. Added `min-height: 100%` to `.ac-wrap` in aftercare.html
+3. Replaced all `--studio-*` variables with dashboard-compatible variables (`--bg`, `--gold`, `--gold-dim`, etc.)
+
+## Files Modified
+- `frontend/templates/customer/dashboard.html`
+- `frontend/templates/customer/sections/aftercare.html`

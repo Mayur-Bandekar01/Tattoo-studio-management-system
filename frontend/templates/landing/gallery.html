@@ -5,795 +5,940 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Gallery</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-    <meta name="description" content="A collection of our finest work. Each piece tells a unique story — crafted with passion and
-surgical precision.">
-
-    <!-- Global CSS & Assets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts.css') }}">
-    <!-- Optimized Vanilla Design System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}?v=2.1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/tailwind_vanilla.css') }}?v=2.1">
-
-    <!-- Project Styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/utilities.css') }}">
-    
-    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)', text: 'var(--text)', muted: 'var(--muted)',
+                            card: 'var(--card-bg)', border: 'var(--border)',
+                            gold: 'var(--accent, #c8a040)', goldLight: '#e0b84a'
+                        }
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-/* ── GALLERY & LIGHTBOX ── */
-#galleryGrid {
-    width: 100% !important;
-}
+        * {
+            -webkit-font-smoothing: antialiased;
+        }
 
-.gallery-item {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    cursor: pointer;
-    transition: var(--transition-base);
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-}
+        :root {
+            --bg-primary: #000000;
+            --bg-primary-rgb: 0, 0, 0;
+            --bg-secondary: #050505;
+            --text-primary: #f5f5f7;
+            --text-muted: #86868b;
+            --accent-color: #c8a040;
+            --accent-rgb: 200, 160, 64;
+            --accent-light: #e0b84a;
+            --card-bg: #141414;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+        }
 
-.gallery-item:hover {
-    transform: translateY(-8px);
-    border-color: rgba(200, 160, 64, 0.3);
-}
+        html.light-mode {
+            --bg-primary: #ffffff;
+            --bg-primary-rgb: 255, 255, 255;
+            --bg-secondary: #f8fafc;
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #f97316;
+            --accent-rgb: 249, 115, 22;
+            --accent-light: #fb923c;
+            --card-bg: #ffffff;
+            --border-subtle: #e2e8f0;
+        }
 
-.gallery-img-container {
-    aspect-ratio: 1 / 1;
-    width: 100%;
-    overflow: hidden;
-    background: #0a0a0a;
-}
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
 
-.gallery-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            background: rgba(var(--bg-primary-rgb, 0, 0, 0), 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
 
-.gallery-item:hover .gallery-img {
-    transform: scale(1.05);
-}
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
 
-.gallery-meta {
-    padding: 1rem; /* Slightly reduced padding */
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--card-bg);
-    margin-top: auto;
-}
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 2px;
+        }
 
-.gallery-info h4 {
-    font-size: 0.875rem;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-    font-weight: 700;
-}
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            right: 50%;
+            height: 1px;
+            background: #c8a040;
+            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
 
-.gallery-info p {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-}
+        .nav-link:hover {
+            color: var(--accent-color);
+        }
 
-/* Ensure the text container in gallery.html also aligns */
-.gallery-text-content {
-    padding: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    background: var(--card-bg);
-    margin-top: auto;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+        .nav-link:hover::after {
+            left: 0;
+            right: 0;
+        }
 
-/* Lightbox */
-.lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(3, 3, 3, 0.98);
-    backdrop-filter: blur(20px);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.4s;
-}
+        .nav-link.active {
+            color: var(--accent-color);
+        }
 
-.lightbox.open {
-    opacity: 1;
-    visibility: visible;
-}
+        .nav-link.active::after {
+            left: 0;
+            right: 0;
+            background: var(--accent-color);
+            height: 2px;
+        }
 
-.lightbox-close {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: white;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 100000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(4px);
-}
+        /* BURGER */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
 
-.lightbox-close:hover {
-    background: rgba(255,255,255,0.1);
-    transform: rotate(90deg) scale(1.1);
-}
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #86868b;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
 
-.lb-inner {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    width: 92vw;
-    max-width: 1080px;
-    max-height: 88vh;
-    border-radius: 24px;
-    overflow: hidden;
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(200,160,64,0.1);
-    position: relative;
-    background: #0a0a0a;
-}
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
 
-.lightbox.open .lb-inner {
-    transform: scale(1) translateY(0);
-}
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
 
-/* Image side */
-.lb-img-side {
-    flex: 1 1 70%;
-    position: relative;
-    background: #050505;
-    overflow: hidden;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
 
-.lightbox-img {
-    max-width: 100%;
-    max-height: 88vh;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2,1,0.3,1);
-    cursor: zoom-in;
-}
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
 
-.lb-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 10;
-    backdrop-filter: blur(4px);
-}
+        /* MOBILE MENU */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
 
-.lb-nav:hover { 
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-50%) scale(1.1);
-}
-.lb-prev { left: 1rem; }
-.lb-next { right: 1rem; }
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
 
-/* Info side */
-.lb-info-side {
-    flex: 1 1 30%;
-    max-width: 400px;
-    background: #0a0a0a;
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    flex-direction: column;
-    padding: 2.5rem 2rem;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-    justify-content: center;
-}
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #86868b;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
 
-@media (max-width: 800px) {
-    .lb-inner {
-        flex-direction: column;
-        overflow-y: auto;
-        max-height: 90vh;
-        width: 95vw;
-    }
-    .lb-img-side {
-        flex: 0 0 50vh;
-        min-height: 50vh;
-    }
-    .lightbox-img {
-        max-height: 50vh;
-    }
-    .lb-info-side {
-        flex: 1 1 auto;
-        max-width: none;
-        border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 1.5rem;
-    }
-    .lightbox-close {
-        top: 1rem;
-        right: 1rem;
-        width: 36px;
-        height: 36px;
-        font-size: 1rem;
-    }
-}
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
 
-/* Stats Bar */
-.stats-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 20px;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
+        .mobile-menu-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--accent-color);
+            opacity: 0.3;
+        }
 
-.stat-box {
-    padding: 1.8rem 1.25rem;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1.5px solid rgba(255, 255, 255, 0.15); /* More prominent border */
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    text-align: center;
-    min-width: 0;
-}
+        /* HERO */
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(var(--accent-rgb, 200, 160, 64), 0.06) 0%, transparent 60%), var(--bg-primary);
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-.stat-box:hover {
-    transform: translateY(-8px);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: var(--accent);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(200, 160, 64, 0.1);
-}
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0.2;
+        }
 
-html.light-mode .stat-box {
-    background: #ffffff;
-    border: 1.5px solid rgba(0, 0, 0, 0.12); /* More prominent border in light mode */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
 
-html.light-mode .stat-box:hover {
-    border-color: var(--accent);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-}
+        .text-gradient {
+            background: linear-gradient(to right, var(--text-primary), var(--accent-color), var(--text-primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
 
-/* Lightbox Extras */
-.lb-meta-content {
-    max-width: 512px;
-    margin: 0 auto;
-}
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #86868b;
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            letter-spacing: 0.02em;
+        }
 
-.lb-title {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: white;
-    margin-top: 0.5rem;
-    line-height: 1.2;
-}
+        .filter-btn:hover {
+            border-color: rgba(200, 160, 64, 0.4);
+            color: #f5f5f7;
+            transform: translateY(-1px);
+        }
 
-.lb-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+        .filter-btn.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 20px var(--accent-color);
+        }
 
-.lb-artist-name {
-    color: var(--accent);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.875rem;
-    letter-spacing: 0.05em;
-}
+        .stat-badge {
+            font-size: 0.6rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(200, 160, 64, 0.1);
+            color: #c8a040;
+            border: 1px solid rgba(200, 160, 64, 0.2);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
 
-.lb-dot {
-    width: 4px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-}
+        /* PREMIUM FRAMING */
+        .gallery-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            position: relative;
+        }
 
-.lb-artist-spec {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.875rem;
-    font-style: italic;
-}
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow:
+                0 40px 100px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(200, 160, 64, 0.3);
+            border-color: rgba(200, 160, 64, 0.4);
+        }
 
-@media (min-width: 1024px) {
-    .contact-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-    }
-}
+        .gallery-img-container {
+            overflow: hidden;
+            aspect-ratio: 3 / 4;
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: none !important;
+            background: #0a0a0a;
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.08);
+        }
+
+        /* REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.05s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.15s;
+        }
+
+        .reveal-d4 {
+            transition-delay: 0.2s;
+        }
+
+        .gallery-placeholder {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--card-bg) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+            height: 200px;
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s;
+        }
+
+        .lightbox.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-img {
+            max-height: 100%;
+            max-width: 95vw;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .lb-nav:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #c8a040;
+            color: #c8a040;
+        }
+
+        .lb-prev {
+            left: 2rem;
+        }
+
+        .lb-next {
+            right: 2rem;
+        }
+
+        .lightbox-info {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
+        }
+
+        .lightbox-img-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 0;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            padding: 1.5rem;
+            background: rgba(200, 160, 64, 0.04);
+            border: 1px solid rgba(200, 160, 64, 0.1);
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-link {
+            color: #86868b;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #c8a040;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3c;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8a040;
+        }
+
+        /* LIGHT MODE - Orange Energetic Theme (Unified with other pages) */
+        html.light-mode body {
+            background-color: var(--bg-primary) !important;
+            color: var(--text-primary) !important;
+        }
+
+        html.light-mode .text-gradient {
+            background: linear-gradient(to right, var(--text-primary), var(--accent-color), var(--text-primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        html.light-mode .filter-btn {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #4b5563;
+        }
+
+        html.light-mode .filter-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        html.light-mode .filter-btn.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        html.light-mode .gallery-item {
+            background: #fff;
+            border-color: #eee;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        html.light-mode .gallery-item:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 30px 60px rgba(249, 115, 22, 0.15);
+        }
+
+        html.light-mode .stat-badge {
+            background: rgba(249, 115, 22, 0.08);
+            border-color: rgba(249, 115, 22, 0.2);
+            color: var(--accent-color);
+        }
+
+        html.light-mode .navbar {
+            background: rgba(255, 255, 255, 0.88) !important;
+            border-bottom: 1px solid var(--border-subtle) !important;
+        }
+
+        html.light-mode .nav-link {
+            color: var(--text-muted) !important;
+        }
+
+        html.light-mode .nav-link:hover,
+        html.light-mode .nav-link.active {
+            color: var(--accent-color) !important;
+        }
+
+        html.light-mode .mobile-menu {
+            background: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        html.light-mode .mobile-menu a {
+            color: var(--text-muted) !important;
+        }
+
+        html.light-mode .mobile-menu a:hover,
+        html.light-mode .mobile-menu a.active {
+            color: var(--accent-color) !important;
+        }
+
+        html.light-mode .footer-link {
+            color: var(--text-muted) !important;
+        }
+
+        html.light-mode .footer-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-track {
+            background: var(--bg-primary) !important;
+        }
+
+        html.light-mode ::-webkit-scrollbar-thumb {
+            background: var(--accent-color) !important;
+        }
+
+        *,
+        *::before,
+        *::after {
+            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease;
+        }
     </style>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </head>
 
-<body class="landing-page">
+<body>
 
-    {% include 'landing/_navbar.html' %}
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
 
-    <main>
-        <!-- LIGHTBOX -->
-        <div class="lightbox" id="lightbox" onclick="handleLightboxBgClick(event)">
-            <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
+        <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i class="fa-solid fa-chevron-right"></i></button>
 
-            <div class="lb-inner" id="lbInner">
-                <!-- Image side (70%) -->
-                <div class="lb-img-side" id="lbImgContainer">
-                    <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i
-                            class="fa-solid fa-chevron-left"></i></button>
-                    <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i
-                            class="fa-solid fa-chevron-right"></i></button>
-                    
-                    <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image" loading="lazy" decoding="async">
-                </div>
+        <div class="lightbox-img-wrapper">
+            <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image">
+        </div>
 
-                <!-- Info side (30%) -->
-                <div class="lb-info-side">
-                    <span id="lbStyle" class="stat-badge mb-3 pointer-events-none"></span>
-                    <h2 id="lbTitle" class="font-display text-2xl md:text-3xl text-white mt-1 leading-tight"></h2>
-                    
-                    <div class="mt-8">
-                        <p class="text-[10px] text-white/40 tracking-widest uppercase font-bold mb-1">Artist</p>
-                        <p id="lbArtist" class="gold-text text-lg tracking-wide uppercase font-bold"></p>
-                        <p id="lbSpec" class="text-white/50 text-sm italic mt-1"></p>
-                    </div>
+        <div class="lightbox-info">
+            <div class="max-w-xl mx-auto">
+                <span id="lbStyle" class="stat-badge mb-3 pointer-events-none"></span>
+                <h2 id="lbTitle" class="font-display text-2xl md:text-4xl text-white mt-1 leading-tight"></h2>
+                <div class="flex items-center justify-center gap-4 mt-3">
+                    <p id="lbArtist" class="text-apple-gold text-base tracking-wide uppercase font-bold"></p>
+                    <div class="w-1 h-1 bg-white/20 rounded-full"></div>
+                    <p id="lbSpec" class="text-white/50 text-sm italic"></p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- HERO -->
-        <div
-            class="flex flex-col items-center justify-center relative pt-32 pb-20 px-6 text-center overflow-hidden">
-            <div
-                class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[length:40px_40px] pointer-events-none transition-opacity opacity-30">
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/services">Services</a>
+        <a href="/gallery" class="active">Gallery</a>
+        <a href="/contact">Contact</a>
+        <div class="mobile-menu-divider"></div>
+        <div class="flex gap-4">
+            <a href="/login"
+                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
+            <a href="/register"
+                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-8 h-8 rounded-full object-cover">
+                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
             </div>
-            <div class="relative z-10 reveal">
-                <p class="text-accent text-[10px] uppercase tracking-[0.2em] mb-4 font-bold">Our Infinite Archive</p>
-                <h1 class="font-display text-5xl md:text-8xl text-text mb-6 tracking-tighter leading-none">Gallery</h1>
-                <p class="text-muted text-lg max-w-xl mx-auto leading-relaxed font-light">
-                    A collection of our finest work. Each piece tells a unique story — crafted with passion and surgical
-                    precision.
-                </p>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link active">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex gap-3">
+                    <a href="/login"
+                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                    <a href="/register"
+                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                </div>
+                <button class="burger md:hidden" id="burgerBtn"
+                    onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
             </div>
         </div>
+    </nav>
 
-        <!-- MAIN SECTION -->
-        <section class="py-10 px-6">
-            <div class="max-w-6xl mx-auto">
+    <!-- HERO -->
+    <div class="page-hero text-center">
+        <div class="page-hero-grid"></div>
+        <div class="relative z-10">
+            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium reveal">Our Infinite Archive
+            </p>
+            <h1 class="font-display text-5xl md:text-7xl mb-4 text-gradient reveal reveal-d1">Gallery</h1>
+            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed reveal reveal-d2">
+                A collection of our finest work. Each piece tells a unique story — crafted with passion and surgical
+                precision.
+            </p>
+        </div>
+    </div>
 
-                <!-- Stats Bar -->
-                {% if gallery %}
-                <div
-                    class="flex items-center justify-center gap-12 sm:gap-16 p-6 sm:p-8 bg-studio-card border border-studio-cardBorder rounded-3xl mb-10 shadow-xl scroll-reveal text-center">
-                    <div class="stat-item">
-                        <p class="font-display text-4xl sm:text-6xl text-gradient-gold mb-1 stat-num" data-target="{{ gallery|length }}">{{ gallery|length
-                            }}</p>
-                        <p class="text-[10px] text-studio-muted tracking-widest uppercase font-bold opacity-70">
-                            Masterpieces</p>
-                    </div>
-                    <div class="w-[1px] h-16 bg-white/10 hidden sm:block"></div>
-                    <div class="stat-item">
-                        <p class="font-display text-4xl sm:text-6xl text-gradient-gold mb-1 stat-num" data-target="{{ styles_count }}">{{ styles_count }}
-                        </p>
-                        <p class="text-[10px] text-studio-muted tracking-widest uppercase font-bold opacity-70">Styles
-                        </p>
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- Filter Pills -->
-                <div class="flex flex-wrap gap-3 justify-center mb-10 scroll-reveal">
-                    <button class="filter-btn active" onclick="filterGallery('Tattoo',this)">Tattoo</button>
-                    <button class="filter-btn" onclick="filterGallery('Sketch',this)">Sketch</button>
-                    <button class="filter-btn" onclick="filterGallery('Tattoo Removal',this)">Tattoo Removal</button>
-                </div>
-
-                {% if gallery %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="galleryGrid">
-                    {% for item in gallery %}
-                    {% set raw_style = (item.style or '') | lower %}
-                    {% set caption = (item.caption or '') | lower %}
-
-                    {# Robust mapping to the 3 core categories #}
-                    {% if 'sketch' in raw_style or 'art' in raw_style or 'drawing' in raw_style or 'sketch' in caption
-                    or 'drawing' in caption or 'art' in caption %}
-                    {% set category = 'Sketch' %}
-                    {% elif 'removal' in raw_style or 'removal' in caption %}
-                    {% set category = 'Tattoo Removal' %}
-                    {% else %}
-                    {% set category = 'Tattoo' %}
-                    {% endif %}
-
-                    <div class="gallery-item reveal" data-category="{{ category }}"
-                        data-img="{{ url_for('static', filename=item.image_path) }}"
-                        data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
-                        data-spec="{{ item.specialisation or '' }}" data-style="{{ item.style or 'Tattoo' }}"
-                        onclick="openLightbox(this)">
-
-                        <div class="gallery-img-container">
-                            <img src="{{ url_for('static', filename=item.image_path) }}"
-                                alt="{{ item.caption or 'Tattoo' }}" class="gallery-img" loading="lazy" decoding="async">
-                        </div>
-
-                        <div class="gallery-text-content">
-                            <p class="text-text font-bold text-sm mb-1">{{ item.caption or 'Untitled' }}</p>
-                            <p class="text-muted text-[11px]">by {{ item.artist_name }}</p>
-                            <div class="mt-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                                <i class="fa-solid fa-expand text-accent text-xs"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <!-- No results after filter -->
-                <div id="noResults" style="display:none;" class="text-center py-24 scroll-reveal">
-                    <div
-                        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-studio-card border border-studio-cardBorder mb-6">
-                        <i class="fa-solid fa-filter text-studio-gold opacity-40 text-2xl"></i>
-                    </div>
-                    <p class="text-muted text-sm tracking-wide">No masterpieces found in this category yet.</p>
-                </div>
-
-                {% else %}
-                <!-- Empty State -->
-                <div class="text-center py-24 scroll-reveal">
-                    <div
-                        class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-studio-card border border-studio-cardBorder mb-8">
-                        <i class="fa-solid fa-images text-studio-gold opacity-40 text-3xl"></i>
-                    </div>
-                    <h3 class="font-display text-2xl text-studio-text mb-3">Gallery Coming Soon</h3>
-                    <p class="text-muted text-sm max-w-sm mx-auto leading-relaxed">
-                        Our artists are curating our finest sessions for the archive. Photos will appear here soon.
-                    </p>
-                    <a href="/register" class="btn-gold mt-10">Book Your Session</a>
-                </div>
-                {% endif %}
-            </div>
-        </section>
-    </main>
-
-    <!-- ── FOOTER ── -->
-    <footer class="main-footer">
+    <!-- MAIN SECTION -->
+    <section class="py-16 px-6" style="background: var(--bg-secondary);">
         <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
 
-                <div class="col-span-2 md:col-span-1">
-                    <div class="flex items-center gap-2 mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" width="24" height="24"
-              loading="lazy" class="w-6 h-6 rounded-full object-cover opacity-80" decoding="async">
-                        <span class="font-display text-text text-[10px] tracking-widest uppercase opacity-90">Dragon
-                            Tattoos
-                            Studio</span>
-                    </div>
-                    <p class="text-muted text-xs max-w-xs leading-relaxed">Premium tattoo studio. Engineered for
-                        perfection, one
-                        design at a time.</p>
+            <!-- Stats Bar — only show if images exist -->
+            {% if gallery %}
+            <div class="stats-bar reveal">
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                        gallery|length }}</p>
+                    <p
+                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Artworks</p>
                 </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Studio
-                    </h4>
-                    <ul class="space-y-2.5">
-                        <li><a href="/about" class="footer-link">About Us</a></li>
-                        <li><a href="/services" class="footer-link">Services</a></li>
-                        <li><a href="/gallery" class="footer-link">Portfolio</a></li>
-                        <li><a href="/contact" class="footer-link">Contact</a></li>
-                    </ul>
+                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                        artist_count }}</p>
+                    <p
+                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Artists</p>
                 </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Account
-                    </h4>
-                    <ul class="space-y-2.5">
-                        <li><a href="/register" class="footer-link">Create Account</a></li>
-                        <li><a href="/login" class="footer-link">Login</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-text mb-4 opacity-50">Follow
-                    </h4>
-                    <div class="flex gap-3">
-                        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"
-                            class="text-muted hover:text-accent transition-colors"><i
-                                class="fa-brands fa-instagram text-lg"></i></a>
-                    </div>
+                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
+                <div class="stat-item">
+                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                        styles_count }}</p>
+                    <p
+                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        Styles</p>
                 </div>
             </div>
+            {% endif %}
 
-            <div class="border-t border-white/5 pt-8 flex justify-between items-center text-[10px] text-muted">
-                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
-                <a href="#" class="back-to-top">↑ Back to top</a>
+            <!-- Filter Pills -->
+            <div class="flex flex-wrap gap-3 justify-center mb-12 reveal">
+                <button class="filter-btn active" onclick="filterGallery('all',this)">All Masterpieces</button>
+                <button class="filter-btn" onclick="filterGallery('Blackwork',this)">Blackwork</button>
+                <button class="filter-btn" onclick="filterGallery('Fine Line',this)">Fine Line</button>
+                <button class="filter-btn" onclick="filterGallery('Japanese',this)">Japanese</button>
+                <button class="filter-btn" onclick="filterGallery('Realism',this)">Realism</button>
+                <button class="filter-btn" onclick="filterGallery('Traditional',this)">Traditional</button>
+                <button class="filter-btn" onclick="filterGallery('Geometric',this)">Geometric</button>
+                <button class="filter-btn" onclick="filterGallery('Watercolour',this)">Watercolour</button>
             </div>
+
+            <!-- ═══════════════════════════════════════════
+             GALLERY GRID — FROM DATABASE
+        ═══════════════════════════════════════════ -->
+            {% if gallery %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="galleryGrid">
+                {% for item in gallery %}
+                <div class="gallery-item reveal reveal-d{{ loop.index % 4 + 1 }}"
+                    data-category="{{ item.style or 'Other' }}"
+                    data-img="{{ url_for('static', filename=item.image_path) }}"
+                    data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
+                    data-spec="{{ item.specialisation or '' }}" data-style="{{ item.style or '' }}"
+                    onclick="openLightbox(this)">
+
+                    <!-- Image Container -->
+                    <div class="gallery-img-container">
+                        <img src="{{ url_for('static', filename=item.image_path) }}"
+                            alt="{{ item.caption or 'Tattoo' }}" class="gallery-img" loading="lazy">
+                    </div>
+
+                    <!-- Metadata Bar -->
+                    <div class="p-5 border-t border-white/5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-apple-text font-semibold text-sm truncate max-w-[150px]">
+                                    {{ item.caption or 'Untitled' }}
+                                </p>
+                                <p class="text-apple-muted text-[11px] mt-0.5">by {{ item.artist_name }}</p>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-apple-gold/40 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- No results after filter -->
+            <div id="noResults" style="display:none;" class="text-center py-16">
+                <i class="fa-solid fa-filter"
+                    style="font-size:2.5rem;color:rgba(200,160,64,0.2);display:block;margin-bottom:1rem;"></i>
+                <p style="color:#86868b;font-size:0.88rem;">No artworks found in this style yet.</p>
+            </div>
+
+            {% else %}
+            <!-- ── Empty State (no images uploaded yet) ── -->
+            <div class="text-center py-20">
+                <div
+                    style="width:80px;height:80px;border-radius:20px;background:rgba(200,160,64,0.06);border:1px solid rgba(200,160,64,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+                    <i class="fa-solid fa-images" style="font-size:2rem;color:rgba(200,160,64,0.3);"></i>
+                </div>
+                <h3 class="font-display text-xl mb-2" style="color: var(--text-primary);">Gallery Coming Soon</h3>
+                <p style="color:#86868b;font-size:0.85rem;max-width:380px;margin:0 auto;line-height:1.7;">
+                    Our artists are creating amazing work. Photos will appear here as sessions are completed.
+                </p>
+                <a href="/register"
+                    style="display:inline-block;margin-top:1.75rem;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;">
+                    Book Your Session
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Book CTA -->
+            <div class="mt-16 text-center coming-soon p-10 rounded-2xl reveal"
+                style="background: var(--card-bg); border: 1px solid var(--accent-color); opacity: 0.9;">
+                <p
+                    style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color: var(--accent-color); margin-bottom:0.75rem;">
+                    Ready for Your Own?</p>
+                <h3 class="font-display text-xl mb-3" style="color: var(--text-primary);">Your Story, Our Canvas</h3>
+                <p style="color: var(--text-muted); font-size:0.83rem;max-width:400px;margin:0 auto 1.5rem;line-height:1.7;">
+                    Book a consultation with one of our artists and turn your idea into a permanent masterpiece.
+                </p>
+                <a href="/register"
+                    style="display:inline-block;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;margin-right:0.75rem;">
+                    Book Now
+                </a>
+                <a href="/services"
+                    style="display:inline-block;padding:0.65rem 1.75rem;border:1px solid var(--border-subtle); color: var(--text-muted); border-radius:20px;font-size:0.8rem;font-weight:500;text-decoration:none;">
+                    View Services
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="w-7 h-7 rounded-full object-cover opacity-80">
+                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
+                    Studio</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="/" class="footer-link">Home</a>
+                <a href="/about" class="footer-link">About</a>
+                <a href="/services" class="footer-link">Services</a>
+                <a href="/gallery" class="footer-link">Gallery</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+            <p style="color:rgba(134,134,139,0.4);font-size:0.72rem;">© 2025 Dragon Tattoos Studio</p>
         </div>
     </footer>
 
     <script>
-// ── Scroll reveal
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        // ── REVEAL OBSERVER
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-// ── Hamburger
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobileMenu');
-    const btn = document.getElementById('burgerBtn');
-    if(menu && btn) {
-        menu.classList.toggle('open');
-        btn.classList.toggle('open');
-        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-    }
-}
-document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
-
-// ── Gallery Logic
-let currentIndex = 0;
-let currentFilteredItems = [];
-
-function openLightbox(el) {
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    const lbTitle = document.getElementById('lbTitle');
-    const lbArtist = document.getElementById('lbArtist');
-    const lbSpec = document.getElementById('lbSpec');
-    const lbStyle = document.getElementById('lbStyle');
-
-    // Track items for navigation
-    const grid = document.getElementById('galleryGrid');
-    currentFilteredItems = Array.from(grid.querySelectorAll('.gallery-item')).filter(item => item.style.display !== 'none');
-    currentIndex = currentFilteredItems.indexOf(el);
-
-    lbImg.src = el.getAttribute('data-img');
-    lbTitle.innerText = el.getAttribute('data-title');
-    lbArtist.innerText = el.getAttribute('data-artist');
-    lbSpec.innerText = el.getAttribute('data-spec');
-    lbStyle.innerText = el.getAttribute('data-style');
-
-    lb.classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lbImg');
-    
-    // reset zoom if open
-    if (lbImg) {
-        lbImg.style.transform = 'scale(1)';
-        lbImg.style.cursor = 'zoom-in';
-    }
-    
-    lb.classList.remove('open');
-    document.body.style.overflow = '';
-}
-
-function handleLightboxBgClick(e) {
-    const inner = document.getElementById('lbInner');
-    if (inner && !inner.contains(e.target)) closeLightbox();
-}
-
-function changeLightbox(dir) {
-    if (currentFilteredItems.length === 0) return;
-    currentIndex = (currentIndex + dir + currentFilteredItems.length) % currentFilteredItems.length;
-    const nextEl = currentFilteredItems[currentIndex];
-
-    const lbImg = document.getElementById('lbImg');
-    lbImg.style.opacity = '0';
-    
-    // reset zoom
-    lbImg.style.transform = 'scale(1)';
-    lbImg.style.cursor = 'zoom-in';
-    
-    setTimeout(() => {
-        lbImg.style.transformOrigin = 'center center';
-    }, 200);
-
-    setTimeout(() => {
-        lbImg.src = nextEl.getAttribute('data-img');
-        document.getElementById('lbTitle').innerText = nextEl.getAttribute('data-title');
-        document.getElementById('lbArtist').innerText = nextEl.getAttribute('data-artist');
-        document.getElementById('lbSpec').innerText = nextEl.getAttribute('data-spec');
-        document.getElementById('lbStyle').innerText = nextEl.getAttribute('data-style');
-        lbImg.style.opacity = '1';
-    }, 150);
-}
-
-function filterGallery(category, btn) {
-    // Update buttons
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-
-    const items = document.querySelectorAll('.gallery-item');
-    let visibleCount = 0;
-
-    items.forEach(item => {
-        const itemCat = item.getAttribute('data-category');
-
-        // Strict normalization to handle any edge cases
-        const normalizedCat = itemCat === 'Sketch' ? 'Sketch' :
-            (itemCat === 'Tattoo Removal' ? 'Tattoo Removal' : 'Tattoo');
-
-        if (category === 'all' || normalizedCat === category) {
-            item.style.display = 'block';
-            visibleCount++;
-        } else {
-            item.style.display = 'none';
+        // ── FILTER
+        function filterGallery(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            let visible = 0;
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                const show = cat === 'all' || item.dataset.category === cat;
+                item.style.display = show ? 'block' : 'none';
+                if (show) visible++;
+            });
+            const nr = document.getElementById('noResults');
+            if (nr) nr.style.display = visible === 0 ? 'block' : 'none';
         }
-    });
 
-    const noResults = document.getElementById('noResults');
-    if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-}
+        // ── LIGHTBOX
+        let currentLbIndex = -1;
+        let lbItems = [];
 
-// Auto-filter on load to sync with active button
-document.addEventListener('DOMContentLoaded', () => {
-    const activeBtn = document.querySelector('.filter-btn.active');
-    if (activeBtn) {
-        const category = activeBtn.textContent.trim();
-        filterGallery(category, activeBtn);
-    }
-});
+        function openLightbox(el) {
+            updateLbItems();
+            currentLbIndex = lbItems.indexOf(el);
+            renderLightbox(el);
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
 
-// Keyboard support
-document.addEventListener('keydown', (e) => {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('open')) return;
+        function updateLbItems() {
+            lbItems = Array.from(document.querySelectorAll('.gallery-item'))
+                .filter(item => item.style.display !== 'none');
+        }
 
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') changeLightbox(-1);
-    if (e.key === 'ArrowRight') changeLightbox(1);
-});
+        function renderLightbox(el) {
+            const img = el.dataset.img;
+            const title = el.dataset.title;
+            const artist = el.dataset.artist;
+            const style = el.dataset.style;
+            const spec = el.dataset.spec;
 
-// Interactive Image Zoom (Click/Pan)
-document.addEventListener('DOMContentLoaded', () => {
-    const lbImgContainer = document.getElementById('lbImgContainer');
-    const lbImg = document.getElementById('lbImg');
+            document.getElementById('lbImg').src = img;
+            document.getElementById('lbTitle').textContent = title;
+            document.getElementById('lbArtist').textContent = 'By ' + artist;
+            document.getElementById('lbStyle').textContent = style || 'Ink';
+            document.getElementById('lbSpec').textContent = spec || '';
+        }
 
-    if (lbImgContainer && lbImg) {
-        let isZoomed = false;
+        function changeLightbox(dir) {
+            if (lbItems.length === 0) return;
+            currentLbIndex = (currentLbIndex + dir + lbItems.length) % lbItems.length;
+            renderLightbox(lbItems[currentLbIndex]);
+        }
 
-        lbImgContainer.addEventListener('click', (e) => {
-            if (e.target.closest('.lb-nav')) return; // ignore clicks on arrows
-            
-            if (!isZoomed) {
-                isZoomed = true;
-                lbImg.style.cursor = 'zoom-out';
-                
-                const rect = lbImgContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const xPercent = (x / rect.width) * 100;
-                const yPercent = (y / rect.height) * 100;
-                
-                lbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-                lbImg.style.transform = 'scale(2.5)';
-            } else {
-                isZoomed = false;
-                lbImg.style.cursor = 'zoom-in';
-                lbImg.style.transform = 'scale(1)';
-                setTimeout(() => {
-                    if (!isZoomed) lbImg.style.transformOrigin = 'center center';
-                }, 200);
-            }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.getElementById('lightbox').addEventListener('click', function (e) { if (e.target === this) closeLightbox(); });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') changeLightbox(1);
+            if (e.key === 'ArrowLeft') changeLightbox(-1);
         });
 
-        lbImgContainer.addEventListener('mousemove', (e) => {
-            if (!isZoomed) return;
-            const rect = lbImgContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const xPercent = (x / rect.width) * 100;
-            const yPercent = (y / rect.height) * 100;
-            
-            lbImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-        });
-
-        lbImgContainer.addEventListener('mouseleave', () => {
-            if (isZoomed) {
-                isZoomed = false;
-                lbImg.style.cursor = 'zoom-in';
-                lbImg.style.transform = 'scale(1)';
-                setTimeout(() => {
-                    if (!isZoomed) lbImg.style.transformOrigin = 'center center';
-                }, 200);
-            }
-        });
-        
-        // Override changeLightbox to reset zoom state
-        const origChangeLightbox = changeLightbox;
-        window.changeLightbox = function(dir) {
-            isZoomed = false;
-            lbImg.style.cursor = 'zoom-in';
-            lbImg.style.transform = 'scale(1)';
-            lbImg.style.transformOrigin = 'center center';
-            origChangeLightbox(dir);
-        };
-        
-        // Override closeLightbox to reset zoom state
-        const origCloseLightbox = closeLightbox;
-        window.closeLightbox = function() {
-            isZoomed = false;
-            lbImg.style.cursor = 'zoom-in';
-            lbImg.style.transform = 'scale(1)';
-            lbImg.style.transformOrigin = 'center center';
-            origCloseLightbox();
-        };
-    }
-});
-
-// ── Animated counters
-const counterObs = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target;
-        const target = +el.dataset.target;
-        const suffix = el.dataset.suffix || '';
-        const duration = Math.min(1800, target * 4);
-        const step = Math.ceil(target / (duration / 16));
-        let current = 0;
-        const timer = setInterval(() => {
-            current = Math.min(current + step, target);
-            el.textContent = current + suffix;
-            if (current >= target) clearInterval(timer);
-        }, 16);
-        counterObs.unobserve(el);
-    });
-}, { threshold: 0.5 });
-document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
+        // ── MOBILE MENU
+        function toggleMobileMenu() {
+            const m = document.getElementById('mobileMenu');
+            const b = document.getElementById('burgerBtn');
+            const isOpen = m.classList.toggle('open');
+            b.classList.toggle('open');
+            b.setAttribute('aria-expanded', isOpen);
+            m.setAttribute('aria-hidden', !isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
     </script>
 </body>
 

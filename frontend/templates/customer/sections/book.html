@@ -279,7 +279,7 @@
     </div>
 
     <form method="POST" action="/customer/book" enctype="multipart/form-data" id="bookingForm" novalidate>
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <!-- ═══════════════════════════════════
              STEP 01 — SERVICE SELECTOR
@@ -392,7 +392,8 @@
                     <div>
                         <label class="book-field-label" for="apptDate">Preferred Date</label>
                         <input type="date" name="appointment_date" id="apptDate"
-                               required class="book-input" autocomplete="off">
+                               required class="book-input" autocomplete="off"
+                               min="">
                     </div>
                     <div>
                         <label class="book-field-label" for="apptTime">Preferred Time</label>
@@ -959,6 +960,15 @@
         document.getElementById('dz-' + type).classList.remove('drag-over');
     }
 
+    // Set min date to today for appointment date input
+    (function() {
+        const apptDate = document.getElementById('apptDate');
+        if (apptDate) {
+            const today = new Date().toISOString().split('T')[0];
+            apptDate.setAttribute('min', today);
+        }
+    })();
+
     function submitBooking() {
         const type = document.getElementById('serviceType').value;
         const btn = document.getElementById('submitBtn');
@@ -984,4 +994,4 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Request...';
         form.submit();
     }
-</script>
+</script>

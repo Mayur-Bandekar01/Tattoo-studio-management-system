@@ -47,11 +47,13 @@
 .gap-1 { gap: 0.25rem; }
 .gap-2 { gap: 0.5rem; }
 .gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
 .gap-5 { gap: 1.25rem; }
 .gap-6 { gap: 1.5rem; }
 .gap-8 { gap: 2rem; }
 .gap-10 { gap: 2.5rem; }
 .gap-12 { gap: 3rem; }
+.gap-16 { gap: 4rem; }
 .gap-24 { gap: 6rem; }
 
 /* Grid Columns & Responsive */
@@ -73,6 +75,8 @@
 
 @media (min-width: 640px) {
     .sm\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .sm\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .sm\:flex-row { flex-direction: row; }
     .sm\:gap-24 { gap: 6rem; }
 }
 
@@ -80,6 +84,7 @@
     .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
     .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
     .md\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .md\:text-8xl { font-size: 6rem; }
     /* Philosophy Grid Specific */
     .md\:grid-cols-philosophy { grid-template-columns: 1.1fr 0.9fr; }
 }
@@ -105,8 +110,11 @@
 .mb-3 { margin-bottom: 0.75rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 1.25rem; }
+.mb-7 { margin-bottom: 1.75rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mb-10 { margin-bottom: 2.5rem; }
+.mb-11 { margin-bottom: 2.75rem; }
 .mb-12 { margin-bottom: 3rem; }
 .mb-16 { margin-bottom: 4rem; }
 .mb-20 { margin-bottom: 5rem; }
@@ -161,6 +169,7 @@
 .max-w-sm { max-width: 24rem; }
 .max-w-xl { max-width: 36rem; }
 .max-w-2xl { max-width: 42rem; }
+.max-w-3xl { max-width: 48rem; }
 .max-w-4xl { max-width: 56rem; }
 .max-w-6xl { max-width: 72rem; }
 
@@ -195,7 +204,10 @@
 .tracking-tight { letter-spacing: -0.025em; }
 .tracking-wide { letter-spacing: 0.025em; }
 .tracking-widest { letter-spacing: 0.1em; }
+.tracking-extra-wide { letter-spacing: 0.2em; }
+.tracking-mega-wide { letter-spacing: 0.25em; }
 
+.leading-none { line-height: 1; }
 .leading-tight { line-height: 1.25; }
 .leading-relaxed { line-height: 1.625; }
 
@@ -204,6 +216,7 @@
 /* ── 5. COLORS (Token Aliases) ── */
 .text-text { color: var(--text); }
 .text-muted { color: var(--text-muted); }
+.text-muted-70 { color: rgba(134, 134, 139, 0.7); }
 .text-accent { color: var(--accent); }
 .text-white { color: #ffffff; }
 .text-studio-text { color: var(--text); }
@@ -248,7 +261,12 @@
 .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .duration-300 { transition-duration: 300ms; }
 
+.opacity-5 { opacity: 0.05; }
 .opacity-40 { opacity: 0.4; }
+.opacity-60 { opacity: 0.6; }
+.opacity-70 { opacity: 0.7; }
+.opacity-80 { opacity: 0.8; }
+.opacity-90 { opacity: 0.9; }
 
 /* ── 8. LEGACY / STUDIO ALIASES ── */
 .studio-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; }

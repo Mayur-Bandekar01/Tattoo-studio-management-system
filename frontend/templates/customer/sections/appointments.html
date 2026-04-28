@@ -292,8 +292,12 @@
 
         <!-- Hidden action forms -->
         {% for a in appointments %}
-        <form id="cancelForm-{{ a.appointment_id }}" method="POST" action="/customer/cancel/{{ a.appointment_id }}" style="display:none;"></form>
-        <form id="deleteForm-{{ a.appointment_id }}" method="POST" action="/customer/delete/{{ a.appointment_id }}" style="display:none;"></form>
+        <form id="cancelForm-{{ a.appointment_id }}" method="POST" action="/customer/cancel/{{ a.appointment_id }}" style="display:none;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
+        <form id="deleteForm-{{ a.appointment_id }}" method="POST" action="/customer/delete/{{ a.appointment_id }}" style="display:none;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        </form>
         {% endfor %}
 
         <!-- Table -->
@@ -454,16 +458,21 @@
     }
 
     function custOpenChatFromAppt(artistId, artistName, apptId) {
-        // We trigger the global switchTab then polling logic in messages section
         switchTab('messages', document.querySelector('[data-section="messages"]'));
         
-        // Wait for messages section to be visible then trigger thread switch
-        // This relies on window.custSelectArtistThread existing in dashboard.html or messages.html
-        setTimeout(() => {
+        // Poll for custSelectArtistThread availability (up to 2s) instead of fixed timeout
+        let attempts = 0;
+        const maxAttempts = 40;
+        const poll = setInterval(() => {
+            attempts++;
             if (typeof window.custSelectArtistThread === 'function') {
+                clearInterval(poll);
                 window.custSelectArtistThread(artistId, artistName);
+            } else if (attempts >= maxAttempts) {
+                clearInterval(poll);
+                console.warn('custSelectArtistThread not available after 2s');
             }
-        }, 100);
+        }, 50);
     }
 </script>
-
+

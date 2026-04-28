@@ -177,8 +177,16 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
 
+        /* ── Content Section Visibility ── */
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+
         /* ── Global Layout Resets ── */
-        .ov-wrap, .appts-wrap, .gal-wrap, .ac-wrap, .profile-layout-grid {
+        .ov-wrap, .appts-wrap, .gal-wrap, .ac-wrap, .profile-layout-grid, .inv-section-wrap, .book-section-wrap {
             display: block !important;
             width: 100% !important;
         }
@@ -213,12 +221,75 @@
             background: linear-gradient(to bottom, var(--surface), var(--bg));
         }
 
+        /* ── Mobile Navigation ── */
+        .mobile-nav-header {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            z-index: 500;
+            padding: 0 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mobile-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .mobile-logo span {
+            font-family: var(--dt-font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-1);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text-1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+        }
+
+        .header-theme-btn {
+            display: flex !important;
+        }
+
         @media (max-width: 1024px) {
-            .studio-sidebar { transform: translateX(-100%); width: 280px; }
+            .mobile-nav-header { display: flex; }
+            .studio-sidebar { transform: translateX(-100%); width: 280px; top: 60px; height: calc(100vh - 60px); }
             .studio-sidebar.open { transform: translateX(0); }
             .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
-            .main-content { margin-left: 0 !important; }
+            .main-content { margin-left: 0 !important; margin-top: 60px; }
             .metric-grid, .quick-actions-grid { grid-template-columns: 1fr; }
+            .top-header { position: static; }
         }
     </style>
 
@@ -535,6 +606,14 @@
             if (sb) sb.classList.remove('open');
             if (ov) ov.classList.remove('open');
         }
+        // Clean up message polling when leaving messages tab
+        const prevSection = document.querySelector('.content-section.active');
+        if (prevSection && prevSection.id === 'sec-messages' && name !== 'messages') {
+            if (typeof custThreadPoll !== 'undefined' && custThreadPoll) {
+                clearInterval(custThreadPoll);
+                custThreadPoll = null;
+            }
+        }
         document.querySelectorAll('.content-section').forEach(s => {
             s.style.display = 'none';
             s.classList.remove('active');
@@ -545,6 +624,10 @@
             target.style.display = 'block';
             target.classList.add('active');
             target.scrollTop = 0;
+        }
+        // Refresh message thread list when entering messages tab
+        if (name === 'messages' && typeof custLoadThreads === 'function') {
+            custLoadThreads();
         }
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         const link = btn || document.querySelector(`.nav-link[data-section="${name}"]`);
@@ -676,6 +759,61 @@
         }
     });
 
+    // ── Gallery Lightbox (galLightbox) ──
+    let galLbItems = [];
+    let galLbIndex = 0;
+
+    window.openGalLb = function(items, startIndex) {
+        galLbItems = items || [];
+        galLbIndex = startIndex || 0;
+        const lb = document.getElementById('galLightbox');
+        if (!lb || galLbItems.length === 0) return;
+        lb.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        window.renderGalLbSlide();
+    };
+
+    window.renderGalLbSlide = function() {
+        const item = galLbItems[galLbIndex];
+        if (!item) return;
+        const img = document.getElementById('lbMainImg');
+        const title = document.getElementById('lbTitle');
+        const desc = document.getElementById('lbDesc');
+        const artist = document.getElementById('lbArtist');
+        const style = document.getElementById('lbStyle');
+        const date = document.getElementById('lbDate');
+        const counter = document.getElementById('lbCounter');
+        const tags = document.getElementById('lbTags');
+        if (img) img.src = item.img || '';
+        if (title) title.textContent = item.title || '—';
+        if (desc) desc.textContent = item.description || '';
+        if (artist) artist.textContent = item.artist || '—';
+        if (style) style.textContent = item.style || 'None';
+        if (date) date.textContent = item.date || '—';
+        if (counter) counter.textContent = (galLbIndex + 1) + ' / ' + galLbItems.length;
+        if (tags) {
+            const tagList = (item.tags || '').split(',').filter(t => t.trim());
+            tags.innerHTML = tagList.map(t => '<span class="lb-tag-pill">' + t.trim() + '</span>').join('');
+        }
+    };
+
+    window.lbNav = function(dir) {
+        if (galLbItems.length === 0) return;
+        galLbIndex = (galLbIndex + dir + galLbItems.length) % galLbItems.length;
+        window.renderGalLbSlide();
+    };
+
+    window.closeGalLb = function() {
+        const lb = document.getElementById('galLightbox');
+        if (lb) lb.style.display = 'none';
+        document.body.style.overflow = '';
+    };
+
+    window.handleLbBgClick = function(e) {
+        const inner = document.getElementById('lbInner');
+        if (inner && !inner.contains(e.target)) window.closeGalLb();
+    };
+
     window.closeSuccessModal = function() {
         const modal = document.getElementById('bookingSuccessModal');
         if (modal) {
@@ -695,7 +833,19 @@
     document.addEventListener('DOMContentLoaded', () => {
         const last = localStorage.getItem('customerTab') || 'overview';
         window.switchTab(last);
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeLb(); });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                const galLb = document.getElementById('galLightbox');
+                if (galLb && galLb.style.display === 'flex') {
+                    window.closeGalLb();
+                } else {
+                    window.closeLb();
+                }
+            }
+            if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && document.getElementById('galLightbox') && document.getElementById('galLightbox').style.display === 'flex') {
+                window.lbNav(e.key === 'ArrowRight' ? 1 : -1);
+            }
+        });
         const lbEl = document.getElementById('lb');
         if (lbEl) { lbEl.addEventListener('click', function (e) { if (e.target === this) window.closeLb(); }); }
         const successMessages = Array.from(document.querySelectorAll('.flash-msg.success span')).map(s => s.textContent.toLowerCase());

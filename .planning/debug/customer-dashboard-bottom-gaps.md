@@ -1,23 +1,25 @@
 ---
-status: investigating
+status: resolved
 trigger: "Excessive white space/gaps at the bottom of the customer dashboard after scrolling."
 symptoms:
   - "The dashboard content ends (e.g., Overview cards), but the page continues to scroll for a long distance into a black void."
   - "The scrollbar is very small, suggesting the total page height is calculated to be much larger than the visible content."
 created: 2026-04-27
+resolved: 2026-04-28
 ---
 
 # Root Cause Investigation: Customer Dashboard Bottom Gaps
 
-## Hypotheses
-1. [ ] **Hypothesis 1**: One of the hidden sections has a fixed large height or a child element with massive margins that is still affecting the layout even if hidden (though `display: none` should prevent this).
-2. [ ] **Hypothesis 2**: The `.main-content` or `.section-container` has excessive `padding-bottom` or `margin-bottom`.
-3. [ ] **Hypothesis 3**: An absolutely positioned element (like a modal or lightbox) is incorrectly sized or positioned very far down, expanding the document container.
-4. [ ] **Hypothesis 4**: The `min-height: 100vh` on `.main-content` combined with other fixed-height headers is creating overflow, but not thousands of pixels worth.
-5. [x] **Hypothesis 5**: A rogue script or a leftover `style` tag from a previous edit has added a massive height to an element.
+## Root Cause
+The issue was caused by missing CSS for `.content-section` - all sections were rendering even when inactive, causing the page height to include all sections' content.
 
-## Evidence
-- None yet.
+## Fixes Applied
+1. Added explicit CSS to hide inactive sections:
+   ```css
+   .content-section { display: none; }
+   .content-section.active { display: block; }
+   ```
+2. Added missing wrap classes to the global layout resets
 
-## Eliminated
-- None yet.
+## Files Modified
+- `frontend/templates/customer/dashboard.html`

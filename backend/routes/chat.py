@@ -145,6 +145,84 @@ def chat_unread_threads():
     )
 
 
+# ── GET conversation threads for current user ────────────────
+@chat_bp.route("/chat/threads")
+def chat_threads():
+    """Return all conversation partners for the logged-in user,
+    with the latest message snippet and unread count."""
+    role = session.get("role")
+    if role not in ("customer", "artist"):
+        return jsonify({"threads": []})
+
+    user_id = str(session["user_id"])
+    other_role = "artist" if role == "customer" else "customer"
+    name_col = "artist_name" if other_role == "artist" else "customer_name"
+    id_col = "artist_id" if other_role == "artist" else "customer_id"
+    table = "artist" if other_role == "artist" else "customer"
+
+    conn = get_db()
+    with conn.cursor(dictionary=True) as cursor:
+        # Get distinct conversation partners with latest message + unread count
+        cursor.execute(
+            """
+            SELECT m.other_id,
+                   t.{name_col} AS other_name,
+                   m.latest_content,
+                   m.latest_at,
+                   m.unread_count
+            FROM (
+                SELECT
+                    CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
+                    latest.content AS latest_content,
+                    latest.sent_at AS latest_at,
+                    unread.cnt AS unread_count
+                FROM (
+                    SELECT other_id, MAX(sent_at) AS max_sent_at
+                    FROM (
+                        SELECT sender_id, receiver_id,
+                               CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
+                               sent_at
+                        FROM messages
+                        WHERE (sender_id = %s AND sender_role = %s)
+                           OR (receiver_id = %s AND receiver_role = %s)
+                    ) sub
+                    GROUP BY other_id
+                ) ids
+                JOIN messages latest ON latest.sent_at = ids.max_sent_at
+                    AND (
+                        (latest.sender_id = %s AND latest.receiver_id = ids.other_id)
+                        OR (latest.receiver_id = %s AND latest.sender_id = ids.other_id)
+                    )
+                LEFT JOIN (
+                    SELECT sender_id AS other_id, COUNT(*) AS cnt
+                    FROM messages
+                    WHERE receiver_id = %s AND receiver_role = %s AND is_read = 0
+                    GROUP BY sender_id
+                ) unread ON unread.other_id = ids.other_id
+            ) m
+            JOIN {table} t ON t.{id_col} = m.other_id
+            ORDER BY m.latest_at DESC
+            """.format(name_col=name_col, id_col=id_col, table=table),
+            (user_id, user_id, user_id, role, user_id, role,
+             user_id, user_id, user_id, role),
+        )
+        rows = cursor.fetchall()
+
+    threads = [
+        {
+            "other_id": r["other_id"],
+            "other_name": r["other_name"] or "Unknown",
+            "other_role": other_role,
+            "latest_content": (r["latest_content"] or "")[:50],
+            "latest_at": r["latest_at"].strftime("%b %d, %H:%M") if r["latest_at"] else "",
+            "unread_count": int(r["unread_count"] or 0),
+        }
+        for r in rows
+    ]
+
+    return jsonify({"threads": threads})
+
+
 # ── DELETE a message ──────────────────────────────────────────
 @chat_bp.route("/chat/message/<int:message_id>", methods=["DELETE"])
 def chat_delete_msg(message_id):

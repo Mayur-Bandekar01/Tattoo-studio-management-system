@@ -51,15 +51,15 @@
 }
 
 .ch-item:hover { background: rgba(255, 255, 255, 0.03); border-color: var(--border-soft); }
-.ch-item.active { background: var(--studio-accent-soft); border-color: var(--studio-gold-dim); }
+.ch-item.active { background: var(--gold-dim); border-color: var(--gold); }
 
 [data-theme="ivory"] .ch-item:hover { background: #FFFFFF; border-color: rgba(0,0,0,0.06); }
 
 .ch-avatar {
     width: 44px; height: 44px; border-radius: 12px;
-    background: var(--studio-accent-soft); color: var(--gold);
+    background: var(--gold-dim); color: var(--gold);
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 1.1rem; border: 1px solid var(--studio-gold-dim);
+    font-weight: 900; font-size: 1.1rem; border: 1px solid var(--gold-light);
     flex-shrink: 0;
 }
 
@@ -90,9 +90,11 @@
 .msg-chat-empty p { color: var(--text-3); font-size: 0.95rem; max-width: 320px; line-height: 1.6; }
 
 /* ── Active Thread ── */
-.msg-active { flex: 1; display: flex; flex-direction: column; height: 100%; }
+.msg-active { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+.msg-active-hidden { display: none !important; }
 
 .msg-chat-header {
+    flex-shrink: 0;
     padding: 1.25rem 1.75rem; display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--border-soft); background: rgba(0,0,0,0.1);
 }
@@ -100,15 +102,15 @@
 [data-theme="ivory"] .msg-chat-header { background: #FFFFFF; }
 
 .msg-chat-header-left { display: flex; align-items: center; gap: 1rem; }
-.msg-chat-av { width: 36px; height: 36px; border-radius: 10px; background: var(--studio-accent-soft); color: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 900; }
+.msg-chat-av { width: 36px; height: 36px; border-radius: 10px; background: var(--gold-dim); color: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
 .msg-chat-name { font-size: 1rem; font-weight: 900; color: var(--text-1); }
-.msg-online-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 800; color: var(--studio-success); text-transform: uppercase; letter-spacing: 0.05em; }
-.msg-online-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--studio-success); box-shadow: 0 0 8px var(--studio-success); }
+.msg-online-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 800; color: #10B981; text-transform: uppercase; letter-spacing: 0.05em; }
+.msg-online-dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px #10B981; }
 
 /* ── Msg Area ── */
 .msg-area {
-    flex: 1; overflow-y: auto; padding: 2rem;
+    flex: 1; min-height: 0; overflow-y: auto; padding: 2rem;
     display: flex; flex-direction: column; gap: 1.25rem;
     background: radial-gradient(circle at 100% 100%, rgba(255,255,255,0.01) 0%, transparent 50%);
 }
@@ -144,7 +146,7 @@
 .msg-sent .msg-meta { justify-content: flex-end; }
 
 /* ── Input ── */
-.msg-input-area { padding: 1.5rem 1.75rem; border-top: 1px solid var(--border-soft); background: rgba(0,0,0,0.1); }
+.msg-input-area { flex-shrink: 0; padding: 1.5rem 1.75rem; border-top: 1px solid var(--border-soft); background: rgba(0,0,0,0.1); }
 [data-theme="ivory"] .msg-input-area { background: #FFFFFF; }
 
 .msg-input-row { display: flex; align-items: flex-end; gap: 1rem; }
@@ -173,45 +175,152 @@
 
 /* ── Modals ── */
 .msg-info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999; }
-.info-modal-card { width: 380px; background: #0f172a; border: 1px solid var(--studio-gold-dim); border-radius: 24px; padding: 2.5rem; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+.info-modal-card { width: 380px; background: var(--surface); border: 1px solid var(--gold-dim); border-radius: 24px; padding: 2.5rem; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
 .info-modal-header { margin-bottom: 2rem; }
-.info-modal-av { width: 80px; height: 80px; border-radius: 24px; background: var(--studio-accent-soft); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 950; margin: 0 auto 1.25rem; border: 2px solid var(--gold); }
+.info-modal-av { width: 80px; height: 80px; border-radius: 24px; background: var(--gold-dim); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 950; margin: 0 auto 1.25rem; border: 2px solid var(--gold); }
 .info-modal-name { font-size: 1.5rem; font-weight: 950; color: #fff; margin-bottom: 0.25rem; letter-spacing: -0.02em; }
 
 .info-modal-label { font-size: 9px; font-weight: 950; color: var(--gold); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.75rem; margin-top: 1.5rem; }
 .info-modal-bio { font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin: 0; }
 .info-modal-close { width: 100%; margin-top: 2.5rem; padding: 1.1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.82rem; font-weight: 900; cursor: pointer; transition: all 0.2s; }
 .info-modal-close:hover { background: #fff; color: #000; }
+
+/* ── Header Button ── */
+.msg-header-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border-soft);
+    color: var(--text-3); cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; transition: all 0.2s;
+}
+.msg-header-btn:hover { background: var(--gold-dim); color: var(--gold); border-color: var(--gold); }
+
+/* ── Name Row ── */
+.msg-chat-name-row { display: flex; align-items: center; gap: 0.5rem; }
+
+/* ── Thread Empty ── */
+.msg-thread-empty {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3rem 1.5rem; text-align: center; opacity: 0.4;
+}
+.msg-thread-empty .empty-icon { font-size: 2.5rem; color: var(--text-3); margin-bottom: 1rem; }
+.msg-thread-empty p { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); line-height: 1.6; }
+
+/* ── Thread Last Message ── */
+.ch-item-last-msg {
+    font-size: 0.72rem; color: var(--text-3); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 180px; margin-top: 2px;
+}
+
+/* ── Ivory theme fixes for modal ── */
+[data-theme="ivory"] .info-modal-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); }
+[data-theme="ivory"] .info-modal-name { color: #1c1917; }
+[data-theme="ivory"] .info-modal-bio { color: #57534e; }
+[data-theme="ivory"] .info-modal-close { border-color: rgba(0,0,0,0.1); background: rgba(0,0,0,0.03); color: #1c1917; }
+[data-theme="ivory"] .info-modal-close:hover { background: #1c1917; color: #fff; }
+[data-theme="ivory"] .msg-sel-bar { background: #fff; border-color: var(--gold); }
+[data-theme="ivory"] .btn-sel-cancel { color: #57534e; }
+
+/* ── Loading spinner ── */
+.msg-loading { display: flex; align-items: center; justify-content: center; padding: 2rem; color: var(--text-3); font-size: 0.8rem; gap: 0.5rem; }
+.msg-loading i { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 
 <script>
     /**
-     * Messages Logic
+     * Messages Logic — aligned with /chat/* backend routes
      */
     let custCurrentThreadId = null;
+    let custCurrentThreadName = null;
     let custThreadPoll = null;
     let custIsSelecting = false;
     let custSelectedMsgs = new Set();
 
-    function custOpenThread(artistId, artistName, apptId = null) {
+    function _csrf() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
+    }
+
+    function _escHtml(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // ── Load thread list from backend ──
+    function custLoadThreads() {
+        const list = document.getElementById('cust-thread-list');
+        if (!list) return;
+        list.innerHTML = '<div class="msg-loading"><i class="fas fa-circle-notch"></i> Loading…</div>';
+
+        fetch('/chat/threads')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.threads || data.threads.length === 0) {
+                    list.innerHTML = `
+                        <div class="msg-thread-empty">
+                            <div class="empty-icon"><i class="fas fa-comments"></i></div>
+                            <p>No conversations yet.<br>Book a session to start chatting.</p>
+                        </div>`;
+                    return;
+                }
+                list.innerHTML = data.threads.map(t => `
+                    <div class="ch-item"
+                         onclick="custOpenThread('${_escHtml(t.other_id)}','${_escHtml(t.other_name)}')"
+                         id="cthread-${_escHtml(t.other_id)}-gen">
+                        <div class="ch-avatar">${(t.other_name || 'A')[0].toUpperCase()}</div>
+                        <div class="ch-info">
+                            <div class="ch-item-name">${_escHtml(t.other_name)}</div>
+                            <div class="ch-item-last-msg">${_escHtml(t.latest_content)}</div>
+                        </div>
+                        <div class="ch-actions">
+                            <button class="ch-delete-btn"
+                                    onclick="event.stopPropagation(); custDeleteThread('${_escHtml(t.other_id)}','artist')"
+                                    title="Delete conversation">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <span class="ch-unread-dot"
+                                  id="cdot-${_escHtml(t.other_id)}-gen"
+                                  style="display:${t.unread_count > 0 ? 'block' : 'none'};"></span>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                list.innerHTML = `
+                    <div class="msg-thread-empty">
+                        <div class="empty-icon"><i class="fas fa-exclamation-circle"></i></div>
+                        <p>Could not load conversations.</p>
+                    </div>`;
+            });
+    }
+
+    // Load threads on first visit
+    custLoadThreads();
+
+    function custOpenThread(artistId, artistName) {
         custCurrentThreadId = artistId;
-        
+        custCurrentThreadName = artistName;
+
         // UI reset
         document.querySelectorAll('.ch-item').forEach(i => i.classList.remove('active'));
         const item = document.getElementById('cthread-' + artistId + '-gen');
         if (item) item.classList.add('active');
-        
+
         document.getElementById('cust-chat-empty').style.display = 'none';
-        document.getElementById('cust-chat-active').style.display = 'flex';
+        const activeChat = document.getElementById('cust-chat-active');
+        activeChat.classList.remove('msg-active-hidden');
+        // Force reflow so flex layout recalculates after display:none → display:flex
+        void activeChat.offsetHeight;
         document.getElementById('cust-chat-name').textContent = artistName;
         document.getElementById('cust-chat-av').textContent = (artistName || 'A')[0].toUpperCase();
-        
+
         // Reset selection
         custCancelSelection();
-        
+
         // Initial fetch
         custFetchMessages();
-        
+
         // Reset polling
         if (custThreadPoll) clearInterval(custThreadPoll);
         custThreadPoll = setInterval(custFetchMessages, 3000);
@@ -220,9 +329,9 @@
     async function custFetchMessages() {
         if (!custCurrentThreadId) return;
         try {
-            const r = await fetch(`/customer/get_messages/${custCurrentThreadId}`);
+            const r = await fetch('/chat/messages?other_id=' + encodeURIComponent(custCurrentThreadId) + '&other_role=artist');
             const data = await r.json();
-            if (data.status === 'success') {
+            if (data.messages) {
                 custRenderMessages(data.messages);
                 // Hide unread dot
                 const dot = document.getElementById('cdot-' + custCurrentThreadId + '-gen');
@@ -237,18 +346,33 @@
         const area = document.getElementById('cust-msgs-area');
         const isNearBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 100;
 
-        area.innerHTML = msgs.map(m => `
-            <div class="msg-bubble ${m.sender_type==='customer'?'msg-sent':'msg-received'} 
-                        ${custSelectedMsgs.has(m.message_id)?'selecting':''}"
-                 onclick="custOnMsgClick(event, '${m.message_id}')"
-                 data-id="${m.message_id}">
-                ${m.message_text}
+        if (!msgs || msgs.length === 0) {
+            area.innerHTML = '<div style="margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0.4;padding:3rem;text-align:center;">' +
+                '<i class="fas fa-comment-slash" style="font-size:2rem;color:var(--gold);"></i>' +
+                '<p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-3);">No messages yet — say hello!</p>' +
+                '</div>';
+            return;
+        }
+
+        area.innerHTML = msgs.map(m => {
+            const isMine = !!m.is_mine;
+            const bubbleClass = isMine ? 'msg-sent' : 'msg-received';
+            const selClass = custSelectedMsgs.has(m.message_id) ? ' selecting' : '';
+            const timeStr = _escHtml(m.sent_at || '');
+            const readIcon = isMine
+                ? ''  // read receipts handled separately if needed
+                : '';
+
+            return `<div class="msg-bubble ${bubbleClass}${selClass}"
+                         onclick="custOnMsgClick(event, '${m.message_id}')"
+                         data-id="${m.message_id}">
+                ${_escHtml(m.content)}
                 <div class="msg-meta">
-                    ${new Date(m.sent_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                    ${m.sender_type==='customer' ? (m.is_read ? '<i class="fas fa-check-double" style="color:#22c55e"></i>' : '<i class="fas fa-check"></i>') : ''}
+                    ${timeStr}
+                    ${readIcon}
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
 
         if (isNearBottom) {
             area.scrollTop = area.scrollHeight;
@@ -263,18 +387,28 @@
         input.value = '';
         input.style.height = 'auto';
 
+        const btn = document.getElementById('cust-send-btn');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>'; }
+
         try {
-            const f = new FormData();
-            f.append('message_text', text);
-            f.append('csrf_token', '{{ csrf_token }}');
-            
-            const r = await fetch(`/customer/send_message/${custCurrentThreadId}`, {
+            const r = await fetch('/chat/send', {
                 method: 'POST',
-                body: f
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': _csrf()
+                },
+                body: JSON.stringify({
+                    content: text,
+                    other_id: custCurrentThreadId,
+                    other_role: 'artist'
+                })
             });
-            if (r.ok) custFetchMessages();
+            const d = await r.json();
+            if (d.success) custFetchMessages();
         } catch (e) {
             console.error("Send failed", e);
+        } finally {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i>'; }
         }
     }
 
@@ -283,6 +417,160 @@
             custToggleSelect(id);
         }
     }
+
+    function custToggleSelect(id) {
+        if (custSelectedMsgs.has(id)) {
+            custSelectedMsgs.delete(id);
+        } else {
+            custSelectedMsgs.add(id);
+        }
+        const bubble = document.querySelector(`.msg-bubble[data-id="${id}"]`);
+        if (bubble) bubble.classList.toggle('selecting', custSelectedMsgs.has(id));
+        custUpdateSelBar();
+    }
+
+    function custUpdateSelBar() {
+        const bar = document.getElementById('cust-sel-bar');
+        const count = document.getElementById('cust-sel-count');
+        if (!bar) return;
+        if (custIsSelecting && custSelectedMsgs.size > 0) {
+            bar.style.display = 'flex';
+            if (count) count.textContent = custSelectedMsgs.size + ' selected';
+        } else {
+            bar.style.display = 'none';
+        }
+    }
+
+    function custCancelSelection() {
+        custIsSelecting = false;
+        custSelectedMsgs.clear();
+        document.querySelectorAll('.msg-bubble.selecting').forEach(b => b.classList.remove('selecting'));
+        custUpdateSelBar();
+    }
+
+    async function custDeleteSelected() {
+        if (custSelectedMsgs.size === 0) return;
+        if (!confirm('Delete ' + custSelectedMsgs.size + ' selected message(s)?')) return;
+        try {
+            const ids = Array.from(custSelectedMsgs);
+            const promises = ids.map(id =>
+                fetch('/chat/message/' + id, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': _csrf() }
+                }).then(r => r.json())
+            );
+            await Promise.all(promises);
+            custCancelSelection();
+            custFetchMessages();
+        } catch (e) {
+            console.error("Delete selected failed", e);
+        }
+    }
+
+    async function custDeleteThread(artistId, otherRole) {
+        if (!confirm('Delete this conversation? This cannot be undone.')) return;
+        try {
+            const r = await fetch('/chat/thread/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': _csrf()
+                },
+                body: JSON.stringify({ other_id: artistId, other_role: otherRole || 'artist' })
+            });
+            const data = await r.json();
+            if (data.success) {
+                if (custCurrentThreadId === artistId) {
+                    custCurrentThreadId = null;
+                    custCurrentThreadName = null;
+                    if (custThreadPoll) clearInterval(custThreadPoll);
+                    document.getElementById('cust-chat-empty').style.display = 'flex';
+                    document.getElementById('cust-chat-active').classList.add('msg-active-hidden');
+                }
+                const item = document.getElementById('cthread-' + artistId + '-gen');
+                if (item) item.remove();
+                // If no threads left, show empty state
+                const list = document.getElementById('cust-thread-list');
+                if (list && !list.querySelector('.ch-item')) {
+                    list.innerHTML = `
+                        <div class="msg-thread-empty">
+                            <div class="empty-icon"><i class="fas fa-comments"></i></div>
+                            <p>No conversations yet.<br>Book a session to start chatting.</p>
+                        </div>`;
+                }
+            }
+        } catch (e) {
+            console.error("Delete thread failed", e);
+        }
+    }
+
+    function custShowArtistInfo() {
+        if (!custCurrentThreadId) return;
+        const modal = document.getElementById('artist-info-modal');
+        if (!modal) return;
+        const nameEl = document.getElementById('cust-chat-name');
+        const avEl = document.getElementById('cust-chat-av');
+        const mAv = document.getElementById('m-artist-av');
+        const mName = document.getElementById('m-artist-name');
+        if (nameEl && mName) mName.textContent = nameEl.textContent;
+        if (avEl && mAv) mAv.textContent = avEl.textContent;
+        modal.style.display = 'flex';
+    }
+
+    function custHideArtistInfo() {
+        const modal = document.getElementById('artist-info-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Long-press on messages to enter multi-select mode
+    (function() {
+        let pressTimer = null;
+        document.addEventListener('pointerdown', function(e) {
+            const bubble = e.target.closest('.msg-bubble');
+            if (!bubble || custIsSelecting) return;
+            pressTimer = setTimeout(function() {
+                custIsSelecting = true;
+                const id = bubble.dataset.id;
+                if (id) custToggleSelect(id);
+            }, 600);
+        });
+        document.addEventListener('pointerup', function() {
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        });
+        document.addEventListener('pointerleave', function() {
+            if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        });
+    })();
+
+    // Poll unread dots + nav badge
+    function custPollUnread() {
+        fetch('/chat/unread-threads')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.threads) return;
+                let total = 0;
+                data.threads.forEach(t => {
+                    total += t.count;
+                    const dot = document.getElementById('cdot-' + t.sender_id + '-gen');
+                    if (dot) dot.style.display = t.count > 0 ? 'block' : 'none';
+                });
+                // Sidebar nav badge
+                const navBadge = document.getElementById('cust-msgs-badge');
+                if (navBadge) {
+                    navBadge.textContent = total > 9 ? '9+' : total;
+                    navBadge.style.display = total > 0 ? 'flex' : 'none';
+                }
+                // Inbox header badge
+                const inboxBadge = document.getElementById('cust-inbox-badge');
+                if (inboxBadge) {
+                    inboxBadge.textContent = total > 9 ? '9+' : total;
+                    inboxBadge.style.display = total > 0 ? 'flex' : 'none';
+                }
+            })
+            .catch(() => {});
+    }
+    custPollUnread();
+    setInterval(custPollUnread, 8000);
 
     // Simplified Thread Selection from other sections
     window.custSelectArtistThread = function(artistId, artistName) {
@@ -302,43 +590,16 @@
             <div class="msg-thread-header">
                 <i class="fas fa-inbox"></i>
                 <h3>Inbox</h3>
+                <span id="cust-inbox-badge"
+                      style="display:none; margin-left:auto; min-width:20px; height:20px;
+                             border-radius:10px; background:var(--gold); color:#000;
+                             font-size:0.65rem; font-weight:900; align-items:center;
+                             justify-content:center; padding:0 6px;"></span>
             </div>
 
             <div class="msg-thread-list" id="cust-thread-list">
-                {% if appointments %}
-                    {% for artist_id, appts in appointments | groupby('artist_id') %}
-                    {% set first = appts | first %}
-                    <div class="ch-item"
-                         onclick="custOpenThread('{{ artist_id }}','{{ first.artist_name }}',null)"
-                         id="cthread-{{ artist_id }}-gen">
-
-                        <div class="ch-avatar">{{ (first.artist_name or 'A')[0] | upper }}</div>
-
-                        <div class="ch-info">
-                            <div class="ch-item-name">{{ first.artist_name }}</div>
-                            <div class="ch-item-sub">Direct Channel</div>
-                        </div>
-
-                        <div class="ch-actions">
-                            <button class="ch-delete-btn"
-                                    onclick="event.stopPropagation(); custDeleteThread('{{ artist_id }}','artist')"
-                                    title="Delete conversation">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                            <span class="ch-unread-dot"
-                                  id="cdot-{{ artist_id }}-gen"
-                                  style="display:none;"></span>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="msg-thread-empty">
-                        <div class="empty-icon">
-                            <i class="fas fa-calendar-times"></i>
-                        </div>
-                        <p>No active bookings</p>
-                    </div>
-                {% endif %}
+                <!-- Threads loaded dynamically via /chat/threads -->
+                <div class="msg-loading"><i class="fas fa-circle-notch"></i> Loading…</div>
             </div>
         </div><!-- /msg-thread-col -->
 
@@ -354,8 +615,8 @@
                 <p>Select an artist thread to start discussing your session</p>
             </div>
 
-            <!-- Active thread -->
-            <div id="cust-chat-active" class="msg-active">
+            <!-- Active thread (hidden by default) -->
+            <div id="cust-chat-active" class="msg-active msg-active-hidden">
 
                 <!-- Header -->
                 <div class="msg-chat-header">
@@ -364,7 +625,6 @@
                         <div class="msg-chat-header-info">
                             <div class="msg-chat-name-row">
                                 <span class="msg-chat-name" id="cust-chat-name">—</span>
-                                <span id="cust-chat-tag"></span>
                             </div>
                             <div class="msg-online-indicator">
                                 <span class="msg-online-dot"></span>
