@@ -228,6 +228,15 @@
 .bg-studio-surface { background-color: var(--surface); }
 .bg-studio-card { background-color: var(--card-bg); }
 
+/* Studio Soft Backgrounds */
+.bg-studio-gold-soft { background-color: var(--studio-gold-soft) !important; }
+.bg-studio-selection-soft { background-color: var(--studio-selection-soft) !important; }
+.bg-studio-warning-soft { background-color: var(--studio-warning-soft) !important; }
+.bg-studio-success-soft { background-color: var(--studio-success-soft) !important; }
+.bg-studio-danger-soft { background-color: var(--studio-danger-soft) !important; }
+.bg-studio-info-soft { background-color: var(--studio-info-soft) !important; }
+.bg-studio-indigo-soft { background-color: var(--studio-selection-soft) !important; }
+
 .text-white\/50 { color: rgba(255, 255, 255, 0.5); }
 .text-accent\/40 { color: rgba(200, 160, 64, 0.4); }
 .text-studio-gold { color: var(--accent); }

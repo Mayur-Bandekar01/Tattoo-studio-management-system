@@ -48,7 +48,7 @@
     flex-shrink: 0;
 }
 
-.qa-card:hover .qa-icon-box { transform: scale(1.1) rotate(5deg); }
+/* .qa-card:hover .qa-icon-box { transform: scale(1.1) rotate(5deg); } — Removed per user request */
 
 .qa-icon-box.gold    { background: var(--studio-gold-soft);      color: var(--studio-gold); }
 .qa-icon-box.indigo  { background: var(--studio-indigo-soft);    color: var(--studio-indigo); }
@@ -74,6 +74,20 @@
 [data-theme="ivory"] .qa-card:hover {
     background: #FAFAFA;
 }
+
+/* ── Accent Border System ── */
+.accent-gold { border-left: 4px solid var(--studio-gold) !important; }
+.accent-indigo { border-left: 4px solid var(--studio-selection) !important; }
+.accent-success { border-left: 4px solid var(--studio-success) !important; }
+.accent-warning { border-left: 4px solid var(--studio-warning) !important; }
+.accent-danger { border-left: 4px solid var(--studio-danger) !important; }
+
+/* Theme specific overrides for accent borders in Ivory theme */
+[data-theme="ivory"] .accent-gold { border-left-color: var(--studio-gold) !important; }
+[data-theme="ivory"] .accent-indigo { border-left-color: var(--studio-selection) !important; }
+[data-theme="ivory"] .accent-success { border-left-color: var(--studio-success) !important; }
+[data-theme="ivory"] .accent-warning { border-left-color: var(--studio-warning) !important; }
+[data-theme="ivory"] .accent-danger { border-left-color: var(--studio-danger) !important; }
 </style>
 
 <!-- Flashed Messages -->

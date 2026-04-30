@@ -34,7 +34,7 @@
         }
 
         body {
-            background: #030303;
+            background: #000000;
             color: #f5f5f7;
             min-height: 100vh;
             margin: 0;
@@ -66,8 +66,8 @@
         }
 
         .nav-link {
-            color: #8b8b93;
-            font-size: 0.78rem;
+            color: #ffffff;
+            font-size: 0.85rem;
             text-decoration: none;
             position: relative;
             padding-bottom: 2px;
@@ -94,218 +94,6 @@
             right: 0;
         }
 
-        .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: -10;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .bg-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            /* FIX #1: Added animation properties that were missing */
-            animation-name: orbFloat;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-            animation-direction: alternate;
-        }
-
-        .bg-orb--1 {
-            width: 50vw;
-            height: 50vw;
-            top: -18%;
-            left: -12%;
-            background: radial-gradient(circle, rgba(200, 160, 64, 0.5) 0%, rgba(107, 77, 0, 0.3) 45%, transparent 70%);
-            animation-duration: 14s;
-        }
-
-        .bg-orb--2 {
-            width: 38vw;
-            height: 38vw;
-            bottom: -14%;
-            right: -8%;
-            background: radial-gradient(circle, rgba(160, 120, 32, 0.35) 0%, rgba(74, 53, 0, 0.4) 55%, transparent 75%);
-            animation-duration: 18s;
-            animation-delay: -5s;
-        }
-
-        .bg-orb--3 {
-            width: 26vw;
-            height: 26vw;
-            top: 42%;
-            left: 57%;
-            background: radial-gradient(circle, rgba(232, 192, 96, 0.12) 0%, transparent 70%);
-            animation-duration: 22s;
-            animation-delay: -9s;
-        }
-
-        .bg-orb--4 {
-            width: 20vw;
-            height: 20vw;
-            top: 6%;
-            right: 16%;
-            background: radial-gradient(circle, rgba(200, 160, 64, 0.1) 0%, transparent 65%);
-            animation-duration: 26s;
-            animation-delay: -3s;
-        }
-
-        @keyframes orbFloat {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(25px, -18px) scale(1.06);
-            }
-
-            66% {
-                transform: translate(-18px, 12px) scale(0.96);
-            }
-
-            100% {
-                transform: translate(12px, -25px) scale(1.04);
-            }
-        }
-
-        .bg-vignette {
-            position: fixed;
-            inset: 0;
-            z-index: -9;
-            pointer-events: none;
-            background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, #030303 100%);
-        }
-
-        .bg-noise {
-            position: fixed;
-            inset: 0;
-            z-index: -8;
-            pointer-events: none;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-        }
-
-        .ambient-glow {
-            position: fixed;
-            top: -10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60vw;
-            height: 400px;
-            z-index: -7;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(200, 160, 64, 0.08) 0%, transparent 65%);
-            filter: blur(60px);
-        }
-
-        /* FIX #2: Removed display:none so embers actually show */
-        .bg-embers {
-            position: fixed;
-            inset: 0;
-            z-index: -6;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .ember {
-            position: absolute;
-            bottom: -10px;
-            border-radius: 50%;
-            background: #c8a040;
-            box-shadow: 0 0 4px #c8a040;
-            filter: blur(0.5px);
-            opacity: 0;
-            animation: emberRise linear infinite;
-        }
-
-        .ember:nth-child(1) {
-            left: 8%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 10s;
-            animation-delay: 0s;
-        }
-
-        .ember:nth-child(2) {
-            left: 22%;
-            width: 3px;
-            height: 3px;
-            animation-duration: 13s;
-            animation-delay: -2s;
-        }
-
-        .ember:nth-child(3) {
-            left: 38%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 9s;
-            animation-delay: -5s;
-        }
-
-        .ember:nth-child(4) {
-            left: 54%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 11s;
-            animation-delay: -7s;
-        }
-
-        .ember:nth-child(5) {
-            left: 70%;
-            width: 3px;
-            height: 3px;
-            animation-duration: 14s;
-            animation-delay: -1s;
-        }
-
-        .ember:nth-child(6) {
-            left: 83%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 12s;
-            animation-delay: -4s;
-        }
-
-        .ember:nth-child(7) {
-            left: 30%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 15s;
-            animation-delay: -8s;
-        }
-
-        .ember:nth-child(8) {
-            left: 62%;
-            width: 2px;
-            height: 2px;
-            animation-duration: 10s;
-            animation-delay: -3s;
-        }
-
-        @keyframes emberRise {
-            0% {
-                bottom: -5%;
-                opacity: 0;
-                transform: translateX(0);
-            }
-
-            8% {
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 0.25;
-                transform: translateX(22px);
-            }
-
-            100% {
-                bottom: 106%;
-                opacity: 0;
-                transform: translateX(-12px);
-            }
-        }
 
         .card-wrap {
             position: relative;
@@ -395,10 +183,10 @@
         }
 
         .role-card.active {
-            border-color: rgba(200, 160, 64, 0.85);
-            color: #c8a040;
-            background: rgba(10, 7, 1, 0.95);
-            box-shadow: inset 0 0 15px rgba(200, 160, 64, 0.15), inset 0 0 0 1px rgba(200, 160, 64, 0.15), 0 0 25px 2px rgba(200, 160, 64, 0.4), 0 0 50px rgba(200, 160, 64, 0.15);
+            border-color: #c8a040;
+            color: #000;
+            background: #c8a040;
+            box-shadow: 0 0 25px 2px rgba(200, 160, 64, 0.4), 0 0 50px rgba(200, 160, 64, 0.15);
         }
 
         .role-card.pop {
@@ -517,6 +305,21 @@
             color: #c8a040;
         }
 
+        .btn-home {
+            padding: 0.4rem 1.1rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #c8a040;
+            color: #000;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-home:hover {
+            background: #e0b84a;
+        }
+
         .title-grad {
             background: linear-gradient(135deg, #c8a040, #e8c870, #c8a040);
             -webkit-background-clip: text;
@@ -611,10 +414,10 @@
         }
 
         html.light-mode .role-card.active {
-            background: #f0e8fa;
-            color: #845EC2;
-            border-color: rgba(132, 94, 194, 0.85);
-            box-shadow: 0 0 15px rgba(132, 94, 194, 0.2);
+            background: #845EC2;
+            color: #ffffff;
+            border-color: #845EC2;
+            box-shadow: 0 0 15px rgba(132, 94, 194, 0.4);
         }
 
         html.light-mode .reg-prompt {
@@ -640,6 +443,11 @@
             background-clip: text;
         }
 
+        html.light-mode #globalThemeBtn {
+            color: #845EC2 !important;
+            border-color: rgba(132, 94, 194, 0.4) !important;
+        }
+
         html.light-mode .bg-vignette {
             background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, #ffffff 100%);
         }
@@ -655,23 +463,20 @@
             box-shadow: 0 6px 20px rgba(132, 94, 194, 0.38);
         }
 
-        html.light-mode label {
+        html.light-mode .btn-home {
+            background: #845EC2;
+            color: #ffffff;
+        }
+
+        html.light-mode .btn-home:hover {
+            background: #6b4a9e;
+        }
+
+        html.light-mode .form-section label {
             color: #845EC2 !important;
         }
 
-        html.light-mode .bg-layer,
-        html.light-mode .ambient-glow,
-        html.light-mode .bg-embers,
-        html.light-mode .bg-noise,
-        html.light-mode .bg-vignette {
-            display: none !important;
-        }
 
-        html.light-mode .bg-orb,
-        html.light-mode .ember {
-            animation: none !important;
-            opacity: 0 !important;
-        }
 
         html.light-mode #cardHeader {
             background: transparent !important;
@@ -695,7 +500,7 @@
                         color 0.35s ease, box-shadow 0.4s ease;
         }
     </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/theme.js') }}" defer></script>
 </head>
 
 <body
@@ -704,7 +509,7 @@
     <!-- NAVBAR -->
     <nav>
         <div
-            style="max-width:72rem;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;">
+            style="width:100%;display:flex;align-items:center;justify-content:space-between;">
             <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
                     style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
@@ -712,7 +517,7 @@
                     style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
                     Tattoos</span>
             </a>
-            <div style="display:flex;align-items:center;gap:1.75rem;">
+            <div style="display:flex;align-items:center;gap:3.50rem;">
                 <a href="/" class="nav-link">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/services" class="nav-link">Services</a>
@@ -720,37 +525,17 @@
                 <a href="/contact" class="nav-link">Contact</a>
             </div>
             <div style="display:flex;align-items:center;gap:1rem;">
-                <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle theme"
+                <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle theme"
                     style="display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:50%;background:transparent;border:1.5px solid rgba(200,160,64,0.3);color:#a89060;font-size:0.8rem;cursor:pointer;transition:all 0.2s;">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
-                <a href="/"
-                    style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:600;background:#c8a040;color:#000;border-radius:20px;text-decoration:none;transition:background 0.2s;"
-                    onmouseover="this.style.background='#e0b84a'" onmouseout="this.style.background='#c8a040'">← Home</a>
+                <a href="/" class="btn-home">← Home</a>
             </div>
         </div>
     </nav>
 
-    <!-- BACKGROUND -->
-    <div class="bg-layer">
-        <div class="bg-orb bg-orb--1"></div>
-        <div class="bg-orb bg-orb--2"></div>
-        <div class="bg-orb bg-orb--3"></div>
-        <div class="bg-orb bg-orb--4"></div>
-    </div>
-    <div class="bg-vignette"></div>
-    <div class="bg-noise"></div>
-    <div class="ambient-glow"></div>
-    <div class="bg-embers">
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-    </div>
+
+
 
     <!-- LOGIN CARD -->
     <div class="card-wrap w-full page-enter" style="max-width:620px;">

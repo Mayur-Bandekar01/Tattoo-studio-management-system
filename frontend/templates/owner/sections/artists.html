@@ -70,8 +70,7 @@
             <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Active Studio Talent
                 Management</p>
         </div>
-        <div
-            class="px-4 py-2 rounded-xl bg-studio-surface border border-studio-border text-[9px] font-black text-studio-gold uppercase tracking-[0.2em]">
+        <div class="sync-status-badge">
             Sync Status: Online
         </div>
     </div>
@@ -96,8 +95,7 @@
                     <td class="text-xs font-bold text-studio-text-secondary tracking-wide">{{ artist.artist_email }}
                     </td>
                     <td>
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-gold/10 text-studio-gold text-[9px] font-black uppercase tracking-widest border border-studio-gold/20">
+                        <span class="status-pill gold">
                             {{ artist.specialisation }}
                         </span>
                     </td>
@@ -105,7 +103,7 @@
                         <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}" class="inline">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" onclick="return confirm('Decommission this operational unit?')"
-                                class="p-2.5 rounded-xl bg-studio-danger/10 text-studio-danger hover:bg-studio-danger hover:text-white transition-all shadow-sm active:scale-90">
+                                class="action-btn-danger">
                                 <i class="fas fa-user-minus"></i>
                             </button>
                         </form>

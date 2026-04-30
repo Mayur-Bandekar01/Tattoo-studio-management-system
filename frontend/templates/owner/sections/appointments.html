@@ -12,28 +12,27 @@
 
         <!-- Filter Array -->
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <div class="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-studio-surface border border-studio-border">
+            <div class="filter-pill-container">
                 <button onclick="filterTable('appt-row','all',this)"
-                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all bg-studio-gold text-black shadow-lg shadow-studio-gold/10">All</button>
+                    class="filter-btn-pill active">All</button>
                 <button onclick="filterTable('appt-row','Pending',this)"
-                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-studio-text-secondary hover:text-studio-gold hover:bg-studio-gold/5">
+                    class="filter-btn-pill">
                     Pending {{ '[' ~ pending_count ~ ']' if pending_count > 0 }}
                 </button>
                 <button onclick="filterTable('appt-row','Approved',this)"
-                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-studio-text-secondary hover:text-studio-gold hover:bg-studio-gold/5">
+                    class="filter-btn-pill">
                     Approved {{ '[' ~ approved_count ~ ']' if approved_count > 0 }}
                 </button>
                 <button onclick="filterTable('appt-row','Done',this)"
-                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-studio-text-secondary hover:text-studio-gold hover:bg-studio-gold/5">Done</button>
+                    class="filter-btn-pill">Done</button>
                 <button onclick="filterTable('appt-row','Rejected',this)"
-                    class="px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-studio-text-secondary hover:text-studio-gold hover:bg-studio-gold/5">Rejected</button>
+                    class="filter-btn-pill">Rejected</button>
             </div>
 
-            <div class="relative flex-1 lg:flex-none lg:w-64">
-                <i
-                    class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-studio-text-secondary text-xs"></i>
-                <input type="text" id="apptSearch" class="studio-input !pl-12 !py-3 !text-xs"
-                    placeholder="Search keyword..."
+            <div class="search-wrapper flex-1 lg:flex-none lg:w-72">
+                <i class="fas fa-search"></i>
+                <input type="text" id="apptSearch" class="search-input"
+                    placeholder="Search operational data..."
                     oninput="filterTable('appt-row', window.currentApptStatus || 'all')">
             </div>
         </div>
@@ -72,21 +71,15 @@
                     </td>
                     <td>
                         {% if a.status=='Pending' %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[9px] font-black uppercase tracking-widest border border-amber-500/20">PENDING
-                            QUEUE</span>
+                        <span class="status-pill amber">PENDING QUEUE</span>
                         {% elif a.status=='Approved' %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">LOCKED</span>
+                        <span class="status-pill emerald">LOCKED</span>
                         {% elif a.status=='Done' %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-gold/10 text-studio-gold text-[9px] font-black uppercase tracking-widest border border-studio-gold/20">FINALIZED</span>
+                        <span class="status-pill gold">FINALIZED</span>
                         {% elif a.status=='Rejected' %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-danger/10 text-studio-danger text-[9px] font-black uppercase tracking-widest border border-studio-danger/20">REJECTED</span>
+                        <span class="status-pill danger">REJECTED</span>
                         {% else %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-surface border border-studio-border text-studio-text-secondary text-[9px] font-black uppercase tracking-widest">CANCELLED</span>
+                        <span class="status-pill muted">CANCELLED</span>
                         {% endif %}
                     </td>
                     <td class="text-right">
@@ -132,17 +125,12 @@
 </div>
 
 <script>
-    function filterTable(status, btn) {
-        const rows = document.querySelectorAll('#appointmentsTable tbody tr');
-        const btns = document.querySelectorAll('.filter-pill');
+    function filterTable(targetClass, status, btn) {
+        const rows = document.querySelectorAll('.' + targetClass);
+        const btns = document.querySelectorAll('.filter-btn-pill');
         
-        btns.forEach(b => b.classList.remove('bg-studio-gold', 'text-white'));
-        btns.forEach(b => b.classList.add('bg-studio-surface-light/50', 'text-studio-text-muted'));
-        
-        if (btn) {
-            btn.classList.remove('bg-studio-surface-light/50', 'text-studio-text-muted');
-            btn.classList.add('bg-studio-gold', 'text-white');
-        }
+        btns.forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
 
         rows.forEach(row => {
             const rowStatus = row.getAttribute('data-status');
@@ -152,15 +140,21 @@
                 row.style.display = 'none';
             }
         });
+        window.currentApptStatus = status;
     }
 
     // Inline search handler
     document.getElementById('apptSearch')?.addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#appointmentsTable tbody tr');
+        const rows = document.querySelectorAll('.appt-row');
+        const status = window.currentApptStatus || 'all';
+
         rows.forEach(row => {
+            const rowStatus = row.getAttribute('data-status');
             const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(term) ? '' : 'none';
+            const matchesSearch = text.includes(term);
+            const matchesStatus = (status === 'all' || rowStatus === status);
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
         });
     });
 </script>

@@ -25,9 +25,10 @@
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
+    border-left: 6px solid var(--ac-accent);
 }
 
-[data-theme="ivory"] .ac-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); }
+[data-theme="ivory"] .ac-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); border-left-color: var(--ac-accent); }
 
 .ac-card::before {
     content:''; position:absolute; inset:0;
@@ -65,8 +66,8 @@
 @media(max-width:600px) { .ac-list-pair { grid-template-columns: 1fr; } }
 
 .ac-list-box { padding:1.5rem; border-radius:16px; border:1px solid transparent; }
-.ac-list-box.yes-box { background: rgba(16,185,129,0.035); border-color: rgba(16,185,129,0.1); }
-.ac-list-box.no-box { background: rgba(239,68,68,0.035); border-color: rgba(239,68,68,0.1); }
+.ac-list-box.yes-box { background: rgba(16,185,129,0.035); border-color: rgba(16,185,129,0.1); border-left: 4px solid #10B981; }
+.ac-list-box.no-box { background: rgba(239,68,68,0.035); border-color: rgba(239,68,68,0.1); border-left: 4px solid #ef4444; }
 
 .ac-list-title { display:flex; align-items:center; gap:0.6rem; font-size:0.78rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1.25rem; }
 .ac-list-box.yes-box .ac-list-title { color:#10B981; }
@@ -105,15 +106,16 @@
 
 /* ── Care Grid ── */
 .ac-care-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; margin-top:0.5rem; }
-.ac-care-block { background: var(--surface-2); border:1px solid var(--border-soft); border-radius:18px; padding:1.25rem; text-align:center; }
-[data-theme="ivory"] .ac-care-block { background:#F8FAFC; border-color:rgba(0,0,0,0.06); }
+.ac-care-block { background: var(--surface-2); border:1px solid var(--border-soft); border-radius:18px; padding:1.25rem; text-align:center; border-left: 4px solid var(--gold); transition: all 0.3s ease; }
+.ac-care-block:hover { transform: translateY(-3px); border-left-width: 6px; }
+[data-theme="ivory"] .ac-care-block { background:#F8FAFC; border-color:rgba(0,0,0,0.06); border-left-color: var(--gold); }
 
 .ac-care-icon { width:32px; height:32px; border-radius:10px; margin:0 auto 0.75rem; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
 .ac-care-label { font-size:0.8rem; font-weight:900; color:var(--text-1); margin-bottom:0.25rem; }
 .ac-care-desc { font-size:8px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.05em; line-height:1.3; }
 
 /* ── Danger Card ── */
-.ac-danger-card { background:#7f1d1d; border-radius:var(--radius); padding:2rem 2.5rem; color:#fecaca; margin-top:2rem; overflow:hidden; position:relative; box-shadow:0 15px 40px rgba(127,29,29,0.3); border:1px solid rgba(254,202,202,0.1); }
+.ac-danger-card { background:#7f1d1d; border-radius:var(--radius); padding:2rem 2.5rem; color:#fecaca; margin-top:2rem; overflow:hidden; position:relative; box-shadow:0 15px 40px rgba(127,29,29,0.3); border:1px solid rgba(254,202,202,0.1); border-left: 6px solid #fff; }
 .ac-danger-header { display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem; position:relative; z-index:2; }
 .ac-danger-icon { width:52px; height:52px; border-radius:16px; background:#fecaca; color:#7f1d1d; display:flex; align-items:center; justify-content:center; font-size:1.5rem; box-shadow:0 10px 20px rgba(0,0,0,0.2); }
 .ac-danger-title { font-size:1.5rem; font-weight:950; color:#fff; letter-spacing:-0.03em; margin-bottom:0.25rem; }

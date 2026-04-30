@@ -29,9 +29,11 @@
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
+    border-left: 6px solid var(--gold);
 }
 
-[data-theme="ivory"] .profile-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); }
+[data-theme="ivory"] .profile-card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); border-left-color: inherit; }
+.card-security { border-left-color: #ef4444 !important; }
 
 /* ── Avatar ── */
 .profile-avatar-wrap { text-align: center; margin-bottom: 3rem; }
