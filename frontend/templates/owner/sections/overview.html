@@ -182,7 +182,7 @@
                             <td class="text-center">
                                 <div class="ov-progress-mini">
                                     {% set pct = (ap.done_appts / ap.total_appts * 100) if ap.total_appts > 0 else 0 %}
-                                    <div class="ov-progress-bar" style="width: {{ pct }}%"></div>
+                                    <div class="ov-progress-bar" style="--pct: {{ pct }}%; width: var(--pct);"></div>
                                 </div>
                             </td>
                             <td class="text-right ov-revenue">₹{{ "{:,.0f}".format(ap.total_revenue | default(0)) }}</td>

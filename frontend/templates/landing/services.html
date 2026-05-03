@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Services</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -227,27 +228,60 @@
         }
 
         .filter-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: #86868b;
-            padding: 0.5rem 1.25rem;
+            padding: 0.6rem 1.5rem;
             border-radius: 99px;
             font-size: 0.75rem;
             font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             cursor: pointer;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            letter-spacing: 0.05em;
         }
 
         .filter-btn:hover {
-            border-color: rgba(200, 160, 64, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(200, 160, 64, 0.3);
             color: #f5f5f7;
+            transform: translateY(-2px);
         }
 
         .filter-btn.active {
             background: #c8a040;
             border-color: #c8a040;
             color: #000;
-            box-shadow: 0 4px 15px rgba(200, 160, 64, 0.3);
+            box-shadow: 0 8px 20px rgba(200, 160, 64, 0.3);
+            font-weight: 600;
+        }
+
+        .pill-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f5f5f7;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .pill-tag-gold {
+            background: rgba(200, 160, 64, 0.08);
+            border-color: rgba(200, 160, 64, 0.25);
+            color: #c8a040;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
         }
 
         .stat-badge {
@@ -272,7 +306,8 @@
 
         .pain-fill {
             height: 100%;
-            background: #c8a040;
+            background: linear-gradient(90deg, #c8a040, #e8c870);
+            box-shadow: 0 0 10px rgba(200, 160, 64, 0.4);
         }
 
         .reveal {
@@ -299,31 +334,51 @@
         }
 
         .service-card {
-            background: #1d1d1f;
+            background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 18px;
-            padding: 1.75rem;
-            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 15px 45px -12px rgba(0, 0, 0, 0.9);
+            position: relative;
+            overflow: hidden;
         }
 
         .service-card:hover {
-            background: #2a2a2d;
-            transform: translateY(-6px);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(200, 160, 64, 0.15);
+            background: rgba(20, 20, 22, 0.9);
+            transform: translateY(-8px);
+            border-color: rgba(200, 160, 64, 0.3);
+            border-top-color: rgba(200, 160, 64, 0.5);
+            box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 0 0 25px rgba(200, 160, 64, 0.05);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: radial-gradient(800px circle at top center, rgba(200, 160, 64, 0.03), transparent 60%);
+            pointer-events: none;
         }
 
         .svc-icon {
             width: 52px;
             height: 52px;
-            border-radius: 14px;
-            background: rgba(200, 160, 64, 0.1);
-            border: 1px solid rgba(200, 160, 64, 0.2);
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(200, 160, 64, 0.15), rgba(200, 160, 64, 0.05));
+            border: 1px solid rgba(200, 160, 64, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.4rem;
-            margin-bottom: 1.25rem;
-            transition: transform 0.3s, background 0.3s;
+            color: #c8a040;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .service-card:hover .svc-icon {
@@ -342,31 +397,79 @@
         }
 
         .process-step {
-            background: #1d1d1f;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 18px;
-            padding: 1.5rem;
-            transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            background: linear-gradient(180deg, rgba(20, 20, 24, 0.8) 0%, rgba(10, 10, 12, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 1;
         }
 
         .process-step:hover {
-            background: #2a2a2d;
-            transform: translateY(-4px);
+            transform: translateY(-10px);
+            border-color: rgba(200, 160, 64, 0.35);
+            background: rgba(25, 25, 28, 0.95);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(200, 160, 64, 0.08);
+        }
+
+        .process-step::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: radial-gradient(circle at top right, rgba(200, 160, 64, 0.05), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .process-step:hover::after {
+            opacity: 1;
         }
 
         .step-num {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(200, 160, 64, 0.1);
-            border: 1px solid rgba(200, 160, 64, 0.3);
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(200, 160, 64, 0.2), rgba(200, 160, 64, 0.05));
+            border: 1px solid rgba(200, 160, 64, 0.4);
             color: #c8a040;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .process-step:hover .step-num {
+            transform: scale(1.15) rotate(5deg);
+            background: rgba(200, 160, 64, 0.25);
+            border-color: rgba(200, 160, 64, 0.6);
+            box-shadow: 0 0 20px rgba(200, 160, 64, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .process-grid {
+                position: relative;
+            }
+            .process-grid::before {
+                content: '';
+                position: absolute;
+                top: 4rem;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.15) 20%, rgba(200, 160, 64, 0.15) 80%, transparent);
+                z-index: 0;
+            }
         }
 
         .cta-section {
@@ -549,25 +652,25 @@
     </div>
 
     <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+        <div class="w-full flex items-center justify-between px-6 md:px-10">
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+                    class="w-9 h-9 rounded-full object-cover border border-apple-gold/20 shadow-lg">
+                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
             </div>
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-14">
                 <a href="/" class="nav-link">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/services" class="nav-link active">Services</a>
                 <a href="/gallery" class="nav-link">Gallery</a>
                 <a href="/contact" class="nav-link">Contact</a>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 <div class="hidden md:flex gap-3">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">Login</a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">Register</a>
                 </div>
                 <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
                     aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
@@ -575,12 +678,19 @@
         </div>
     </nav>
 
-    <div class="page-hero text-center">
+    <div class="page-hero text-center flex flex-col items-center justify-center relative overflow-hidden">
         <div class="page-hero-grid"></div>
-        <div class="relative z-10">
-            <p class="text-apple-gold text-xs uppercase tracking-[0.4em] mb-4 font-medium reveal" style="font-family: 'Cinzel Decorative', cursive;">Excellence in Ink</p>
-            <h1 class="font-display text-5xl md:text-8xl mb-8 text-gradient reveal reveal-d1" style="font-family: 'Cinzel Decorative', cursive;">MASTERFUL SERVICES</h1>
-            <p class="text-apple-muted text-lg max-w-xl mx-auto leading-relaxed reveal reveal-d2 font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-full bg-[#c8a040] opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="relative z-10 -mt-8 md:-mt-12 max-w-3xl mx-auto reveal">
+            <div class="inline-flex items-center justify-center gap-3 mb-6 px-4 py-1.5 rounded-full border border-apple-gold/20 bg-apple-gold/5 backdrop-blur-md">
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+                <p class="text-apple-gold text-[0.7rem] uppercase tracking-[0.2em] font-medium">Excellence in Ink</p>
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+            </div>
+            <h1 class="font-display text-6xl md:text-8xl text-apple-text mb-6 tracking-tight drop-shadow-2xl" style="font-family: 'Cinzel Decorative', cursive;">
+                SERVICES
+            </h1>
+            <p class="text-apple-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
                 Blending ancient tradition with modern precision. Every tattoo is a masterpiece crafted with surgical skill and artistic vision.
             </p>
         </div>
@@ -589,12 +699,14 @@
     <!-- SERVICES GRID -->
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">Tattoo Styles</p>
-                <h2 class="font-display text-4xl text-apple-text tracking-tight mb-8">Curated Artistry</h2>
+            <div class="text-center mb-16 reveal">
+                <div class="mb-4">
+                    <span class="pill-tag">Portfolio</span>
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl text-gradient tracking-tight mb-8" style="font-family: 'Cinzel Decorative', cursive;">Curated Artistry</h2>
 
                 <!-- Category Filter -->
-                <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
                     <button class="filter-btn active" data-filter="all">All Styles</button>
                     <button class="filter-btn" data-filter="modern">Modern & Abstract</button>
                     <button class="filter-btn" data-filter="traditional">Traditional</button>
@@ -828,33 +940,35 @@
     <!-- HOW IT WORKS -->
     <section class="py-24 px-6" style="background:#000;">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">The Process</p>
-                <h2 class="font-display text-4xl text-apple-text tracking-tight">How It Works</h2>
+            <div class="text-center mb-20 reveal">
+                <div class="mb-4">
+                    <span class="pill-tag">The Process</span>
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl text-gradient tracking-tight" style="font-family: 'Cinzel Decorative', cursive;">How It Works</h2>
             </div>
-            <div class="grid md:grid-cols-4 gap-5">
+            <div class="grid md:grid-cols-4 gap-8 process-grid">
                 <div class="process-step reveal reveal-d1">
                     <div class="step-num">1</div>
-                    <h4 class="font-semibold text-apple-text text-sm mb-2">Book Appointment</h4>
-                    <p class="text-apple-muted text-xs leading-relaxed">Register online and book your preferred date,
+                    <h4 class="font-semibold text-apple-text text-lg mb-3">Book Appointment</h4>
+                    <p class="text-apple-muted text-sm leading-relaxed">Register online and book your preferred date,
                         time and artist from your dashboard.</p>
                 </div>
                 <div class="process-step reveal reveal-d2">
                     <div class="step-num">2</div>
-                    <h4 class="font-semibold text-apple-text text-sm mb-2">Consultation</h4>
-                    <p class="text-apple-muted text-xs leading-relaxed">Discuss your design idea with the artist. Share
+                    <h4 class="font-semibold text-apple-text text-lg mb-3">Consultation</h4>
+                    <p class="text-apple-muted text-sm leading-relaxed">Discuss your design idea with the artist. Share
                         references and finalise the concept.</p>
                 </div>
                 <div class="process-step reveal reveal-d3">
                     <div class="step-num">3</div>
-                    <h4 class="font-semibold text-apple-text text-sm mb-2">Tattoo Session</h4>
-                    <p class="text-apple-muted text-xs leading-relaxed">Your artist creates the tattoo with precision.
+                    <h4 class="font-semibold text-apple-text text-lg mb-3">Tattoo Session</h4>
+                    <p class="text-apple-muted text-sm leading-relaxed">Your artist creates the tattoo with precision.
                         Duration depends on design complexity.</p>
                 </div>
                 <div class="process-step reveal" style="transition-delay:0.4s">
                     <div class="step-num">4</div>
-                    <h4 class="font-semibold text-apple-text text-sm mb-2">Aftercare</h4>
-                    <p class="text-apple-muted text-xs leading-relaxed">Full aftercare instructions to ensure proper
+                    <h4 class="font-semibold text-apple-text text-lg mb-3">Aftercare</h4>
+                    <p class="text-apple-muted text-sm leading-relaxed">Full aftercare instructions to ensure proper
                         healing and long-lasting colour.</p>
                 </div>
             </div>
@@ -862,19 +976,19 @@
     </section>
 
     <!-- CTA -->
-    <section class="cta-section py-24 px-6">
-        <div class="max-w-2xl mx-auto text-center reveal">
-            <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Ready to Book?</h2>
-            <p class="text-apple-muted text-sm mb-10 leading-relaxed">Create your account and book your appointment
-                online in minutes.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+    <section class="cta-section py-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,160,64,0.05)_0%,transparent_70%)]"></div>
+        <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
+            <h2 class="font-display text-4xl md:text-5xl text-gradient mb-6 tracking-tight" style="font-family: 'Cinzel Decorative', cursive;">Ready to Book?</h2>
+            <p class="text-apple-muted text-lg mb-12 leading-relaxed max-w-xl mx-auto opacity-80">Create your account and book your appointment online in minutes.</p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
                 <a href="/register"
-                    class="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl text-sm uppercase tracking-widest font-bold bg-apple-gold text-black hover:bg-apple-goldLight transition-all hover:-translate-y-1 active:scale-95">
-                    <i class="fa-solid fa-user-plus mr-2"></i>Create Account
+                    class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-bold bg-apple-gold text-black hover:bg-[#e0b84a] transition-all hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(200,160,64,0.4)] active:scale-95">
+                    <i class="fa-solid fa-user-plus mr-2 text-[0.7rem]"></i>Create Account
                 </a>
                 <a href="/contact"
-                    class="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl text-sm uppercase tracking-widest font-semibold border border-apple-border text-apple-text hover:border-apple-gold hover:text-apple-gold transition-all hover:-translate-y-1">
-                    <i class="fa-solid fa-phone mr-2"></i>Contact Us
+                    class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-semibold border border-white/10 text-apple-text hover:border-apple-gold hover:text-apple-gold transition-all hover:-translate-y-1 backdrop-blur-sm">
+                    <i class="fa-solid fa-phone mr-2 text-[0.7rem]"></i>Contact Us
                 </a>
             </div>
         </div>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Gallery</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -231,10 +232,14 @@
 
         /* HERO */
         .page-hero {
-            padding: 180px 20px 80px;
+            padding: 9rem 1.5rem 5rem;
             position: relative;
             overflow: hidden;
-            background: #000;
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .page-hero::after {
@@ -256,7 +261,7 @@
         }
 
         .text-gradient {
-            background: linear-gradient(to right, var(--text-primary), var(--accent-color), var(--text-primary));
+            background: linear-gradient(to right, #f5f5f7, #c8a040, #f5f5f7);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -264,30 +269,94 @@
             animation: shimmer 5s linear infinite;
         }
 
+        .pill-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f5f5f7;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .pill-tag-gold {
+            background: rgba(200, 160, 64, 0.08);
+            border-color: rgba(200, 160, 64, 0.25);
+            color: #c8a040;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes scrollLine {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .animate-scroll-line {
+            animation: scrollLine 2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+        }
+
         .filter-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: #86868b;
-            padding: 0.5rem 1.25rem;
+            padding: 0.6rem 1.5rem;
             border-radius: 99px;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             cursor: pointer;
-            letter-spacing: 0.02em;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            letter-spacing: 0.05em;
         }
 
         .filter-btn:hover {
-            border-color: rgba(200, 160, 64, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(200, 160, 64, 0.3);
             color: #f5f5f7;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .filter-btn.active {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: var(--bg-primary);
-            box-shadow: 0 4px 20px var(--accent-color);
+            background: #c8a040;
+            border-color: #c8a040;
+            color: #000;
+            box-shadow: 0 8px 20px rgba(200, 160, 64, 0.3);
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            padding: 2.5rem 3rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 32px;
+            margin-bottom: 4rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
         }
 
         .stat-badge {
@@ -304,43 +373,102 @@
 
         /* PREMIUM FRAMING */
         .gallery-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-subtle);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(180deg, rgba(20, 20, 24, 0.8) 0%, rgba(10, 10, 12, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
             border-radius: 24px;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             cursor: pointer;
             position: relative;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            perspective: 1000px;
         }
 
         .gallery-item:hover {
-            transform: translateY(-12px) scale(1.03);
-            box-shadow:
-                0 40px 100px rgba(0, 0, 0, 0.8),
-                0 0 0 1px rgba(200, 160, 64, 0.3);
+            transform: translateY(-15px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(200, 160, 64, 0.08);
             border-color: rgba(200, 160, 64, 0.4);
+            border-top-color: rgba(200, 160, 64, 0.6);
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.15) rotate(1deg);
+        }
+
+        .gallery-img-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8) 100%);
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-img-container::after {
+            opacity: 0.7;
         }
 
         .gallery-img-container {
             overflow: hidden;
-            aspect-ratio: 3 / 4;
+            aspect-ratio: 4 / 5;
             position: relative;
-            background: rgba(255, 255, 255, 0.02);
+            background: #0a0a0c;
+        }
+
+        .gallery-img-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transform: translateX(-100%);
+            animation: shimmer-load 2s infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmer-load {
+            100% { transform: translateX(100%); }
         }
 
         .gallery-img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             display: block;
             transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
             filter: none !important;
-            background: #0a0a0a;
+        }
+
+        .gallery-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+            padding: 0.35rem 0.75rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            color: #c8a040;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-tag {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .gallery-item:hover .gallery-img {
-            transform: scale(1.08);
+            transform: scale(1.1);
         }
 
         /* REVEAL */
@@ -678,25 +806,25 @@
 
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+        <div class="w-full flex items-center justify-between px-6 md:px-10">
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+                    class="w-9 h-9 rounded-full object-cover border border-apple-gold/20 shadow-lg">
+                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
             </div>
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-14">
                 <a href="/" class="nav-link">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/services" class="nav-link">Services</a>
                 <a href="/gallery" class="nav-link active">Gallery</a>
                 <a href="/contact" class="nav-link">Contact</a>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 <div class="hidden md:flex gap-3">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">Login</a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">Register</a>
                 </div>
                 <button class="burger md:hidden" id="burgerBtn"
                     onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
@@ -705,24 +833,21 @@
     </nav>
 
     <!-- HERO -->
-    <div class="page-hero text-center">
+    <div class="page-hero text-center flex flex-col items-center justify-center relative overflow-hidden">
         <div class="page-hero-grid"></div>
-        <div class="relative z-10">
-            <p class="text-apple-gold text-xs uppercase tracking-[0.4em] mb-4 font-medium reveal" style="font-family: 'Cinzel Decorative', cursive;">Excellence in Ink</p>
-            <h1 class="font-display text-5xl md:text-8xl mb-8 text-gradient reveal reveal-d1" style="font-family: 'Cinzel Decorative', cursive;">MASTERFUL GALLERY</h1>
-            <p class="text-apple-muted text-lg max-w-xl mx-auto leading-relaxed reveal reveal-d2 font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-full bg-[#c8a040] opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="relative z-10 -mt-8 md:-mt-12 max-w-3xl mx-auto reveal">
+            <div class="inline-flex items-center justify-center gap-3 mb-6 px-4 py-1.5 rounded-full border border-apple-gold/20 bg-apple-gold/5 backdrop-blur-md">
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+                <p class="text-apple-gold text-[0.7rem] uppercase tracking-[0.2em] font-medium">The Visual Legacy</p>
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+            </div>
+            <h1 class="font-display text-5xl md:text-7xl text-apple-text mb-6 tracking-[0.05em] drop-shadow-2xl" style="font-family: 'Cinzel Decorative', cursive;">
+                GALLERY
+            </h1>
+            <p class="text-apple-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
                 Blending ancient tradition with modern precision. Every tattoo is a masterpiece crafted with surgical skill and artistic vision.
             </p>
-            
-            <!-- Scroll Down Indicator -->
-            <div class="mt-20 reveal reveal-d3">
-                <button onclick="scrollToGallery()" class="group flex flex-col items-center gap-4 mx-auto text-apple-gold/50 hover:text-apple-gold transition-colors duration-500">
-                    <span class="text-[10px] tracking-[0.4em] uppercase font-display">Explore Portfolio</span>
-                    <div class="w-[1px] h-16 bg-gradient-to-b from-apple-gold/50 to-transparent relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-full bg-apple-gold animate-scroll-line"></div>
-                    </div>
-                </button>
-            </div>
         </div>
     </div>
 
@@ -730,45 +855,48 @@
     <section id="portfolio" class="py-16 px-6" style="background: var(--bg-secondary);">
         <div class="max-w-6xl mx-auto">
 
+            <div class="text-center mb-16 reveal">
+                <div class="mb-4">
+                    <span class="pill-tag">Portfolio</span>
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl text-gradient tracking-tight mb-8" style="font-family: 'Cinzel Decorative', cursive;">The Collection</h2>
+            </div>
+
             <!-- Stats Bar — only show if images exist -->
             {% if gallery %}
             <div class="stats-bar reveal">
                 <div class="stat-item">
-                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
                         gallery|length }}</p>
                     <p
-                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
                         Artworks</p>
                 </div>
                 <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
                 <div class="stat-item">
-                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
                         artist_count }}</p>
                     <p
-                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
                         Artists</p>
                 </div>
                 <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
                 <div class="stat-item">
-                    <p style="font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--accent-color);">{{
+                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
                         styles_count }}</p>
                     <p
-                        style="font-size:0.68rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
+                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
                         Styles</p>
                 </div>
             </div>
             {% endif %}
 
             <!-- Filter Pills -->
-            <div class="flex flex-wrap gap-3 justify-center mb-12 reveal">
+            <div class="flex flex-wrap gap-5 justify-center mb-16 reveal">
                 <button class="filter-btn active" onclick="filterGallery('all',this)">All Masterpieces</button>
-                <button class="filter-btn" onclick="filterGallery('Blackwork',this)">Blackwork</button>
-                <button class="filter-btn" onclick="filterGallery('Fine Line',this)">Fine Line</button>
-                <button class="filter-btn" onclick="filterGallery('Japanese',this)">Japanese</button>
-                <button class="filter-btn" onclick="filterGallery('Realism',this)">Realism</button>
-                <button class="filter-btn" onclick="filterGallery('Traditional',this)">Traditional</button>
-                <button class="filter-btn" onclick="filterGallery('Geometric',this)">Geometric</button>
-                <button class="filter-btn" onclick="filterGallery('Watercolour',this)">Watercolour</button>
+                <button class="filter-btn" onclick="filterGallery('Tattoo',this)">Tattoo</button>
+                <button class="filter-btn" onclick="filterGallery('Sketch',this)">Sketch</button>
+                <button class="filter-btn" onclick="filterGallery('Tattoo Removal',this)">Tattoo Removal</button>
             </div>
 
             <!-- ═══════════════════════════════════════════
@@ -786,20 +914,26 @@
 
                     <!-- Image Container -->
                     <div class="gallery-img-container">
+                        <div class="gallery-tag">{{ item.style or 'Art' }}</div>
                         <img src="{{ url_for('static', filename=item.image_path) }}"
                             alt="{{ item.caption or 'Tattoo' }}" class="gallery-img" loading="lazy">
                     </div>
 
                     <!-- Metadata Bar -->
-                    <div class="p-5 border-t border-white/5">
+                    <div class="p-6 border-t border-white/5 bg-gradient-to-b from-transparent to-white/[0.01]">
                         <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-apple-text font-semibold text-sm truncate max-w-[150px]">
+                            <div class="space-y-1">
+                                <p class="text-apple-text font-medium text-[0.9rem] tracking-tight truncate max-w-[160px]">
                                     {{ item.caption or 'Untitled' }}
                                 </p>
-                                <p class="text-apple-muted text-[11px] mt-0.5">by {{ item.artist_name }}</p>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1 h-1 rounded-full bg-apple-gold/40"></span>
+                                    <p class="text-apple-muted text-[0.65rem] uppercase tracking-wider font-medium">by {{ item.artist_name }}</p>
+                                </div>
                             </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-apple-gold/40 text-xs"></i>
+                            <div class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-apple-gold/30 group-hover:text-apple-gold transition-colors">
+                                <i class="fa-solid fa-plus text-[0.7rem]"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -832,23 +966,27 @@
             {% endif %}
 
             <!-- Book CTA -->
-            <div class="mt-16 text-center coming-soon p-10 rounded-2xl reveal"
-                style="background: var(--card-bg); border: 1px solid var(--accent-color); opacity: 0.9;">
-                <p
-                    style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color: var(--accent-color); margin-bottom:0.75rem;">
-                    Ready for Your Own?</p>
-                <h3 class="font-display text-xl mb-3" style="color: var(--text-primary);">Your Story, Our Canvas</h3>
-                <p style="color: var(--text-muted); font-size:0.83rem;max-width:400px;margin:0 auto 1.5rem;line-height:1.7;">
-                    Book a consultation with one of our artists and turn your idea into a permanent masterpiece.
-                </p>
-                <a href="/register"
-                    style="display:inline-block;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;margin-right:0.75rem;">
-                    Book Now
-                </a>
-                <a href="/services"
-                    style="display:inline-block;padding:0.65rem 1.75rem;border:1px solid var(--border-subtle); color: var(--text-muted); border-radius:20px;font-size:0.8rem;font-weight:500;text-decoration:none;">
-                    View Services
-                </a>
+            <div class="mt-20 relative overflow-hidden reveal">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,160,64,0.05)_0%,transparent_70%)]"></div>
+                <div class="relative z-10 p-12 rounded-[32px] border border-white/5 bg-white/[0.02] backdrop-blur-md text-center max-w-4xl mx-auto">
+                    <div class="mb-4">
+                        <span class="pill-tag">Inspiration</span>
+                    </div>
+                    <h3 class="font-display text-3xl md:text-4xl text-gradient mb-6 tracking-tight" style="font-family: 'Cinzel Decorative', cursive;">Your Story, Our Canvas</h3>
+                    <p class="text-apple-muted text-lg mb-10 leading-relaxed max-w-xl mx-auto opacity-80">
+                        Book a consultation with one of our artists and turn your idea into a permanent masterpiece.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                        <a href="/register"
+                            class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-bold bg-apple-gold text-black hover:bg-[#e0b84a] transition-all hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(200,160,64,0.4)] active:scale-95">
+                            <i class="fa-solid fa-calendar-check mr-2 text-[0.7rem]"></i>Book Now
+                        </a>
+                        <a href="/services"
+                            class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-semibold border border-white/10 text-apple-text hover:border-apple-gold hover:text-apple-gold transition-all hover:-translate-y-1 backdrop-blur-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2 text-[0.7rem]"></i>View Services
+                        </a>
+                    </div>
+                </div>
             </div>
 
         </div>

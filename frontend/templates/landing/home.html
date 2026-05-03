@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Premium Tattoo Studio</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
     <meta name="description"
         content="Dragon Tattoos — Premium custom tattoo studio. World-class artistry, hospital-grade safety, and unforgettable designs.">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -331,22 +332,22 @@
 
         /* ── BENTO CARDS ── */
         .bento-card {
-            background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.85) 100%);
+            background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-top: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 20px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
-            transition: all 0.3s ease;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 15px 45px -12px rgba(0, 0, 0, 0.9);
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             position: relative;
             overflow: hidden;
         }
 
         .bento-card:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-            border-top-color: rgba(255, 255, 255, 0.24);
-            transform: translateY(-2px);
-            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8);
+            border-color: rgba(200, 160, 64, 0.3);
+            border-top-color: rgba(200, 160, 64, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(200, 160, 64, 0.05);
         }
 
         .bento-card::before {
@@ -356,8 +357,31 @@
             left: 0;
             right: 0;
             height: 100%;
-            background: radial-gradient(800px circle at top center, rgba(255, 255, 255, 0.025), transparent 45%);
+            background: radial-gradient(800px circle at top center, rgba(200, 160, 64, 0.03), transparent 60%);
             pointer-events: none;
+        }
+
+        /* ── STAT CARDS ── */
+        .stat-card {
+            background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            backdrop-filter: blur(16px);
+            padding: 2.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-card:hover {
+            border-color: rgba(200, 160, 64, 0.3);
+            border-top-color: rgba(200, 160, 64, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(200, 160, 64, 0.05);
         }
 
         /* ── BUTTONS ── */
@@ -478,7 +502,11 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-top: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
-            padding: 1.75rem;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
             transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
@@ -495,11 +523,12 @@
         }
 
         .testi-quote {
-            color: #8b8b93;
-            font-size: 0.85rem;
-            line-height: 1.7;
+            color: #a1a1aa;
+            font-size: 0.95rem;
+            line-height: 1.6;
             font-style: italic;
-            margin: 0.75rem 0;
+            margin: 1rem 0 1.5rem 0;
+            flex-grow: 1;
         }
 
         .testi-name {
@@ -731,27 +760,27 @@
 
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+        <div class="w-full flex items-center justify-between px-6 md:px-10">
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
-                    class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+                    class="w-9 h-9 rounded-full object-cover border border-apple-gold/20 shadow-lg">
+                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
             </div>
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-14">
                 <a href="/" class="nav-link active">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/services" class="nav-link">Services</a>
                 <a href="/gallery" class="nav-link">Gallery</a>
                 <a href="/contact" class="nav-link">Contact</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-3">
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-4">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">
+                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">
                         Login
                     </a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLt transition-all">
+                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLt transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">
                         Register
                     </a>
                 </div>
@@ -780,7 +809,7 @@
         <div class="relative z-10 max-w-4xl mx-auto text-center">
 
             <!-- Logo ring -->
-            <div class="hero-logo flex justify-center mb-8">
+            <div class="hero-logo flex justify-center mb-10 -mt-10 md:-mt-14">
                 <div class="relative">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-apple-gold/30 shadow-2xl">
                         <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
@@ -796,7 +825,7 @@
             <div class="hero-badge flex justify-center mb-7">
                 <div class="pill-tag pill-tag-gold">
                     <span class="w-1.5 h-1.5 rounded-full bg-apple-gold animate-pulse"></span>
-                    Premium Tattoo Studio · Est. 2019
+                    Premium Tattoo Studio · Est. 2025
                 </div>
             </div>
 
@@ -833,8 +862,8 @@
                     <div class="text-xs text-apple-muted uppercase tracking-widest">Years</div>
                 </div>
                 <div class="stat-card">
-                    <div class="font-display text-3xl text-apple-gold mb-1 stat-num" data-target="500" data-suffix="+">
-                        500+
+                    <div class="font-display text-3xl text-apple-gold mb-1 stat-num" data-target="30" data-suffix="+">
+                        30+
                     </div>
                     <div class="text-xs text-apple-muted uppercase tracking-widest">Clients</div>
                 </div>
@@ -886,7 +915,7 @@
 
             <div class="flex-1 grid grid-cols-2 gap-4 reveal reveal-d2">
                 <div class="bento-card p-8 text-center">
-                    <p class="font-display text-4xl font-bold mb-2 text-apple-text">500+</p>
+                    <p class="font-display text-4xl font-bold mb-2 text-apple-text">30+</p>
                     <p class="text-xs text-apple-muted uppercase tracking-wider">Tattoos Done</p>
                 </div>
                 <div class="bento-card p-8 text-center mt-8">
@@ -917,48 +946,48 @@
             <div class="grid md:grid-cols-3 gap-5">
                 <div class="testi-card reveal reveal-d1">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Raj understood exactly what I wanted — bold geometric patterns that actually
+                    <p class="testi-quote">"Arjun understood exactly what I wanted — bold custom patterns that actually
                         mean something. The blackwork is insanely clean. I get compliments every day."</p>
-                    <div class="flex items-center gap-3 mt-4">
+                    <div class="flex items-center gap-3 mt-auto pt-2">
                         <div
-                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                            style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2a2a32,#1a1a20);border:1px solid rgba(200,160,64,0.4);display:flex;align-items:center;justify-content:center;box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-user text-apple-gold text-sm"></i>
                         </div>
                         <div>
                             <div class="testi-name">Ananya R.</div>
-                            <div class="testi-detail">Blackwork sleeve · Bengaluru</div>
+                            <div class="testi-detail">Custom Blackwork sleeve · Bengaluru</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="testi-card reveal reveal-d2">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Priya's fine-line floral work is something else entirely. Super clean, super
+                    <p class="testi-quote">"Priya's sketch-style work and fine-line floral is something else entirely. Super clean, super
                         detailed. The studio made me feel completely at ease the whole time."</p>
-                    <div class="flex items-center gap-3 mt-4">
+                    <div class="flex items-center gap-3 mt-auto pt-2">
                         <div
-                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                            style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2a2a32,#1a1a20);border:1px solid rgba(200,160,64,0.4);display:flex;align-items:center;justify-content:center;box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-user text-apple-gold text-sm"></i>
                         </div>
                         <div>
                             <div class="testi-name">Meera K.</div>
-                            <div class="testi-detail">Fine line floral · Mysore</div>
+                            <div class="testi-detail">Sketch floral · Mysore</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="testi-card reveal reveal-d3">
                     <div class="testi-stars">★★★★★</div>
-                    <p class="testi-quote">"Arjun's realism is photographic — seriously, people ask if it's a photo.
-                        Booking was easy, process explained well, and aftercare was thorough."</p>
-                    <div class="flex items-center gap-3 mt-4">
+                    <p class="testi-quote">"Rahul's laser removal process was professional and safe. Perfect fading for my new cover-up
+                        realism piece. The result exceeded my expectations."</p>
+                    <div class="flex items-center gap-3 mt-auto pt-2">
                         <div
-                            style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1e1e22,#14141a);border:1px solid rgba(200,160,64,0.3);display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-user text-apple-muted text-xs"></i>
+                            style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2a2a32,#1a1a20);border:1px solid rgba(200,160,64,0.4);display:flex;align-items:center;justify-content:center;box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                            <i class="fa-solid fa-user text-apple-gold text-sm"></i>
                         </div>
                         <div>
                             <div class="testi-name">Vikram S.</div>
-                            <div class="testi-detail">Realistic lion portrait · Chennai</div>
+                            <div class="testi-detail">Tattoo Removal · Chennai</div>
                         </div>
                     </div>
                 </div>
@@ -1016,9 +1045,6 @@
                         <a href="https://x.com/dragontattoos" target="_blank" rel="noopener noreferrer"
                             class="footer-link text-lg hover:text-apple-accent"><i
                                 class="fa-brands fa-x-twitter"></i></a>
-                        <a href="https://youtube.com/@dragontattoos" target="_blank" rel="noopener noreferrer"
-                            class="footer-link text-lg hover:text-apple-accent"><i
-                                class="fa-brands fa-youtube"></i></a>
                     </div>
                 </div>
             </div>

@@ -62,46 +62,82 @@
             }
         }
 
-        .nav-link {
-            color: #86868b;
-            font-size: 0.78rem;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: color 0.25s;
-            text-decoration: none;
-            position: relative;
-            padding-bottom: 2px;
+        .text-gradient {
+            background: linear-gradient(to right, #f5f5f7, #c8a040, #f5f5f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+        }
+
+        .pill-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f5f5f7;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
         }
 
         .nav-link::after {
             content: '';
             position: absolute;
-            bottom: -2px;
+            bottom: -6px;
             left: 50%;
             right: 50%;
-            height: 1px;
+            height: 2px;
             background: #c8a040;
-            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 2px;
         }
 
-        .nav-link:hover {
-            color: var(--accent, #c8a040);
-        }
-
-        .nav-link:hover::after {
+        .nav-link:hover::after,
+        .nav-link.active::after {
             left: 0;
             right: 0;
         }
 
         .nav-link.active {
             color: #f5f5f7;
-        }
-
-        .nav-link.active::after {
-            left: 0;
-            right: 0;
-            background: #c8a040;
-            height: 2px;
+        }    
+        
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+            position: relative;
         }
 
         .burger {
@@ -322,10 +358,10 @@
         }
 
         .contact-card:hover {
-            background: rgba(42, 42, 45, 0.8);
-            border-color: rgba(200, 160, 64, 0.25);
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(180deg, rgba(42, 42, 45, 0.9) 0%, rgba(29, 29, 31, 1) 100%);
+            border-color: rgba(200, 160, 64, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(200, 160, 64, 0.05);
         }
 
         .contact-card:hover::before {
@@ -352,25 +388,35 @@
         }
 
         .map-card {
-            background: rgba(29, 29, 31, 0.6);
+            background: rgba(29, 29, 31, 0.4);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            height: 350px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 32px;
+            height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 1.25rem;
-            transition: all 0.4s ease;
+            gap: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
+        }
+
+        .map-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(200, 160, 64, 0.08), transparent 70%);
+            opacity: 0.5;
         }
 
         .map-card:hover {
-            border-color: rgba(200, 160, 64, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(200, 160, 64, 0.3);
+            transform: scale(1.01);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
         }
 
         /* form */
@@ -378,25 +424,40 @@
         textarea,
         select {
             width: 100%;
-            padding: 0.85rem 1.15rem;
-            background: rgba(29, 29, 31, 0.5);
-            backdrop-filter: blur(10px);
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
+            border-radius: 16px;
             outline: none;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: #f5f5f7;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            font-family: 'Inter', sans-serif;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: 'Roboto', sans-serif;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         input:focus,
         textarea:focus,
         select:focus {
-            background: rgba(42, 42, 45, 0.8);
-            border-color: #c8a040;
-            box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(200, 160, 64, 0.5);
+            box-shadow: 0 0 20px rgba(200, 160, 64, 0.1), inset 0 2px 4px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        label {
+            transition: all 0.3s ease;
+            display: block;
+            margin-bottom: 0.75rem;
+            color: rgba(245, 245, 247, 0.6);
+            font-weight: 500;
+        }
+
+        div:focus-within label {
+            color: #c8a040;
+            transform: translateX(4px);
         }
 
         input::placeholder,
@@ -623,25 +684,25 @@
     </div>
 
     <nav class="navbar">
-        <div class="max-w-6xl mx-auto w-full flex items-center justify-between">
+        <div class="w-full flex items-center justify-between px-6 md:px-10">
             <div class="flex items-center gap-3">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-8 h-8 rounded-full object-cover">
-                <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
+                    class="w-8 h-8 rounded-full object-cover border border-apple-gold/20 shadow-lg">
+                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
             </div>
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-14">
                 <a href="/" class="nav-link">Home</a>
                 <a href="/about" class="nav-link">About</a>
                 <a href="/services" class="nav-link">Services</a>
                 <a href="/gallery" class="nav-link">Gallery</a>
                 <a href="/contact" class="nav-link active">Contact</a>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 <div class="hidden md:flex gap-3">
                     <a href="/login"
-                        class="px-4 py-1.5 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all">Login</a>
+                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">Login</a>
                     <a href="/register"
-                        class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
+                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">Register</a>
                 </div>
                 <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
                     aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
@@ -649,12 +710,19 @@
         </div>
     </nav>
 
-    <div class="page-hero text-center">
+    <div class="page-hero text-center flex flex-col items-center justify-center relative overflow-hidden">
         <div class="page-hero-grid"></div>
-        <div class="relative z-10">
-            <p class="text-apple-gold text-xs uppercase tracking-widest mb-4 font-medium">Get In Touch</p>
-            <h1 class="font-display text-5xl md:text-6xl text-apple-text mb-4 tracking-tight">Contact Us</h1>
-            <p class="text-apple-muted text-sm max-w-xl mx-auto leading-relaxed">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-full bg-[#c8a040] opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="relative z-10 -mt-8 md:-mt-12 max-w-3xl mx-auto reveal">
+            <div class="inline-flex items-center justify-center gap-3 mb-6 px-4 py-1.5 rounded-full border border-apple-gold/20 bg-apple-gold/5 backdrop-blur-md">
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+                <p class="text-apple-gold text-[0.7rem] uppercase tracking-[0.2em] font-medium">Get In Touch</p>
+                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
+            </div>
+            <h1 class="font-display text-5xl md:text-7xl text-apple-text mb-6 tracking-[0.05em] drop-shadow-2xl" style="font-family: 'Cinzel Decorative', cursive;">
+                CONTACT US
+            </h1>
+            <p class="text-apple-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
                 Walk in, call us or drop a message. We're always happy to discuss your next tattoo!
             </p>
         </div>
@@ -664,8 +732,10 @@
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
 
             <!-- contact info -->
-            <div class="space-y-4">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-6 reveal">Studio Info</p>
+            <div class="space-y-6">
+                <div class="mb-4 reveal">
+                    <span class="pill-tag">Studio Info</span>
+                </div>
 
                 <div class="contact-card reveal reveal-d1">
                     <div class="contact-icon"><i class="fa-solid fa-location-dot text-sm"></i></div>
@@ -711,26 +781,31 @@
 
             <!-- map + quick info -->
             <div class="reveal reveal-d1">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-6">Find Us</p>
-                <div class="map-card mb-4">
-                    <i class="fa-solid fa-map-location-dot text-apple-gold/25 text-5xl"></i>
-                    <p class="text-apple-muted/50 text-sm font-medium">123 Ink Street, Bengaluru</p>
-                    <p class="text-apple-muted/30 text-xs">Google Maps will load here</p>
+                <div class="mb-4">
+                    <span class="pill-tag">Find Us</span>
+                </div>
+                <div class="map-card mb-6">
+                    <div class="w-20 h-20 rounded-full bg-apple-gold/10 flex items-center justify-center border border-apple-gold/20 mb-2">
+                        <i class="fa-solid fa-map-location-dot text-apple-gold text-3xl"></i>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-apple-text text-lg font-semibold mb-1">123 Ink Street, Bengaluru</p>
+                        <p class="text-apple-muted/60 text-xs tracking-widest uppercase">Premium Art District</p>
+                    </div>
                     <a href="https://maps.google.com/?q=123+Ink+Street+Bengaluru+Karnataka+560001" target="_blank" rel="noopener noreferrer"
-                        class="mt-2 px-5 py-2 bg-apple-gold/10 border border-apple-gold/20 text-apple-gold text-xs rounded-xl hover:bg-apple-gold/18 transition-all">
-                        <i class="fa-solid fa-external-link-alt mr-2"></i>Open in Google Maps
+                        class="mt-4 px-8 py-3 bg-apple-gold text-black text-[0.7rem] font-bold uppercase tracking-widest rounded-full hover:bg-apple-goldLight transition-all shadow-[0_10px_20px_rgba(200,160,64,0.2)] hover:-translate-y-1">
+                        <i class="fa-solid fa-location-arrow mr-2"></i>Navigate Now
                     </a>
                 </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl"
-                    style="background:#1d1d1f;border:1px solid rgba(255,255,255,0.06);">
+                <div class="flex items-center gap-5 p-6 rounded-2xl"
+                    style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
                     <div
-                        class="w-10 h-10 rounded-xl bg-apple-gold/10 border border-apple-gold/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-car text-apple-gold text-sm"></i>
+                        class="w-12 h-12 rounded-xl bg-apple-gold/10 border border-apple-gold/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-car text-apple-gold text-lg"></i>
                     </div>
                     <div>
-                        <p class="text-apple-text text-xs font-semibold mb-0.5">Easy to Reach</p>
-                        <p class="text-apple-muted text-xs leading-relaxed">5 min walk from MG Road Metro Station. Free
-                            parking available outside.</p>
+                        <p class="text-apple-text text-sm font-bold mb-1">Elite Accessibility</p>
+                        <p class="text-apple-muted text-xs leading-relaxed opacity-80">5 min walk from MG Road Metro Station. Dedicated valet parking available for our guests.</p>
                     </div>
                 </div>
             </div>
@@ -740,14 +815,16 @@
     <!-- ENQUIRY FORM -->
     <section class="py-24 px-6">
         <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <p class="text-apple-muted text-xs font-semibold uppercase tracking-widest mb-3">Drop a Message</p>
-                <h2 class="font-display text-4xl text-apple-text tracking-tight">Send an Enquiry</h2>
-                <p class="text-apple-muted text-sm mt-3">Not sure yet? Send us your idea and we'll get back to you!</p>
+            <div class="text-center mb-16 reveal">
+                <div class="mb-4">
+                    <span class="pill-tag">Drop a Message</span>
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl text-apple-text tracking-tight mb-4">Send an Enquiry</h2>
+                <p class="text-apple-muted text-base max-w-lg mx-auto opacity-80">Not sure yet? Send us your idea and we'll get back to you with a custom consultation!</p>
             </div>
 
-            <form action="/contact" method="POST" class="p-8 rounded-2xl reveal reveal-d1"
-                style="background: var(--card-bg); border: 1px solid var(--border);">
+            <form action="/contact" method="POST" class="p-10 rounded-[2.5rem] reveal reveal-d1"
+                style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 40px 100px rgba(0,0,0,0.4);">
                 <div class="space-y-4">
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
@@ -785,12 +862,12 @@
                         <textarea id="message" name="message" rows="4" placeholder="Tell us about your tattoo idea..." required></textarea>
                     </div>
                     <button type="submit"
-                        class="w-full py-4 bg-gradient-to-r from-apple-gold to-apple-goldLight text-black font-bold text-sm uppercase tracking-widest rounded-xl hover:shadow-[0_0_20px_rgba(200,160,64,0.4)] transition-all hover:-translate-y-1 active:scale-95 relative overflow-hidden group">
+                        class="w-full py-5 bg-gradient-to-br from-apple-gold via-apple-goldLight to-apple-gold text-black font-bold text-[0.8rem] uppercase tracking-[0.25em] rounded-2xl hover:shadow-[0_20px_40px_rgba(200,160,64,0.3)] transition-all hover:-translate-y-1.5 active:scale-[0.98] relative overflow-hidden group">
                         <span class="relative z-10 flex items-center justify-center">
-                            <i class="fa-solid fa-paper-plane mr-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                            Send Enquiry
+                            <i class="fa-solid fa-paper-plane mr-3 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500 ease-out"></i>
+                            Send My Enquiry
                         </span>
-                        <div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                        <div class="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
                     </button>
                     <p class="text-center text-xs text-apple-muted">
                         Or simply
@@ -805,9 +882,11 @@
     <!-- FAQ SECTION -->
     <section class="py-20 px-6">
         <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-12 reveal">
-                <p class="text-apple-gold text-xs font-medium uppercase tracking-widest mb-3">Got Questions?</p>
-                <h2 class="font-display text-4xl text-apple-text">Frequently Asked</h2>
+            <div class="text-center mb-16 reveal">
+                <div class="mb-4">
+                    <span class="pill-tag">Got Questions?</span>
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl text-apple-text tracking-tight">Frequently Asked</h2>
             </div>
             <div class="reveal reveal-d1">
                 <div class="faq-item">
@@ -854,22 +933,21 @@
         </div>
     </section>
 
-    <footer class="py-8 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
+    <footer class="py-12 px-6 border-t border-white/5 bg-[#050505]">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="flex items-center gap-4">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-7 h-7 rounded-full object-cover opacity-80">
-                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
-                    Studio</span>
+                    class="w-8 h-8 rounded-full object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
+                <span class="font-display text-apple-muted text-[0.65rem] tracking-[0.3em] uppercase font-bold">Dragon Tattoos Studio</span>
             </div>
-            <div class="flex gap-6">
-                <a href="/" class="footer-link">Home</a>
-                <a href="/about" class="footer-link">About</a>
-                <a href="/services" class="footer-link">Services</a>
-                <a href="/gallery" class="footer-link">Gallery</a>
-                <a href="/contact" class="footer-link">Contact</a>
+            <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+                <a href="/" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Home</a>
+                <a href="/about" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">About</a>
+                <a href="/services" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Services</a>
+                <a href="/gallery" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Gallery</a>
+                <a href="/contact" class="footer-link active uppercase text-[0.6rem] tracking-[0.2em] font-bold text-apple-gold">Contact</a>
             </div>
-            <p class="text-apple-muted/40 text-xs">© 2025 Dragon Tattoos Studio</p>
+            <p class="text-apple-muted/30 text-[0.6rem] uppercase tracking-widest font-medium">© 2025 Dragon Tattoos Studio</p>
         </div>
     </footer>
 
