@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dragon Ink | Sacred Ritual. Permanent Art.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700&amp;family=Manrope:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#e9c176",
+                        "on-secondary-container": "#dab36a",
+                        "on-surface-variant": "#e6bdb7",
+                        "on-background": "#e5e2e1",
+                        "on-tertiary": "#313030",
+                        "on-primary-fixed": "#410000",
+                        "inverse-on-surface": "#313030",
+                        "primary-container": "#b30000",
+                        "secondary-fixed": "#ffdea5",
+                        "inverse-surface": "#e5e2e1",
+                        "background": "#131313",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "tertiary-container": "#585757",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "surface": "#131313",
+                        "inverse-primary": "#be0f07",
+                        "secondary-container": "#604403",
+                        "on-primary-container": "#ffbeb4",
+                        "on-surface": "#e5e2e1",
+                        "primary-fixed-dim": "#ffb4a8",
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#d0cdcc",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-secondary": "#412d00",
+                        "primary": "#ffb4a8",
+                        "surface-tint": "#ffb4a8",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-secondary-fixed": "#261900",
+                        "outline-variant": "#5c403b",
+                        "surface-bright": "#3a3939",
+                        "surface-dim": "#131313",
+                        "primary-fixed": "#ffdad4",
+                        "tertiary": "#c8c6c5",
+                        "secondary-fixed-dim": "#e9c176",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-primary": "#690000",
+                        "surface-container": "#201f1f",
+                        "surface-container-highest": "#353534",
+                        "on-primary-fixed-variant": "#930000",
+                        "outline": "#ad8882",
+                        "surface-variant": "#353534"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "80px",
+                        "gutter": "24px",
+                        "margin-mobile": "20px",
+                        "section-gap": "120px",
+                        "base-unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Noto Serif"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "display-xl": ["Noto Serif"],
+                        "label-sm": ["Manrope"],
+                        "headline-lg": ["Noto Serif"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-xl": ["80px", { "lineHeight": "90px", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .texture-overlay {
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+            opacity: 0.02;
+            pointer-events: none;
+        }
+        .ink-bleed {
+            background: radial-gradient(circle at 50% 50%, rgba(10,10,10,0) 0%, rgba(10,10,10,0.8) 70%, rgba(10,10,10,1) 100%);
+        }
+        .studio-overlay {
+            background: linear-gradient(to right, rgba(10,10,10,1) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,1) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased overflow-x-hidden">
+<!-- Texture Overlay -->
+<div class="fixed inset-0 texture-overlay z-[-1]"></div>
+<!-- TopAppBar -->
+<header class="bg-[#0A0A0A] dark:bg-neutral-950 docked full-width top-0 sticky z-50 border-b border-neutral-900 flat no shadows">
+<div class="flex justify-between items-center w-full px-12 py-6 max-w-[1440px] mx-auto">
+<div class="text-2xl font-black tracking-tighter text-neutral-100 uppercase">
+                DRAGON INK
+            </div>
+<nav class="hidden md:flex gap-8 font-serif tracking-widest uppercase text-sm">
+<a class="text-[#B30000] border-b border-[#B30000] pb-1 hover:text-[#B30000] transition-all duration-500 opacity-80 scale-[0.98]" href="#">Portfolio</a>
+<a class="text-neutral-500 hover:text-neutral-100 transition-colors hover:text-[#B30000] transition-all duration-500" href="#">Services</a>
+<a class="text-neutral-500 hover:text-neutral-100 transition-colors hover:text-[#B30000] transition-all duration-500" href="#">Booking</a>
+<a class="text-neutral-500 hover:text-neutral-100 transition-colors hover:text-[#B30000] transition-all duration-500" href="#">About</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="font-label-sm text-label-sm bg-primary-container text-on-primary border-none px-6 py-3 uppercase tracking-widest hover:opacity-90 transition-opacity">
+                    Reserve Now
+                </button>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative h-[921px] min-h-[600px] flex items-center justify-start px-margin-mobile md:px-margin-desktop mb-section-gap">
+<div class="absolute inset-0 z-0">
+<img alt="High-impact dragon tattoo" class="w-full h-full object-cover object-right grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChEr3TclnCE8lEa0a23hDMUK2BIC-KGRFyyly7GtujS0_atbEOjHRjDoLZ0nSuroSYwrdpov-Pj6ewaSTP0aR73WrG35sEVrkwWeNU53oVBxI5uwSgUg-HVgcE9ZTEDFtQJmavN2phsNYC2VEQMti50pFxze--7a9fCWIikbhB2JFmErQfoa_SqwcKVCRHQ7L3XtFOjMiJpHK0FwwUXRXzDS9P1yICS1O6iCV4t8-bSrVozKvVGXTO51hm1BrbVZOY1auch12sm4Ha"/>
+<div class="absolute inset-0 ink-bleed"></div>
+</div>
+<div class="relative z-10 max-w-3xl">
+<h1 class="font-display-xl text-display-xl text-on-background mb-6 uppercase">
+                Flesh <br/>
+<span class="text-primary-container">Forged</span> in Ink
+            </h1>
+<p class="font-body-lg text-body-lg text-tertiary mb-10 max-w-xl">
+                We do not merely apply ink; we embed legacy. Step into the sanctum for uncompromising artistry and arcane tradition.
+            </p>
+<div class="flex gap-4">
+<button class="font-label-sm text-label-sm bg-primary-container text-on-primary border-none px-8 py-4 uppercase tracking-widest hover:bg-inverse-primary transition-colors">
+                    Begin the Ritual
+                </button>
+<button class="font-label-sm text-label-sm border border-secondary text-secondary px-8 py-4 uppercase tracking-widest hover:bg-secondary hover:text-on-secondary transition-colors">
+                    View Relics
+                </button>
+</div>
+</div>
+</section>
+<!-- Sacred Works Gallery -->
+<section class="mb-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<div class="max-w-2xl">
+<h2 class="font-headline-lg text-headline-lg text-on-background uppercase mb-4">Sacred Works</h2>
+<p class="font-body-md text-body-md text-tertiary">A testament to pain and precision. Each piece is a unique invocation, tailored to the skin that bears it.</p>
+</div>
+<div class="flex flex-wrap gap-2 justify-end max-w-xl">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Geometric</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Irezumi</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Neo-Traditional</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Realism</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Bio-mechanical</span>
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface px-4 py-2 uppercase tracking-widest cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Minimalist</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Gallery Item 1 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden">
+<img alt="Tattoo piece 1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGdfm3QKISI-vMoFtsy8dwm7dNg3VRgpej4UyyQvRNcLtnfv5vOoNRl_TsfOtz3EhJL-t0WeIge7cC7i1fCEdxwCUe34XT0xNC7cInOStf_69Kqp0DaYYVHdiy4tins0rSlmvM4VwTc0kgxI4sPfIbaX2FKiraqLS4_q6fdRt1sf4Bj1-pMaYWbfue9QE0XJryG3eDJ9YoyenGZN-xN3bT61SNBPOOa0LkTlcWEmUfuCAVyEYde3MY7sj3D4TwSQnoz9FGKapzeQO-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">The Serpent</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Geometric</p>
+</div>
+</div>
+<!-- Gallery Item 2 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden md:mt-12">
+<img alt="Tattoo piece 2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhEozu7K5XFoUnSnv_pDLqpq5lU6_TBxX4bsxE8Btib0RvbYQJJbQhYV47fmWuebXx3nsbCJ1yguBIHYASJcjxDkQX-dFga5MUGW_t4NrPUwV02fimmxsNmTyUccLE-qXEcpT_Kl_wCp7zws1lpK8gnuDU8P_tZcHJ7fkzc22Yrb1rIdToD6jE1FSagz9CRCQMXk5l_KV-kxr5s89q8Lfzx-QBn1rz_4NJdhq6EARWIqv7dJ3W9a636a_JIqSnqBh22Pq6k8b-zjie"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">Ascension</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Irezumi</p>
+</div>
+</div>
+<!-- Gallery Item 3 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden">
+<img alt="Tattoo piece 3" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBA9HVP9kS1JK-O2y7X3BpWpvRdMLzo-7uEPCj6ka-y5NKxMhrOreQVdlolqCwJZlTDWI2RESQCC4kSuSE8zzZksBgkX2V7WxmJhGAhHAq2-TTJZ_9m_2rwQl2rNkbb7JJME5gRKQyxzse4K8PBefMSO-wMN9zbTRXbDFdK891OP3b7TblzoiAbcYLJdNQVhC_nwvgTTRVha9aQX0BdGe86JNoKbaCvwGYKfZvfaRqiPGLx8p69434NoJXcqKcDaqqkSyj43W5JhTh1"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">Mortal Coil</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Neo-Traditional</p>
+</div>
+</div>
+<!-- Gallery Item 4 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden">
+<img alt="Realism Tattoo" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPCivxr0KiwJ9-TQL9wXCuo3Mlf6M6-TyU3GaEYADuVy4EPNF_7QXE71fxrctiWKLW6FeuJYFJFvaRKajoOVCQzTe7T3_jIhGROiDsPUPqvR1nak9lkuw0jPQF-ElbPQi0VxmqOS0t1Jvk1bZsE30rFYFC250K7edDAfwcjfaPCloq1qh5tc4d15-p27PO47cotiTO9I5kBGONL5PTwqManHc7NcV8PbCqP3u1eDzb48oVwfVFQCGmJmO4RbuCNUfD4A5YG3AAFGCq"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">The Observer</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Realism</p>
+</div>
+</div>
+<!-- Gallery Item 5 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden md:mt-12">
+<img alt="Bio-mechanical Tattoo" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN7i1oMwAlWmbXH491x1hHDo1qFI1W6_bOxpySfiGQ3oPSZxI8rtVIBDtGAL19B3iORhojNemNNi4oeE8KblPTBbExxkWIfSeKrIrDOrAqEwhQCu4FMdUKPDsdlMC_zJoUS7CZa-td-Z_LpLVUwsFwOvSBYHMhbMHOuQcUbYntB9VehwARVarSSqO9OBWzRDcPF0XLc3jtov5suVpvLs7Xcu4E7X7Y2RISQfOatRwsTFTn2EjwxO9c87jiyFkdY-HIoTubVtVnQ-0Z"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">Cybernetic Soul</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Bio-mechanical</p>
+</div>
+</div>
+<!-- Gallery Item 6 -->
+<div class="group relative aspect-[3/4] bg-surface-container-low overflow-hidden">
+<img alt="Minimalist Tattoo" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe6JAMIhBJr46MrYqPKNTMqAJuHvzUeXNNQQPO4Ea8qAbZ-O1jn5MJ-92grGpkKwgwENfwdMMYsP_GNLOF9c-qWdhw2deu7e1paBt_AFsO_WRIrpQp3JCJEqebYCA5y3auRx1UYVRi9P0WSDcj6dwsG-LIhfVQ0mA11WJFlutk-Mf0Qv47s3cJPI-prkffd9MusXiiOHrpKItOGwy1OCZYdB0EhUGxgPl4bgVki0zi2SjYPp2qf5av0m9tulLQ5aK69PdNzFzcjg3p"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+<h3 class="font-headline-md text-headline-md text-on-background mb-1">Silent Echo</h3>
+<p class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest">Minimalist</p>
+</div>
+</div>
+</div>
+</section>
+<!-- The Studio Section -->
+<section class="mb-section-gap relative h-[600px] flex items-center">
+<div class="absolute inset-0 z-0">
+<img alt="High-end tattoo studio interior" class="w-full h-full object-cover grayscale opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWa8uDQLcL1m0I1_07OPcxjYCGcD7IDeS3XGcv_Ckj8BP9f1NucoOrR-5XON_NXXgCRgHcmfYpzJsKmz_Wzc7SXqnqauZMtopf_QRk8CPabwSd5Pul4azZWxhr8zcThi7aHTccF-pPYuT0PLurdeQbMDNSJatjQ3IhowhgOh_GIM661NZ4f2U9gaaanU1os2zKbDQTszT-v4i_R6EyctBRAN4Zx8R17hCzGg61th-6SU656OvgoNdyS0Gq2XH8EXmHrW5XtBw6_OiE"/>
+<div class="absolute inset-0 studio-overlay"></div>
+</div>
+<div class="relative z-10 max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop w-full text-center">
+<h2 class="font-display-xl text-display-xl text-on-background uppercase mb-6">The Sanctuary</h2>
+<p class="font-body-lg text-body-lg text-tertiary max-w-2xl mx-auto">
+                A sterile, high-end environment designed for absolute focus and comfort. We provide an immersive experience where art and atmosphere converge in perfect harmony.
+            </p>
+</div>
+</section>
+<!-- Philosophy Section (Expanded) -->
+<section class="mb-section-gap bg-surface-container-low py-32 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-1/2 h-full bg-surface-container-high opacity-50 transform skew-x-12 translate-x-32 z-0"></div>
+<div class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop relative z-10 grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-1">
+<div class="w-16 h-1 bg-primary-container mb-8"></div>
+<h2 class="font-headline-lg text-headline-lg text-on-background uppercase mb-6">The <br/> Philosophy</h2>
+<p class="font-body-lg text-body-lg text-tertiary mb-6">
+                    We believe the body is a temple, and ink is the architecture. We reject the mass-produced and the mundane. Here, every stroke is deliberate, every design a collaboration forged in respect for the craft.
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                    Our studio operates on principles of extreme discipline and absolute exclusivity. The creation process involves meticulous conceptualization, extensive drafting, and a relentless pursuit of perfection before a single needle touches skin.
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    You are not buying a service; you are earning a mark that tells a story outlasting flesh itself.
+                </p>
+</div>
+<div class="md:col-span-6 md:col-start-7 mt-12 md:mt-0 relative flex flex-col md:flex-row gap-6">
+<div class="aspect-square bg-background p-4 border border-outline-variant flex-1 z-10 translate-y-8">
+<img alt="Tattoo machine tools" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCldcfEOUf3K_ZzyCmhGIVmCF0wKaJRpoWoFBys4hIOUQjHH8qwgQMz0qj6b-iMQAgKjvNurS0l9kCVWzILBdYDRzYJjdbQrVXbhmTe6AwyHG70jjBHNwW0wtQcJUms3nKeIJKTlXAHpyFUDW3hXA4mA18uRdCulO70D68SHVLYZnwjUBfn5jGusREHbBOhx3LAW8fIQef-UEK__TCKAYGKG_fxX1MiF2ib8ArCXitBZ3uF_rXfw1-6Ozvq85ObSm74b4qk-PKC7RBa"/>
+</div>
+<div class="aspect-square bg-background p-4 border border-outline-variant flex-1 z-0 -translate-y-8">
+<img alt="Artist sketching tattoo design" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArBu6rudWyi22Ik72CB9yoMKjCWCh6IyfLKmdiY1WEjibNOARyFHR7yfo5xK8LkFhNKRHm7CqYXjV6CNrqKGvyDW4DhRnWJdwCEENTT5qC-_vRjgA0J1a0ircQZUBvmMW04oY-j8-m4DFTXSsakjsMm2qFm1yHT89vhwv8-9OSR6LRCAs9JvSEh6BTwMAYRyG-q32m1NaLWZSFmj3JyztKZv8m38Wo1oYs4b3IFi5F-NF9XQpK1tTd9nM_zZ5kyE6qywIlutQefD4U"/>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -bottom-16 -left-8 w-32 h-32 border-b-2 border-l-2 border-primary-container opacity-50"></div>
+</div>
+</div>
+</section>
+<!-- Client Testimonials -->
+<section class="mb-section-gap px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-on-background uppercase mb-4">Words of the Marked</h2>
+<div class="w-16 h-1 bg-primary-container mx-auto"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="border border-outline-variant p-8 bg-surface-container-low relative">
+<span class="material-symbols-outlined text-primary-container text-4xl absolute -top-5 left-8 bg-surface-container-low px-2">format_quote</span>
+<p class="font-headline-md text-2xl italic text-on-surface-variant mb-6">"An unparalleled experience. The dedication to detail and the reverence for the art form transform the pain into a rite of passage."</p>
+<p class="font-label-sm text-label-sm text-tertiary uppercase tracking-widest">— E. Blackwood</p>
+</div>
+<div class="border border-outline-variant p-8 bg-surface-container-low relative">
+<span class="material-symbols-outlined text-primary-container text-4xl absolute -top-5 left-8 bg-surface-container-low px-2">format_quote</span>
+<p class="font-headline-md text-2xl italic text-on-surface-variant mb-6">"More than a studio, it is an atelier. My piece is a masterpiece of dark precision that commands the room."</p>
+<p class="font-label-sm text-label-sm text-tertiary uppercase tracking-widest">— M. Sterling</p>
+</div>
+<div class="border border-outline-variant p-8 bg-surface-container-low relative">
+<span class="material-symbols-outlined text-primary-container text-4xl absolute -top-5 left-8 bg-surface-container-low px-2">format_quote</span>
+<p class="font-headline-md text-2xl italic text-on-surface-variant mb-6">"The consultation alone showed me their mastery. The final execution is nothing short of breathtaking."</p>
+<p class="font-label-sm text-label-sm text-tertiary uppercase tracking-widest">— J. Vance</p>
+</div>
+</div>
+</section>
+<!-- Booking CTA (Expanded) -->
+<section class="mb-section-gap relative">
+<div class="absolute inset-0 z-0">
+<img alt="Dark textured background" class="w-full h-full object-cover grayscale opacity-20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRkTUoOrZfbKPD5SeYZPdc2Et7G3VAdrfKQ97V-bnStsFqjvoTynY_fL_DIQVCdI36bncn9iTg4GIC-kfrYUCeEuklJoDQRxDEbYzLUJmKWasVwaGhDdzMKIOjFw8HEOau3KZWJK-TxBsMFqXQzPIZJfWSD9900W6mb6TZTH5KuEnGWL6Uy7cgoCi7qgCMq_G69kyAQWlZ2IMftFadwJG-M7eYRynIPwri0-xm-fFwVDE-eejZocXEHVmRdonhErpEa4RU3zEpm2oZ"/>
+<div class="absolute inset-0 bg-background/80"></div>
+</div>
+<div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto text-center py-32">
+<div class="border-2 border-primary-container/30 p-16 md:p-32 bg-surface/50 backdrop-blur-sm relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-6 border border-primary-container/30 rounded-full py-4">
+<span class="material-symbols-outlined text-primary-container text-5xl" data-icon="water_drop">water_drop</span>
+</div>
+<h2 class="font-display-xl text-[64px] md:text-display-xl text-on-background uppercase mb-6 tracking-tight">Claim Your Mark</h2>
+<p class="font-body-lg text-body-lg text-tertiary max-w-2xl mx-auto mb-12 text-xl">
+                    Consultations are strictly by appointment. Submit your vision, and if it aligns with our discipline, you will be summoned to the sanctum.
+                </p>
+<button class="font-label-sm text-label-sm bg-primary-container text-on-primary border-none px-16 py-6 text-lg uppercase tracking-[0.2em] hover:bg-inverse-primary transition-all duration-300 shadow-[0_0_30px_rgba(179,0,0,0.3)] hover:shadow-[0_0_50px_rgba(179,0,0,0.5)]">
+                    Request Consultation
+                </button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-[#0A0A0A] dark:bg-neutral-950 full-width border-t border-neutral-900 tonal layer shift via bg-neutral-900/30 flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-12 py-16 max-w-[1440px] mx-auto gap-8">
+<div class="text-lg font-bold text-neutral-200">
+                DRAGON INK
+            </div>
+<div class="font-serif tracking-widest uppercase text-xs text-[#B30000] dark:text-red-700">
+                © 2024 DRAGON INK. SACRED RITUAL. PERMANENT ART.
+            </div>
+<div class="flex gap-6 font-serif tracking-widest uppercase text-xs">
+<a class="text-neutral-600 hover:text-red-600 transition-colors duration-300 Subtle underline on hover" href="#">Privacy Policy</a>
+<a class="text-neutral-600 hover:text-red-600 transition-colors duration-300 Subtle underline on hover" href="#">Aftercare Guide</a>
+<a class="text-neutral-600 hover:text-red-600 transition-colors duration-300 Subtle underline on hover" href="#">Studio Rules</a>
+</div>
+</div>
+</footer>
+</body></html>
