@@ -1,253 +1,497 @@
-<!-- ════════════════════════════════════════════════════════
-     OWNER — PAYMENTS SECTION
-     Refactored: Utility-First Premium
-     ════════════════════════════════════════════════════════ -->
-
 {% set pending_approvals_list = payments | selectattr('status', 'equalto', 'Pending Approval') | list %}
 {% set approved_payments = payments | selectattr('status', 'equalto', 'Approved') | list %}
 
-<!-- ══════════════════════════════════════════════════════════
-     BLOCK 1 — PENDING APPROVALS
-     ══════════════════════════════════════════════════════════ -->
-{% if pending_approvals_list %}
-<div class="studio-card p-6 border-l-4 border-amber-500 bg-amber-500/5">
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shadow-inner">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-            <div>
-                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Pending Approvals
-                </h3>
-                <p class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mt-0.5">
-                    {{ pending_approvals_list | length }} verification(s) required
-                </p>
-            </div>
-        </div>
-        <span
-            class="px-4 py-1.5 rounded-full bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/20">URGENT</span>
-    </div>
-
-    <div class="flex items-start gap-4 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 mb-8 border-dashed">
-        <span class="text-xl">💡</span>
-        <div class="text-xs font-bold leading-relaxed text-studio-text-primary">
-            Confirm receipts via UPI or Card before approving. <span class="text-emerald-500">Approve</span> marks as Paid.
-            <span class="text-red-500">Reject</span> resets the invoice.
-        </div>
-    </div>
-
-    <div class="overflow-x-auto -mx-6 px-6">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="border-b border-amber-500/20 bg-amber-500/5">
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Pay ID</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Invoice</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Customer</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Amount</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">UTR Reference
-                    </th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Submitted</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-amber-600 tracking-widest">Action</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-amber-500/10">
-                {% for p in pending_approvals_list %}
-                {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
-                {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
-                else none %}
-                <tr class="hover:bg-amber-500/5 transition-colors">
-                    <td class="py-4 px-4 font-mono text-amber-600 font-black text-xs">#{{ p.payment_id }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">#INV-{{ p.invoice_id }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">{{ appt.customer_name if appt else
-                        '—' }}</td>
-                    <td class="py-4 px-4 font-black text-emerald-500 text-lg">₹{{ p.amount_paid }}</td>
-                    <td class="py-4 px-4 font-mono text-studio-text-primary text-[10px] break-all max-w-[200px]">{{
-                        p.payment_method }}</td>
-                    <td class="py-4 px-4 text-[10px] font-black text-studio-text-muted uppercase italic">{{
-                        p.payment_date }}</td>
-                    <td class="py-4 px-4">
-                        <div class="flex items-center gap-2">
-                            <form method="POST" action="/owner/payment/approve/{{ p.payment_id }}">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit"
-                                    onclick="return confirm('Confirm receipt of ₹{{ p.amount_paid }}?')"
-                                    class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-500/20 active:scale-95">
-                                    Approve
-                                </button>
-                            </form>
-                            <form method="POST" action="/owner/payment/reject/{{ p.payment_id }}">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" onclick="return confirm('Reject this payment?')"
-                                    class="px-4 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white text-[10px] font-black uppercase tracking-widest border border-red-500/30 transition-all active:scale-95">
-                                    Reject
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
-
-<!-- ══════════════════════════════════════════════════════════
-     BLOCK 2 — RECORD PAYMENT MANUALLY
-     ══════════════════════════════════════════════════════════ -->
-<div class="studio-card p-6 mt-8 border-l-4 border-indigo-500">
-    <div class="flex items-center gap-4 mb-8">
-        <div
-            class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shadow-inner">
-            <i class="fa-solid fa-pen-to-square"></i>
-        </div>
-        <div>
-            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Manual Entry</h3>
-            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">For offline or
-                cash transactions</p>
-        </div>
-    </div>
-
-    <form method="POST" action="/owner/payment/record" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Select
-                    Invoice</label>
-                <select name="invoice_id" id="invoiceSelect" class="studio-input w-full" required>
-                    <option value="">— Select Invoice —</option>
-                    {% for inv in invoices %}
-                    {% if inv.pay_status in ('Pending', 'Under Review') %}
-                    {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first %}
-                    <option value="{{ inv.invoice_id }}">
-                        #INV-{{ inv.invoice_id }} — {{ appt.customer_name if appt else 'Unknown' }} — ₹{{ inv.total_amt
-                        }}
-                    </option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Amount (₹)</label>
-                <div class="relative group">
-                    <span
-                        class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-indigo-500 group-focus-within:scale-110 transition-transform">₹</span>
-                    <input type="number" name="amount_paid" id="amountPaid" class="studio-input w-full pl-10"
-                        step="0.01" min="1" placeholder="0.00" required>
+<div class="py-container">
+    <!-- ── Header: Liquidity Ledger & Verification ── -->
+    <header class="py-header">
+        <div class="py-header-meta">
+            <div class="py-title-group">
+                <h2 class="py-title">Liquidity Ledger & Verification</h2>
+                <div class="py-subtitle">
+                    <span class="py-live-dot"></span>
+                    Verification Nodes: <span class="py-vault-status">Active Stream</span>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Payment
-                    Method</label>
-                <select name="payment_method" class="studio-input w-full" required>
-                    <option value="Cash">Cash</option>
-                    <option value="UPI">UPI</option>
-                    <option value="Card">Card</option>
-                </select>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Date</label>
-                <input type="date" name="payment_date" class="studio-input w-full" required>
+            <div class="py-metrics">
+                <div class="py-metric-chip py-metric-amber">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span class="py-metric-val">{{ pending_approvals_list | length }}</span>
+                    <span class="py-metric-lbl">Awaiting Verification</span>
+                </div>
+                <div class="py-metric-chip py-metric-emerald">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span class="py-metric-val">{{ approved_payments | length }}</span>
+                    <span class="py-metric-lbl">Settled Transactions</span>
+                </div>
             </div>
         </div>
-        <div class="flex justify-end">
-            <button type="submit" class="studio-btn-primary px-8">
-                <i class="fas fa-check-circle mr-2"></i> Record Transaction
-            </button>
-        </div>
-    </form>
-</div>
+    </header>
 
-<!-- ══════════════════════════════════════════════════════════
-     BLOCK 3 — PAYMENT LEDGER
-     ══════════════════════════════════════════════════════════ -->
-<div class="studio-card p-6 mt-8 border-l-4 border-emerald-500">
-    <div class="flex flex-wrap items-center justify-between gap-6 mb-8">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl shadow-inner">
-                <i class="fa-solid fa-list-ul"></i>
+    <!-- ── Block 1: Pending Verification ── -->
+    {% if pending_approvals_list %}
+    <div class="py-alert-card">
+        <div class="py-card-header">
+            <div class="py-card-icon py-card-icon-amber">
+                <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <div>
-                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Payment Ledger</h3>
-                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Master
-                    transaction archive</p>
+            <div class="py-card-title-wrap">
+                <h3 class="py-card-title">Pending Settlement Verification</h3>
+                <p class="py-card-sub">High-priority transactions requiring manual audit</p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            <span
-                class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/5 text-emerald-500 border border-emerald-500/20">
-                ✓ {{ approved_payments | length }} Approved
-            </span>
-            {% if pending_approvals_list %}
-            <span
-                class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/5 text-amber-500 border border-amber-500/20">
-                ⏳ {{ pending_approvals_list | length }} Pending
-            </span>
-            {% endif %}
-        </div>
-    </div>
 
-    {% if payments %}
-    <div class="overflow-x-auto -mx-6 px-6">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="border-b border-studio-border bg-studio-surface-light/30">
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Pay ID
-                    </th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Invoice</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Customer</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Amount
-                    </th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Reference</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Date
-                    </th>
-                    <th
-                        class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest text-center">
-                        Status</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-studio-border">
-                {% for p in payments | sort(attribute='payment_id', reverse=True) %}
-                {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
-                {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv
-                else none %}
-                <tr class="group hover:bg-white/5 transition-colors duration-200">
-                    <td class="py-4 px-4 font-mono text-indigo-500 font-black text-xs">#{{ p.payment_id }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs">#INV-{{ p.invoice_id }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-primary text-xs truncate max-w-[150px]">{{
-                        appt.customer_name if appt else '—' }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-primary">₹{{ p.amount_paid }}</td>
-                    <td class="py-4 px-4 font-black text-studio-text-muted text-[10px] uppercase tracking-wider">{{
-                        p.payment_method }}</td>
-                    <td class="py-4 px-4 text-[10px] font-bold text-studio-text-muted">{{ p.payment_date }}</td>
-                    <td class="py-4 px-4 text-center">
-                        {% if p.status == 'Approved' %}
-                        <span
-                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500">Approved</span>
-                        {% elif p.status == 'Pending Approval' %}
-                        <span
-                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500">Under
-                            Review</span>
-                        {% else %}
-                        <span
-                            class="inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-studio-surface-light text-studio-text-muted">{{
-                            p.status }}</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="py-32 text-center opacity-20 flex flex-col items-center">
-        <i class="fas fa-ghost text-6xl mb-6"></i>
-        <p class="text-xs font-black uppercase tracking-[0.3em]">No payments recorded in ledger</p>
+        <div class="py-table-wrap">
+            <table class="py-table">
+                <thead>
+                    <tr>
+                        <th>Pay ID</th>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>UTR/Ref</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pending_approvals_list %}
+                    {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
+                    {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv else none %}
+                    <tr class="py-row py-row-urgent">
+                        <td><span class="py-id-badge">#{{ p.payment_id }}</span></td>
+                        <td><span class="py-inv-link">#INV-{{ p.invoice_id }}</span></td>
+                        <td><span class="py-cust-name">{{ appt.customer_name if appt else '—' }}</span></td>
+                        <td><span class="py-amount-urgent">₹{{ "{:,.2f}".format(p.amount_paid | float) }}</span></td>
+                        <td><span class="py-ref-mono">{{ p.payment_method }}</span></td>
+                        <td>
+                            <div class="py-action-group">
+                                <form method="POST" action="/owner/payment/approve/{{ p.payment_id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" data-confirm="Approve receipt of ₹{{ p.amount_paid }}?" class="py-btn-approve">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form method="POST" action="/owner/payment/reject/{{ p.payment_id }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" data-confirm="Reject this payment?" class="py-btn-reject">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% endif %}
+
+    <!-- ── Block 2: Manual Recording ── -->
+    <div class="py-manual-card">
+        <div class="py-card-header">
+            <div class="py-card-icon py-card-icon-indigo">
+                <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <div class="py-card-title-wrap">
+                <h3 class="py-card-title">Manual Transaction Entry</h3>
+                <p class="py-card-sub">Record offline, cash, or direct settlements</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/owner/payment/record" class="py-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="py-form-grid">
+                <div class="py-field">
+                    <label class="py-label">Target Invoice</label>
+                    <div class="py-input-wrap">
+                        <i class="fa-solid fa-file-invoice py-lead-icon"></i>
+                        <select name="invoice_id" id="invoiceSelect" class="py-select" required>
+                            <option value="">Select Invoice...</option>
+                            {% for inv in invoices %}
+                            {% if inv.pay_status in ('Pending', 'Under Review') %}
+                            {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first %}
+                            <option value="{{ inv.invoice_id }}">
+                                #INV-{{ inv.invoice_id }} — {{ appt.customer_name if appt else 'Unknown' }} — ₹{{ inv.total_amt }}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="py-field">
+                    <label class="py-label">Amount Collected (₹)</label>
+                    <div class="py-input-wrap">
+                        <i class="fa-solid fa-indian-rupee-sign py-lead-icon"></i>
+                        <input type="number" name="amount_paid" id="amountPaid" class="py-input" step="0.01" min="1" placeholder="0.00" required>
+                    </div>
+                </div>
+
+                <div class="py-field">
+                    <label class="py-label">Payment Channel</label>
+                    <div class="py-input-wrap">
+                        <i class="fa-solid fa-network-wired py-lead-icon"></i>
+                        <select name="payment_method" class="py-select" required>
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="py-field">
+                    <label class="py-label">Settlement Date</label>
+                    <div class="py-input-wrap">
+                        <i class="fa-solid fa-calendar-day py-lead-icon"></i>
+                        <input type="date" name="payment_date" class="py-input" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-form-footer">
+                <button type="submit" class="py-btn-primary">
+                    <i class="fa-solid fa-vault"></i>
+                    Record to Ledger
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ── Block 3: Transaction History ── -->
+    <div class="py-history-card">
+        <div class="py-card-header">
+            <div class="py-card-icon py-card-icon-emerald">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="py-card-title-wrap">
+                <h3 class="py-card-title">Fiscal Ledger Archive</h3>
+                <p class="py-card-sub">Master audited transaction stream</p>
+            </div>
+        </div>
+
+        <div class="py-table-wrap">
+            <table class="py-table">
+                <thead>
+                    <tr>
+                        <th>Pay ID</th>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Channel</th>
+                        <th>Timestamp</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if payments %}
+                    {% for p in payments | sort(attribute='payment_id', reverse=True) %}
+                    {% set inv = invoices | selectattr('invoice_id', 'equalto', p.invoice_id) | first %}
+                    {% set appt = appointments | selectattr('appointment_id', 'equalto', inv.appointment_id) | first if inv else none %}
+                    <tr class="py-row">
+                        <td><span class="py-id-badge">#{{ p.payment_id }}</span></td>
+                        <td><span class="py-inv-link">#INV-{{ p.invoice_id }}</span></td>
+                        <td><span class="py-cust-name">{{ appt.customer_name if appt else '—' }}</span></td>
+                        <td><span class="py-amount">₹{{ "{:,.2f}".format(p.amount_paid | float) }}</span></td>
+                        <td><span class="py-tag">{{ p.payment_method }}</span></td>
+                        <td><span class="py-date">{{ p.payment_date }}</span></td>
+                        <td class="text-center">
+                            {% if p.status == 'Approved' %}
+                            <div class="py-status py-status-approved">Approved</div>
+                            {% elif p.status == 'Pending Approval' %}
+                            <div class="py-status py-status-review">Review</div>
+                            {% else %}
+                            <div class="py-status py-status-other">{{ p.status }}</div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="py-empty">No transaction history detected</div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<style>
+/* ══════════════════════════════════════
+   PAYMENTS — Rich Color System v2
+   Palette: Ivory Canvas · Indigo · Emerald · Amber · Scarlet
+   ══════════════════════════════════════ */
+
+/* ── Container ── */
+.py-container {
+    padding: 1.75rem;
+    background: var(--surface-1);
+    border-radius: 1.75rem;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* ── Header ── */
+.py-header { margin-bottom: 2.25rem; }
+.py-header-meta {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 1.75rem; border-bottom: 1px solid var(--border-soft);
+}
+
+.py-title {
+    font-size: 2rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--text-1) 30%, #6366f1 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.py-subtitle {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem;
+    font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 0.4rem;
+}
+.py-vault-status { color: #10b981; font-weight: 900; }
+
+.py-live-dot {
+    width: 7px; height: 7px; background: #10b981; border-radius: 50%;
+    box-shadow: 0 0 10px #10b981, 0 0 20px rgba(16,185,129,0.3);
+    animation: py-pulse 2s infinite;
+}
+@keyframes py-pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
+
+/* ── Metric Chips ── */
+.py-metrics { display: flex; gap: 1rem; }
+.py-metric-chip {
+    padding: 1rem 1.5rem; border-radius: 1.25rem;
+    display: flex; flex-direction: column; min-width: 140px;
+    position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+}
+.py-metric-chip:hover { transform: translateY(-3px); }
+.py-metric-chip i { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.py-metric-val { font-size: 1.5rem; font-weight: 900; }
+.py-metric-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.1rem; }
+
+.py-metric-amber {
+    background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(234,88,12,0.06) 100%);
+    border: 1px solid rgba(245,158,11,0.3);
+    box-shadow: 0 4px 20px rgba(245,158,11,0.1);
+}
+.py-metric-amber i { color: #f59e0b; }
+.py-metric-amber .py-metric-val { color: #d97706; }
+.py-metric-amber .py-metric-lbl { color: #b45309; }
+
+.py-metric-emerald {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(5,150,105,0.06) 100%);
+    border: 1px solid rgba(16,185,129,0.3);
+    box-shadow: 0 4px 20px rgba(16,185,129,0.1);
+}
+.py-metric-emerald i { color: #10b981; }
+.py-metric-emerald .py-metric-val { color: #059669; }
+.py-metric-emerald .py-metric-lbl { color: #047857; }
+
+/* ── Cards ── */
+.py-alert-card {
+    background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(234,88,12,0.03) 100%);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-left: 4px solid #f59e0b;
+    border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(245,158,11,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.py-manual-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-top: 3px solid #6366f1;
+    border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+}
+.py-history-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-top: 3px solid #10b981;
+    border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.08);
+}
+
+.py-card-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.75rem; }
+.py-card-icon {
+    width: 3.25rem; height: 3.25rem; border-radius: 1rem;
+    display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.py-card-icon-amber {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #fff;
+}
+.py-card-icon-indigo {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    color: #fff;
+}
+.py-card-icon-emerald {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: #fff;
+}
+
+.py-card-title { font-size: 1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.06em; }
+.py-card-sub { font-size: 0.65rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+
+/* ── Table ── */
+.py-table-wrap { overflow-x: auto; }
+.py-table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; min-width: 800px; }
+.py-table th {
+    padding: 0.875rem 1rem; text-align: left;
+    font-size: 0.6rem; font-weight: 800; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    border-bottom: 2px solid var(--border-soft);
+}
+
+.py-row { background: var(--surface-3); transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1); }
+.py-row:hover { background: var(--surface-1); transform: translateX(5px); box-shadow: -4px 0 0 #6366f1; }
+.py-row td { padding: 1rem; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+.py-row td:first-child { border-left: 1px solid var(--border-soft); border-radius: 0.875rem 0 0 0.875rem; padding-left: 1.5rem; }
+.py-row td:last-child { border-right: 1px solid var(--border-soft); border-radius: 0 0.875rem 0.875rem 0; }
+
+.py-row-urgent {
+    background: linear-gradient(90deg, rgba(245,158,11,0.07) 0%, transparent 100%);
+    border-left: 3px solid #f59e0b;
+}
+.py-row-urgent:hover { box-shadow: -4px 0 0 #f59e0b; }
+
+/* ── Cell Styles ── */
+.py-id-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 900;
+    color: #6366f1; background: rgba(99,102,241,0.1); padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem; border: 1px solid rgba(99,102,241,0.2);
+}
+.py-inv-link { font-weight: 900; color: #6366f1; font-size: 0.8rem; letter-spacing: 0.02em; }
+.py-cust-name { font-weight: 800; color: var(--text-1); font-size: 0.82rem; }
+.py-amount {
+    font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 0.95rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.py-amount-urgent {
+    font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 1.15rem;
+    color: #059669;
+}
+.py-ref-mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--text-3);
+    background: var(--surface-2); padding: 0.2rem 0.5rem; border-radius: 0.4rem;
+    border: 1px solid var(--border-soft);
+}
+.py-tag {
+    padding: 0.3rem 0.7rem; border-radius: 0.6rem; font-size: 0.62rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); color: #6366f1;
+}
+.py-date { font-size: 0.68rem; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+/* ── Status Badges ── */
+.py-status {
+    padding: 0.4rem 0.9rem; border-radius: 2rem;
+    font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.py-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.py-status-approved {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08));
+    color: #059669; border: 1px solid rgba(16,185,129,0.3);
+}
+.py-status-approved::before { background: #10b981; box-shadow: 0 0 6px #10b981; }
+.py-status-review {
+    background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,88,12,0.08));
+    color: #d97706; border: 1px solid rgba(245,158,11,0.3);
+}
+.py-status-review::before { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: py-pulse 1.2s infinite; }
+.py-status-other {
+    background: var(--surface-3); color: var(--text-3); border: 1px solid var(--border-soft);
+}
+.py-status-other::before { background: var(--text-3); }
+
+/* ── Action Buttons ── */
+.py-action-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.py-btn-approve {
+    background: linear-gradient(135deg, #34d399, #059669); color: #fff;
+    padding: 0.5rem 1.1rem; border-radius: 0.75rem; border: none;
+    font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
+    cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+}
+.py-btn-approve:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,185,129,0.35); filter: brightness(1.08); }
+
+.py-btn-reject {
+    background: rgba(239,68,68,0.08); color: #ef4444;
+    padding: 0.5rem 1.1rem; border-radius: 0.75rem; border: 1.5px solid rgba(239,68,68,0.3);
+    font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
+    cursor: pointer; transition: all 0.2s;
+}
+.py-btn-reject:hover {
+    background: linear-gradient(135deg, #f87171, #ef4444); color: #fff;
+    box-shadow: 0 6px 16px rgba(239,68,68,0.3); transform: translateY(-2px); border-color: transparent;
+}
+
+/* ── Form ── */
+.py-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.py-field { display: flex; flex-direction: column; gap: 0.6rem; }
+.py-label {
+    font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--text-3);
+}
+
+.py-input-wrap { position: relative; display: flex; align-items: center; }
+.py-lead-icon { position: absolute; left: 1rem; font-size: 0.8rem; color: #6366f1; pointer-events: none; opacity: 0.7; }
+
+.py-input, .py-select {
+    width: 100%; background: var(--surface-3);
+    border: 1.5px solid var(--border-soft); border-radius: 0.875rem;
+    padding: 0.8rem 1rem 0.8rem 2.75rem; color: var(--text-1);
+    font-size: 0.8rem; font-weight: 700; outline: none; transition: all 0.25s;
+}
+.py-select { appearance: none; }
+.py-input:focus, .py-select:focus {
+    border-color: #6366f1; background: var(--surface-1);
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.08), 0 2px 8px rgba(99,102,241,0.1);
+}
+.py-input-wrap:focus-within .py-lead-icon { opacity: 1; color: #6366f1; }
+
+.py-form-footer { display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-soft); }
+.py-btn-primary {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+    color: #fff; padding: 0.9rem 2rem; border-radius: 1rem; border: none;
+    font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;
+    cursor: pointer; display: flex; align-items: center; gap: 0.85rem;
+    transition: all 0.3s; box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+}
+.py-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(99,102,241,0.4);
+    filter: brightness(1.1);
+}
+.py-btn-primary:active { transform: translateY(0); }
+
+/* ── Empty State ── */
+.py-empty { padding: 4rem; text-align: center; color: var(--text-3); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.35; letter-spacing: 0.1em; }
+
+/* ── Ivory Mode Overrides ── */
+[data-theme="ivory"] .py-container {
+    background: #fafaf9;
+    border-color: #e7e5e4;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+}
+[data-theme="ivory"] .py-title {
+    background: linear-gradient(135deg, #1c1917 30%, #6366f1 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+[data-theme="ivory"] .py-manual-card,
+[data-theme="ivory"] .py-history-card {
+    background: #ffffff;
+    border-color: #e7e5e4;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+[data-theme="ivory"] .py-row { background: #f5f5f4; }
+[data-theme="ivory"] .py-row:hover { background: #ede9fe; }
+[data-theme="ivory"] .py-metric-chip { border-color: rgba(0,0,0,0.12); }
+[data-theme="ivory"] .py-input,
+[data-theme="ivory"] .py-select { background: #f5f5f4; border-color: #d6d3d1; }
+[data-theme="ivory"] .py-ref-mono { background: #f0fdf4; border-color: #bbf7d0; color: #047857; }
+[data-theme="ivory"] .py-tag { background: rgba(99,102,241,0.06); }
+[data-theme="ivory"] .py-table th { color: #78716c; border-bottom-color: #e7e5e4; }
+[data-theme="ivory"] .py-id-badge { background: #ede9fe; border-color: #c4b5fd; color: #4f46e5; }
+</style>

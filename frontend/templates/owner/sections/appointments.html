@@ -1,109 +1,184 @@
 <!-- SECTION: OWNER APPOINTMENTS -->
 
-<div class="studio-card p-8">
-    <!-- Header Strategy -->
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
-        <div>
-            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Session Management</h3>
-            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">
-                Operational Load: <span class="text-studio-gold">{{ total_appointments }} Active Vectors</span>
-            </p>
+<div class="sm-card">
+
+    <!-- ── Header ── -->
+    <div class="sm-header">
+        <div class="sm-header-left">
+            <div class="sm-header-icon">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div>
+                <h3 class="sm-title">Session Management</h3>
+                <p class="sm-subtitle">Operational Load:
+                    <span class="sm-load-count">{{ total_appointments }} Active Sessions</span>
+                </p>
+            </div>
         </div>
 
-        <!-- Filter Array -->
-        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <div class="filter-pill-container">
-                <button onclick="filterTable('appt-row','all',this)"
-                    class="filter-btn-pill active">All</button>
-                <button onclick="filterTable('appt-row','Pending',this)"
-                    class="filter-btn-pill">
-                    Pending {{ '[' ~ pending_count ~ ']' if pending_count > 0 }}
-                </button>
-                <button onclick="filterTable('appt-row','Approved',this)"
-                    class="filter-btn-pill">
-                    Approved {{ '[' ~ approved_count ~ ']' if approved_count > 0 }}
-                </button>
-                <button onclick="filterTable('appt-row','Done',this)"
-                    class="filter-btn-pill">Done</button>
-                <button onclick="filterTable('appt-row','Rejected',this)"
-                    class="filter-btn-pill">Rejected</button>
+        <!-- Live Metric Chips -->
+        <div class="sm-metric-strip">
+            <div class="sm-metric-chip sm-metric-pending">
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span class="sm-metric-val">{{ pending_count }}</span>
+                <span class="sm-metric-lbl">Pending</span>
             </div>
-
-            <div class="search-wrapper flex-1 lg:flex-none lg:w-72">
-                <i class="fas fa-search"></i>
-                <input type="text" id="apptSearch" class="search-input"
-                    placeholder="Search operational data..."
-                    oninput="filterTable('appt-row', window.currentApptStatus || 'all')">
+            <div class="sm-metric-chip sm-metric-approved">
+                <i class="fa-solid fa-circle-check"></i>
+                <span class="sm-metric-val">{{ approved_count }}</span>
+                <span class="sm-metric-lbl">Approved</span>
+            </div>
+            <div class="sm-metric-chip sm-metric-total">
+                <i class="fa-solid fa-layer-group"></i>
+                <span class="sm-metric-val">{{ total_appointments }}</span>
+                <span class="sm-metric-lbl">Total</span>
             </div>
         </div>
     </div>
 
-    <!-- Data Matrix -->
-    <div class="dash-table-container">
-        <table class="dash-table">
+    <!-- ── Toolbar: Filters + Search ── -->
+    <div class="sm-toolbar">
+        <div class="sm-filter-group" id="apptFilterGroup">
+            <button data-status="all" class="sm-filter-btn sm-active">
+                <i class="fa-solid fa-border-all"></i> All
+            </button>
+            <button data-status="Pending" class="sm-filter-btn">
+                <i class="fa-solid fa-hourglass-half"></i> Pending
+                {% if pending_count > 0 %}<span class="sm-badge sm-badge-amber">{{ pending_count }}</span>{% endif %}
+            </button>
+            <button data-status="Approved" class="sm-filter-btn">
+                <i class="fa-solid fa-circle-check"></i> Approved
+                {% if approved_count > 0 %}<span class="sm-badge sm-badge-emerald">{{ approved_count }}</span>{% endif %}
+            </button>
+            <button data-status="Done" class="sm-filter-btn">
+                <i class="fa-solid fa-flag-checkered"></i> Completed
+            </button>
+        </div>
+
+        <div class="sm-search-wrap">
+            <i class="fa-solid fa-magnifying-glass sm-search-icon"></i>
+            <input type="text" id="apptSearch" class="sm-search-input" placeholder="Search sessions…">
+        </div>
+    </div>
+
+    <!-- ── Data Matrix ── -->
+    <div class="sm-table-wrap">
+        <table class="sm-table">
             <thead>
                 <tr>
-                    <th class="w-24">Ref ID</th>
-                    <th>Customer Designation</th>
-                    <th>Lead Artist</th>
-                    <th>Concept Blueprint</th>
-                    <th>Temporal Sync</th>
-                    <th>Flow Status</th>
-                    <th class="text-right">Command</th>
+                    <th><span class="sm-th"><i class="fa-solid fa-hashtag"></i> Ref ID</span></th>
+                    <th><span class="sm-th"><i class="fa-solid fa-user"></i> Customer</span></th>
+                    <th><span class="sm-th"><i class="fa-solid fa-pen-nib"></i> Lead Artist</span></th>
+                    <th><span class="sm-th"><i class="fa-solid fa-palette"></i> Concept</span></th>
+                    <th><span class="sm-th"><i class="fa-solid fa-clock"></i> Temporal Sync</span></th>
+                    <th><span class="sm-th"><i class="fa-solid fa-signal"></i> Flow Status</span></th>
+                    <th style="text-align:right;"><span class="sm-th" style="justify-content:flex-end;"><i class="fa-solid fa-shield-halved"></i> Command</span></th>
                 </tr>
             </thead>
             <tbody>
                 {% if appointments %}
                 {% for a in appointments %}
-                <tr class="appt-row group" data-status="{{ a.status }}"
+                <tr class="sm-row appt-row"
+                    data-status="{{ a.status }}"
                     data-search="{{ (a.customer_name ~ ' ' ~ a.artist_name ~ ' ' ~ a.tattoo_concept) | lower }}">
-                    <td class="font-mono text-studio-gold font-bold">#{{ a.appointment_id }}</td>
-                    <td class="font-black text-studio-text text-sm uppercase">{{ a.customer_name }}</td>
-                    <td class="font-bold text-studio-gold/80 text-xs uppercase">{{ a.artist_name }}</td>
-                    <td class="text-studio-text-secondary text-xs italic opacity-80 max-w-[200px] truncate"
-                        title="{{ a.tattoo_concept }}">
-                        "{{ a.tattoo_concept }}"
-                    </td>
+
+                    <!-- Ref ID -->
                     <td>
-                        <div class="font-bold text-studio-text text-xs uppercase">{{ a.appointment_date }}</div>
-                        <div class="text-[10px] font-bold text-studio-text-secondary opacity-60">{{ a.appointment_time
-                            }}</div>
+                        <div class="sm-id-cell">
+                            <span class="sm-id-bar"></span>
+                            <span class="sm-id-text">#{{ a.appointment_id }}</span>
+                        </div>
                     </td>
+
+                    <!-- Customer -->
                     <td>
-                        {% if a.status=='Pending' %}
-                        <span class="status-pill amber">PENDING QUEUE</span>
-                        {% elif a.status=='Approved' %}
-                        <span class="status-pill emerald">LOCKED</span>
-                        {% elif a.status=='Done' %}
-                        <span class="status-pill gold">FINALIZED</span>
-                        {% elif a.status=='Rejected' %}
-                        <span class="status-pill danger">REJECTED</span>
+                        <div class="sm-person-cell">
+                            <div class="sm-avatar sm-avatar-customer">
+                                {{ a.customer_name[:2] | upper }}
+                            </div>
+                            <span class="sm-person-name">{{ a.customer_name }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Artist -->
+                    <td>
+                        <div class="sm-person-cell">
+                            <div class="sm-avatar sm-avatar-artist">
+                                {{ a.artist_name[:2] | upper }}
+                            </div>
+                            <span class="sm-artist-name">{{ a.artist_name }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Concept -->
+                    <td class="sm-concept-cell" title="{{ a.tattoo_concept }}">
+                        <span class="sm-concept-quote">"{{ a.tattoo_concept }}"</span>
+                    </td>
+
+                    <!-- Date / Time -->
+                    <td>
+                        <div class="sm-datetime-cell">
+                            <span class="sm-date">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                {{ a.appointment_date }}
+                            </span>
+                            <span class="sm-time">{{ a.appointment_time }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Status -->
+                    <td>
+                        {% if a.status == 'Pending' %}
+                        <span class="sm-status sm-status-pending">
+                            <span class="sm-status-dot"></span> Pending
+                        </span>
+                        {% elif a.status == 'Approved' %}
+                        <span class="sm-status sm-status-approved">
+                            <span class="sm-status-dot"></span> Approved
+                        </span>
+                        {% elif a.status == 'Done' %}
+                        <span class="sm-status sm-status-done">
+                            <span class="sm-status-dot"></span> Completed
+                        </span>
+                        {% elif a.status == 'Rejected' %}
+                        <span class="sm-status sm-status-rejected">
+                            <span class="sm-status-dot"></span> Rejected
+                        </span>
                         {% else %}
-                        <span class="status-pill muted">CANCELLED</span>
+                        <span class="sm-status sm-status-cancelled">
+                            <span class="sm-status-dot"></span> Cancelled
+                        </span>
                         {% endif %}
                     </td>
-                    <td class="text-right">
-                        <div class="flex justify-end gap-2">
+
+                    <!-- Command -->
+                    <td>
+                        <div class="sm-cmd-cell">
                             {% if a.status == 'Done' and not a.has_invoice %}
-                            <button onclick="prefillInvoice('{{ a.appointment_id }}')"
-                                class="px-4 py-2 rounded-xl bg-studio-gold text-black text-[9px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg active:scale-95">
-                                Issue Ledger
+                            <button onclick="prefillInvoice('{{ a.appointment_id }}')" class="sm-cmd-btn sm-cmd-invoice">
+                                <i class="fa-solid fa-file-invoice"></i>
+                                <span>Issue Ledger</span>
                             </button>
                             {% endif %}
+
                             {% if a.status == 'Pending' %}
                             <form method="POST" action="/owner/cancel/{{ a.appointment_id }}" class="inline">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" onclick="return confirm('Abort this operation?') "
-                                    class="p-2.5 rounded-xl bg-studio-danger/10 text-studio-danger hover:bg-studio-danger hover:text-white transition-all shadow-sm active:scale-90">
-                                    <i class="fas fa-times"></i> Abort
+                                <button type="submit" data-confirm="Abort this operation?" class="sm-cmd-btn sm-cmd-cancel">
+                                    <i class="fa-solid fa-ban"></i>
+                                    <span>Abort</span>
                                 </button>
                             </form>
                             {% endif %}
+
                             {% if a.status == 'Done' and a.has_invoice %}
-                            <span
-                                class="inline-flex items-center gap-1 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
-                                <i class="fas fa-check-circle"></i> Invoiced
-                            </span>
+                            <div class="sm-invoiced-badge">
+                                <i class="fa-solid fa-circle-check"></i> Invoiced
+                            </div>
+                            {% endif %}
+
+                            {% if a.status not in ['Done', 'Pending'] %}
+                            <span class="sm-cmd-muted">—</span>
                             {% endif %}
                         </div>
                     </td>
@@ -111,10 +186,13 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="7" class="py-24 text-center">
-                        <div class="flex flex-col items-center opacity-30">
-                            <i class="fas fa-calendar-alt text-4xl mb-6"></i>
-                            <p class="text-xs font-black uppercase tracking-widest">Operational Log Empty</p>
+                    <td colspan="7" class="sm-empty-state">
+                        <div class="sm-empty-inner">
+                            <div class="sm-empty-icon">
+                                <i class="fas fa-calendar-xmark"></i>
+                            </div>
+                            <p class="sm-empty-title">Operational Log Empty</p>
+                            <p class="sm-empty-sub">No sessions have been booked yet. They will appear here once customers schedule appointments.</p>
                         </div>
                     </td>
                 </tr>
@@ -124,37 +202,555 @@
     </div>
 </div>
 
-<script>
-    function filterTable(targetClass, status, btn) {
-        const rows = document.querySelectorAll('.' + targetClass);
-        const btns = document.querySelectorAll('.filter-btn-pill');
-        
-        btns.forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
+<!-- ── Session Management Styles ── -->
+<style>
+/* ══════════════════════════════════════
+   SESSION MANAGEMENT — Premium v2
+══════════════════════════════════════ */
 
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute('data-status');
-            if (status === 'all' || rowStatus === status) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-        window.currentApptStatus = status;
-    }
+.sm-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
 
-    // Inline search handler
-    document.getElementById('apptSearch')?.addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.appt-row');
-        const status = window.currentApptStatus || 'all';
+/* ── Header ── */
+.sm-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 2rem 2.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-soft);
+    flex-wrap: wrap;
+}
 
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute('data-status');
-            const text = row.textContent.toLowerCase();
-            const matchesSearch = text.includes(term);
-            const matchesStatus = (status === 'all' || rowStatus === status);
-            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
-        });
-    });
-</script>
+.sm-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sm-header-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.75rem;
+    background: var(--gold-dim);
+    border: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.sm-title {
+    font-family: var(--dt-font-display);
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text-1);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.sm-subtitle {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    color: var(--text-3);
+    margin-top: 0.2rem;
+}
+
+.sm-load-count {
+    color: var(--gold);
+    font-weight: 800;
+}
+
+/* Metric Chips */
+.sm-metric-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.sm-metric-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    font-family: var(--dt-font-ui);
+}
+
+.sm-metric-chip i { font-size: 0.65rem; opacity: 0.8; }
+
+.sm-metric-val {
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.sm-metric-lbl {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+}
+
+.sm-metric-pending { background: rgba(245,158,11,0.08); color: #f59e0b; border-color: rgba(245,158,11,0.2); }
+.sm-metric-approved { background: rgba(16,185,129,0.08); color: #10b981; border-color: rgba(16,185,129,0.2); }
+.sm-metric-total { background: var(--gold-dim); color: var(--gold); border-color: var(--border); }
+
+/* ── Toolbar ── */
+.sm-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 2.25rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border-soft);
+    flex-wrap: wrap;
+}
+
+.sm-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    flex-shrink: 0;
+}
+
+.sm-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.6rem;
+    border: none;
+    background: transparent;
+    font-family: var(--dt-font-ui);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sm-filter-btn i { font-size: 0.6rem; }
+
+.sm-filter-btn:hover:not(.sm-active) {
+    background: var(--gold-dim);
+    color: var(--gold);
+}
+
+.sm-filter-btn.sm-active {
+    background: linear-gradient(135deg, #FF4B2B 0%, #FF8F00 100%);
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(255,75,43,0.3);
+}
+
+/* Count badges on filter btns */
+.sm-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.25rem;
+    border-radius: 99px;
+    font-size: 0.5rem;
+    font-weight: 900;
+}
+
+.sm-badge-amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.sm-badge-emerald { background: rgba(16,185,129,0.15); color: #10b981; }
+
+/* Search */
+.sm-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+}
+
+.sm-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    font-size: 0.72rem;
+    color: var(--text-3);
+    pointer-events: none;
+    transition: color 0.2s;
+    z-index: 1;
+}
+
+.sm-search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.55rem 1rem 0.55rem 2.25rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.75rem;
+    color: var(--text-1);
+    outline: none;
+    transition: all 0.22s ease;
+}
+
+.sm-search-input::placeholder { color: var(--text-3); opacity: 0.5; }
+
+.sm-search-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-dim);
+}
+
+.sm-search-input:focus ~ .sm-search-icon,
+.sm-search-wrap:focus-within .sm-search-icon { color: var(--gold); }
+
+/* ── Table ── */
+.sm-table-wrap {
+    overflow-x: auto;
+}
+
+.sm-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sm-table thead tr {
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface) 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.sm-table th {
+    padding: 0.85rem 1.25rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.sm-th {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.58rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-3);
+}
+
+.sm-th i { font-size: 0.58rem; opacity: 0.55; }
+
+.sm-table td {
+    padding: 0.95rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.sm-row:last-child td { border-bottom: none; }
+
+.sm-row {
+    transition: background 0.15s ease;
+}
+
+.sm-row:hover {
+    background: var(--gold-dim) !important;
+}
+
+.sm-row:hover .sm-id-bar { background: var(--gold); box-shadow: 0 0 6px var(--gold-glow); }
+.sm-row:hover .sm-id-text { color: var(--gold); }
+
+/* ID Cell */
+.sm-id-cell { display: flex; align-items: center; gap: 0.5rem; }
+
+.sm-id-bar {
+    width: 3px;
+    height: 1.3rem;
+    border-radius: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: all 0.22s ease;
+}
+
+.sm-id-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+
+/* Person Cell */
+.sm-person-cell { display: flex; align-items: center; gap: 0.6rem; }
+
+.sm-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--dt-font-ui);
+    font-size: 0.62rem;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.sm-avatar-customer {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99,102,241,0.2);
+}
+
+.sm-avatar-artist {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border: 1px solid rgba(255,75,43,0.2);
+}
+
+.sm-person-name {
+    font-family: var(--dt-font-ui);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-1);
+    white-space: nowrap;
+}
+
+.sm-artist-name {
+    font-family: var(--dt-font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+/* Concept */
+.sm-concept-cell { max-width: 200px; }
+
+.sm-concept-quote {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-3);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    opacity: 0.8;
+}
+
+/* Date/Time */
+.sm-datetime-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.sm-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-1);
+    white-space: nowrap;
+}
+
+.sm-date i { font-size: 0.6rem; color: var(--text-3); opacity: 0.6; }
+
+.sm-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--text-3);
+    opacity: 0.7;
+    padding-left: 0.95rem;
+}
+
+/* Status Pills */
+.sm-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-family: var(--dt-font-ui);
+    font-size: 0.58rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.sm-status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sm-status-pending { background: rgba(245,158,11,0.1); color: #f59e0b; border-color: rgba(245,158,11,0.2); }
+.sm-status-pending .sm-status-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: status-pulse-mini 2s infinite; }
+
+.sm-status-approved { background: rgba(16,185,129,0.1); color: #10b981; border-color: rgba(16,185,129,0.2); }
+.sm-status-approved .sm-status-dot { background: #10b981; box-shadow: 0 0 6px #10b981; animation: status-pulse-mini 2s infinite; }
+
+.sm-status-done { background: rgba(99,102,241,0.1); color: #818cf8; border-color: rgba(99,102,241,0.2); }
+.sm-status-done .sm-status-dot { background: #818cf8; }
+
+.sm-status-rejected { background: rgba(239,68,68,0.1); color: #ef4444; border-color: rgba(239,68,68,0.2); }
+.sm-status-rejected .sm-status-dot { background: #ef4444; }
+
+.sm-status-cancelled { background: var(--surface-2); color: var(--text-3); border-color: var(--border); }
+.sm-status-cancelled .sm-status-dot { background: var(--text-3); opacity: 0.5; }
+
+/* Command Cell */
+.sm-cmd-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.sm-cmd-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 0.6rem;
+    border: 1px solid transparent;
+    font-family: var(--dt-font-ui);
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.sm-cmd-btn i { font-size: 0.6rem; }
+
+.sm-cmd-invoice {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border-color: rgba(255,75,43,0.2);
+}
+
+.sm-cmd-invoice:hover {
+    background: linear-gradient(135deg, #FF4B2B 0%, #FF8F00 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(255,75,43,0.3);
+    transform: translateY(-1px);
+}
+
+.sm-cmd-cancel {
+    background: rgba(239,68,68,0.07);
+    color: #ef4444;
+    border-color: rgba(239,68,68,0.15);
+}
+
+.sm-cmd-cancel:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(239,68,68,0.3);
+    transform: translateY(-1px);
+}
+
+.sm-invoiced-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #10b981;
+    opacity: 0.85;
+}
+
+.sm-invoiced-badge i { font-size: 0.65rem; }
+
+.sm-cmd-muted {
+    font-size: 0.75rem;
+    color: var(--text-3);
+    opacity: 0.3;
+}
+
+/* Empty State */
+.sm-empty-state { padding: 4rem 2rem; text-align: center; }
+
+.sm-empty-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0.3;
+}
+
+.sm-empty-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--text-3);
+    margin-bottom: 0.25rem;
+}
+
+.sm-empty-title {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-1);
+}
+
+.sm-empty-sub {
+    font-family: var(--dt-font-ui);
+    font-size: 0.68rem;
+    color: var(--text-3);
+    max-width: 300px;
+    line-height: 1.55;
+}
+
+/* ── Ivory theme overrides ── */
+[data-theme="ivory"] .sm-toolbar {
+    background: #f8f5ef;
+}
+
+[data-theme="ivory"] .sm-table thead tr {
+    background: linear-gradient(90deg, #f8f5ef 0%, #ffffff 100%);
+}
+
+[data-theme="ivory"] .sm-row:hover {
+    background: rgba(251,54,64,0.03) !important;
+}
+</style>

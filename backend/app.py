@@ -27,7 +27,7 @@ if not app.secret_key:
     raise RuntimeError(
         "CRITICAL: SECRET_KEY is not set in environment or .env. Secure starting requires a valid key."
     )
-app.permanent_session_lifetime = timedelta(hours=2)
+app.permanent_session_lifetime = timedelta(days=365)
 
 # CSRF Protection (Global)
 csrf = CSRFProtect(app)

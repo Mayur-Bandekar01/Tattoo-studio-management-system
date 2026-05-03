@@ -1,478 +1,123 @@
-<!-- 
-    SECTION: APPOINTMENTS (sec-appointments)
-    Fixed: missing status column header, table overflow, ivory theme text, filter active state, empty state CTA
--->
+<!-- SECTION: CUSTOMER APPOINTMENTS -->
+<div class="appts-wrap">
 
-<style>
-/* ── Container ── */
-.appts-wrap {
-    background   : var(--surface);
-    border       : 1px solid var(--border);
-    border-radius: var(--radius);
-    padding      : 2.5rem;
-    box-shadow   : var(--shadow);
-    width        : 100% !important;
-    position     : relative;
-}
+  <!-- Header -->
+  <div class="appts-header" style="margin-bottom: 2.5rem; border-bottom: none; padding-bottom: 0;">
+    <div>
+      <div style="width:30px; height:3px; background:var(--studio-grad); border-radius:2px; margin-bottom:0.75rem;"></div>
+      <h3 class="appts-title" style="font-family: var(--dt-font-display); font-size:2rem; font-weight:700; color:var(--text-1); letter-spacing:-0.03em;">My Sessions</h3>
+      <p class="appts-meta" style="font-family: var(--dt-font-ui); font-size:10px; font-weight:850; letter-spacing:0.25em; margin-top: 4px;">
+        TOTAL BOOKINGS: <span class="appts-count" style="color:var(--gold);">{{ total_appointments }}</span>
+      </p>
+    </div>
 
-[data-theme="ivory"] .appts-wrap {
-    background: #FFFFFF;
-    border-color: rgba(0,0,0,0.06);
-}
+    <div class="appts-controls">
+      <!-- Filter Pills -->
+      <div class="appts-filters">
+        <button onclick="filterAppts('all',this)" class="filter-btn active">All</button>
+        <button onclick="filterAppts('Pending',this)" class="filter-btn">
+          Pending{% if pending_count > 0 %} <em>{{ pending_count }}</em>{% endif %}
+        </button>
+        <button onclick="filterAppts('Approved',this)" class="filter-btn">
+          Approved{% if approved_count > 0 %} <em>{{ approved_count }}</em>{% endif %}
+        </button>
+        <button onclick="filterAppts('Done',this)" class="filter-btn">Done</button>
+        <button onclick="filterAppts('Rejected',this)" class="filter-btn">Rejected</button>
+      </div>
 
-/* ── Header ── */
-.appts-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-soft);
-}
+      <!-- Search -->
+      <div class="appts-search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="apptSearch" class="appts-search" placeholder="Search sessions…">
+      </div>
+    </div>
+  </div>
 
-.appts-title-row {
-    display        : flex;
-    justify-content: space-between;
-    align-items    : center;
-    gap            : 1.5rem;
-    flex-wrap      : wrap;
-}
+  <!-- Table -->
+  <div class="appts-table-wrap">
+    <table class="appts-table">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Artist</th>
+          <th>Concept</th>
+          <th>Date / Time</th>
+          <th>Status</th>
+          <th class="col-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if appointments %}
+          {% for a in appointments %}
+          <tr class="appt-row status-{{ a.status | lower }}"
+              data-status="{{ a.status }}"
+              data-search="{{ (a.artist_name ~ ' ' ~ a.tattoo_concept)|lower }}">
 
-.appts-filters {
-    display  : flex;
-    gap      : 0.5rem;
-    flex-wrap: wrap;
-}
+            <td><span class="cell-id">#{{ a.appointment_id }}</span></td>
+            <td><span class="cell-artist">{{ a.artist_name }}</span></td>
+            <td>
+              <span class="cell-concept" title="{{ a.tattoo_concept }}">"{{ a.tattoo_concept }}"</span>
+            </td>
+            <td>
+              <span class="cell-date">{{ a.appointment_date }}</span>
+              <span class="cell-time">{{ a.appointment_time }}</span>
+            </td>
+            <td>
+              {% if a.status == 'Pending' %}
+                <span class="badge badge-amber">Pending</span>
+              {% elif a.status == 'Approved' %}
+                <span class="badge badge-green">Approved</span>
+              {% elif a.status == 'Done' %}
+                <span class="badge badge-gold">Done</span>
+              {% elif a.status == 'Rejected' %}
+                <span class="badge badge-red">Rejected</span>
+              {% else %}
+                <span class="badge badge-muted">Cancelled</span>
+              {% endif %}
+            </td>
+            <td class="col-right">
+              <div class="appt-actions">
+                {% if a.status == 'Pending' %}
+                  <form method="POST" action="/customer/cancel/{{ a.appointment_id }}" class="inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" data-confirm="Cancel this appointment?" class="appt-btn btn-cancel" title="Cancel Booking">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </form>
+                {% endif %}
+                
+                {% if a.status == 'Rejected' or a.status == 'Cancelled' %}
+                  <form method="POST" action="/customer/delete/{{ a.appointment_id }}" class="inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" data-confirm="Delete this record?" class="appt-btn btn-delete" title="Delete Record">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                {% endif %}
 
-.filter-btn {
-    padding       : 0.5rem 1.1rem;
-    background    : rgba(255, 255, 255, 0.02);
-    border        : 1px solid var(--studio-border);
-    color         : var(--text-2);
-    border-radius : 10px;
-    font-size     : 0.72rem;
-    font-weight   : 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor        : pointer;
-    transition    : all 0.2s cubic-bezier(0.2, 0, 0, 1);
-}
+                <button class="appt-btn btn-chat" title="Chat with Artist"
+                        data-artist-id="{{ a.artist_id }}"
+                        data-artist-name="{{ a.artist_name }}"
+                        onclick="custRequestChat(this.getAttribute('data-artist-id'), this.getAttribute('data-artist-name'))">
+                  <i class="fas fa-comment-dots"></i>
+                </button>
 
-[data-theme="ivory"] .filter-btn {
-    background: #F8FAFC;
-    border-color: rgba(0,0,0,0.06);
-    color: #475569;
-}
-
-.filter-btn:hover {
-    border-color: var(--gold-dim);
-    color       : var(--text-1);
-}
-
-.filter-btn.active {
-    background: var(--gold);
-    color     : #000;
-    border-color: var(--gold);
-    box-shadow: 0 4px 15px rgba(200, 160, 64, 0.25);
-}
-
-/* ── Alert Box ── */
-.appts-alert {
-    display      : flex;
-    gap          : 1.25rem;
-    align-items  : center;
-    padding      : 1.5rem 1.75rem;
-    background   : rgba(200, 160, 64, 0.04);
-    border       : 1px solid var(--gold-dim);
-    border-radius: 16px;
-    margin-bottom: 2.5rem;
-    position     : relative;
-}
-
-.appts-alert-icon {
-    width          : 40px;
-    height         : 40px;
-    background     : var(--gold);
-    color          : #000;
-    border-radius  : 50%;
-    display        : flex;
-    align-items    : center;
-    justify-content: center;
-    font-size      : 1rem;
-    flex-shrink    : 0;
-}
-
-.appts-alert p {
-    font-size  : 0.85rem;
-    line-height: 1.6;
-    color      : var(--text-2);
-    margin     : 0;
-    font-weight: 500;
-}
-
-[data-theme="ivory"] .appts-alert p { color: #475569; }
-
-/* ── Table Layout ── */
-.appts-table-wrap {
-    width   : 100%;
-    overflow: visible;
-}
-
-.appts-table {
-    width          : 100%;
-    border-collapse: separate;
-    border-spacing : 0 0.75rem;
-}
-
-.appts-table th {
-    padding       : 0.75rem 1rem;
-    text-align    : left;
-    font-size     : 9px;
-    font-weight   : 950;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color         : var(--text-3);
-}
-
-.appt-row {
-    transition: transform 0.2s, background 0.2s;
-}
-
-.appt-row td {
-    padding   : 1.1rem 1rem;
-    background: rgba(255, 255, 255, 0.015);
-    border    : 1px solid transparent;
-    border-top: 1px solid var(--border-soft);
-    border-bottom: 1px solid var(--border-soft);
-}
-
-.appt-row td:first-child {
-    border-left  : 1px solid var(--border-soft);
-    border-radius: 14px 0 0 14px;
-}
-
-.appt-row td:last-child {
-    border-right : 1px solid var(--studio-border-light);
-    border-radius: 0 14px 14px 0;
-}
-
-[data-theme="ivory"] .appt-row td {
-    background: #FFFFFF;
-    border-color: rgba(0,0,0,0.06);
-}
-
-.appt-row:hover td {
-    background  : var(--studio-accent-soft);
-    border-color: var(--studio-gold-dim);
-}
-
-/* ── Cell Components ── */
-.col-id { width: 80px; }
-.cell-id { font-size: 10px; font-weight: 900; color: var(--studio-gold); letter-spacing: 0.05em; }
-
-.cell-primary { font-size: 0.92rem; font-weight: 800; color: var(--studio-text-primary); }
-.cell-secondary { font-size: 0.85rem; font-weight: 600; color: var(--studio-text-muted); font-family: 'Space Mono', monospace; }
-
-.cell-concept {
-    display: block;
-    max-width: 220px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--studio-text-secondary);
-}
-
-[data-theme="ivory"] .cell-concept { color: #475569; }
-
-/* ── Ref Image ── */
-.ref-thumb-wrap {
-    width: 48px; height: 36px;
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 0 auto;
-    position: relative;
-    cursor: pointer;
-    border: 1px solid var(--studio-border);
-}
-
-.ref-thumb { width:100%; height:100%; object-fit:cover; }
-.ref-thumb-overlay {
-    position: absolute; inset:0;
-    background: rgba(0,0,0,0.4);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.2s;
-    color: #fff; font-size: 0.75rem;
-}
-.ref-thumb-wrap:hover .ref-thumb-overlay { opacity: 1; }
-
-/* ── Stat Badge Base (Overriding dashboard_shared.css if needed) ── */
-.badge {
-    display: inline-flex; align-items: center; padding: 4px 12px;
-    border-radius: 20px; font-size: 0.65rem; font-weight: 950;
-    text-transform: uppercase; letter-spacing: 0.1em;
-}
-
-/* ── Actions ── */
-.appt-actions {
-    display: flex; gap: 0.6rem; justify-content: center;
-}
-
-.appt-btn {
-    width: 32px; height: 32px; border-radius: 10px;
-    border: 1px solid var(--studio-border);
-    background: rgba(255,255,255,0.02);
-    color: var(--studio-text-secondary);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.85rem;
-}
-
-[data-theme="ivory"] .appt-btn {
-    background: #F8FAFC; border-color: rgba(0,0,0,0.08); color: #475569;
-}
-
-.appt-btn:hover {
-    border-color: var(--studio-gold); color: var(--studio-gold);
-    background: var(--studio-accent-soft);
-    transform: translateY(-2px);
-}
-
-.appt-btn-danger:hover {
-    border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.1);
-}
-
-/* ── Empty State ── */
-.appts-empty { padding: 5rem 2rem; text-align: center; }
-.appts-empty-icon { font-size: 3rem; color: var(--studio-border); margin-bottom: 2rem; opacity: 0.3; }
-.appts-empty h4 { font-size: 1.5rem; font-weight: 900; color: var(--studio-text-primary); margin-bottom: 0.75rem; }
-.appts-empty p { color: var(--studio-text-muted); font-size: 0.95rem; }
-.appts-empty-link {
-    color: var(--studio-gold); font-weight: 800; cursor: pointer;
-    border-bottom: 1px solid transparent; transition: border 0.2s;
-}
-.appts-empty-link:hover { border-bottom-color: var(--studio-gold); }
-
-@media(max-width: 1024px) {
-    .appts-table thead th:nth-child(4),
-    .appts-table thead th:nth-child(7),
-    .appts-table tbody td:nth-child(4),
-    .appts-table tbody td:nth-child(7) { display: none; }
-}
-</style>
-
-<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-    <div class="appts-wrap">
-
-        <!-- Header Controls -->
-        <div class="appts-header">
-            <div class="appts-title-row" style="justify-content: flex-start;">
-                <div class="appts-filters">
-                    <button onclick="filterAppts('all', this)" class="filter-btn active">All</button>
-                    <button onclick="filterAppts('Pending', this)" class="filter-btn">Pending</button>
-                    <button onclick="filterAppts('Approved', this)" class="filter-btn">Approved</button>
-                    <button onclick="filterAppts('Done', this)" class="filter-btn">Done</button>
-                    <button onclick="filterAppts('Cancelled', this)" class="filter-btn">Cancelled</button>
-                    <button onclick="filterAppts('Rejected', this)" class="filter-btn">Rejected</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Alert -->
-        <div class="appts-alert">
-            <div class="appts-alert-icon">
-                <i class="fas fa-info"></i>
-            </div>
-            <p>
-                Manage your studio journey here. You can
-                <strong style="color:var(--studio-text-primary);border-bottom:2px solid var(--studio-gold-dim);">cancel</strong>
-                pending appointments or
-                <strong style="color:var(--studio-danger);border-bottom:2px solid rgba(239,68,68,0.2);">permanently delete</strong>
-                rejected records. Use the <i class="fas fa-comment-dots" style="color:var(--studio-gold);margin:0 2px;"></i> icon to coordinate with your artist.
-            </p>
-        </div>
-
-        <!-- Hidden action forms -->
-        {% for a in appointments %}
-        <form id="cancelForm-{{ a.appointment_id }}" method="POST" action="/customer/cancel/{{ a.appointment_id }}" style="display:none;">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        </form>
-        <form id="deleteForm-{{ a.appointment_id }}" method="POST" action="/customer/delete/{{ a.appointment_id }}" style="display:none;">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        </form>
-        {% endfor %}
-
-        <!-- Table -->
-        <div class="appts-table-wrap">
-            <table class="appts-table">
-                <thead>
-                    <tr>
-                        <th class="col-id">ID</th>
-                        <th>Artist</th>
-                        <th>Concept</th>
-                        <th style="text-align:center;">Ref</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Duration</th>
-                        <th style="text-align:center;">Status</th>
-                        <th style="text-align:center;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if appointments %}
-                    {% for a in appointments %}
-                    <tr class="appt-row" data-status="{{ a.status }}">
-
-                        <td class="col-id">
-                            <span class="cell-id">#{{ a.appointment_id }}</span>
-                        </td>
-
-                        <td>
-                            <span class="cell-primary">{{ a.artist_name }}</span>
-                        </td>
-
-                        <td class="col-concept">
-                            <span class="cell-concept" title="{{ a.tattoo_concept }}">{{ a.tattoo_concept }}</span>
-                        </td>
-
-                        <td style="text-align:center;">
-                            {% if a.reference %}
-                            <div class="ref-thumb-wrap" onclick="window.openLb(this.querySelector('img').src,'Reference Image','{{ a.tattoo_concept }}')">
-                                <img src="{{ url_for('static', filename=a.reference) }}" alt="Reference" class="ref-thumb">
-                                <div class="ref-thumb-overlay"><i class="fas fa-search-plus"></i></div>
-                            </div>
-                            {% else %}
-                            <span style="color:var(--studio-border);font-size:1rem;">—</span>
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            <span class="cell-primary">{{ a.appointment_date }}</span>
-                        </td>
-
-                        <td>
-                            <span class="cell-secondary">{{ a.appointment_time }}</span>
-                        </td>
-
-                        <td>
-                            {% if a.duration_hours %}
-                            <span class="cell-primary">
-                                {{ a.duration_hours }}
-                                <span style="font-size:0.62rem;font-weight:600;color:var(--studio-text-muted);font-style:italic;">hr</span>
-                            </span>
-                            {% else %}
-                            <span style="color:var(--studio-border);">—</span>
-                            {% endif %}
-                        </td>
-
-                        <td style="text-align:center;">
-                            {% if a.status == 'Pending' %}
-                            <span class="badge badge-warning" style="font-size:0.62rem;letter-spacing:0.08em;">Pending</span>
-                            {% elif a.status == 'Approved' %}
-                            <span class="badge badge-success" style="font-size:0.62rem;letter-spacing:0.08em;">Approved</span>
-                            {% elif a.status == 'Done' %}
-                            <span class="badge badge-success" style="font-size:0.62rem;letter-spacing:0.08em;">Done</span>
-                            {% elif a.status == 'Rejected' %}
-                            <span class="badge badge-danger" style="font-size:0.62rem;letter-spacing:0.08em;">Rejected</span>
-                            {% else %}
-                            <span class="badge badge-danger" style="font-size:0.62rem;letter-spacing:0.08em;">Cancelled</span>
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            <div class="appt-actions">
-                                <!-- Message artist -->
-                                <button
-                                    onclick="custOpenChatFromAppt('{{ a.artist_id }}','{{ a.artist_name }}','{{ a.appointment_id }}')"
-                                    class="appt-btn"
-                                    title="Message Artist">
-                                    <i class="fas fa-comment-dots"></i>
-                                </button>
-
-                                {% if a.status == 'Pending' %}
-                                <!-- Cancel -->
-                                <button
-                                    onclick="if(confirm('Cancel this appointment?')) document.getElementById('cancelForm-{{ a.appointment_id }}').submit();"
-                                    class="appt-btn appt-btn-danger"
-                                    title="Cancel Appointment">
-                                    <i class="fas fa-ban"></i>
-                                </button>
-
-                                {% elif a.status in ['Cancelled', 'Rejected'] %}
-                                <!-- Delete -->
-                                <button
-                                    onclick="if(confirm('Permanently delete this record?')) document.getElementById('deleteForm-{{ a.appointment_id }}').submit();"
-                                    class="appt-btn appt-btn-danger"
-                                    title="Delete Record">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-
-                    {% else %}
-                    <tr>
-                        <td colspan="9">
-                            <div class="appts-empty">
-                                <div class="appts-empty-icon">
-                                    <i class="fas fa-calendar-times"></i>
-                                </div>
-                                <h4>No appointments yet</h4>
-                                <p>
-                                    Your skin is a waiting canvas.
-                                    <span class="appts-empty-link" onclick="switchTab('book', document.querySelector('[data-section=book]'))">
-                                        Book your next masterpiece
-                                    </span>
-                                    today.
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-
-</div>
-</div>
-
-<script>
-    /**
-     * Appointment Logic
-     */
-    function filterAppts(status, btn) {
-        // Toggle btn active
-        document.querySelectorAll('.appts-filters .filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        // Filter rows
-        const rows = document.querySelectorAll('.appt-row');
-        rows.forEach(r => {
-            if (status === 'all') {
-                r.style.display = '';
-            } else {
-                r.style.display = r.dataset.status === status ? '' : 'none';
-            }
-        });
-    }
-
-    function custOpenChatFromAppt(artistId, artistName, apptId) {
-        switchTab('messages', document.querySelector('[data-section="messages"]'));
-        
-        // Poll for custSelectArtistThread availability (up to 2s) instead of fixed timeout
-        let attempts = 0;
-        const maxAttempts = 40;
-        const poll = setInterval(() => {
-            attempts++;
-            if (typeof window.custSelectArtistThread === 'function') {
-                clearInterval(poll);
-                window.custSelectArtistThread(artistId, artistName);
-            } else if (attempts >= maxAttempts) {
-                clearInterval(poll);
-                console.warn('custSelectArtistThread not available after 2s');
-            }
-        }, 50);
-    }
-</script>
-
+                {% if a.status == 'Approved' %}
+                   <span class="status-tip">Awaiting Session</span>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="appts-empty">
+              <i class="fas fa-calendar-alt"></i>
+              <p>No sessions found</p>
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>

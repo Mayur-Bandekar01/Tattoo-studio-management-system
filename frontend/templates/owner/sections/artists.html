@@ -1,109 +1,642 @@
 <!-- SECTION: OWNER ARTISTS -->
 
 <!-- ── Artist Induction Hub ── -->
-<div class="studio-card p-8 mb-10">
-    <div class="flex items-center gap-6 mb-10">
-        <div
-            class="w-16 h-16 rounded-2xl bg-studio-gold/10 flex items-center justify-center text-studio-gold shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-            <i class="fas fa-user-plus text-2xl"></i>
+<div class="ai-card mb-10">
+
+    <!-- LEFT: Hero Panel -->
+    <div class="ai-hero-panel">
+        <!-- Radial glow blob -->
+        <div class="ai-glow-orb"></div>
+
+        <!-- Icon badge -->
+        <div class="ai-hero-icon">
+            <i class="fa-solid fa-user-astronaut"></i>
         </div>
-        <div>
-            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight">Artist Induction</h3>
-            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-[0.2em] mt-1">Register New
-                Studio Talent Unit</p>
+
+        <h2 class="ai-hero-title">Artist<br>Induction</h2>
+        <p class="ai-hero-sub">Deploy new studio talent to the operational roster</p>
+
+        <!-- Step trail -->
+        <div class="ai-steps">
+            <div class="ai-step ai-step-done">
+                <div class="ai-step-dot"><i class="fa-solid fa-check"></i></div>
+                <div class="ai-step-text">Identity</div>
+            </div>
+            <div class="ai-step-line"></div>
+            <div class="ai-step ai-step-done">
+                <div class="ai-step-dot"><i class="fa-solid fa-check"></i></div>
+                <div class="ai-step-text">Contact</div>
+            </div>
+            <div class="ai-step-line"></div>
+            <div class="ai-step ai-step-active">
+                <div class="ai-step-dot"><i class="fa-solid fa-bolt"></i></div>
+                <div class="ai-step-text">Deploy</div>
+            </div>
+        </div>
+
+        <!-- Studio badge -->
+        <div class="ai-studio-badge">
+            <i class="fa-solid fa-circle-dot"></i> Dragon Studio · Active
         </div>
     </div>
 
-    <form method="POST" action="/owner/artist/add" class="space-y-8">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <!-- RIGHT: Form Panel -->
+    <div class="ai-form-panel">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="space-y-2">
-                <label
-                    class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Universal
-                    ID</label>
-                <input class="studio-input" type="text" name="artist_id" placeholder="DRAG-ART-XXX" required>
+        <!-- Section: Identity -->
+        <div class="ai-field-group">
+            <div class="ai-group-label">
+                <i class="fa-solid fa-id-card"></i> Identity
             </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Legal
-                    Designation</label>
-                <input class="studio-input" type="text" name="artist_name" placeholder="Full Name" required>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Neural
-                    Contact (Email)</label>
-                <input class="studio-input" type="email" name="artist_email" placeholder="artist@dragon.com" required>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Comms
-                    Frequency (Phone)</label>
-                <input class="studio-input" type="text" name="phone" placeholder="+91 XXXXX XXXXX" required>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Primary
-                    Discipline</label>
-                <select class="studio-input" name="specialisation" required>
-                    <option value="" disabled selected>Select Specialty...</option>
-                    <option value="Tattooing">Tattooing (Artist 1)</option>
-                    <option value="Sketching">Sketching (Artist 2)</option>
-                    <option value="Tattoo Removal">Tattoo Removal (Artist 3)</option>
-                </select>
-            </div>
-            <div class="space-y-2">
-                <label class="text-[10px] font-black text-studio-text-secondary uppercase tracking-widest ml-1">Access
-                    Protocol (Password)</label>
-                <input class="studio-input" type="text" name="password" placeholder="Min. 8 Chars" required>
+            <div class="ai-field-row">
+                <div class="ai-field">
+                    <label class="ai-label">Universal ID</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-fingerprint ai-input-icon"></i>
+                        <input class="ai-input" type="text" name="artist_id" placeholder="DRAG-ART-XXX" form="inductForm" required>
+                    </div>
+                </div>
+                <div class="ai-field">
+                    <label class="ai-label">Legal Designation</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-user-pen ai-input-icon"></i>
+                        <input class="ai-input" type="text" name="artist_name" placeholder="Full Name" form="inductForm" required>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button type="submit" class="btn-gold !px-10 !py-4 text-xs">
-            <i class="fas fa-id-badge text-sm"></i> Deploy Unit
-        </button>
-    </form>
+        <!-- Section: Contact -->
+        <div class="ai-field-group">
+            <div class="ai-group-label">
+                <i class="fa-solid fa-tower-broadcast"></i> Comms
+            </div>
+            <div class="ai-field-row">
+                <div class="ai-field">
+                    <label class="ai-label">Neural Contact (Email)</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-envelope ai-input-icon"></i>
+                        <input class="ai-input" type="email" name="artist_email" placeholder="artist@dragon.com" form="inductForm" required>
+                    </div>
+                </div>
+                <div class="ai-field">
+                    <label class="ai-label">Comms Frequency (Phone)</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-phone ai-input-icon"></i>
+                        <input class="ai-input" type="text" name="phone" placeholder="+91 XXXXX XXXXX" form="inductForm" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Access -->
+        <div class="ai-field-group">
+            <div class="ai-group-label">
+                <i class="fa-solid fa-shield-halved"></i> Access
+            </div>
+            <div class="ai-field-row">
+                <div class="ai-field">
+                    <label class="ai-label">Primary Discipline</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-wand-magic-sparkles ai-input-icon"></i>
+                        <select class="ai-input ai-select" name="specialisation" form="inductForm" required>
+                            <option value="" disabled selected>Select Specialty...</option>
+                            <option value="Tattooing">Tattooing</option>
+                            <option value="Sketching">Sketching</option>
+                            <option value="Tattoo Removal">Tattoo Removal</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ai-field">
+                    <label class="ai-label">Access Protocol (Password)</label>
+                    <div class="ai-input-wrap">
+                        <i class="fa-solid fa-lock ai-input-icon"></i>
+                        <input class="ai-input" type="password" name="password" id="artistInductPw" placeholder="Min. 8 characters" form="inductForm" required>
+                        <button type="button" class="ai-eye-btn" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color=''" onclick="togglePw('artistInductPw', this)">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="ai-form-footer">
+            <div class="ai-form-footer-note">
+                <i class="fa-solid fa-circle-info"></i>
+                All fields are required. The unit will be assigned login credentials immediately.
+            </div>
+            <form method="POST" action="/owner/artist/add" id="inductForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="ai-deploy-btn">
+                    <span class="ai-deploy-icon"><i class="fas fa-satellite-dish"></i></span>
+                    <span class="ai-deploy-label">Deploy Unit</span>
+                    <i class="fa-solid fa-arrow-right ai-deploy-arrow"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 
+<style>
+/* ══════════════════════════════════════
+   ARTIST INDUCTION CARD — Premium v2
+══════════════════════════════════════ */
+
+.ai-card {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--border-soft);
+    position: relative;
+    transition: box-shadow 0.4s ease;
+}
+
+.ai-card:hover {
+    box-shadow: var(--shadow-lg), 0 0 40px -10px var(--gold-glow);
+}
+
+@media (max-width: 900px) {
+    .ai-card { grid-template-columns: 1fr; }
+}
+
+/* ── Hero Panel ── */
+.ai-hero-panel {
+    background: linear-gradient(160deg, #18181b 0%, #09090b 100%);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+[data-theme="ivory"] .ai-hero-panel {
+    background: linear-gradient(160deg, #1a1a1e 0%, #0d0d10 100%);
+}
+
+.ai-glow-orb {
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,75,43,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    animation: ai-orb-pulse 4s ease-in-out infinite;
+}
+
+@keyframes ai-orb-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+}
+
+.ai-hero-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.875rem;
+    background: linear-gradient(135deg, var(--gold) 0%, #FF8F00 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(255,75,43,0.35);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.ai-hero-title {
+    font-family: var(--dt-font-display);
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    position: relative;
+    z-index: 1;
+    margin-top: 0.25rem;
+}
+
+.ai-hero-sub {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.55;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.5rem;
+}
+
+/* Steps */
+.ai-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.ai-step {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.4rem 0;
+}
+
+.ai-step-dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.04);
+}
+
+.ai-step-done .ai-step-dot {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: #10B981;
+    color: #10B981;
+}
+
+.ai-step-active .ai-step-dot {
+    background: linear-gradient(135deg, var(--gold), #FF8F00);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255,75,43,0.4);
+}
+
+.ai-step-text {
+    font-family: var(--dt-font-ui);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+}
+
+.ai-step-done .ai-step-text { color: #10B981; }
+.ai-step-active .ai-step-text { color: rgba(255,255,255,0.9); }
+
+.ai-step-line {
+    width: 1.5px;
+    height: 0.75rem;
+    background: rgba(255,255,255,0.08);
+    margin-left: 0.73rem;
+}
+
+/* Studio badge */
+.ai-studio-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    padding: 0.35rem 0.75rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 99px;
+    font-family: var(--dt-font-ui);
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+    align-self: flex-start;
+    position: relative;
+    z-index: 1;
+}
+
+.ai-studio-badge i { color: #10B981; font-size: 0.5rem; }
+
+/* ── Form Panel ── */
+.ai-form-panel {
+    background: var(--surface);
+    padding: 2rem 2.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Field Groups */
+.ai-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ai-group-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.ai-group-label i { font-size: 0.65rem; opacity: 0.8; }
+
+.ai-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 680px) {
+    .ai-field-row { grid-template-columns: 1fr; }
+}
+
+.ai-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ai-label {
+    font-family: var(--dt-font-ui);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+}
+
+/* Input Wrapper */
+.ai-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ai-input-icon {
+    position: absolute;
+    left: 0.9rem;
+    font-size: 0.7rem;
+    color: var(--text-3);
+    opacity: 0.5;
+    pointer-events: none;
+    transition: color 0.2s, opacity 0.2s;
+    z-index: 1;
+}
+
+.ai-input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.9rem 0.65rem 2.4rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.82rem;
+    color: var(--text-1);
+    outline: none;
+    transition: all 0.22s ease;
+}
+
+.ai-input::placeholder { color: var(--text-3); opacity: 0.5; }
+
+.ai-input:focus {
+    border-color: var(--gold);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px var(--gold-dim);
+}
+
+.ai-input:focus + .ai-input-icon,
+.ai-input-wrap:focus-within .ai-input-icon {
+    color: var(--gold);
+    opacity: 1;
+}
+
+/* Select specific reset */
+.ai-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    background-size: 11px;
+    padding-right: 2.2rem;
+    cursor: pointer;
+}
+
+/* Eye button */
+.ai-eye-btn {
+    position: absolute;
+    right: 0.85rem;
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    color: var(--text-3);
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+    z-index: 1;
+}
+
+.ai-eye-btn:hover { color: var(--gold); }
+
+/* ── Footer ── */
+.ai-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-soft);
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+.ai-form-footer-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.65rem;
+    color: var(--text-3);
+    line-height: 1.55;
+    max-width: 320px;
+}
+
+.ai-form-footer-note i {
+    color: var(--gold);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    opacity: 0.7;
+}
+
+/* Deploy Button */
+.ai-deploy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.5rem 0.7rem 0.7rem;
+    background: linear-gradient(135deg, #FF4B2B 0%, #FF8F00 100%);
+    border: none;
+    border-radius: 0.875rem;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(255,75,43,0.3);
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ai-deploy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255,75,43,0.4);
+    filter: brightness(1.05);
+}
+
+.ai-deploy-btn:active { transform: translateY(0); }
+
+.ai-deploy-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.55rem;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.ai-deploy-label {
+    font-family: var(--dt-font-ui);
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #fff;
+}
+
+.ai-deploy-arrow {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.7);
+    transition: transform 0.3s ease;
+}
+
+.ai-deploy-btn:hover .ai-deploy-arrow {
+    transform: translateX(3px);
+    color: #fff;
+}
+</style>
+
 <!-- ── Active Operational Units ── -->
-<div class="studio-card overflow-hidden p-8">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
+<div class="studio-card overflow-hidden p-8" id="operationalUnitsCard">
+    <div class="section-row mb-8">
         <div>
-            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Operational Units</h3>
-            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Active Studio Talent
-                Management</p>
+            <h3 class="text-2xl font-black tracking-tight" style="color: var(--text-1); font-family: var(--dt-font-display);">Operational Units</h3>
+            <p class="text-[11px] font-black uppercase tracking-[0.15em] mt-1" style="color: var(--text-3);">Active studio talent management</p>
         </div>
-        <div class="sync-status-badge">
-            Sync Status: Online
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+            <div class="status-pill emerald">Sync Status: Online</div>
+            <div class="ou-count-badge">
+                {% if artists %}{{ artists|length }}{% else %}0{% endif %} Units
+            </div>
         </div>
     </div>
 
-    <div class="dash-table-container">
-        <table class="dash-table">
+    <div class="ou-table-wrap">
+        <table class="ou-table">
             <thead>
                 <tr>
-                    <th class="w-24">Unit ID</th>
-                    <th>Designation</th>
-                    <th>Comm Channel</th>
-                    <th>Core Discipline</th>
-                    <th class="text-center">Protocol</th>
+                    <th>
+                        <span class="ou-th-inner"><i class="fa-solid fa-fingerprint"></i> Unit ID</span>
+                    </th>
+                    <th>
+                        <span class="ou-th-inner"><i class="fa-solid fa-user-pen"></i> Designation</span>
+                    </th>
+                    <th>
+                        <span class="ou-th-inner"><i class="fa-solid fa-envelope"></i> Comm Channel</span>
+                    </th>
+                    <th>
+                        <span class="ou-th-inner"><i class="fa-solid fa-wand-magic-sparkles"></i> Core Discipline</span>
+                    </th>
+                    <th style="text-align:center;">
+                        <span class="ou-th-inner" style="justify-content:center;"><i class="fa-solid fa-shield-halved"></i> Protocol</span>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 {% if artists %}
                 {% for artist in artists %}
-                <tr class="group">
-                    <td class="font-mono text-studio-gold font-bold">#{{ artist.artist_id }}</td>
-                    <td class="font-black text-studio-text text-sm uppercase">{{ artist.artist_name }}</td>
-                    <td class="text-xs font-bold text-studio-text-secondary tracking-wide">{{ artist.artist_email }}
-                    </td>
+                <tr class="ou-row">
+                    <!-- Unit ID -->
                     <td>
-                        <span class="status-pill gold">
-                            {{ artist.specialisation }}
-                        </span>
+                        <div class="ou-id-cell">
+                            <span class="ou-id-bar"></span>
+                            <span class="ou-id-text">#{{ artist.artist_id }}</span>
+                        </div>
                     </td>
-                    <td class="text-center">
+
+                    <!-- Designation with Avatar -->
+                    <td>
+                        <div class="ou-artist-cell">
+                            <div class="ou-avatar">
+                                {{ artist.artist_name[:2]|upper }}
+                            </div>
+                            <div class="ou-artist-info">
+                                <span class="ou-artist-name">{{ artist.artist_name }}</span>
+                                <span class="ou-artist-tag">Studio Talent</span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Email -->
+                    <td>
+                        <div class="ou-email-cell">
+                            <i class="fa-solid fa-at ou-email-icon"></i>
+                            <span class="ou-email-text">{{ artist.artist_email }}</span>
+                        </div>
+                    </td>
+
+                    <!-- Specialty Badge (dynamic) -->
+                    <td>
+                        {% set spec = artist.specialisation | lower %}
+                        {% if 'tattoo removal' in spec or 'removal' in spec or 'laser' in spec %}
+                            <span class="ou-spec-badge ou-spec-removal">
+                                <i class="fa-solid fa-burst"></i>
+                                {{ artist.specialisation }}
+                            </span>
+                        {% elif 'sketch' in spec or 'draw' in spec %}
+                            <span class="ou-spec-badge ou-spec-sketch">
+                                <i class="fa-solid fa-pencil"></i>
+                                {{ artist.specialisation }}
+                            </span>
+                        {% else %}
+                            <span class="ou-spec-badge ou-spec-tattoo">
+                                <i class="fa-solid fa-pen-nib"></i>
+                                {{ artist.specialisation }}
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Action -->
+                    <td style="text-align:center;">
                         <form method="POST" action="/owner/artist/delete/{{ artist.artist_id }}" class="inline">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" onclick="return confirm('Decommission this operational unit?')"
-                                class="action-btn-danger">
+                            <button type="submit"
+                                    data-confirm="Decommission this operational unit?"
+                                    class="ou-decommission-btn"
+                                    title="Decommission {{ artist.artist_name }}">
                                 <i class="fas fa-user-minus"></i>
                             </button>
                         </form>
@@ -112,10 +645,13 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="5" class="py-24 text-center">
-                        <div class="flex flex-col items-center opacity-30">
-                            <i class="fas fa-users-slash text-4xl mb-6"></i>
-                            <p class="text-xs font-black uppercase tracking-widest">No Talent Units Registered</p>
+                    <td colspan="5" class="ou-empty-state">
+                        <div class="ou-empty-inner">
+                            <div class="ou-empty-icon">
+                                <i class="fas fa-users-slash"></i>
+                            </div>
+                            <p class="ou-empty-title">No Talent Units Registered</p>
+                            <p class="ou-empty-sub">Use the Artist Induction form above to deploy new units.</p>
                         </div>
                     </td>
                 </tr>
@@ -124,3 +660,308 @@
         </table>
     </div>
 </div>
+
+<!-- ── Artists Section Styles ── -->
+<style>
+/* ── Count Badge ── */
+.ou-count-badge {
+    padding: 0.3rem 0.8rem;
+    background: var(--gold-dim);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    font-family: var(--dt-font-ui);
+    font-size: 0.62rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+/* ── Table Wrapper ── */
+.ou-table-wrap {
+    border-radius: 0.875rem;
+    border: 1px solid var(--border-soft);
+    overflow: hidden;
+    overflow-x: auto;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* ── Table Base ── */
+.ou-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* ── Header ── */
+.ou-table thead tr {
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface) 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.ou-table th {
+    padding: 0.9rem 1.25rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.ou-th-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-3);
+}
+
+.ou-th-inner i {
+    font-size: 0.65rem;
+    opacity: 0.6;
+}
+
+/* ── Body Rows ── */
+.ou-row {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.18s ease, transform 0.18s ease;
+    position: relative;
+}
+
+.ou-row:last-child {
+    border-bottom: none;
+}
+
+.ou-row:hover {
+    background: var(--gold-dim) !important;
+}
+
+.ou-row:hover .ou-id-bar {
+    background: var(--gold);
+    box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.ou-row:hover .ou-id-text {
+    color: var(--gold);
+}
+
+.ou-table td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+}
+
+/* ── ID Cell ── */
+.ou-id-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.ou-id-bar {
+    width: 3px;
+    height: 1.4rem;
+    border-radius: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.ou-id-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+    transition: color 0.2s ease;
+}
+
+/* ── Artist Cell ── */
+.ou-artist-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ou-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.6rem;
+    background: linear-gradient(135deg, var(--gold), rgba(255,75,43,0.6));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--dt-font-ui);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px var(--gold-glow);
+}
+
+.ou-artist-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.ou-artist-name {
+    font-family: var(--dt-font-ui);
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-1);
+    line-height: 1.2;
+}
+
+.ou-artist-tag {
+    font-family: var(--dt-font-ui);
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+}
+
+/* ── Email Cell ── */
+.ou-email-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ou-email-icon {
+    font-size: 0.65rem;
+    color: var(--text-3);
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.ou-email-text {
+    font-family: var(--dt-font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: 0.01em;
+}
+
+/* ── Specialty Badges ── */
+.ou-spec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-family: var(--dt-font-ui);
+    font-size: 0.58rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.ou-spec-badge i {
+    font-size: 0.6rem;
+}
+
+.ou-spec-tattoo {
+    background: rgba(251, 54, 64, 0.1);
+    color: #fb3640;
+    border-color: rgba(251, 54, 64, 0.25);
+}
+
+.ou-spec-removal {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.ou-spec-sketch {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+/* ── Decommission Button ── */
+.ou-decommission-btn {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 68, 68, 0.06);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ou-decommission-btn:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* ── Empty State ── */
+.ou-empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.ou-empty-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.35;
+}
+
+.ou-empty-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--text-3);
+    margin-bottom: 0.5rem;
+}
+
+.ou-empty-title {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-1);
+}
+
+.ou-empty-sub {
+    font-family: var(--dt-font-ui);
+    font-size: 0.68rem;
+    color: var(--text-3);
+    max-width: 260px;
+    line-height: 1.5;
+}
+
+/* ── Light (Ivory) Theme Overrides ── */
+[data-theme="ivory"] .ou-table thead tr {
+    background: linear-gradient(90deg, #f8f5ef 0%, #ffffff 100%);
+}
+
+[data-theme="ivory"] .ou-row:hover {
+    background: rgba(251, 54, 64, 0.03) !important;
+}
+</style>
+
+<!-- Artists Logic Engine -->

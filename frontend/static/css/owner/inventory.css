@@ -1,0 +1,25 @@
+
+/* ── INVENTORY SECTION STYLES ── */
+
+.stock-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+
+.stock-low {
+    color: var(--red);
+}
+
+.stock-adequate {
+    color: var(--green);
+}
+
+.inventory-log-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+}

@@ -1,175 +1,432 @@
-<!-- ═══════════════════════════════════════
-     SECTION: OWNER INVOICE
-     Refactored: Utility-First Premium
-     ═══════════════════════════════════════ -->
-
-<!-- Invoice Creation Portal -->
-<div class="studio-card p-6 border-l-4 border-indigo-500">
-    <div class="flex items-center gap-6 mb-8">
-        <div
-            class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-2xl shadow-inner">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
-        </div>
-        <div>
-            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Create Invoice</h3>
-            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-1">Generate billing for
-                completed sessions</p>
-        </div>
-    </div>
-
-    <!-- [DATA-FLOW]: Submits to POST /owner/invoice/generate -->
-    <form method="POST" action="/owner/invoice/generate" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Select
-                    Appointment</label>
-                <select class="studio-input w-full" name="appointment_id" id="apptSelect" required>
-                    <option value="">Select completed session...</option>
-                    {% if appointments %}
-                    {% for a in appointments %}
-                    {% if a.status == 'Done' and not a.has_invoice %}
-                    <option value="{{ a.appointment_id }}">
-                        #{{ a.appointment_id }} — {{ a.customer_name }} ({{ a.appointment_date }})
-                    </option>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Service
-                    Category</label>
-                <select class="studio-input w-full" name="concept_type" required>
-                    <option value="">Select...</option>
-                    <option>Tattoo</option>
-                    <option>Touch-up</option>
-                    <option>Removal</option>
-                    <option>Sketch</option>
-                </select>
-            </div>
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Amount (₹)</label>
-                <div class="relative group">
-                    <span
-                        class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-indigo-500 group-focus-within:scale-110 transition-transform">₹</span>
-                    <input class="studio-input w-full pl-10" type="number" name="total_amt" id="totalAmt"
-                        placeholder="0.00" step="any" min="0" required>
+<div class="in-container">
+    <!-- ── Header: Fiscal Settlement Engine ── -->
+    <header class="in-header">
+        <div class="in-header-meta">
+            <div class="in-title-group">
+                <h2 class="in-title">Fiscal Settlement Engine</h2>
+                <div class="in-subtitle">
+                    <span class="in-live-dot"></span>
+                    Billing Status: <span class="in-billing-status">Ready for Transaction Generation</span>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label class="text-xs font-black uppercase text-studio-text-muted tracking-wider">Invoice Date</label>
-                <input class="studio-input w-full" type="date" name="generated_date" required>
+            <div class="in-metrics">
+                <div class="in-metric-chip in-metric-indigo">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span class="in-metric-val">{{ invoices | selectattr('pay_status', 'equalto', 'Pending') | list | length }}</span>
+                    <span class="in-metric-lbl">Awaiting Payment</span>
+                </div>
+                <div class="in-metric-chip in-metric-emerald">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span class="in-metric-val">{{ invoices | selectattr('pay_status', 'equalto', 'Paid') | list | length }}</span>
+                    <span class="in-metric-lbl">Settled Records</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Block 1: Generation Terminal ── -->
+    <div class="in-gen-card">
+        <div class="in-card-header">
+            <div class="in-card-icon in-card-icon-indigo">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+            <div class="in-card-title-wrap">
+                <h3 class="in-card-title">Transaction Generation</h3>
+                <p class="in-card-sub">Initialize billing protocol for completed sessions</p>
             </div>
         </div>
 
-        <div class="flex justify-end pt-2">
-            <button type="submit" class="studio-btn-primary px-8">
-                <i class="fa-solid fa-file-signature mr-2"></i> Create Invoice
-            </button>
-        </div>
-    </form>
-</div>
+        <form method="POST" action="/owner/invoice/generate" class="in-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="in-form-grid">
+                <div class="in-field">
+                    <label class="in-label">Operational Session</label>
+                    <div class="in-input-wrap">
+                        <i class="fa-solid fa-calendar-check in-lead-icon"></i>
+                        <select class="in-select" name="appointment_id" id="apptSelect" required>
+                            <option value="">Select completed session...</option>
+                            {% if appointments %}
+                            {% for a in appointments %}
+                            {% if a.status == 'Done' and not a.has_invoice %}
+                            <option value="{{ a.appointment_id }}">
+                                #{{ a.appointment_id }} — {{ a.customer_name }} ({{ a.appointment_date }})
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
 
-<!-- Invoice History -->
-<div class="studio-card p-6 mt-8 border-l-4 border-emerald-500">
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Invoice History</h3>
-            <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-1">Manage generated
-                billing records</p>
-        </div>
-        <div
-            class="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter">
-            Archive Mode
-        </div>
+                <div class="in-field">
+                    <label class="in-label">Service Classification</label>
+                    <div class="in-input-wrap">
+                        <i class="fa-solid fa-tags in-lead-icon"></i>
+                        <select class="in-select" name="concept_type" required>
+                            <option value="">Select Category...</option>
+                            <option>Tattoo</option>
+                            <option>Touch-up</option>
+                            <option>Removal</option>
+                            <option>Sketch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="in-field">
+                    <label class="in-label">Net Settlement Amount (₹)</label>
+                    <div class="in-input-wrap">
+                        <i class="fa-solid fa-indian-rupee-sign in-lead-icon"></i>
+                        <input class="in-input" type="number" name="total_amt" id="totalAmt" placeholder="0.00" step="any" min="0" required>
+                    </div>
+                </div>
+
+                <div class="in-field">
+                    <label class="in-label">Settlement Date</label>
+                    <div class="in-input-wrap">
+                        <i class="fa-solid fa-clock in-lead-icon"></i>
+                        <input class="in-input" type="date" name="generated_date" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="in-form-footer">
+                <button type="submit" class="in-btn-primary">
+                    <i class="fa-solid fa-file-signature"></i>
+                    Execute Billing Protocol
+                </button>
+            </div>
+        </form>
     </div>
 
-    <div class="overflow-x-auto -mx-6 px-6">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="border-b border-studio-border bg-studio-surface-light/30">
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Invoice ID</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Session ID</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Category</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Total
-                        Yield</th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Date
-                    </th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Status
-                    </th>
-                    <th class="py-4 px-4 text-[10px] font-black uppercase text-studio-text-muted tracking-widest">
-                        Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-studio-border">
-                {% if invoices %}
-                {% for inv in invoices %}
-                <tr class="group hover:bg-white/5 transition-all duration-200">
-                    <td class="py-4 px-4">
-                        <span class="font-mono text-indigo-500 font-black text-xs">#INV-{{ inv.invoice_id }}</span>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span class="font-black text-studio-text-primary text-xs">#{{ inv.appointment_id }}</span>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span
-                            class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest bg-studio-surface-light/50 px-2 py-0.5 rounded">{{
-                            inv.concept_type }}</span>
-                    </td>
-                    <td class="py-4 px-4">
-                        <span class="font-black text-studio-text-primary">₹{{ inv.total_amt }}</span>
-                    </td>
-                    <td class="py-4 px-4 text-xs font-bold text-studio-text-muted">
-                        {{ inv.generated_date }}
-                    </td>
-                    <td class="py-4 px-4">
-                        {% if inv.pay_status=='Paid' %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Paid
-                        </span>
-                        {% else %}
-                        <span
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                            Pending
-                        </span>
-                        {% endif %}
-                    </td>
-                    <td class="py-4 px-4">
-                        {% if inv.pay_status == 'Pending' %}
-                        <button onclick="prefillPayment('{{ inv.invoice_id }}', '{{ inv.total_amt }}')"
-                            class="group/btn relative px-4 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
-                            <i
-                                class="fa-solid fa-hand-holding-dollar mr-1 group-hover/btn:translate-y-[-1px] transition-transform"></i>
-                            Record
-                        </button>
-                        {% else %}
-                        <div
-                            class="flex items-center gap-1.5 text-emerald-500 font-black text-[10px] uppercase tracking-widest">
-                            <i class="fa-solid fa-check-double text-xs"></i> Settled
-                        </div>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="7" class="py-20 text-center">
-                        <div class="flex flex-col items-center justify-center opacity-20 group">
-                            <i class="fas fa-ghost text-5xl mb-4 group-hover:animate-bounce transition-all"></i>
-                            <p class="text-xs font-black uppercase tracking-[0.2em] text-studio-text-muted">No history
-                                found in billing archive</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
+    <!-- ── Block 2: Fiscal Archive ── -->
+    <div class="in-archive-card">
+        <div class="in-card-header">
+            <div class="in-card-icon in-card-icon-emerald">
+                <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <div class="in-card-title-wrap">
+                <h3 class="in-card-title">Fiscal Archive</h3>
+                <p class="in-card-sub">Audited transaction records and billing history</p>
+            </div>
+        </div>
+
+        <div class="in-table-wrap">
+            <table class="in-table">
+                <thead>
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>Session</th>
+                        <th>Classification</th>
+                        <th>Total Yield</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                        <th class="text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if invoices %}
+                    {% for inv in invoices %}
+                    <tr class="in-row">
+                        <td>
+                            <span class="in-id-badge">#INV-{{ inv.invoice_id }}</span>
+                        </td>
+                        <td>
+                            <span class="in-session-link">#{{ inv.appointment_id }}</span>
+                        </td>
+                        <td>
+                            <span class="in-tag">{{ inv.concept_type }}</span>
+                        </td>
+                        <td>
+                            <span class="in-amount">₹{{ "{:,.2f}".format(inv.total_amt | float) }}</span>
+                        </td>
+                        <td>
+                            <span class="in-date">{{ inv.generated_date }}</span>
+                        </td>
+                        <td>
+                            {% if inv.pay_status == 'Paid' %}
+                            <div class="in-status in-status-paid">
+                                <span class="in-status-dot"></span> Paid
+                            </div>
+                            {% else %}
+                            <div class="in-status in-status-pending">
+                                <span class="in-status-dot"></span> Pending
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if inv.pay_status == 'Pending' %}
+                            <button onclick="prefillPayment('{{ inv.invoice_id }}', '{{ inv.total_amt }}')" class="in-btn-action">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> Record
+                            </button>
+                            {% else %}
+                            <div class="in-settled-mark">
+                                <i class="fa-solid fa-check-double"></i> Settled
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="in-empty">
+                                <i class="fa-solid fa-ghost"></i>
+                                No fiscal records detected in vault
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<style>
+/* ══════════════════════════════════════
+   INVOICE — Rich Color System v2
+   Palette: Ivory Canvas · Indigo · Emerald · Amber · Violet
+   ══════════════════════════════════════ */
+
+/* ── Container ── */
+.in-container {
+    padding: 1.75rem;
+    background: var(--surface-1);
+    border-radius: 1.75rem;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* ── Header ── */
+.in-header { margin-bottom: 2.25rem; }
+.in-header-meta {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 1.75rem; border-bottom: 1px solid var(--border-soft);
+}
+
+.in-title {
+    font-size: 2rem; font-weight: 900; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--text-1) 30%, #6366f1 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.in-subtitle {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem;
+    font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 0.4rem;
+}
+.in-billing-status { color: #6366f1; font-weight: 900; }
+
+.in-live-dot {
+    width: 7px; height: 7px; background: #6366f1; border-radius: 50%;
+    box-shadow: 0 0 10px #6366f1, 0 0 20px rgba(99,102,241,0.3);
+    animation: in-pulse 2s infinite;
+}
+@keyframes in-pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
+
+/* ── Metric Chips ── */
+.in-metrics { display: flex; gap: 1rem; }
+.in-metric-chip {
+    padding: 1rem 1.5rem; border-radius: 1.25rem;
+    display: flex; flex-direction: column; min-width: 140px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.in-metric-chip:hover { transform: translateY(-3px); }
+.in-metric-chip i { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.in-metric-val { font-size: 1.5rem; font-weight: 900; }
+.in-metric-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.1rem; }
+
+.in-metric-indigo {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(79,70,229,0.06) 100%);
+    border: 1px solid rgba(99,102,241,0.3);
+    box-shadow: 0 4px 20px rgba(99,102,241,0.1);
+}
+.in-metric-indigo i { color: #6366f1; }
+.in-metric-indigo .in-metric-val { color: #4f46e5; }
+.in-metric-indigo .in-metric-lbl { color: #4338ca; }
+
+.in-metric-emerald {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(5,150,105,0.06) 100%);
+    border: 1px solid rgba(16,185,129,0.3);
+    box-shadow: 0 4px 20px rgba(16,185,129,0.1);
+}
+.in-metric-emerald i { color: #10b981; }
+.in-metric-emerald .in-metric-val { color: #059669; }
+.in-metric-emerald .in-metric-lbl { color: #047857; }
+
+/* ── Cards ── */
+.in-gen-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-top: 3px solid #6366f1;
+    border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+}
+.in-archive-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-top: 3px solid #10b981;
+    border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(16,185,129,0.08);
+}
+
+.in-card-header { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2rem; }
+.in-card-icon {
+    width: 3.25rem; height: 3.25rem; border-radius: 1rem;
+    display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.in-card-icon-indigo {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    color: #fff; border: none;
+}
+.in-card-icon-emerald {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: #fff; border: none;
+}
+
+.in-card-title { font-size: 1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.06em; }
+.in-card-sub { font-size: 0.65rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+
+/* ── Form ── */
+.in-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.in-field { display: flex; flex-direction: column; gap: 0.6rem; }
+.in-label {
+    font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--text-3);
+}
+
+.in-input-wrap { position: relative; display: flex; align-items: center; }
+.in-lead-icon { position: absolute; left: 1rem; font-size: 0.8rem; color: #6366f1; pointer-events: none; opacity: 0.7; }
+
+.in-input, .in-select {
+    width: 100%; background: var(--surface-3);
+    border: 1.5px solid var(--border-soft); border-radius: 0.875rem;
+    padding: 0.8rem 1rem 0.8rem 2.75rem; color: var(--text-1);
+    font-size: 0.8rem; font-weight: 700; outline: none; transition: all 0.25s;
+}
+.in-select { appearance: none; }
+.in-input:focus, .in-select:focus {
+    border-color: #6366f1; background: var(--surface-1);
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.08), 0 2px 8px rgba(99,102,241,0.1);
+}
+.in-input-wrap:focus-within .in-lead-icon { opacity: 1; }
+
+.in-form-footer { display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-soft); }
+.in-btn-primary {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+    color: #fff; padding: 0.9rem 2rem; border-radius: 1rem; border: none;
+    font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;
+    cursor: pointer; display: flex; align-items: center; gap: 0.85rem;
+    transition: all 0.3s; box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+}
+.in-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(99,102,241,0.4);
+    filter: brightness(1.1);
+}
+.in-btn-primary:active { transform: translateY(0); }
+
+/* ── Table ── */
+.in-table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; }
+.in-table th {
+    padding: 0.875rem 1rem; text-align: left;
+    font-size: 0.6rem; font-weight: 800; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    border-bottom: 2px solid var(--border-soft);
+}
+
+.in-row { background: var(--surface-3); transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1); }
+.in-row:hover { background: var(--surface-1); transform: translateX(5px); box-shadow: -4px 0 0 #6366f1; }
+.in-row td { padding: 1rem; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+.in-row td:first-child { border-left: 1px solid var(--border-soft); border-radius: 0.875rem 0 0 0.875rem; padding-left: 1.5rem; }
+.in-row td:last-child { border-right: 1px solid var(--border-soft); border-radius: 0 0.875rem 0.875rem 0; }
+
+/* ── Cell Styles ── */
+.in-id-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 900;
+    color: #6366f1; background: rgba(99,102,241,0.1); padding: 0.25rem 0.6rem;
+    border-radius: 0.5rem; border: 1px solid rgba(99,102,241,0.2);
+}
+.in-session-link {
+    font-weight: 900; font-size: 0.8rem; color: var(--text-2);
+    font-family: 'JetBrains Mono', monospace;
+}
+.in-tag {
+    padding: 0.3rem 0.7rem; border-radius: 0.6rem; font-size: 0.62rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); color: #6366f1;
+}
+.in-amount {
+    font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 0.95rem;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.in-date { font-size: 0.68rem; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+/* ── Status Badges ── */
+.in-status {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.9rem; border-radius: 2rem;
+    font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.in-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+.in-status-paid {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08));
+    color: #059669; border: 1px solid rgba(16,185,129,0.3);
+}
+.in-status-paid .in-status-dot { background: #10b981; box-shadow: 0 0 6px #10b981; }
+
+.in-status-pending {
+    background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(234,88,12,0.08));
+    color: #d97706; border: 1px solid rgba(245,158,11,0.3);
+}
+.in-status-pending .in-status-dot { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: in-pulse 1.2s infinite; }
+
+/* ── Action Cells ── */
+.in-btn-action {
+    background: linear-gradient(135deg, #818cf8, #6366f1); color: #fff;
+    padding: 0.5rem 1.1rem; border-radius: 0.75rem; border: none;
+    font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
+    cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.25);
+}
+.in-btn-action:hover {
+    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+    filter: brightness(1.1);
+}
+
+.in-settled-mark {
+    font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: #059669; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.06));
+    padding: 0.4rem 0.875rem; border-radius: 2rem; border: 1px solid rgba(16,185,129,0.25);
+}
+
+/* ── Empty State ── */
+.in-empty { padding: 4rem; text-align: center; color: var(--text-3); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.35; letter-spacing: 0.1em; }
+.in-empty i { display: block; font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4; }
+
+/* ── Ivory Mode Overrides ── */
+[data-theme="ivory"] .in-container {
+    background: #fafaf9; border-color: #e7e5e4;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+}
+[data-theme="ivory"] .in-title {
+    background: linear-gradient(135deg, #1c1917 30%, #6366f1 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+[data-theme="ivory"] .in-gen-card,
+[data-theme="ivory"] .in-archive-card {
+    background: #ffffff; border-color: #e7e5e4;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+[data-theme="ivory"] .in-row { background: #f5f5f4; }
+[data-theme="ivory"] .in-row:hover { background: #ede9fe; }
+[data-theme="ivory"] .in-metric-chip { border-color: rgba(0,0,0,0.12); }
+[data-theme="ivory"] .in-input,
+[data-theme="ivory"] .in-select { background: #f5f5f4; border-color: #d6d3d1; }
+[data-theme="ivory"] .in-table th { color: #78716c; border-bottom-color: #e7e5e4; }
+[data-theme="ivory"] .in-id-badge { background: #ede9fe; border-color: #c4b5fd; color: #4f46e5; }
+[data-theme="ivory"] .in-tag { background: rgba(99,102,241,0.06); }
+[data-theme="ivory"] .in-session-link { color: #44403c; }
+</style>

@@ -1,0 +1,133 @@
+/* ── Artist Log Usage Section ── */
+.logusage-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--studio-spacing);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="ivory"] .logusage-wrap {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Premium Accent Glow */
+.logusage-wrap.accent-gold { 
+    border-left: 5px solid var(--gold);
+    background: radial-gradient(circle at 0% 0%, rgba(251, 54, 64, 0.04) 0%, transparent 60%), var(--surface);
+}
+
+/* Header & Icon System */
+.logusage-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.log-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    background: rgba(251, 54, 64, 0.1);
+    color: var(--gold);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    flex-shrink: 0;
+}
+
+.logusage-wrap:hover .log-icon-box {
+    transform: scale(1.1) rotate(-6deg);
+    box-shadow: 0 12px 32px rgba(251, 54, 64, 0.2);
+}
+
+.logusage-header .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    font-family: var(--dt-font-display);
+}
+
+.log-subtitle {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-3);
+}
+
+/* Stock Information Card */
+.stock-info-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem 1.5rem;
+    margin-top: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.stock-info-box::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    opacity: 0.5;
+}
+
+.stock-display-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+/* Form Group Extensions */
+.logusage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.quantity-input-wrap {
+    max-width: 400px;
+    position: relative;
+}
+
+.unit-badge {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Animations */
+.animate-slide-up {
+    animation: slideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

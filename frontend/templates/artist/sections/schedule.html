@@ -2,101 +2,85 @@
      SECTION: SCHEDULE
      ═══════════════════════════════════════ -->
 
-<script>
-function renderScheduleDate() {
-    const todayEl = document.getElementById('todayStr');
-    const slotEl = document.getElementById('slotCount');
-    const slotElMob = document.getElementById('slotCountMob');
-    
-    if (todayEl) {
-        const now = new Date();
-        const formatted = now.toLocaleDateString('en-IN', {
-            weekday: 'long', year: 'numeric',
-            month: 'long', day: 'numeric',
-        });
-        todayEl.textContent = formatted;
-    }
-    
-    const items = document.querySelectorAll('#sec-schedule .studio-card.no-accent');
-    const count = items.length;
-    const text = count === 0
-        ? 'No sessions booked for today'
-        : count + ' session' + (count === 1 ? '' : 's') + ' scheduled today';
-        
-    if (slotEl) slotEl.textContent = text;
-    if (slotElMob) slotElMob.textContent = text;
-}
+<div class="sc-wrap accent-indigo">
 
-// Initial render
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('sec-schedule').classList.contains('active')) {
-        renderScheduleDate();
-    }
-});
-</script>
-
-<div class="studio-card accent-indigo relative">
-    <div class="absolute top-10 right-10 text-right hidden lg:block">
-        <p id="todayStr" class="text-studio-selection text-[10px] font-black uppercase tracking-[0.2em] mb-2"></p>
-        <span id="slotCount" class="badge badge-info">Loading sessions…</span>
-    </div>
-
-    <div class="flex items-center gap-5 mb-10 pb-8 border-b border-studio-border">
-        <div class="w-14 h-14 rounded-2xl bg-studio-selection-soft text-studio-selection flex items-center justify-center text-2xl">
-            <i class="fas fa-clock"></i>
+    <!-- Header -->
+    <div class="sc-header">
+        <div class="sc-header-left">
+            <div class="sc-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <h3 class="card-title sc-title">Today's Schedule</h3>
+                <p class="sc-sub">Confirmed sessions &amp; completion tracker</p>
+            </div>
         </div>
-        <div>
-            <h3 class="card-title mb-0">Daily Schedule View</h3>
-            <p id="slotCountMob" class="text-[10px] text-muted font-medium mt-1 lg:hidden">Loading sessions…</p>
-            <p class="text-[10px] text-muted font-medium mt-1 hidden lg:block">Detailed breakdown of today's confirmed sessions</p>
+        <div class="sc-header-right">
+            <p id="todayStr" class="sc-date-label"></p>
+            <span id="slotCount" class="sc-slot-badge">Loading…</span>
         </div>
     </div>
 
     {% if today_appointments %}
-    <div
-        class="flex flex-col gap-6 relative before:absolute before:left-[11px] before:top-4 before:bottom-4 before:w-[2px] before:bg-studio-border/30">
+
+    <!-- Progress Strip -->
+    <div class="sc-progress-bar">
+        <div class="sc-progress-fill" id="scProgressFill"></div>
+    </div>
+    <div class="sc-progress-meta">
+        <span id="scDoneLabel" class="sc-done-label">— sessions complete</span>
+        <span id="scTotalLabel" class="sc-total-label">{{ today_appointments | length }} total</span>
+    </div>
+
+    <!-- Timeline -->
+    <div class="sc-timeline">
+        <div class="sc-line"></div>
+
         {% for appt in today_appointments %}
-        <div class="flex gap-6 reveal" style="--transition-delay: {{ loop.index0 * 100 }}ms">
-            <!-- Timeline Marker -->
-            <div class="relative z-10 w-6 flex flex-col items-center">
-                <div
-                    class="w-6 h-6 rounded-full bg-studio-bg border-4 border-indigo-500/40 flex items-center justify-center shadow-lg">
-                    <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                </div>
+        <div class="sc-item reveal" style="--transition-delay: {{ loop.index0 * 80 }}ms">
+
+            <!-- Dot -->
+            <div class="sc-dot {% if appt.status == 'Done' %}sc-dot-done{% elif appt.status == 'Approved' %}sc-dot-active{% endif %}">
+                {% if appt.status == 'Done' %}
+                <i class="fas fa-check"></i>
+                {% endif %}
             </div>
 
-            <!-- Session Content -->
-            <div class="flex-1 studio-card !p-6 !bg-studio-surface/50 border-studio-border hover:border-studio-selection/30 group mb-0 no-accent">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-[10px] font-mono text-studio-selection border border-studio-selection/20 bg-studio-selection-soft px-2 py-0.5 rounded">
-                                {{ appt.appointment_time }}
-                            </span>
-                            <h4 class="text-base font-bold text-text group-hover:text-accent transition-colors">
-                                {{ appt.customer_name }}
-                            </h4>
-                            <span class="badge badge-warning text-[9px] py-0.5">
-                                {{ appt.duration_hours or '?' }}h Session
-                            </span>
+            <!-- Card -->
+            <div class="sc-card {% if appt.status == 'Done' %}sc-card-done{% elif appt.status == 'Approved' %}sc-card-active{% endif %}">
+                <div class="sc-card-inner">
+
+                    <div class="sc-card-left">
+                        <div class="sc-time-chip">
+                            <i class="far fa-clock"></i> {{ appt.appointment_time }}
                         </div>
-                        <p class="text-[12px] text-muted leading-relaxed">{{ appt.tattoo_concept }}</p>
+                        <h4 class="sc-customer">{{ appt.customer_name }}</h4>
+                        <p class="sc-concept">"{{ appt.tattoo_concept }}"</p>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <div class="sc-card-right">
+                        <span class="sc-dur-badge">
+                            <i class="fas fa-hourglass-half"></i>
+                            {{ appt.duration_hours or '?' }}h
+                        </span>
+
                         {% if appt.status == 'Approved' %}
-                        <span class="badge badge-success text-[9px]">ACTIVE</span>
+                        <span class="sc-status-badge sc-status-active">Active</span>
                         <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="w-10 h-10 rounded-xl bg-studio-success text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-studio-success/20"
-                                onclick="return confirm('Complete this session?')">
+                            <button type="submit" class="sc-done-btn"
+                                onclick="return confirm('Mark this session as complete?')" title="Mark Done">
                                 <i class="fas fa-check"></i>
                             </button>
                         </form>
+
                         {% elif appt.status == 'Done' %}
-                        <span class="badge badge-info text-[9px]">COMPLETE</span>
+                        <span class="sc-status-badge sc-status-done">
+                            <i class="fas fa-check-circle"></i> Done
+                        </span>
                         {% endif %}
                     </div>
+
                 </div>
             </div>
         </div>
@@ -104,15 +88,48 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
     {% else %}
-    <div class="text-center py-24 flex flex-col items-center">
-        <div
-            class="w-20 h-20 rounded-full bg-studio-surface border border-studio-border flex items-center justify-center mb-6 shadow-inner">
-            <i class="far fa-sun text-4xl text-indigo-400 opacity-30"></i>
+
+    <!-- Empty State -->
+    <div class="sc-empty">
+        <div class="sc-empty-icon">
+            <i class="far fa-sun"></i>
         </div>
-        <h3 class="text-xl font-display text-text mb-2">No Sessions Today</h3>
-        <p class="text-[11px] text-muted max-w-[280px] leading-relaxed">
-            No appointments scheduled for today. Take some time to sketch or manage your portfolio!
-        </p>
+        <h3 class="sc-empty-title">Clear Day</h3>
+        <p class="sc-empty-sub">No sessions scheduled for today. A great time to sketch or update your portfolio.</p>
+        <button onclick="nav('gallery')" class="btn-studio btn-secondary sc-empty-btn">
+            <i class="fas fa-images"></i> Go to Portfolio
+        </button>
     </div>
+
     {% endif %}
 </div>
+
+<script>
+(function () {
+    // Date label
+    const el = document.getElementById('todayStr');
+    if (el) {
+        el.textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', month: 'long', day: 'numeric'
+        });
+    }
+
+    // Slot count badge
+    const items = document.querySelectorAll('.sc-item');
+    const total = items.length;
+    const doneCount = document.querySelectorAll('.sc-card-done').length;
+    const badge = document.getElementById('slotCount');
+    if (badge && total) {
+        badge.textContent = total + (total === 1 ? ' session' : ' sessions');
+    }
+
+    // Progress bar
+    const fill = document.getElementById('scProgressFill');
+    const doneLabel = document.getElementById('scDoneLabel');
+    if (fill && total) {
+        const pct = Math.round((doneCount / total) * 100);
+        fill.style.width = pct + '%';
+        if (doneLabel) doneLabel.textContent = doneCount + ' of ' + total + ' complete';
+    }
+})();
+</script>

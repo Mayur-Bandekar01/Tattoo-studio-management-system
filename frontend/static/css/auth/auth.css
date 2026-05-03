@@ -1,0 +1,472 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: #000000;
+    color: #f5f5f7;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    height: 54px;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    background: rgba(3, 3, 3, 0.8);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transform: translateY(-100%);
+    animation: navDrop 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes navDrop {
+    to {
+        transform: translateY(0);
+    }
+}
+
+.nav-link {
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.25s;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    right: 50%;
+    height: 1px;
+    background: #c8a040;
+    transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover {
+    color: #f5f5f7;
+}
+
+.nav-link:hover::after {
+    left: 0;
+    right: 0;
+}
+
+
+.card-wrap {
+    position: relative;
+    border-radius: 1.35rem;
+    padding: 2px;
+    background: linear-gradient(145deg, #5a4200 0%, #e0b84a 35%, #c8a040 55%, #a07828 78%, #3a2800 100%);
+    box-shadow: 0 0 40px rgba(200, 160, 64, 0.18), 0 0 80px rgba(200, 160, 64, 0.08), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.card-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 1.4rem;
+    background: inherit;
+    filter: blur(24px);
+    opacity: 0.45;
+    z-index: -1;
+    transition: opacity 0.5s;
+}
+
+.card-wrap:hover::before {
+    opacity: 0.7;
+}
+
+.card-wrap:hover {
+    box-shadow: 0 0 50px rgba(200, 160, 64, 0.28), 0 0 100px rgba(200, 160, 64, 0.12), 0 24px 70px rgba(0, 0, 0, 0.65);
+    transition: box-shadow 0.5s;
+}
+
+.card-body {
+    background: #050505;
+    border-radius: calc(1.35rem - 2px);
+    overflow: hidden;
+    box-shadow: inset 0 0 80px 20px rgba(0, 0, 0, 0.95);
+}
+
+.field {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(5, 5, 5, 0.85);
+    border: 1.5px solid rgba(200, 160, 64, 0.38);
+    border-radius: 0.65rem;
+    color: #f0ead4;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.field::placeholder {
+    color: rgba(200, 160, 64, 0.38);
+}
+
+.field:hover {
+    border-color: rgba(200, 160, 64, 0.55);
+    background: rgba(8, 8, 8, 0.9);
+}
+
+.field:focus {
+    border-color: rgba(200, 160, 64, 0.85);
+    background: rgba(10, 10, 10, 0.95);
+    box-shadow: 0 0 0 3px rgba(200, 160, 64, 0.14), 0 0 18px rgba(200, 160, 64, 0.08);
+}
+
+.role-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.85rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.75rem;
+    background: rgba(8, 6, 2, 0.85);
+    color: #555250;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.role-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(200, 160, 64, 0.35);
+    color: #a89060;
+    background: rgba(12, 9, 2, 0.9);
+}
+
+.role-card.active {
+    border-color: #c8a040;
+    color: #000;
+    background: #c8a040;
+    box-shadow: 0 0 25px 2px rgba(200, 160, 64, 0.4), 0 0 50px rgba(200, 160, 64, 0.15);
+}
+
+.role-card.pop {
+    animation: cardPop 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cardPop {
+    0% {
+        transform: scale(0.88);
+        opacity: 0.6;
+    }
+
+    55% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.form-section {
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.form-section.slide-out {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+}
+
+.form-section.slide-in {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+}
+
+.reg-prompt {
+    display: none;
+    margin-top: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: rgba(200, 160, 64, 0.07);
+    border: 1px solid rgba(200, 160, 64, 0.2);
+    border-radius: 0.75rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.reg-prompt.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.btn-gold {
+    flex: 1;
+    padding: 0.8rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 0.6rem;
+    background: #c8a040;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 20px rgba(200, 160, 64, 0.25);
+}
+
+.btn-gold:not(:disabled):hover {
+    background: #e0b84a;
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(200, 160, 64, 0.4);
+}
+
+.btn-gold:active {
+    transform: scale(0.97);
+}
+
+.btn-gold:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-outline {
+    padding: 0.8rem 1.75rem;
+    border: 1px solid rgba(200, 160, 64, 0.25);
+    border-radius: 0.6rem;
+    background: transparent;
+    color: #8b8b93;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-outline:hover {
+    border-color: rgba(200, 160, 64, 0.55);
+    color: #c8a040;
+}
+
+.btn-home {
+    padding: 0.4rem 1.1rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: #c8a040;
+    color: #000;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-home:hover {
+    background: #e0b84a;
+}
+
+.title-grad {
+    background: linear-gradient(135deg, #c8a040, #e8c870, #c8a040);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-enter {
+    animation: pageIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97) translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ── LIGHT MODE ── */
+html.light-mode body {
+    background: #F7F7FF !important;
+    color: #1f2937 !important;
+}
+
+html.light-mode nav {
+    background: rgba(247, 247, 255, 0.88) !important;
+    border-bottom: 1px solid rgba(39, 24, 126, 0.3) !important;
+}
+
+html.light-mode #navBrand {
+    color: #1f2937 !important;
+}
+
+html.light-mode .nav-link {
+    color: #6b7280;
+}
+
+html.light-mode .nav-link:hover {
+    color: #27187E;
+}
+
+html.light-mode .nav-link::after {
+    background: #27187E;
+}
+
+html.light-mode .card-wrap {
+    background: linear-gradient(145deg, #4a3896 0%, #27187E 35%, #1d1066 55%, #150a4d 78%, #0d0433 100%);
+    box-shadow: 0 20px 60px rgba(39, 24, 126, 0.18);
+}
+
+html.light-mode .card-body {
+    background: #ffffff;
+    box-shadow: none;
+}
+
+html.light-mode .field {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid rgba(39, 24, 126, 0.38);
+    color: #1f2937;
+}
+
+html.light-mode .field:hover {
+    background: #ffffff;
+    border-color: rgba(39, 24, 126, 0.55);
+}
+
+html.light-mode .field:focus {
+    background: #ffffff;
+    border-color: rgba(39, 24, 126, 0.85);
+    box-shadow: 0 0 0 3px rgba(39, 24, 126, 0.12);
+}
+
+html.light-mode .field::placeholder {
+    color: rgba(39, 24, 126, 0.4);
+}
+
+html.light-mode .role-card {
+    background: rgba(255, 255, 255, 0.9);
+    color: #6b7280;
+    border-color: rgba(39, 24, 126, 0.25);
+}
+
+html.light-mode .role-card:hover {
+    background: #F7F7FF;
+    color: #27187E;
+    border-color: rgba(39, 24, 126, 0.5);
+}
+
+html.light-mode .role-card.active {
+    background: #27187E;
+    color: #ffffff;
+    border-color: #27187E;
+    box-shadow: 0 0 15px rgba(39, 24, 126, 0.4);
+}
+
+html.light-mode .reg-prompt {
+    background: rgba(39, 24, 126, 0.06);
+    border-color: rgba(39, 24, 126, 0.2);
+}
+
+html.light-mode .btn-outline {
+    color: #1f2937;
+    border-color: rgba(39, 24, 126, 0.25);
+}
+
+html.light-mode .btn-outline:hover {
+    border-color: rgba(39, 24, 126, 0.55);
+    color: #27187E;
+    background: rgba(39, 24, 126, 0.05);
+}
+
+html.light-mode .title-grad {
+    background: linear-gradient(135deg, #27187E, #4a3896, #27187E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+html.light-mode #globalThemeBtn {
+    color: #27187E !important;
+    border-color: rgba(39, 24, 126, 0.4) !important;
+}
+
+html.light-mode .bg-vignette {
+    background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, #F7F7FF 100%);
+}
+
+html.light-mode .btn-gold {
+    background: #27187E;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(39, 24, 126, 0.25);
+}
+
+html.light-mode .btn-gold:not(:disabled):hover {
+    background: #1d1066;
+    box-shadow: 0 6px 20px rgba(39, 24, 126, 0.38);
+}
+
+html.light-mode .btn-home {
+    background: #27187E;
+    color: #ffffff;
+}
+
+html.light-mode .btn-home:hover {
+    background: #1d1066;
+}
+
+html.light-mode .form-section label {
+    color: #27187E !important;
+}
+
+
+
+html.light-mode #cardHeader {
+    background: transparent !important;
+    border-bottom-color: rgba(39, 24, 126, 0.15) !important;
+}
+
+html.light-mode #logoCircle {
+    background: #F7F7FF !important;
+    border-color: rgba(39, 24, 126, 0.4) !important;
+    box-shadow: 0 0 16px rgba(39, 24, 126, 0.1) !important;
+}
+
+html.light-mode #cardSubtitle {
+    color: #6b7280 !important;
+}
+
+/* FIX #3: Scoped transition instead of global * selector */
+body, nav, .card-wrap, .card-body, .field, .role-card, 
+.btn-gold, .btn-outline, .title-grad, label, .reg-prompt {
+    transition: background-color 0.4s ease, border-color 0.4s ease, 
+                color 0.35s ease, box-shadow 0.4s ease;
+}

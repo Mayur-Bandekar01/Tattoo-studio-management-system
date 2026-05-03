@@ -2,233 +2,200 @@
      SECTION: INVENTORY
      ═══════════════════════════════════════ -->
 
-<style>
-/* ── Inventory Table Layout ── */
-#sec-inventory .studio-table {
-    table-layout: fixed !important;
-    width: 100%;
-}
-
-#sec-inventory .studio-table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Allow the 'Update' column to wrap normally */
-#sec-inventory .studio-table td:nth-child(7) {
-    white-space: normal; 
-}
-</style>
-
-<!-- Add Item Form -->
-<div class="studio-card accent-success">
-    <div class="flex items-center gap-4 mb-8">
-        <div class="w-12 h-12 rounded-xl bg-studio-success-soft text-studio-success flex items-center justify-center text-xl">
-            <i class="fas fa-plus-circle"></i>
-        </div>
+<!-- 1. Register New Supply -->
+<div class="inventory-wrap accent-emerald">
+    <div class="inventory-header">
+        <div class="inv-icon-box"><i class="fas fa-plus-circle"></i></div>
         <div>
-            <h3 class="card-title mb-1">Register New Supply</h3>
-            <p class="text-[10px] text-muted font-medium mt-1">Add new materials to your digital storage tracking</p>
+            <h3 class="card-title">Register New Supply</h3>
+            <span class="inv-subtitle">Add materials to your digital storage tracking</span>
         </div>
     </div>
 
     <form method="POST" action="/artist/inventory/add">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-            <div class="flex flex-col">
-                <label class="studio-label">Item Name</label>
+        <div class="inventory-grid">
+
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="fas fa-tag text-emerald-500/60"></i>
+                    Item Name
+                </label>
                 <input class="studio-input" type="text" name="item_name" placeholder="e.g. Black Ink (Dynamic)" required>
             </div>
 
-            <div class="flex flex-col">
-                <label class="studio-label">Category</label>
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="fas fa-layer-group text-emerald-500/60"></i>
+                    Category
+                </label>
                 <select class="studio-input" name="category" required>
-                    <option value="">Select Category...</option>
-                    <option>Needle</option>
-                    <option>Ink</option>
-                    <option>Glove</option>
-                    <option>Aftercare</option>
-                    <option>Canvas</option>
-                    <option>Paper</option>
-                    <option>Brush</option>
-                    <option>Pigment</option>
-                    <option>Blood Art</option>
+                    <option value="">Select Category…</option>
+                    <option>Needle</option><option>Ink</option><option>Glove</option>
+                    <option>Aftercare</option><option>Canvas</option><option>Paper</option>
+                    <option>Brush</option><option>Pigment</option><option>Blood Art</option>
                     <option>Other</option>
                 </select>
             </div>
 
-            <div class="flex flex-col">
-                <label class="studio-label">Unit Type</label>
-                <select class="studio-input" name="unit" id="unitSelect" required onchange="updateUnitHint()">
-                    <option value="">Select Unit...</option>
-                    <optgroup label="Volume" class="bg-studio-bg">
-                        <option value="ml">ml (millilitres)</option>
-                        <option value="L">L (litres)</option>
-                    </optgroup>
-                    <optgroup label="Count" class="bg-studio-bg">
-                        <option value="Pairs">Pairs</option>
-                        <option value="Pieces">Pieces</option>
-                        <option value="Boxes">Boxes</option>
-                        <option value="Packs">Packs</option>
-                        <option value="Sets">Sets</option>
-                    </optgroup>
-                    <optgroup label="Paper / Surface" class="bg-studio-bg">
-                        <option value="Sheets">Sheets</option>
-                        <option value="Rolls">Rolls</option>
-                    </optgroup>
-                    <optgroup label="Other" class="bg-studio-bg">
-                        <option value="Tubes">Tubes</option>
-                        <option value="Bottles">Bottles</option>
-                        <option value="Grams">Grams</option>
-                    </optgroup>
-                </select>
-                <p id="unitHint" class="text-[9px] text-muted italic pl-1 mt-1 h-3"></p>
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="fas fa-ruler-combined text-emerald-500/60"></i>
+                    Unit Type
+                </label>
+                <div class="relative">
+                    <select class="studio-input appearance-none" name="unit" id="unitSelect" required onchange="updateUnitHint()">
+                        <option value="">Select Unit…</option>
+                        <optgroup label="Volume">
+                            <option value="ml">ml (millilitres)</option>
+                            <option value="L">L (litres)</option>
+                        </optgroup>
+                        <optgroup label="Count">
+                            <option value="Pairs">Pairs</option>
+                            <option value="Pieces">Pieces</option>
+                            <option value="Boxes">Boxes</option>
+                            <option value="Packs">Packs</option>
+                            <option value="Sets">Sets</option>
+                        </optgroup>
+                        <optgroup label="Paper / Surface">
+                            <option value="Sheets">Sheets</option>
+                            <option value="Rolls">Rolls</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Tubes">Tubes</option>
+                            <option value="Bottles">Bottles</option>
+                            <option value="Grams">Grams</option>
+                        </optgroup>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-muted/30 text-[10px] pointer-events-none"></i>
+                </div>
+                <p id="unitHint" class="form-hint"></p>
             </div>
 
-            <div class="flex flex-col">
-                <label class="studio-label">Initial Quantity</label>
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="fas fa-cubes text-emerald-500/60"></i>
+                    Initial Quantity
+                </label>
                 <input class="studio-input" type="number" name="quant_stock" placeholder="e.g. 250" min="0" step="0.01" required>
             </div>
 
-            <div class="flex flex-col">
-                <label class="studio-label !text-amber-500">Low Stock Warning At</label>
-                <input class="studio-input !border-amber-500/30 focus:!border-amber-500" type="number" name="reorder_level" placeholder="e.g. 50" min="0" step="0.01" required>
-                <p class="text-[9px] text-amber-500/70 italic flex items-center gap-1 pl-1 mt-2">
-                    <i class="fas fa-exclamation-triangle text-[8px]"></i>
-                    Triggers alert when stock falls below this
-                </p>
+            <div class="form-group">
+                <label class="studio-label warning">
+                    <i class="fas fa-bell"></i>
+                    Low Stock Warning At
+                </label>
+                <input class="studio-input border-amber-500/30" type="number" name="reorder_level" placeholder="e.g. 50" min="0" step="0.01" required>
+                <p class="form-hint !text-amber-500/70"><i class="fas fa-exclamation-triangle"></i>Triggers alert when stock falls below this</p>
             </div>
 
-            <div class="flex flex-col">
-                <label class="studio-label !text-emerald-500">Unit Price (₹)</label>
-                <input class="studio-input !border-emerald-500/30 focus:!border-emerald-500" type="number" name="unit_cost" placeholder="Cost per unit" step="any" min="0" required>
+            <div class="form-group">
+                <label class="studio-label success">
+                    <i class="fas fa-rupee-sign"></i>
+                    Unit Price (₹)
+                </label>
+                <input class="studio-input border-emerald-500/30" type="number" name="unit_cost" placeholder="Cost per unit" step="any" min="0" required>
             </div>
+
         </div>
 
-        <div class="flex items-center gap-4 pt-6 border-t border-studio-border">
+        <div class="flex items-center gap-4 pt-8 border-t border-border">
             <button type="submit" class="btn-studio btn-primary">
-                <i class="fas fa-plus-circle mr-2"></i> Add to Inventory
+                <i class="fas fa-plus-circle"></i>Add to Inventory
             </button>
-            <button type="reset" class="btn-studio btn-secondary" onclick="document.getElementById('unitHint').textContent=''">
+            <button type="reset" class="btn-studio btn-outline" onclick="document.getElementById('unitHint').textContent=''">
                 Clear Form
             </button>
         </div>
     </form>
 </div>
 
-<!-- Stock Table -->
-<div class="studio-card accent-gold">
-    <div class="flex items-center justify-between gap-4 mb-6">
-        <div>
-            <h3 class="card-title mb-1">
-                Live Inventory
-            </h3>
-            <p class="text-[10px] text-muted font-medium mt-1">Real-time tracking of shared and personal studio supplies</p>
+<!-- 2. Live Inventory Table -->
+<div class="inventory-wrap accent-scarlet">
+    <div class="inventory-header">
+        <div class="inv-icon-box"><i class="fas fa-boxes"></i></div>
+        <div class="flex-1">
+            <h3 class="card-title">Live Inventory</h3>
+            <span class="inv-subtitle">Real-time tracking of studio supplies</span>
         </div>
         {% if low_stock > 0 %}
-        <div class="badge badge-danger animate-pulse">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
-            {{ low_stock }} Low Stock
+        <div class="status-badge status-rejected animate-pulse">
+            <i class="fas fa-exclamation-triangle mr-1.5"></i>{{ low_stock }} Low Stock
         </div>
         {% endif %}
     </div>
 
     <div class="studio-table-container">
-        <table class="studio-table">
+        <table class="dash-table artist-table">
             <thead>
                 <tr>
-                    <th>Supply Item</th>
-                    <th style="width: 120px;">Category</th>
-                    <th style="width: 180px;">Stock Level</th>
-                    <th style="width: 100px;">Warning</th>
-                    <th style="width: 110px;">Unit Price</th>
-                    <th style="width: 110px;">Status</th>
-                    <th style="width: 220px;">Update Stock</th>
-                    <th style="width: 60px;"></th>
+                    <th style="width: 240px;">Supply Item</th>
+                    <th style="width: 110px;">Category</th>
+                    <th style="width: 170px;">Stock Level</th>
+                    <th style="width: 90px;">Warning</th>
+                    <th style="width: 100px;">Price</th>
+                    <th style="width: 100px;">Status</th>
+                    <th style="width: 210px;">Management</th>
+                    <th style="width: 50px;"></th>
                 </tr>
             </thead>
             <tbody>
                 {% if inventory %}
                 {% for item in inventory %}
-                {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else
-                (100 if item.quant_stock > 0 else 0), 100] | min %}
-                <tr class="transition-colors duration-150 border-b border-studio-border-light last:border-0 
-                    {% if item.quant_stock <= item.reorder_level %}bg-rose-500/[0.03] hover:bg-rose-500/[0.06]
-                    {% elif item.quant_stock <= item.reorder_level * 2 %}bg-amber-500/[0.03] hover:bg-amber-500/[0.06]
-                    {% else %}hover:bg-white/[0.02]{% endif %}">
+                {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else (100 if item.quant_stock > 0 else 0), 100] | min %}
+                <tr class="reveal" style="--transition-delay: {{ loop.index0 * 30 }}ms;">
                     <td>
                         <div class="font-bold text-text text-sm">{{ item.item_name }}</div>
-                        <div class="text-xs text-muted uppercase tracking-wide mt-1">Measured in: <span
-                                class="text-accent">{{ item.unit }}</span></div>
+                        <div class="text-[10px] text-muted uppercase tracking-wide mt-0.5">Unit: <span class="text-gold font-bold">{{ item.unit }}</span></div>
                     </td>
                     <td>
-                        <span class="px-3 py-1.5 rounded-md bg-studio-surface border border-studio-border text-xs font-bold text-muted">{{ item.category }}</span>
+                        <span class="px-2 py-1 rounded-md bg-surface-2 border border-border text-[9px] font-black text-muted uppercase tracking-wider">{{ item.category }}</span>
                     </td>
                     <td>
-                        <div class="flex flex-col gap-2">
-                            <span class="text-sm font-mono font-bold
-                                {% if item.quant_stock <= item.reorder_level %}text-rose-500
-                                {% elif item.quant_stock <= item.reorder_level * 2 %}text-amber-500
-                                {% else %}text-emerald-500{% endif %}">
-                                {{ item.quant_stock | round(2) }} {{ item.unit }}
-                            </span>
-                            <div class="w-full h-1.5 bg-studio-border/30 rounded-full overflow-hidden">
-                                <div style="--stock-level: {{ stock_pct or 0 }}%; width: var(--stock-level);"
-                                    class="h-full rounded-full transition-all duration-500 {% if item.quant_stock <= item.reorder_level %}bg-rose-500{% elif item.quant_stock <= item.reorder_level * 2 %}bg-amber-500{% else %}bg-emerald-500{% endif %}">
-                                </div>
-                            </div>
+                        <span class="text-xs font-mono font-bold
+                            {% if item.quant_stock <= item.reorder_level %}text-red-500
+                            {% elif item.quant_stock <= item.reorder_level * 2 %}text-amber-500
+                            {% else %}text-emerald-500{% endif %}">
+                            {{ item.quant_stock | round(2) }} {{ item.unit }}
+                        </span>
+                        <div class="stock-progress mt-1.5">
+                            <div class="stock-bar {% if item.quant_stock <= item.reorder_level %}critical{% elif item.quant_stock <= item.reorder_level * 2 %}warning{% else %}optimal{% endif %}"
+                                 style="--stock-width: {{ stock_pct or 0 }}%; width: var(--stock-width);"></div>
                         </div>
                     </td>
-                    <td class="font-mono text-sm text-muted">
-                        {{ item.reorder_level }} {{ item.unit }}
-                    </td>
-                    <td class="font-mono font-bold text-emerald-500 text-sm">
-                        ₹{{ item.unit_cost | float | round(2) }}
-                    </td>
+                    <td class="font-mono text-[11px] text-muted opacity-60">{{ item.reorder_level }} {{ item.unit }}</td>
+                    <td class="font-mono font-bold text-emerald-500 text-sm">₹{{ item.unit_cost | float | round(2) }}</td>
                     <td>
                         {% if item.quant_stock <= item.reorder_level %}
-                        <span class="badge badge-danger text-xs px-3 py-1.5">CRITICAL</span>
+                        <span class="status-badge status-rejected !text-[9px]">Critical</span>
                         {% elif item.quant_stock <= item.reorder_level * 2 %}
-                        <span class="badge badge-warning text-xs px-3 py-1.5">WARNING</span>
+                        <span class="status-badge status-pending !text-[9px]">Warning</span>
                         {% else %}
-                        <span class="badge badge-success text-xs px-3 py-1.5">OPTIMAL</span>
+                        <span class="status-badge status-done !text-[9px]">Optimal</span>
                         {% endif %}
                     </td>
                     <td>
-                        <div class="flex flex-col gap-3 py-2">
-                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                                class="flex items-center gap-2">
+                        <div class="update-actions">
+                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}" class="mini-action-row">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="action" value="add">
-                                <input class="w-24 h-9 bg-studio-surface border border-studio-border rounded-lg px-3 text-sm outline-none focus:border-studio-gold"
-                                    type="number" name="quant_stock" placeholder="+ Amt" min="0.01" step="0.01">
-                                <button type="submit"
-                                    class="h-9 px-4 rounded-lg bg-emerald-500 text-white text-xs font-black uppercase tracking-wider hover:shadow-lg transition-all">
-                                    Restock
-                                </button>
+                                <input class="input-restock" type="number" name="quant_stock" placeholder="+ Qty" min="0.01" step="0.01">
+                                <button type="submit" class="btn-restock">Restock</button>
                             </form>
-                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}"
-                                class="flex items-center gap-2">
+                            <form method="POST" action="/artist/inventory/update/{{ item.item_id }}" class="mini-action-row">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="action" value="set">
-                                <input class="w-24 h-9 bg-studio-surface border border-studio-border rounded-lg px-3 text-sm outline-none focus:border-studio-gold"
-                                    type="number" name="quant_stock" value="{{ item.quant_stock | round(2) }}" min="0"
-                                    step="0.01">
-                                <button type="submit"
-                                    class="h-9 px-4 rounded-lg bg-studio-surface border border-studio-border text-muted text-xs font-black uppercase tracking-wider hover:border-studio-gold transition-all">
-                                    Update
-                                </button>
+                                <input class="input-restock !bg-surface" type="number" name="quant_stock" value="{{ item.quant_stock | round(2) }}" min="0" step="0.01">
+                                <button type="submit" class="btn-update-inline">Update</button>
                             </form>
                         </div>
                     </td>
                     <td class="text-right">
                         <form method="POST" action="/artist/inventory/delete/{{ item.item_id }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit"
-                                class="w-10 h-10 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-all flex items-center justify-center mx-auto"
-                                onclick="return confirm('Permanently remove {{ item.item_name }} from inventory?')">
-                                <i class="fas fa-trash-alt text-sm"></i>
+                            <button type="submit" class="btn-icon-only btn-icon-reject mx-auto"
+                                onclick="return confirm('Remove {{ item.item_name }} from inventory?')">
+                                <i class="fas fa-trash-alt text-xs"></i>
                             </button>
                         </form>
                     </td>
@@ -236,9 +203,9 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                    <td colspan="8" class="text-center py-24 opacity-40">
-                        <i class="fas fa-boxes text-5xl mb-4 block"></i>
-                        <p class="text-sm font-bold uppercase tracking-wider">Inventory is currently empty</p>
+                    <td colspan="8" class="text-center py-20 opacity-20">
+                        <i class="fas fa-boxes text-4xl mb-3 block"></i>
+                        <p class="text-xs font-bold uppercase tracking-[0.2em]">Inventory empty</p>
                     </td>
                 </tr>
                 {% endif %}
@@ -246,25 +213,3 @@
         </table>
     </div>
 </div>
-
-<script>
-    function updateUnitHint() {
-        const unit = document.getElementById('unitSelect').value;
-        const hint = document.getElementById('unitHint');
-        const hints = {
-            'ml': '1 bottle of 250ml ink → enter 250',
-            'L': '1 litre of solution → enter 1',
-            'Pairs': '1 box of 50 glove pairs → enter 50',
-            'Pieces': '10 individual needles → enter 10',
-            'Boxes': '3 boxes of needles → enter 3',
-            'Packs': '2 packs of wipes → enter 2',
-            'Sheets': '20 sheets of canvas → enter 20',
-            'Tubes': '5 tubes of aftercare cream → enter 5',
-            'Bottles': '3 bottles of sanitizer → enter 3',
-            'Grams': '500g of pigment → enter 500',
-            'Sets': '2 sets of brushes → enter 2',
-            'Rolls': '3 rolls of plastic wrap → enter 3',
-        };
-        hint.textContent = hints[unit] || '';
-    }
-</script>

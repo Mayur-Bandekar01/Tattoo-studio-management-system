@@ -1,16 +1,29 @@
-<!-- Log Usage Form -->
-<div class="studio-card accent-gold">
-    <h3 class="card-title mb-8">Record New Consumption</h3>
+<!-- ═══════════════════════════════════════
+     SECTION: LOG USAGE
+     ═══════════════════════════════════════ -->
 
-    <form method="POST" action="/artist/inventory/use" class="space-y-8">
+<!-- 1. Record New Consumption -->
+<div class="logusage-wrap accent-gold">
+    <div class="logusage-header">
+        <div class="log-icon-box"><i class="fas fa-clipboard-list"></i></div>
+        <div>
+            <h3 class="card-title">Record New Consumption</h3>
+            <span class="log-subtitle">Track materials used during your tattoo sessions</span>
+        </div>
+    </div>
+
+    <form method="POST" action="/artist/inventory/use">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="logusage-grid">
             <!-- Related Appointment -->
-            <div class="flex flex-col">
-                <label class="studio-label">Related Appointment</label>
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="far fa-calendar-check text-gold/60"></i>
+                    Related Appointment
+                </label>
                 <div class="relative">
-                    <select class="studio-input appearance-none" name="appointment_id" required>
+                    <select class="studio-input" name="appointment_id" required>
                         <option value="">Select a session...</option>
                         {% if appointments %}
                         {% for appt in appointments %}
@@ -22,92 +35,100 @@
                         {% endfor %}
                         {% endif %}
                     </select>
-                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-muted/30 text-[10px] pointer-events-none"></i>
                 </div>
             </div>
 
             <!-- Material Consumed -->
-            <div class="flex flex-col">
-                <label class="studio-label">Material Consumed</label>
+            <div class="form-group">
+                <label class="studio-label">
+                    <i class="fas fa-vial text-gold/60"></i>
+                    Material Consumed
+                </label>
                 <div class="relative">
-                    <select class="studio-input appearance-none" name="item_id" id="itemSelect" required onchange="updateItemInfo()">
+                    <select class="studio-input" name="item_id" id="itemSelect" required onchange="updateItemInfo()">
                         <option value="">Select supply item...</option>
                         {% if inventory %}
                         {% for item in inventory %}
                         <option value="{{ item.item_id }}" data-unit="{{ item.unit }}"
                             data-stock="{{ item.quant_stock }}" data-name="{{ item.item_name }}">
-                            {{ item.item_name }} ({{ item.quant_stock | round(2) }} {{ item.unit }} in stock)
+                            {{ item.item_name }} ({{ item.quant_stock | round(2) }} {{ item.unit }} available)
                         </option>
                         {% endfor %}
                         {% endif %}
                     </select>
-                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-muted/30 text-[10px] pointer-events-none"></i>
                 </div>
 
                 <!-- Stock Info Display -->
-                <div id="stockInfo" class="hidden mt-3 p-4 bg-studio-surface/50 border border-studio-border rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
+                <div id="stockInfo" class="hidden stock-info-box animate-slide-up">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-black uppercase tracking-widest text-muted">Available Stock</span>
-                        <span id="stockDisplay" class="text-xs font-mono font-bold text-text"></span>
+                        <span id="stockDisplay" class="stock-display-value"></span>
                     </div>
                 </div>
             </div>
 
             <!-- Quantity Used -->
-            <div class="flex flex-col md:col-span-2 pt-6 border-t border-studio-border">
-                <label class="studio-label">Quantity Used</label>
-                <div class="relative max-w-sm">
+            <div class="form-group md:col-span-2">
+                <label class="studio-label">
+                    <i class="fas fa-weight-hanging text-gold/60"></i>
+                    Quantity Used
+                </label>
+                <div class="quantity-input-wrap">
                     <input class="studio-input" type="number" name="quantity" id="qtyInput" placeholder="Enter amount used" min="0.01" step="0.01" required oninput="validateQty()">
-                    <span id="unitBadge" class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-accent pointer-events-none"></span>
+                    <span id="unitBadge" class="unit-badge"></span>
                 </div>
-                <p id="qtyHint" class="hidden text-[10px] font-bold mt-3 pl-1 leading-relaxed animate-in fade-in duration-300"></p>
+                <p id="qtyHint" class="hidden text-[10px] font-bold mt-4 pl-1 leading-relaxed text-gold/80 animate-slide-up"></p>
             </div>
         </div>
 
-        <div class="flex items-center gap-4 pt-8 border-t border-studio-border/50">
+        <div class="flex items-center gap-4 pt-8 border-t border-border-soft">
             <button type="submit" class="btn-studio btn-primary" id="logBtn">
-                <i class="fas fa-clipboard-check mr-2"></i> Submit Usage Log
+                <i class="fas fa-clipboard-check"></i> Submit Usage Log
             </button>
-            <button type="reset" class="btn-studio btn-secondary" onclick="resetForm()">
+            <button type="reset" class="btn-studio btn-outline" onclick="resetForm()">
                 Reset Entry
             </button>
         </div>
     </form>
 </div>
 
-<!-- Usage History -->
-<div class="studio-card accent-gold mt-10">
-    <h3 class="card-title mb-8">Recent Consumption Logs</h3>
+<!-- 2. Usage History -->
+<div class="logusage-wrap accent-gold mt-12">
+    <div class="logusage-header">
+        <div class="log-icon-box"><i class="fas fa-history"></i></div>
+        <div>
+            <h3 class="card-title">Recent Consumption Logs</h3>
+            <span class="log-subtitle">Audit trail of material usage for session cost tracking</span>
+        </div>
+    </div>
 
     <div class="studio-table-container">
-        <table class="studio-table">
+        <table class="dash-table artist-table">
             <thead>
                 <tr>
-                    <th style="width: 120px;">Session ID</th>
-                    <th>Material Used</th>
-                    <th style="width: 140px;">Quantity</th>
-                    <th style="width: 200px;">Timestamp</th>
+                    <th style="width: 140px;">Session</th>
+                    <th>Material Consumed</th>
+                    <th style="width: 160px;">Quantity</th>
+                    <th style="width: 220px;">Logged At</th>
                 </tr>
             </thead>
             <tbody>
                 {% if usage_logs %}
                 {% for log in usage_logs %}
-                <tr class="group hover:bg-studio-surface/50 transition-all">
+                <tr class="reveal" style="--transition-delay: {{ loop.index0 * 30 }}ms">
                     <td>
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-studio-surface border border-studio-border flex items-center justify-center">
-                                <i class="fas fa-hashtag text-[10px] text-accent"></i>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-gold-dim border border-gold/10 flex items-center justify-center">
+                                <i class="fas fa-hashtag text-[10px] text-gold"></i>
                             </div>
-                            <span class="text-[11px] font-mono font-bold text-muted group-hover:text-text transition-colors">
-                                {{ log.appointment_id }}
-                            </span>
+                            <span class="text-xs font-mono font-bold text-text">#{{ log.appointment_id }}</span>
                         </div>
                     </td>
                     <td>
-                        <div class="font-bold text-text text-[11px]">{{ log.item_name }}</div>
+                        <div class="font-bold text-text text-sm">{{ log.item_name }}</div>
                     </td>
                     <td>
-                        <span class="badge badge-info text-[9px] py-0.5">
+                        <span class="px-2.5 py-1 rounded-md bg-surface-2 border border-border text-xs font-bold text-gold font-mono">
                             {% if log.unit in ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles'] %}
                             {{ log.qty_used | round(0) | int }} {{ log.unit }}
                             {% else %}
@@ -116,8 +137,8 @@
                         </span>
                     </td>
                     <td>
-                        <div class="flex items-center gap-2 text-[10px] text-muted group-hover:text-text/70 transition-colors">
-                            <i class="far fa-clock text-accent/50"></i>
+                        <div class="flex items-center gap-2 text-[11px] text-muted font-medium">
+                            <i class="far fa-clock text-gold/40"></i>
                             {{ log.logged_at }}
                         </div>
                     </td>
@@ -126,14 +147,9 @@
                 {% else %}
                 <tr>
                     <td colspan="4">
-                        <div
-                            class="flex flex-col items-center justify-center py-20 bg-studio-surface/20 rounded-2xl border-2 border-dashed border-studio-border">
-                            <div
-                                class="w-16 h-16 rounded-2xl bg-studio-surface border border-studio-border flex items-center justify-center mb-6 opacity-30 shadow-2xl">
-                                <i class="fas fa-clipboard-list text-2xl text-accent"></i>
-                            </div>
-                            <p class="text-[11px] font-bold text-muted uppercase tracking-widest">No consumption has
-                                been logged yet</p>
+                        <div class="flex flex-col items-center justify-center py-24 opacity-20">
+                            <i class="fas fa-clipboard-list text-4xl mb-4 block"></i>
+                            <p class="text-xs font-bold uppercase tracking-[0.2em]">No consumption logged yet</p>
                         </div>
                     </td>
                 </tr>
@@ -142,100 +158,3 @@
         </table>
     </div>
 </div>
-
-<script>
-    function updateItemInfo() {
-        const sel = document.getElementById('itemSelect');
-        const selected = sel.options[sel.selectedIndex];
-        const stockInfo = document.getElementById('stockInfo');
-        const stockDisp = document.getElementById('stockDisplay');
-        const unitBadge = document.getElementById('unitBadge');
-        const qtyHint = document.getElementById('qtyHint');
-        const qtyInput = document.getElementById('qtyInput');
-
-        if (!sel.value) {
-            stockInfo.classList.add('hidden');
-            unitBadge.textContent = '';
-            qtyHint.classList.add('hidden');
-            return;
-        }
-
-        const unit = selected.dataset.unit;
-        const stock = parseFloat(selected.dataset.stock);
-        const name = selected.dataset.name;
-
-        const countableUnits = ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles'];
-        const isCountable = countableUnits.includes(unit);
-
-        unitBadge.textContent = unit;
-        qtyInput.step = isCountable ? "1" : "0.01";
-        qtyInput.placeholder = isCountable ? "Enter whole number" : "Enter amount used";
-
-        stockInfo.classList.remove('hidden');
-        stockDisp.textContent = isCountable ? `${Math.round(stock)} ${unit}` : `${stock} ${unit}`;
-        stockDisp.className = stock <= 0
-            ? 'text-xs font-mono font-bold text-rose-500'
-            : 'text-xs font-mono font-bold text-text';
-
-        qtyHint.classList.remove('hidden');
-        qtyHint.textContent = isCountable
-            ? `Select whole ${unit} of "${name}" used`
-            : `Enter how many ${unit} of "${name}" were used`;
-        qtyHint.className = 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-muted animate-in fade-in duration-300';
-
-        qtyInput.value = '';
-        qtyInput.max = stock;
-    }
-
-    function validateQty() {
-        const sel = document.getElementById('itemSelect');
-        const selected = sel.options[sel.selectedIndex];
-        const qtyInput = document.getElementById('qtyInput');
-        const qtyHint = document.getElementById('qtyHint');
-        const logBtn = document.getElementById('logBtn');
-
-        if (!sel.value || !qtyInput.value) return;
-
-        const unit = selected.dataset.unit;
-        const stock = parseFloat(selected.dataset.stock);
-        const qty = parseFloat(qtyInput.value);
-
-        const countableUnits = ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles'];
-        const isCountable = countableUnits.includes(unit);
-
-        if (isCountable && !Number.isInteger(qty)) {
-            qtyHint.textContent = `⚠ ${unit} must be a whole number (no decimals).`;
-            qtyHint.className = 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-rose-500';
-            qtyHint.classList.remove('hidden');
-            logBtn.disabled = true;
-            return;
-        }
-
-        if (qty > stock) {
-            qtyHint.textContent = `⚠ Exceeds available stock! Only ${stock} ${unit} left.`;
-            qtyHint.className = 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-rose-500';
-            qtyHint.classList.remove('hidden');
-            logBtn.disabled = true;
-        } else if (qty <= 0) {
-            qtyHint.textContent = '⚠ Quantity must be greater than 0.';
-            qtyHint.className = 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-rose-500';
-            qtyHint.classList.remove('hidden');
-            logBtn.disabled = true;
-        } else {
-            const remaining = (stock - qty).toFixed(isCountable ? 0 : 2);
-            qtyHint.textContent = `After logging: ${remaining} ${unit} will remain.`;
-            qtyHint.className = remaining <= 0
-                ? 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-warning'
-                : 'text-[10px] font-bold mt-2 pl-1 leading-relaxed text-emerald-500';
-            qtyHint.classList.remove('hidden');
-            logBtn.disabled = false;
-        }
-    }
-
-    function resetForm() {
-        document.getElementById('stockInfo').classList.add('hidden');
-        document.getElementById('unitBadge').textContent = '';
-        document.getElementById('qtyHint').classList.add('hidden');
-        document.getElementById('logBtn').disabled = false;
-    }
-</script>

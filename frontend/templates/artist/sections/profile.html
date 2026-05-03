@@ -1,69 +1,137 @@
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 reveal">
-<!-- Profile Info Card -->
-<div class="studio-card accent-gold text-center relative overflow-hidden group">
-    <!-- Background Accent -->
-    <div class="absolute -top-24 -right-24 w-48 h-48 bg-studio-gold-soft rounded-full blur-3xl group-hover:bg-studio-gold-dim transition-colors"></div>
+<div class="reveal">
+    <div class="profile-grid">
 
-    <div class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mx-auto mb-8 transform -rotate-6 group-hover:rotate-0 transition-transform shadow-2xl relative z-10">
-        <i class="fas fa-pen-nib text-3xl text-accent"></i>
-    </div>
+        <!-- 1. Profile Info Card -->
+        <div class="profile-wrap profile-info-card group">
 
-    <div class="mb-10 relative z-10">
-        <h3 class="text-2xl font-display text-text mb-1 uppercase tracking-tight">
-            {{ artist_profile.artist_name if artist_profile else name }}
-        </h3>
-        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-accent font-sans">Resident Artist</p>
-    </div>
+            <!-- Glow orb -->
+            <div class="profile-orb"></div>
 
-    <div class="space-y-1 text-left relative z-10">
-        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
-            <span class="studio-label !mb-0">Artist ID</span>
-            <span class="font-mono text-[11px] font-bold text-accent">#{{ session.get('user_id') }}</span>
-        </div>
-        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
-            <span class="studio-label !mb-0">Primary Email</span>
-            <span class="text-[11px] font-bold text-text">{{ artist_profile.artist_email if artist_profile else '—' }}</span>
-        </div>
-        <div class="flex justify-between items-center py-4 border-b border-studio-border/50 group/row">
-            <span class="studio-label !mb-0">Contact</span>
-            <span class="text-[11px] font-bold text-text">{{ artist_profile.phone if artist_profile else '—' }}</span>
-        </div>
-        <div class="flex justify-between items-center py-4 group/row">
-            <span class="studio-label !mb-0">Specialisation</span>
-            <span class="badge badge-warning">
-                {{ artist_profile.specialisation if artist_profile else '—' }}
-            </span>
-        </div>
-    </div>
-</div>
+            <!-- Header -->
+            <div class="profile-header">
+                <div class="profile-icon-box">
+                    <i class="fas fa-pen-nib"></i>
+                </div>
+                <h3 class="profile-name">
+                    {{ artist_profile.artist_name if artist_profile else name }}
+                </h3>
+                <p class="profile-role">Resident Artist</p>
 
-<!-- Security Settings Card -->
-<div class="studio-card accent-danger">
-    <h3 class="card-title mb-10">Security Settings</h3>
-
-        <form method="POST" action="/artist/change-password" class="space-y-6">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-            <div class="space-y-2">
-                <label class="studio-label">Current Password</label>
-                <input class="studio-input" type="password" name="current_password" placeholder="Verify identity..." required>
+                <!-- Status pill -->
+                <div class="profile-status-pill">
+                    <span class="profile-status-dot"></span>
+                    Active
+                </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="studio-label">New Password</label>
-                <input class="studio-input" type="password" name="new_password" placeholder="Min. 8 characters" required>
+            <!-- Divider -->
+            <div class="profile-divider">
+                <div class="profile-divider-section-label">
+                    <div class="profile-section-icon"><i class="fas fa-id-card"></i></div>
+                    <span>Personal Details</span>
+                </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="studio-label">Confirm New Password</label>
-                <input class="studio-input" type="password" name="confirm_password" placeholder="Repeat new password" required>
+            <!-- Detail rows -->
+            <div class="profile-details">
+                <div class="profile-row">
+                    <span class="profile-row-key">Artist ID</span>
+                    <span class="profile-row-val profile-row-mono">#{{ session.get('user_id', 'DRAG-ART-001') }}</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-row-key">Primary Email</span>
+                    <span class="profile-row-val">{{ artist_profile.artist_email if artist_profile else 'arjun@dragon.com' }}</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-row-key">Contact</span>
+                    <span class="profile-row-val">{{ artist_profile.phone if artist_profile else '9876543210' }}</span>
+                </div>
+                <div class="profile-row profile-row-last">
+                    <span class="profile-row-key">Specialisation</span>
+                    <span class="status-badge status-amber profile-badge">
+                        {{ artist_profile.specialisation if artist_profile else 'TATTOO ARTIST' }}
+                    </span>
+                </div>
             </div>
-
-        <div class="pt-6">
-            <button type="submit" class="btn-studio btn-primary w-full justify-center">
-                <i class="fas fa-shield-alt"></i> Update Credentials
-            </button>
         </div>
-        </form>
+
+        <!-- 2. Security Settings Card -->
+        <div class="profile-wrap profile-security-card">
+
+            <!-- Glow orb (scarlet tint) -->
+            <div class="profile-orb profile-orb-scarlet"></div>
+
+            <div class="profile-security-header">
+                <div class="profile-lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div>
+                    <h3 class="card-title profile-card-title">Security Settings</h3>
+                    <p class="profile-card-sub">Manage your credentials</p>
+                </div>
+            </div>
+
+            <form method="POST" action="/artist/change-password" class="profile-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <!-- Current Password -->
+                <div class="profile-field">
+                    <label class="studio-label">Current Password</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-key"></i></div>
+                        <input class="studio-input profile-input" id="pw-current" type="password"
+                               name="current_password" placeholder="Verify identity…" required>
+                        <button type="button" class="profile-eye-btn" onclick="togglePw('pw-current', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Password -->
+                <div class="profile-field">
+                    <label class="studio-label">New Password</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-lock-open"></i></div>
+                        <input class="studio-input profile-input" id="pw-new" type="password"
+                               name="new_password" placeholder="Min. 8 characters" required
+                               oninput="profileStrength(this.value)">
+                        <button type="button" class="profile-eye-btn" onclick="togglePw('pw-new', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <!-- Strength bar -->
+                    <div class="profile-strength">
+                        <div class="profile-strength-bar">
+                            <div class="profile-strength-seg" id="ps1"></div>
+                            <div class="profile-strength-seg" id="ps2"></div>
+                            <div class="profile-strength-seg" id="ps3"></div>
+                            <div class="profile-strength-seg" id="ps4"></div>
+                        </div>
+                        <span class="profile-strength-label" id="ps-label">—</span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="profile-field">
+                    <label class="studio-label">Confirm New Password</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-shield-halved"></i></div>
+                        <input class="studio-input profile-input" id="pw-confirm" type="password"
+                               name="confirm_password" placeholder="Repeat new password" required>
+                        <button type="button" class="profile-eye-btn" onclick="togglePw('pw-confirm', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-submit-wrap">
+                    <button type="submit" class="btn-studio btn-primary profile-submit-btn">
+                        <i class="fas fa-shield-halved"></i>
+                        Update Credentials
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>

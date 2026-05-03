@@ -2,133 +2,18 @@
      SECTION: GALLERY / PORTFOLIO
      ═══════════════════════════════════════ -->
 
-<style>
-/* ── Gallery Layout ── */
-.gal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--studio-spacing);
-}
-
-.gal-item {
-    border-radius: var(--studio-radius);
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 1;
-    cursor: pointer;
-    background: var(--studio-card);
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.gal-item img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.6s ease;
-}
-
-.gal-item:hover img { transform: scale(1.1); }
-
-.gal-ov {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent 70%);
-    display: flex; flex-direction: column; justify-content: flex-end;
-    padding: 1.5rem; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.gal-item:hover .gal-ov { opacity: 1; }
-
-.gal-del-btn {
-    position: absolute; top: 1rem; right: 1rem;
-    width: 32px; height: 32px; border-radius: 10px;
-    background: rgba(239, 68, 68, 0.9); color: white;
-    display: flex; align-items: center; justify-content: center;
-    border: none; cursor: pointer; opacity: 0;
-    transform: translateY(-10px); transition: all 0.3s ease;
-    z-index: 10;
-}
-
-.gal-item:hover .gal-del-btn { opacity: 1; transform: translateY(0); }
-
-/* ── Upload & Dropzone ── */
-.dropzone-pnl {
-    border: 2px dashed var(--studio-border);
-    border-radius: var(--studio-radius);
-    padding: 4rem 2rem; text-align: center;
-    background: rgba(255, 255, 255, 0.02);
-    cursor: pointer; transition: all 0.3s ease;
-}
-
-.dropzone-pnl:hover, .dropzone-pnl.active {
-    border-color: var(--studio-gold);
-    background: rgba(200, 160, 64, 0.05);
-}
-</style>
-
-<script>
-function toggleUp() {
-    const p = document.getElementById('upPanel');
-    if (p) p.classList.toggle('hidden');
-}
-
-function prevFile(input) {
-    const f = input.files[0];
-    const err = document.getElementById('fErr');
-    const ph = document.getElementById('dzPh');
-    const pv = document.getElementById('dzPv');
-
-    if (f) {
-        if (f.size > 5 * 1024 * 1024) {
-            if (err) { err.querySelector('span').textContent = 'File too large. Max 5 MB allowed.'; err.classList.remove('hidden'); }
-            input.value = '';
-            if (ph) ph.style.display = 'block';
-            if (pv) pv.classList.add('hidden');
-            return;
-        }
-        if (err) err.classList.add('hidden');
-        const img = document.getElementById('dzI');
-        if (img) img.src = URL.createObjectURL(f);
-        const nm = document.getElementById('dzN');
-        if (nm) nm.textContent = f.name;
-        if (ph) ph.style.display = 'none';
-        if (pv) pv.classList.remove('hidden');
-    }
-}
-
-function clearDz(e) {
-    if (e) e.stopPropagation();
-    const input = document.getElementById('gf');
-    if (input) input.value = '';
-    const ph = document.getElementById('dzPh');
-    const pv = document.getElementById('dzPv');
-    const er = document.getElementById('fErr');
-    if (ph) ph.style.display = 'block';
-    if (pv) pv.classList.add('hidden');
-    if (er) er.classList.add('hidden');
-}
-
-function doDrop(e) {
-    e.preventDefault();
-    const dz = document.getElementById('dz');
-    if (dz) dz.classList.remove('active');
-    const files = e.dataTransfer && e.dataTransfer.files;
-    if (files && files.length > 0) {
-        const input = document.getElementById('gf');
-        if (input) {
-            input.files = files;
-            prevFile(input);
-        }
-    }
-}
-</script>
-
-<!-- Header Section -->
-<div class="studio-card accent-gold">
+<!-- 1. Header Section -->
+<div class="gallery-wrap accent-scarlet mb-10">
     <div class="flex items-center justify-between gap-6 flex-wrap">
-        <div>
-            <h3 class="card-title mb-1">Portfolio Gallery</h3>
-            <p class="text-[10px] text-muted font-medium mt-1">Exhibit your unique artistry and professional canvas</p>
+        <div class="flex items-center gap-8">
+            <div class="gal-header-icon"><i class="fas fa-palette"></i></div>
+            <div>
+                <h3 class="card-title">Portfolio Gallery</h3>
+                <span class="log-subtitle">Exhibit your unique artistry and professional canvas</span>
+            </div>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="/gallery" target="_blank" class="btn-studio btn-secondary">
+        <div class="flex items-center gap-4">
+            <a href="/gallery" target="_blank" class="btn-studio btn-outline">
                 <i class="fas fa-external-link-alt"></i> Public Feed
             </a>
             <button class="btn-studio btn-primary" onclick="toggleUp()">
@@ -138,71 +23,85 @@ function doDrop(e) {
     </div>
 </div>
 
-<!-- Upload Panel -->
-<div id="upPanel" class="hidden mb-10 reveal">
-    <div class="studio-card accent-gold">
-        <h3 class="card-title mb-8">Upload New Artwork</h3>
+<!-- 2. Upload Panel (Hidden by Default) -->
+<div id="upPanel" class="hidden animate-slide-up">
+    <div class="gallery-wrap accent-scarlet">
+        <div class="flex items-center gap-4 mb-10 pb-6 border-bottom border-border-soft">
+            <div class="w-10 h-10 rounded-xl bg-gold-dim text-gold flex items-center justify-center text-sm border border-gold/10">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3 class="card-title !text-xl">Upload New Artwork</h3>
+        </div>
 
         <form method="POST" action="/artist/gallery/upload" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div class="mb-8">
-                <label class="studio-label">Select Image <span class="text-rose-500">*</span></label>
+            <div class="mb-10">
+                <label class="studio-label">
+                    <i class="fas fa-camera text-gold/60"></i>
+                    Select High-Resolution Image
+                </label>
+                
                 <div class="dropzone-pnl" id="dz" onclick="document.getElementById('gf').click()"
                     ondragover="event.preventDefault(); this.classList.add('active')"
                     ondragleave="this.classList.remove('active')"
                     ondrop="doDrop(event)">
 
                     <div id="dzPh">
-                        <div class="w-16 h-16 rounded-full bg-studio-gold-soft text-accent flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <div class="w-16 h-16 rounded-full bg-gold-dim text-gold flex items-center justify-center mx-auto mb-5 border border-gold/10 group-hover:scale-110 transition-transform">
                             <i class="fas fa-cloud-upload-alt text-2xl"></i>
                         </div>
-                        <p class="text-sm font-bold text-text mb-1">Click to browse or drag & drop</p>
-                        <p class="text-[10px] text-muted tracking-wide">High-quality JPG or PNG (Max 5MB)</p>
+                        <p class="text-sm font-bold text-text mb-2">Click to browse or drag & drop</p>
+                        <p class="text-[10px] text-muted tracking-widest uppercase font-black opacity-50">JPG, PNG • Max 5MB</p>
                     </div>
 
-                    <div id="dzPv" class="hidden animate-in fade-in zoom-in duration-300">
-                        <img id="dzI" class="max-h-64 mx-auto rounded-xl border border-studio-border shadow-2xl mb-4 object-contain" src="" alt="">
-                        <div class="flex items-center justify-center gap-3">
-                            <p id="dzN" class="text-[11px] font-mono font-bold text-accent"></p>
+                    <div id="dzPv" class="hidden animate-in fade-in zoom-in duration-500">
+                        <img id="dzI" class="max-h-72 mx-auto rounded-2xl border border-white/10 shadow-2xl mb-5 object-contain" src="" alt="">
+                        <div class="flex items-center justify-center gap-4">
+                            <p id="dzN" class="text-[11px] font-mono font-bold text-gold bg-gold-dim px-3 py-1.5 rounded-lg border border-gold/10"></p>
                             <button type="button" onclick="clearDz(event)"
-                                class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-500 text-[10px] font-black tracking-widest uppercase hover:bg-rose-500 hover:text-white transition-all">
+                                class="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/10">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                     </div>
                 </div>
                 <input type="file" id="gf" name="gallery_image" accept=".jpg,.jpeg,.png" class="hidden" onchange="prevFile(this)">
-                <p id="fErr" class="hidden text-[10px] text-rose-500 font-bold mt-3 pl-1 items-center gap-1">
-                    <i class="fas fa-exclamation-circle"></i> <span></span>
+                <p id="fErr" class="hidden text-[11px] text-red-500 font-bold mt-4 pl-1 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i> <span></span>
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div class="flex flex-col">
-                    <label class="studio-label">Caption <span class="normal-case opacity-40 font-medium">(Optional)</span></label>
-                    <input class="studio-input" type="text" name="caption" placeholder="Describe the masterpiece..." maxlength="200">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                <div class="form-group">
+                    <label class="studio-label">
+                        <i class="fas fa-quote-left text-gold/60"></i>
+                        Artwork Caption
+                    </label>
+                    <input class="studio-input" type="text" name="caption" placeholder="Give your masterpiece a title..." maxlength="200">
                 </div>
 
-                <div class="flex flex-col">
-                    <label class="studio-label">Style</label>
+                <div class="form-group">
+                    <label class="studio-label">
+                        <i class="fas fa-fingerprint text-gold/60"></i>
+                        Style / Category
+                    </label>
                     <div class="relative">
-                        <select class="studio-input appearance-none" name="style" required>
+                        <select class="studio-input" name="style" required>
                             <option value="">Select a category...</option>
                             <option value="Tattoo">Tattoo</option>
                             <option value="Sketch">Sketch</option>
                             <option value="Tattoo Removal">Tattoo Removal</option>
                         </select>
-                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-muted/30 text-[10px] pointer-events-none"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-4 pt-8 border-t border-studio-border">
+            <div class="flex items-center gap-4 pt-8 border-t border-border-soft">
                 <button type="submit" class="btn-studio btn-primary">
                     <i class="fas fa-check-circle"></i> Confirm Upload
                 </button>
-                <button type="button" class="btn-studio btn-secondary" onclick="toggleUp()">
+                <button type="button" class="btn-studio btn-outline" onclick="toggleUp()">
                     Discard
                 </button>
             </div>
@@ -210,63 +109,60 @@ function doDrop(e) {
     </div>
 </div>
 
-<!-- Gallery Grid -->
+<!-- 3. Gallery Grid Section -->
 {% if my_gallery %}
-<div class="flex items-center justify-between mb-6 px-1">
-    <p class="text-[11px] font-bold text-muted uppercase tracking-widest">
-        Displaying <span class="text-accent text-lg font-black font-display ml-1">{{ my_gallery|length }}</span>
-        portfolio items
-    </p>
-</div>
-
-<div class="gal-grid">
-    {% for item in my_gallery %}
-    <div class="gal-item reveal" style="--transition-delay: {{ loop.index0 * 50 }}ms"
-        data-zoom-img="{{ url_for('static', filename=item.image_path) }}"
-        data-zoom-cap="{{ item.caption|replace('\'', '\\\'') if item.caption else '' }}"
-        data-zoom-stl="{{ item.style }}"
-        onclick="openImageZoom(this.dataset.zoomImg, this.dataset.zoomCap, this.dataset.zoomStl)">
-
-        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork' }}" class="lazy">
-
-        <div class="gal-ov">
-            {% if item.caption %}
-            <p class="text-xs font-bold text-white mb-2 leading-tight drop-shadow-lg">
-                {{ item.caption[:40] }}{{ '...' if item.caption|length > 40 else '' }}
-            </p>
-            {% endif %}
-            <div class="flex items-center gap-2">
-                <span class="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-black uppercase tracking-widest">
-                    {{ item.style or 'Tattoo' }}
-                </span>
-            </div>
-        </div>
-
-        <form method="POST" action="/artist/gallery/delete/{{ item.gallery_id }}"
-            onsubmit="event.stopPropagation(); return confirm('Permanently remove this work from your portfolio?')">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="gal-del-btn">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </form>
+<div class="gallery-wrap accent-emerald">
+    <div class="flex items-center justify-between mb-8 pb-4 border-bottom border-border-soft">
+        <p class="text-[11px] font-bold text-muted uppercase tracking-widest">
+            Displaying <span class="text-text text-lg font-black ml-1">{{ my_gallery|length }}</span> portfolio items
+        </p>
     </div>
-    {% endfor %}
+
+    <div class="gal-grid">
+        {% for item in my_gallery %}
+        <div class="gal-item reveal" style="--transition-delay: {{ loop.index0 * 50 }}ms"
+            data-zoom-img='{{ url_for("static", filename=item.image_path) | tojson }}'
+            data-zoom-cap='{{ (item.caption or "") | tojson }}'
+            data-zoom-stl='{{ (item.style or "") | tojson }}'
+            onclick="openImageZoom(JSON.parse(this.dataset.zoomImg), JSON.parse(this.dataset.zoomCap), JSON.parse(this.dataset.zoomStl))">
+
+            <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork' }}" class="lazy">
+
+            <div class="gal-ov">
+                {% if item.caption %}
+                <p class="text-xs font-bold text-white mb-2 leading-tight drop-shadow-lg">
+                    {{ item.caption[:40] }}{{ '...' if item.caption|length > 40 else '' }}
+                </p>
+                {% endif %}
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-black uppercase tracking-widest">
+                        {{ item.style or 'Tattoo' }}
+                    </span>
+                </div>
+            </div>
+
+            <form method="POST" action="/artist/gallery/delete/{{ item.gallery_id }}"
+                onsubmit="event.stopPropagation(); return confirm('Permanently remove this work from your portfolio?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="gal-del-btn">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% else %}
-<div class="text-center py-32 px-6 bg-studio-surface/20 border-2 border-dashed border-studio-border rounded-3xl reveal">
-    <div
-        class="w-20 h-20 rounded-3xl bg-studio-surface border border-studio-border flex items-center justify-center mx-auto mb-8 transform -rotate-6 shadow-2xl">
-        <i class="fas fa-images text-3xl text-accent opacity-30"></i>
+<div class="text-center py-32 px-6 bg-surface-2 border-2 border-dashed border-border rounded-3xl reveal">
+    <div class="w-20 h-20 rounded-3xl bg-surface border border-border flex items-center justify-center mx-auto mb-8 transform -rotate-6 shadow-2xl">
+        <i class="fas fa-images text-3xl text-gold opacity-30"></i>
     </div>
     <h3 class="text-2xl font-display text-text mb-4">Upload Your First Work ⬆️</h3>
     <p class="text-[11px] text-muted max-w-sm mx-auto mb-10 leading-relaxed font-medium">
-        Your portfolio is your professional canvas. Start sharing your best work to inspire clients and showcase your
-        unique style.
+        Your portfolio is your professional canvas. Start sharing your best work to inspire clients and showcase your unique style.
     </p>
-    <button
-        class="h-12 px-10 rounded-2xl bg-studio-gold text-studio-bg text-[10px] font-black uppercase tracking-[0.2em] hover:shadow-xl hover:shadow-studio-gold/20 transition-all active:scale-95"
-        onclick="toggleUp()">
+    <button class="btn-studio btn-primary px-10" onclick="toggleUp()">
         GET STARTED
     </button>
 </div>

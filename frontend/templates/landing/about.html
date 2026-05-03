@@ -6,16 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | About</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/font-awesome-embedded.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/main_design.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/navbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/core/fonts-embedded.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
+                    fontFamily: { sans: ['Roboto', 'sans-serif'], display: ['"Cinzel Decorative"', 'cursive'] },
                     colors: {
                         apple: {
                             bg: 'var(--bg)',
@@ -36,7 +33,178 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        body {
+            background: #000;
+            color: #f5f5f7;
+            overflow-x: hidden;
+        }
 
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 1.5rem;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link {
+            color: #86868b;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            transition: color 0.25s;
+            text-decoration: none;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent, #c8a040);
+        }
+
+        /* hamburger */
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .burger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #8b8b93;
+            border-radius: 2px;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .burger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .burger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+        }
+
+        /* mobile menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(3, 3, 3, 0.97);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            font-family: 'Cinzel', serif;
+            font-size: 1.75rem;
+            color: #8b8b93;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.25s;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            color: #c8a040;
+        }
+
+        .mobile-menu-divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(200, 160, 64, 0.3);
+        }
+
+        .page-hero {
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
+            padding: 9rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
+        }
+
+        .page-hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-d1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-d2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-d3 {
+            transition-delay: 0.3s;
+        }
 
         /* timeline */
         .timeline-item {
@@ -292,9 +460,9 @@
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
 </head>
 
-<body class="landing-page">
+<body>
 
-    <div class="mobile-menu-landing" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
         <a href="/">Home</a><a href="/about" class="active">About</a><a href="/services">Services</a>
         <a href="/gallery">Gallery</a><a href="/contact">Contact</a>
         <div class="mobile-menu-divider"></div>
@@ -314,11 +482,11 @@
                 <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos</span>
             </div>
             <div class="hidden md:flex items-center gap-8">
-                <a href="/" class="nav-link-landing">Home</a>
-                <a href="/about" class="nav-link-landing active">About</a>
-                <a href="/services" class="nav-link-landing">Services</a>
-                <a href="/gallery" class="nav-link-landing">Gallery</a>
-                <a href="/contact" class="nav-link-landing">Contact</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/about" class="nav-link active">About</a>
+                <a href="/services" class="nav-link">Services</a>
+                <a href="/gallery" class="nav-link">Gallery</a>
+                <a href="/contact" class="nav-link">Contact</a>
             </div>
             <div class="flex items-center gap-3">
                 <div class="hidden md:flex gap-3">
@@ -327,7 +495,7 @@
                     <a href="/register"
                         class="px-4 py-1.5 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all">Register</a>
                 </div>
-                <button class="burger-landing md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
+                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
                     aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
             </div>
         </div>

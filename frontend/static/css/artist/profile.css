@@ -1,0 +1,346 @@
+/* ══════════════════════════════════════
+   PROFILE SECTION  (sec-profile)
+   ══════════════════════════════════════ */
+
+/* Grid: two equal columns, aligned top */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Base card ── */
+.profile-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.profile-wrap:hover {
+    box-shadow: var(--shadow-md), 0 0 40px rgba(212,175,55,0.06);
+    border-color: rgba(212,175,55,0.18);
+}
+
+/* Decorative glow orb */
+.profile-orb {
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,55,0.09) 0%, transparent 70%);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    opacity: 0.6;
+}
+.profile-wrap:hover .profile-orb { opacity: 1; }
+
+.profile-orb-scarlet {
+    background: radial-gradient(circle, rgba(180,40,40,0.09) 0%, transparent 70%);
+}
+
+/* ivory theme override */
+[data-theme="ivory"] .profile-wrap {
+    background: #FFFFFF;
+    border-color: rgba(0,0,0,0.06);
+}
+
+/* ── Info card: header ── */
+.profile-header {
+    padding: 2.5rem 2rem 1.75rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-icon-box {
+    width: 5rem; height: 5rem;
+    border-radius: 1.5rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.6rem;
+    color: var(--gold);
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+    box-shadow: var(--shadow-md);
+    position: relative; z-index: 1;
+}
+
+.profile-wrap:hover .profile-icon-box {
+    transform: rotate(6deg) scale(1.06);
+    border-color: var(--gold);
+    box-shadow: 0 8px 28px rgba(212,175,55,0.18);
+}
+
+.profile-name {
+    font-family: var(--dt-font-display);
+    font-size: 1.85rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+    line-height: 1.1;
+    margin-bottom: 0.35rem;
+}
+
+.profile-role {
+    font-family: var(--dt-font-ui);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+}
+
+.profile-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    padding: 0.25rem 0.85rem;
+    border-radius: 2rem;
+    background: rgba(34,197,94,0.08);
+    border: 1px solid rgba(34,197,94,0.2);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #4ade80;
+}
+
+.profile-status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 6px rgba(74,222,128,0.6);
+    animation: profile-pulse 2s ease-in-out infinite;
+}
+
+@keyframes profile-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ── Section sub-header ── */
+.profile-divider {
+    padding: 1.25rem 1.5rem 0;
+    position: relative; z-index: 1;
+}
+
+.profile-divider-section-label {
+    font-family: var(--dt-font-ui);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-1);
+}
+
+.profile-section-icon {
+    width: 1.75rem; height: 1.75rem;
+    border-radius: 0.5rem;
+    background: var(--gold-dim, rgba(212,175,55,0.1));
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 0.65rem;
+}
+
+/* ── Detail rows ── */
+.profile-details {
+    padding: 0.5rem 1.25rem 1.5rem;
+    position: relative; z-index: 1;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0.5rem;
+    transition: background 0.2s ease, padding-left 0.2s ease;
+}
+
+.profile-row:hover {
+    background: rgba(255,255,255,0.025);
+    padding-left: 1rem;
+}
+
+.profile-row-last { border-bottom: none; }
+
+.profile-row-key {
+    font-family: var(--dt-font-ui);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-3);
+}
+
+.profile-row-val {
+    font-family: var(--dt-font-ui);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-1);
+}
+
+.profile-row-mono {
+    font-family: var(--dt-font-mono, monospace);
+    color: var(--gold);
+    font-size: 0.68rem;
+}
+
+.profile-badge {
+    font-size: 0.55rem !important;
+}
+
+/* ── Card Specific Accents ── */
+.profile-info-card {
+    border-left-color: #10b981 !important; /* Emerald for Identity */
+}
+
+.profile-security-card { 
+    padding: 2rem; 
+    border-left-color: #3b82f6 !important; /* Azure for Security */
+}
+
+.profile-security-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.profile-lock-icon {
+    width: 2.75rem; height: 2.75rem;
+    border-radius: 0.875rem;
+    background: rgba(180,40,40,0.12);
+    border: 1px solid rgba(180,40,40,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.profile-card-title { 
+    font-family: var(--dt-font-display);
+    margin-bottom: 0.1rem !important; 
+}
+
+.profile-card-sub {
+    font-family: var(--dt-font-ui);
+    font-size: 0.65rem;
+    color: var(--text-3);
+    margin: 0;
+}
+
+/* ── Form fields ── */
+.profile-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.profile-field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.profile-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-input-icon {
+    position: absolute;
+    left: 0.85rem;
+    color: var(--text-3);
+    font-size: 0.72rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.profile-input {
+    padding-left: 2.25rem !important;
+    padding-right: 2.75rem !important;
+}
+
+.profile-eye-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-3);
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.profile-eye-btn:hover { color: var(--gold); }
+
+/* ── Strength indicator ── */
+.profile-strength {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+}
+
+.profile-strength-bar {
+    display: flex;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.profile-strength-seg {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--border);
+    transition: background 0.3s ease;
+}
+
+.profile-strength-seg.ps-weak   { background: #ef4444; }
+.profile-strength-seg.ps-fair   { background: #f97316; }
+.profile-strength-seg.ps-good   { background: #eab308; }
+.profile-strength-seg.ps-strong { background: #22c55e; }
+
+.profile-strength-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    min-width: 3.5rem;
+    text-align: right;
+    transition: color 0.3s ease;
+}
+
+/* ── Submit button ── */
+.profile-submit-wrap { padding-top: 0.5rem; }
+
+.profile-submit-btn {
+    width: 100%;
+    justify-content: center;
+    height: 2.75rem !important;
+    gap: 0.5rem;
+}
+
+/* ── studio-input focus (shared) ── */
+.studio-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+}

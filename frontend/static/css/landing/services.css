@@ -1,0 +1,199 @@
+/* ── Services Page Assets ── */
+@import url('design-system.css');
+@import url('navbar.css');
+@import url('fonts-embedded.css');
+@import url('font-awesome-embedded.css');
+
+*, *::before, *::after {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+
+.stat-badge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #86868b;
+}
+
+.pain-indicator {
+    height: 4px;
+    width: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.pain-fill {
+    height: 100%;
+    background: #c8a040;
+}
+
+.service-card {
+    background: #1d1d1f;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 1.75rem;
+    transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s, opacity 0.3s;
+}
+
+.service-card:hover {
+    background: #2a2a2d;
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(200, 160, 64, 0.15);
+}
+
+.svc-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(200, 160, 64, 0.1);
+    border: 1px solid rgba(200, 160, 64, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.service-card:hover .svc-icon {
+    transform: scale(1.1);
+    background: rgba(200, 160, 64, 0.18);
+}
+
+.price-badge {
+    background: rgba(200, 160, 64, 0.1);
+    border: 1px solid rgba(200, 160, 64, 0.2);
+    border-radius: 8px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #c8a040;
+}
+
+.process-step {
+    background: #1d1d1f;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 1.5rem;
+    transition: background 0.3s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.process-step:hover {
+    background: #2a2a2d;
+    transform: translateY(-4px);
+}
+
+.step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(200, 160, 64, 0.1);
+    border: 1px solid rgba(200, 160, 64, 0.3);
+    color: #c8a040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: #86868b;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.filter-btn.active {
+    background: #c8a040;
+    color: #000;
+    border-color: #c8a040;
+    box-shadow: 0 8px 20px rgba(200, 160, 64, 0.3);
+}
+
+/* SCROLL REVEAL */
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+
+/* PAGE HERO */
+.page-hero {
+    padding: 120px 20px 60px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+.page-hero-grid {
+    position: absolute;
+    inset: 0;
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+/* Light Mode Overrides */
+html.light-mode .page-hero { background: #fdfdfc; }
+html.light-mode .page-hero-grid {
+    background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+}
+html.light-mode .filter-btn {
+    background: #fff;
+    border-color: #e2e8f0;
+    color: #64748b;
+}
+html.light-mode .filter-btn.active {
+    background: #c8a040;
+    color: #fff;
+    border-color: #c8a040;
+}
+html.light-mode .service-card, 
+html.light-mode .process-step {
+    background: #fff;
+    border-color: #e2e8f0;
+}
+html.light-mode .service-card:hover,
+html.light-mode .process-step:hover {
+    background: #f8fafc;
+    border-color: #c8a040;
+}
+html.light-mode .cta-section {
+    background: #f8fafc;
+}

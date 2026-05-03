@@ -1,0 +1,29 @@
+
+/* ── APPOINTMENTS SECTION STYLES ── */
+
+/* Specific status row highlights for Appointments Table */
+.dash-table tbody tr.status-approved {
+    border-left: 3px solid var(--gold);
+}
+
+.dash-table tbody tr.status-done {
+    border-left: 3px solid var(--green);
+}
+
+.dash-table tbody tr.status-pending {
+    border-left: 3px solid var(--amber);
+}
+
+.dash-table tbody tr.status-rejected,
+.dash-table tbody tr.status-cancelled {
+    border-left: 3px solid var(--red);
+    opacity: 0.8;
+}
+
+/* Appointment-specific list styles if needed */
+.appt-detail-row {
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+}

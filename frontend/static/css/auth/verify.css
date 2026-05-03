@@ -1,0 +1,98 @@
+/* ── OTP Verification Styles ── */
+.otp-container {
+    margin: 2rem 0;
+}
+
+.otp-grid {
+    display: flex;
+    gap: 0.85rem;
+    justify-content: center;
+}
+
+.otp-input {
+    width: 48px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.otp-input:hover {
+    border-color: rgba(255, 71, 87, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.otp-input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 71, 87, 0.03);
+    box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.08), 0 0 20px rgba(255, 71, 87, 0.05);
+    transform: translateY(-2px);
+}
+
+.progress-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dim));
+    box-shadow: 0 0 12px var(--accent-glow);
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resend-area {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.resend-text {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    border-bottom: 1.5px solid transparent;
+    transition: all 0.3s;
+}
+
+.resend-btn:hover {
+    color: var(--accent-dim);
+    border-bottom-color: var(--accent);
+}
+
+.resend-btn:disabled {
+    color: var(--muted);
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-bottom-color: transparent;
+}
+
+/* Light Mode */
+html.light-mode .otp-input { background: rgba(0, 0, 0, 0.02); }
+html.light-mode .otp-input:hover { background: rgba(0, 0, 0, 0.04); }
+html.light-mode .progress-track { background: rgba(0, 0, 0, 0.05); }
+
+@media (max-width: 480px) {
+    .otp-grid { gap: 0.5rem; }
+    .otp-input { width: 40px; height: 52px; font-size: 1.25rem; }
+}

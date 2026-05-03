@@ -69,8 +69,11 @@ def customer_dashboard():
 
     total_appointments = len(appointments)
     pending_count = sum(1 for a in appointments if a["status"] == "Pending")
+    approved_count = sum(1 for a in appointments if a["status"] == "Approved")
     done_count = sum(1 for a in appointments if a["status"] == "Done")
     total_invoices = len(invoices)
+    
+    upcoming = [a for a in appointments if a["status"] == "Approved"]
 
     return render_template(
         "customer/dashboard.html",
@@ -81,9 +84,11 @@ def customer_dashboard():
         customer_profile=sanitize_for_json(customer_profile),
         gallery=sanitize_for_json(gallery),
         pending_count=pending_count,
+        approved_count=approved_count,
         done_count=done_count,
         total_appointments=total_appointments,
         total_invoices=total_invoices,
+        upcoming=sanitize_for_json(upcoming),
     )
 
 

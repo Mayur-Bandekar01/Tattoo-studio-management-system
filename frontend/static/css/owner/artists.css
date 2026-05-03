@@ -1,0 +1,21 @@
+
+/* ── ARTISTS SECTION STYLES ── */
+
+.artist-roster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.artist-induction-card {
+    border: 1px solid var(--gold-glow);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--gold-dim) 100%);
+}
+
+.artist-spec-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}

@@ -1,315 +1,58 @@
-<!-- SECTION: GALLERY
-     v2: Horizontal scroll strip, custom black lightbox with gold info panel.
--->
+<!-- SECTION: GALLERY -->
+<div id="gallery-data" data-total-count="{{ gallery|length if gallery else 0 }}" hidden></div>
 
-<style>
-/* ── Gallery Wrap ── */
-.gal-wrap {
-    background   : var(--surface);
-    border       : 1px solid var(--border);
-    border-radius: var(--radius);
-    padding      : 2.5rem;
-    box-shadow   : var(--shadow);
-    width        : 100% !important;
-    position     : relative;
-}
+<div class="gal-wrap">
 
-[data-theme="ivory"] .gal-wrap {
-    background: #FFFFFF;
-    border-color: rgba(0,0,0,0.06);
-}
+  <!-- Header -->
+  <div class="gal-header">
+    <div>
+      <h3 class="gal-title">Studio Gallery</h3>
+      <p class="gal-count" id="galCountLabel">
+        {% if gallery %}{{ gallery|length }} artworks — browse for inspiration{% else %}No artworks yet{% endif %}
+      </p>
+    </div>
+    <div class="gal-filters">
+      <button class="filter-btn active" onclick="filterGallery('all',this)">All</button>
+      {% for style in gallery|map(attribute='style')|select|unique %}
+      <button class="filter-btn" onclick="filterGallery('{{ style }}',this)">{{ style }}</button>
+      {% endfor %}
+    </div>
+  </div>
 
-/* ── Header ── */
-.gal-header {
-    margin-bottom: 2.5rem;
-    display        : flex;
-    justify-content: space-between;
-    align-items    : flex-end;
-    gap            : 2rem;
-    flex-wrap      : wrap;
-    border-bottom  : 1px solid var(--border-soft);
-    padding-bottom : 1.5rem;
-}
-
-.gal-title {
-    font-size     : 2rem;
-    font-weight   : 900;
-    color         : var(--text-1);
-    letter-spacing: -0.03em;
-    margin-bottom : 0.5rem;
-}
-
-.gal-count {
-    font-size     : 9px;
-    font-weight   : 950;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color         : var(--text-3);
-}
-
-.gal-filters {
-    display: flex;
-    gap    : 0.5rem;
-}
-
-/* ── Horizontal Scroll Strip ── */
-.gal-strip-outer {
-    margin: 0 -2.5rem;
-    padding: 1rem 2.5rem 3rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-    cursor: grab;
-}
-
-.gal-strip-outer::-webkit-scrollbar { display: none; }
-.gal-strip-outer:active { cursor: grabbing; }
-
-.gal-strip {
-    display: flex;
-    gap: 1.5rem;
-    width: max-content;
-}
-
-/* ── Gallery Card ── */
-.gallery-card {
-    width: 320px;
-    background   : var(--bg);
-    border       : 1px solid var(--studio-border);
-    border-radius: 20px;
-    overflow     : hidden;
-    cursor       : pointer;
-    transition   : all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    position     : relative;
-    flex-shrink  : 0;
-    box-shadow   : 0 10px 30px rgba(0,0,0,0.15);
-}
-
-[data-theme="ivory"] .gallery-card {
-    background: #F8FAFC;
-    border-color: rgba(0,0,0,0.06);
-}
-
-.gallery-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--gold-dim);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-}
-
-.gallery-card-img {
-    height: 380px;
-    position: relative;
-    overflow: hidden;
-}
-
-.gallery-card-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.gallery-card:hover .gallery-card-img img { transform: scale(1.08); }
-
-.gallery-card-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
-    display: flex; align-items: flex-end; justify-content: center;
-    padding: 1.5rem; opacity: 0; transition: opacity 0.3s;
-}
-
-.gallery-card:hover .gallery-card-overlay { opacity: 1; }
-
-.gallery-card-overlay-label {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #fff; border: 1px solid rgba(255,255,255,0.2);
-    padding: 0.6rem 1.25rem; border-radius: 12px;
-    font-size: 0.75rem; font-weight: 900;
-    text-transform: uppercase; letter-spacing: 0.1em;
-}
-
-.gallery-card-info { padding: 1.5rem; }
-.gallery-card-caption {
-    font-size: 1.05rem; font-weight: 900; color: var(--text-1);
-    margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.gallery-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.gallery-card-artist { font-size: 0.7rem; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
-.gallery-style-tag {
-    font-size: 8px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.15em;
-    padding: 4px 10px; border-radius: 8px;
-    background: var(--studio-accent-soft); border: 1px solid var(--gold-dim); color: var(--gold);
-}
-
-/* ── Empty & Filter ── */
-.gal-empty { padding: 5rem 2rem; text-align: center; }
-.gal-empty-icon { font-size: 2.5rem; color: var(--studio-border); margin-bottom: 1.5rem; opacity: 0.3; }
-.gal-empty p { color: var(--studio-text-muted); font-size: 0.9rem; font-weight: 600; }
-</style>
-
-<!-- Gallery data for JS -->
-<div id="gallery-data"
-     data-total-count="{{ gallery|length if gallery else 0 }}"
-     style="display:none;"></div>
-
-<div class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-    <div class="gal-wrap">
-
-        <!-- Header -->
-        <div class="gal-header">
-            <div>
-                <h3 class="gal-title">Studio Gallery</h3>
-                <p class="gal-count" id="galCountLabel">
-                    {% if gallery %}{{ gallery|length }} artworks — browse for inspiration{% else %}No artworks yet{% endif %}
-                </p>
-            </div>
-
-            <div class="gal-filters">
-                <button class="filter-btn active" id="tabAll" onclick="switchGalTab('all', this)">All</button>
-                {% set styles = gallery | map(attribute='style') | select | unique | list %}
-                {% for style in styles %}
-                <button class="filter-btn" onclick="filterGallery('{{ style }}', this)">{{ style }}</button>
-                {% endfor %}
-            </div>
+  <!-- Strip -->
+  <div class="gal-strip-outer" id="galleryStripOuter">
+    <div class="gal-strip">
+      {% for item in gallery %}
+      <div class="gallery-item"
+           data-style="{{ item.style or '' }}"
+           data-img="{{ url_for('static', filename=item.image_path) }}"
+           data-title="{{ item.caption or 'Untitled' }}"
+           data-description="{{ item.description or '' }}"
+           data-artist="{{ item.artist_name }}"
+           data-date="{{ item.uploaded_at or '' }}"
+           data-tags="{{ item.tags or '' }}"
+           onclick="openLbFromItem(this)">
+        <div class="gal-img-wrap">
+          <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption }}" loading="lazy">
+          <div class="gal-overlay"><i class="fas fa-expand"></i> View</div>
         </div>
-
-        <!-- Horizontal Strip -->
-        <div class="gal-strip-outer" id="galleryStripOuter">
-            <div class="gal-strip" id="galleryGrid">
-                {% if gallery %}
-                {% for item in gallery %}
-                <div class="gallery-card gallery-item"
-                     style="--item-index:{{ loop.index0 }};"
-                     data-id="{{ item.gallery_id }}"
-                     data-index="{{ loop.index0 }}"
-                     data-category="{{ item.style or 'Other' }}"
-                     data-img="{{ url_for('static', filename=item.image_path) }}"
-                     data-title="{{ item.caption or 'Untitled' }}"
-                     data-description="{{ item.description or '' }}"
-                     data-artist="{{ item.artist_name }}"
-                     data-style="{{ item.style or '' }}"
-                     data-date="{{ item.uploaded_at if item.uploaded_at else '' }}"
-                     data-tags="{{ item.tags if item.tags else '' }}"
-                     onclick="openLbFromItem(this)">
-
-                    <div class="gallery-card-img">
-                        <img src="{{ url_for('static', filename=item.image_path) }}"
-                             alt="{{ item.caption }}" loading="lazy">
-                        <div class="gallery-card-overlay">
-                            <p class="gallery-card-overlay-label">
-                                <i class="fas fa-expand" style="margin-right:5px;"></i>View Masterpiece
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="gallery-card-info">
-                        <p class="gallery-card-caption">{{ item.caption or 'Untitled' }}</p>
-                        <div class="gallery-card-meta">
-                            <span class="gallery-card-artist">by {{ item.artist_name }}</span>
-                            {% if item.style %}
-                            <span class="gallery-style-tag">{{ item.style }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <div style="padding:5rem 2rem;text-align:center;width:100%;">
-                    <div class="gal-empty">
-                        <div class="gal-empty-icon"><i class="fas fa-images"></i></div>
-                        <p>No artworks uploaded yet.</p>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
+        <div class="gal-info">
+          <p class="gal-caption">{{ item.caption or 'Untitled' }}</p>
+          <div class="gal-meta">
+            <span class="gal-artist">by {{ item.artist_name }}</span>
+            {% if item.style %}<span class="gal-tag">{{ item.style }}</span>{% endif %}
+          </div>
         </div>
+      </div>
+      {% else %}
+      <div class="gal-empty"><i class="fas fa-images"></i><p>No artworks uploaded yet.</p></div>
+      {% endfor %}
+    </div>
+  </div>
 
-        <!-- No Results -->
-        <div id="galNoResult" style="display:none;">
-            <div class="gal-empty">
-                <div class="gal-empty-icon"><i class="fas fa-filter"></i></div>
-                <p>No artworks found for this style.</p>
-            </div>
-        </div>
+  <!-- No filter results -->
+  <div id="galNoResult" hidden>
+    <div class="gal-empty"><i class="fas fa-filter"></i><p>No artworks found for this style.</p></div>
+  </div>
 
-        </div>
-        </div>
-
-<script>
-    /**
-     * Gallery Logic - v2 Horizontal Strip
-     */
-    function filterGallery(style, btn) {
-        document.querySelectorAll('.gal-filters .filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const items = document.querySelectorAll('.gallery-item');
-        let count = 0;
-        items.forEach(item => {
-            if (style === 'all' || item.dataset.style === style) {
-                item.style.display = '';
-                count++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        document.getElementById('galNoResult').style.display = count === 0 ? 'block' : 'none';
-        document.getElementById('galleryStripOuter').style.display = count === 0 ? 'none' : 'block';
-        document.getElementById('galCountLabel').textContent = count + ' artworks — browse for inspiration';
-    }
-
-    function switchGalTab(style, btn) {
-        filterGallery(style, btn);
-    }
-
-    function openLbFromItem(el) {
-        if (typeof window.openLb === 'function') {
-            window.openLb(
-                el.dataset.img,
-                el.dataset.title,
-                el.dataset.description,
-                {
-                    artist: el.dataset.artist,
-                    style: el.dataset.style,
-                    date: el.dataset.date,
-                    tags: el.dataset.tags
-                }
-            );
-        }
-    }
-
-    // Drag to scroll for horizontal strip
-    const slider = document.getElementById('galleryStripOuter');
-    if (slider) {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 2;
-            slider.scrollLeft = scrollLeft - walk;
-        });
-    }
-</script>
+</div>

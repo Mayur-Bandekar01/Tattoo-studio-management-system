@@ -1,0 +1,39 @@
+
+/* ── PROFILE SECTION STYLES ── */
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pw-strength-meter {
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.pw-strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+}
+
+.pw-strength-fill.weak { background: var(--red); width: 33%; }
+.pw-strength-fill.medium { background: var(--amber); width: 66%; }
+.pw-strength-fill.strong { background: var(--green); width: 100%; }
+
+.security-log-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+}

@@ -1,0 +1,19 @@
+/* ── History Section ── */
+.history-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="ivory"] .history-wrap {
+    background: #FFFFFF;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+.history-wrap .dash-table td {
+    padding: 1.25rem 1rem;
+}

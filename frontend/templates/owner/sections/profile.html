@@ -1,212 +1,318 @@
 <!-- ═══════════════════════════════════════
      SECTION: OWNER PROFILE
-     Refactored: Utility-First Premium
+     Refactored: High-Fidelity Editorial v6.0
      ═══════════════════════════════════════ -->
-<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="profile-layout-wrap">
 
-    <!-- ── Profile Info Card ── -->
-    <div class="studio-card p-6 border-l-4 border-indigo-500 flex-1">
-        <div class="flex items-center gap-4 mb-8">
-            <div
-                class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shadow-inner">
+    <!-- ── Identity & Stats Section ── -->
+    <div class="studio-card profile-main-card">
+        <div class="card-glow-orb" style="--glow-bg: rgba(251, 54, 64, 0.05);"></div>
+        
+        <div class="profile-header-wrap">
+            <div class="profile-avatar-premium">
                 <i class="fa-solid fa-crown"></i>
+                <div class="avatar-pulse"></div>
             </div>
-            <div>
-                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Owner Profile</h3>
-                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Administrative
-                    Credentials</p>
+            <div class="profile-header-text">
+                <h2 class="profile-title-display">Owner Identity</h2>
+                <p class="profile-subtitle-editorial">Primary administrative credentials & studio status</p>
             </div>
         </div>
 
-        <div class="space-y-4">
-            <div
-                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors group">
-                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Owner ID</span>
-                <span
-                    class="font-mono text-indigo-500 font-black text-sm group-hover:scale-105 transition-transform">#{{
-                    session.get('user_id') }}</span>
+        <!-- Metric Grid (Matches user's 4-card vision) -->
+        <div class="identity-metric-grid">
+            <div class="identity-metric-card">
+                <span class="metric-label">Registry ID</span>
+                <span class="metric-value font-mono">#OWN-{{ session.get('user_id', '001') }}</span>
+                <div class="metric-bg-icon"><i class="fa-solid fa-id-badge"></i></div>
             </div>
-            <div
-                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
-                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Full Name</span>
-                <span class="font-black text-studio-text-primary text-sm">{{ name }}</span>
+
+            <div class="identity-metric-card">
+                <span class="metric-label">Legal Name</span>
+                <span class="metric-value">{{ name | default('Dragon Owner') }}</span>
+                <div class="metric-bg-icon"><i class="fa-solid fa-signature"></i></div>
             </div>
-            <div
-                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
-                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Role Access</span>
-                <span
-                    class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">STUDIO
-                    OWNER</span>
+
+            <div class="identity-metric-card">
+                <span class="metric-label">Access Level</span>
+                <div class="metric-status-wrap">
+                    <span class="status-pill status-owner">Studio Owner</span>
+                </div>
+                <div class="metric-bg-icon"><i class="fa-solid fa-key"></i></div>
             </div>
-            <div
-                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors">
-                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Team Size</span>
-                <span class="font-black text-studio-text-primary text-sm">{{ total_artists }} Artists Active</span>
+
+            <div class="identity-metric-card">
+                <span class="metric-label">Studio Staff</span>
+                <span class="metric-value">{{ total_artists | default(3) }} Artists</span>
+                <span class="metric-sub-val">Active Nodes</span>
+                <div class="metric-bg-icon"><i class="fa-solid fa-users-gear"></i></div>
             </div>
-            <div
-                class="flex justify-between items-center p-5 rounded-xl border border-studio-border bg-studio-surface-light/30 hover:bg-studio-surface-light/50 transition-colors group">
-                <span class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest">Global
-                    Yield</span>
-                <span class="font-black text-emerald-500 text-sm group-hover:scale-110 transition-transform">₹{{
-                    total_revenue | default(0) }}</span>
+        </div>
+
+        <div class="profile-footer-stats">
+            <div class="footer-stat-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Financial Yield: <strong>₹{{ "{:,.0f}".format(total_revenue | default(0)) }}</strong></span>
+            </div>
+            <div class="footer-stat-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Last Activity: <strong>Just Now</strong></span>
             </div>
         </div>
     </div>
 
-    <!-- ── Security Settings ── -->
-    <div class="studio-card p-6 border-l-4 border-red-500 flex-1">
-        <div class="flex items-center gap-4 mb-8">
-            <div
-                class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center text-xl shadow-inner">
+    <!-- ── Security & Vault Section ── -->
+    <div class="studio-card security-vault-card">
+        <div class="card-glow-orb" style="--glow-bg: rgba(59, 130, 246, 0.05);"></div>
+        
+        <div class="profile-header-wrap">
+            <div class="profile-avatar-premium" style="--avatar-color: #3b82f6;">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <div>
-                <h3 class="text-xl font-black text-studio-text-primary tracking-tight font-heading">Security Settings
-                </h3>
-                <p class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mt-0.5">Cipher &
-                    Password Management</p>
+            <div class="profile-header-text">
+                <h2 class="profile-title-display">Vault Security</h2>
+                <p class="profile-subtitle-editorial">Cipher & password management protocol</p>
             </div>
         </div>
 
-        <form method="POST" action="/owner/change-password" class="space-y-6">
+        <form method="POST" action="/owner/change-password" class="security-protocol-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Current
-                    Password</label>
-                <div class="relative group">
-                    <input class="studio-input w-full" type="password" name="current_password" id="ownerCurrPw"
-                        placeholder="••••••••" required>
-                    <button type="button"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
-                        onclick="togglePw('ownerCurrPw', this)">
+            <div class="protocol-field">
+                <label class="protocol-label">Current Cipher</label>
+                <div class="protocol-input-wrap">
+                    <i class="fa-solid fa-lock-open input-lead-icon"></i>
+                    <input class="protocol-input" type="password" name="current_password" id="ownerCurrPw" placeholder="••••••••" required>
+                    <button type="button" class="input-toggle-btn" onclick="togglePw('ownerCurrPw', this)">
                         <i class="fa-regular fa-eye"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">New
-                    Password</label>
-                <div class="relative group">
-                    <input class="studio-input w-full" type="password" name="new_password" id="ownerNewPw"
-                        placeholder="Minimal 8 characters" required 
-                        pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
-                        title="Must contain at least 8 characters, including one uppercase letter, one number, and one special character."
-                        oninput="checkOwnerPwStrength()">
-                    <button type="button"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
-                        onclick="togglePw('ownerNewPw', this)">
+            <div class="protocol-field">
+                <label class="protocol-label">New Cipher</label>
+                <div class="protocol-input-wrap">
+                    <i class="fa-solid fa-fingerprint input-lead-icon"></i>
+                    <input class="protocol-input" type="password" name="new_password" id="ownerNewPw" placeholder="Establish new security" required 
+                           pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+                           onkeyup="checkProfileStrength(this, 'ownerPwBar', 'ownerPwLabel')">
+                    <button type="button" class="input-toggle-btn" onclick="togglePw('ownerNewPw', this)">
                         <i class="fa-regular fa-eye"></i>
                     </button>
                 </div>
-                <div class="w-full h-1.5 bg-black/20 rounded-full mt-3 overflow-hidden">
-                    <div id="ownerPwBar" class="h-full w-0 transition-all duration-500"></div>
-                </div>
-                <p id="ownerPwLabel" class="text-[10px] font-black uppercase mt-2 tracking-tighter h-3"></p>
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-[10px] font-black uppercase text-studio-text-muted tracking-wide">Confirm New
-                    Password</label>
-                <div class="relative group">
-                    <input class="studio-input w-full" type="password" name="confirm_password" id="ownerConfPw"
-                        placeholder="Re-enter password" required oninput="checkOwnerPwMatch()">
-                    <button type="button"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-studio-text-muted/50 hover:text-studio-text-primary transition-colors"
-                        onclick="togglePw('ownerConfPw', this)">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
-                </div>
-                <p id="ownerMatchLabel" class="text-[10px] font-black uppercase mt-2 tracking-tighter h-3"></p>
-            </div>
-
-            <div class="p-4 rounded-xl border border-studio-border bg-studio-surface-light/30">
-                <p
-                    class="text-[10px] font-black uppercase text-studio-text-muted tracking-widest mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-xs"></i> Password Requirements
-                </p>
-                <div class="grid grid-cols-2 gap-y-2 gap-x-4">
-                    <p id="ownerRule_len"
-                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
-                        <span class="indicator">✗</span> 8+ characters
-                    </p>
-                    <p id="ownerRule_upper"
-                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
-                        <span class="indicator">✗</span> Uppercase
-                    </p>
-                    <p id="ownerRule_num"
-                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
-                        <span class="indicator">✗</span> Number
-                    </p>
-                    <p id="ownerRule_spec"
-                        class="text-[10px] font-black uppercase text-studio-text-muted flex items-center gap-2 transition-colors">
-                        <span class="indicator">✗</span> Special char
-                    </p>
+                <div class="cipher-strength-wrap">
+                    <div class="strength-rail">
+                        <div id="ownerPwBar" class="strength-progress"></div>
+                    </div>
+                    <span id="ownerPwLabel" class="strength-indicator">Weak</span>
                 </div>
             </div>
 
-            <button type="submit" class="studio-btn-primary w-full py-4 relative overflow-hidden group">
-                <span class="relative z-10 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-shield-halved"></i> Update Cipher
-                </span>
-                <div
-                    class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            <div class="protocol-field">
+                <label class="protocol-label">Confirm Cipher</label>
+                <div class="protocol-input-wrap">
+                    <i class="fa-solid fa-check-double input-lead-icon"></i>
+                    <input class="protocol-input" type="password" name="confirm_password" id="ownerConfPw" placeholder="Re-verify new cipher" required>
                 </div>
+            </div>
+
+            <button type="submit" class="vault-update-btn">
+                <i class="fa-solid fa-unlock-keyhole"></i>
+                Update Security Vault
+                <div class="btn-shimmer"></div>
             </button>
         </form>
     </div>
 </div>
 
-<script>
-    function checkOwnerPwStrength() {
-        const pw = document.getElementById('ownerNewPw').value;
-        const bar = document.getElementById('ownerPwBar');
-        const lbl = document.getElementById('ownerPwLabel');
+<style>
+/* ── PROFILE LAYOUT ── */
+.profile-layout-wrap {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    padding: 0.5rem 0;
+}
 
-        const rules = {
-            len: pw.length >= 8,
-            upper: /[A-Z]/.test(pw),
-            num: /[0-9]/.test(pw),
-            spec: /[^A-Za-z0-9]/.test(pw),
-        };
+@media (max-width: 1200px) {
+    .profile-layout-wrap { grid-template-columns: 1fr; }
+}
 
-        Object.entries(rules).forEach(([key, pass]) => {
-            const el = document.getElementById(`ownerRule_${key}`);
-            if (!el) return;
-            const indicator = el.querySelector('.indicator');
-            indicator.textContent = pass ? '✓' : '✗';
-            el.className = `text-[10px] font-black uppercase flex items-center gap-2 transition-colors ${pass ? 'text-emerald-500' : 'text-studio-text-muted'}`;
-        });
+.studio-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 2.25rem;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-        const score = Object.values(rules).filter(Boolean).length;
-        const colors = ['transparent', '#ef4444', '#f97316', '#eab308', '#10b981'];
-        const labels = ['', 'Weak Vulnerability', 'Fair Security', 'Good Protection', 'Maximum Cipher'];
+.studio-card:hover {
+    border-color: var(--gold-dim);
+    box-shadow: var(--shadow-lg), 0 20px 60px -20px rgba(0,0,0,0.3);
+}
 
-        bar.style.width = (score * 25) + '%';
-        bar.style.background = colors[score];
-        lbl.textContent = labels[score] || '';
-        lbl.style.color = colors[score];
+/* ── HEADER STYLES ── */
+.profile-header-wrap { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem; }
+.profile-avatar-premium {
+    position: relative;
+    width: 4rem; height: 4rem; border-radius: 1.25rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; color: var(--avatar-color, var(--gold));
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+}
 
-        // Add shadow/glow effect to bar based on score
-        if (score > 0) {
-            bar.style.boxShadow = `0 0 10px ${colors[score]}44`;
-        } else {
-            bar.style.boxShadow = 'none';
-        }
-    }
+.avatar-pulse {
+    position: absolute; inset: -4px; border: 2px solid var(--gold-dim);
+    border-radius: 1.5rem; opacity: 0.3;
+    animation: avatar-pulse-glow 3s infinite;
+}
 
-    function checkOwnerPwMatch() {
-        const pw1 = document.getElementById('ownerNewPw').value;
-        const pw2 = document.getElementById('ownerConfPw').value;
-        const lbl = document.getElementById('ownerMatchLabel');
-        if (!pw2) { lbl.textContent = ''; return; }
-        if (pw1 === pw2) {
-            lbl.textContent = '✓ Passwords synchronized';
-            lbl.style.color = '#10b981';
-        } else {
-            lbl.textContent = '✗ Cipher mismatch';
-            lbl.style.color = '#ef4444';
-        }
-    }
-</script>
+@keyframes avatar-pulse-glow {
+    0% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.05); opacity: 0.1; }
+    100% { transform: scale(1); opacity: 0.3; }
+}
+
+.profile-title-display { font-family: var(--dt-font-display); font-size: 1.75rem; font-weight: 800; color: var(--text-1); letter-spacing: -0.02em; }
+.profile-subtitle-editorial { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: var(--text-3); letter-spacing: 0.1em; margin-top: 0.25rem; }
+
+/* ── METRIC GRID (IDENTITY) ── */
+.identity-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.identity-metric-card {
+    position: relative;
+    padding: 1.5rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.identity-metric-card:hover {
+    background: var(--surface);
+    border-color: var(--gold-dim);
+    transform: translateY(-4px);
+}
+
+.metric-label { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: var(--text-3); letter-spacing: 0.12em; }
+.metric-value { font-size: 1.1rem; font-weight: 800; color: var(--text-1); z-index: 1; }
+.metric-bg-icon {
+    position: absolute; right: -0.5rem; bottom: -0.5rem;
+    font-size: 3rem; color: var(--text-1); opacity: 0.03;
+    transform: rotate(-15deg);
+}
+
+.metric-status-wrap { margin-top: 0.25rem; }
+.status-pill { padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+.status-owner { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+/* ── SECURITY FORM ── */
+.security-protocol-form { display: flex; flex-direction: column; gap: 1.75rem; }
+.protocol-field { display: flex; flex-direction: column; gap: 0.75rem; }
+.protocol-label { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: var(--text-3); letter-spacing: 0.15em; }
+
+.protocol-input-wrap { position: relative; display: flex; align-items: center; }
+.input-lead-icon { position: absolute; left: 1.15rem; font-size: 0.9rem; color: var(--text-3); pointer-events: none; }
+.protocol-input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.1rem 1.25rem 1.1rem 3rem;
+    color: var(--text-1);
+    font-family: var(--dt-font-ui);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.protocol-input:focus {
+    background: var(--surface);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.input-toggle-btn {
+    position: absolute; right: 1rem;
+    background: none; border: none; color: var(--text-3);
+    cursor: pointer; padding: 0.5rem; transition: color 0.3s;
+}
+.input-toggle-btn:hover { color: #3b82f6; }
+
+/* ── STRENGTH METER ── */
+.cipher-strength-wrap { display: flex; align-items: center; gap: 1rem; margin-top: 0.25rem; }
+.strength-rail { flex: 1; height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.strength-progress { height: 100%; width: 0%; transition: all 0.5s ease; border-radius: 2px; }
+.strength-indicator { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; color: var(--text-3); min-width: 45px; text-align: right; }
+
+/* ── ACTION BUTTON ── */
+.vault-update-btn {
+    position: relative;
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #fb3640 0%, #d91b25 100%);
+    color: #fff;
+    border: none;
+    border-radius: 1.25rem;
+    font-family: var(--dt-font-ui);
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(251, 54, 64, 0.25);
+}
+
+.vault-update-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(251, 54, 64, 0.35);
+    filter: brightness(1.1);
+}
+
+.btn-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.vault-update-btn:hover .btn-shimmer { transform: translateX(100%); }
+
+/* ── UTILITIES ── */
+.card-glow-orb {
+    position: absolute; top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--glow-bg) 0%, transparent 70%);
+    pointer-events: none; opacity: 0; transition: opacity 0.6s ease;
+}
+.studio-card:hover .card-glow-orb { opacity: 1; }
+
+.profile-footer-stats {
+    display: flex; align-items: center; gap: 2rem;
+    margin-top: 1rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border-soft);
+}
+.footer-stat-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.72rem; color: var(--text-3); }
+.footer-stat-item i { color: var(--gold); font-size: 0.8rem; }
+.footer-stat-item strong { color: var(--text-2); font-weight: 700; }
+</style>

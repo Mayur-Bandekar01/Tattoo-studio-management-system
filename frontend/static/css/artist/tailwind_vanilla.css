@@ -189,7 +189,7 @@
 .artist-image-container img {
     width: 100%;
     height: 100%;
-    object-cover: cover;
+    object-fit: cover;
 }
 
 .artist-info {
@@ -338,14 +338,15 @@
 
 /* --- Dashboard Layout --- */
 .dashboard-container {
-    min-h-screen: 100vh;
+    min-height: 100vh;
     background: var(--studio-bg);
     display: flex;
 }
 
 .studio-sidebar {
     position: fixed;
-    inset-y: 0;
+    top: 0;
+    bottom: 0;
     left: 0;
     width: 280px;
     background: var(--studio-surface);

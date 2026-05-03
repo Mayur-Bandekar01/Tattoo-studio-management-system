@@ -11,11 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Unified Design System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/artist/dashboard.css') }}?v=4.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/artist/dashboard.css') }}?v=4.2">
 
-
-    <script src="{{ url_for('static', filename='js/core/chart.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/core/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/artist/dashboard.js') }}?v=4.0"></script>
+    
+    <!-- Section Specific Scripts -->
+    <script src="{{ url_for('static', filename='js/artist/overview.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/appointments.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/schedule.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/inventory.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/messages.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/gallery.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/logusage.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/history.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/profile.js') }}" defer></script>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -152,59 +162,6 @@
         </main>
     </div>
 
-    <!-- Consolidated Script Logic -->
-
-    <script>
-
-        // Close sidebar when clicking links on mobile
-        document.querySelectorAll('.studio-sidebar .nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 1024) {
-                    toggleSidebar();
-                }
-            });
-        });
-
-        /* ── Image Zoom Logic ── */
-        window.openImageZoom = function(src, caption, style) {
-            const modal = document.getElementById('studioImageModal');
-            const img = document.getElementById('zoomImg');
-            const cap = document.getElementById('zoomCap');
-            const stl = document.getElementById('zoomStl');
-
-            if (!modal || !img) return;
-
-            img.src = src;
-
-            if (caption && caption.trim() !== 'None' && caption.trim() !== '') {
-                cap.innerText = caption;
-                cap.style.display = 'block';
-            } else {
-                cap.style.display = 'none';
-            }
-
-            if (style && style.trim() !== 'None' && style.trim() !== '') {
-                stl.innerText = style;
-                stl.style.display = 'inline-block';
-            } else {
-                stl.style.display = 'none';
-            }
-
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        };
-
-        window.closeImageZoom = function() {
-            const modal = document.getElementById('studioImageModal');
-            if (modal) modal.classList.remove('active');
-            document.body.style.overflow = '';
-        };
-
-        // Close on Esc
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeImageZoom();
-        });
-    </script>
 
     <!-- Global Image Zoom Modal -->
     <div id="studioImageModal" class="zoom-modal" onclick="if(event.target === this) closeImageZoom()">
@@ -227,261 +184,20 @@
         <button class="zoom-close" onclick="closeApptDetails()" title="Close (Esc)">
             <i class="fas fa-times"></i>
         </button>
-        <div class="zoom-content"
-            style="background: var(--studio-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--studio-border); width: 600px; max-width: 95vw;">
-            <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
-                <i class="fas fa-info-circle text-indigo"></i>
-                Appointment Details
-            </h3>
-            <div id="apptDetailsContent"></div>
-            <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
-                <button class="btn-studio btn-outline" onclick="closeApptDetails()">Close</button>
+        <div class="zoom-content">
+            <div class="premium-modal">
+                <h3 class="premium-modal-title">
+                    <i class="fas fa-info-circle"></i>
+                    Appointment Details
+                </h3>
+                <div id="apptDetailsContent"></div>
+                <div class="flex justify-end mt-8">
+                    <button class="btn-studio btn-secondary" onclick="closeApptDetails()">Close</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <style>
-        .zoom-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            padding: 2rem;
-        }
-
-        .zoom-modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .zoom-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            z-index: 10001;
-        }
-
-        .zoom-close:hover {
-            background: var(--studio-indigo);
-            transform: scale(1.1);
-        }
-
-        .zoom-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .zoom-modal.active .zoom-content {
-            transform: scale(1);
-        }
-
-        .zoom-img-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 0;
-        }
-
-        .zoom-img-container img {
-            max-width: 100%;
-            max-height: 75vh;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .zoom-meta {
-            text-align: center;
-            max-width: 600px;
-            color: #fff;
-        }
-
-        .zoom-caption {
-            font-size: 1.1rem;
-            font-weight: 500;
-            line-height: 1.6;
-            margin-top: 1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        #zoomStl {
-            background: var(--studio-indigo);
-            color: #fff;
-            padding: 0.5rem 1rem;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: 768px) {
-            .zoom-modal {
-                padding: 1rem;
-            }
-
-            .zoom-close {
-                top: 1rem;
-                right: 1rem;
-            }
-
-            .zoom-caption {
-                font-size: 0.95rem;
-            }
-        }
-    </style>
-    <script>
-        const TAB_META = {
-            overview: ['Overview', 'Your artistic journey at a glance'],
-            appointments: ['My Appointments', 'Manage and confirm artist sessions'],
-            schedule: ["Today's Schedule", 'Timeline of your daily sessions'],
-            inventory: ['Inventory Control', 'Track studio supplies and stock'],
-            logusage: ['Log Usage', 'Record consumption during sessions'],
-            gallery: ['My Portfolio', 'Exhibit your unique artistry'],
-            messages: ['Messages', 'Client communication hub'],
-            profile: ['My Profile', 'Manage your artist identity'],
-            history: ['History', 'Chronicle of completed masterpieces']
-        };
-
-        function switchTab(id, el) {
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            const targetLink = el || document.querySelector(`.nav-link[data-section="${id}"]`);
-            if (targetLink) targetLink.classList.add('active');
-
-            requestAnimationFrame(() => {
-                const sections = document.querySelectorAll('.content-section');
-                sections.forEach(s => s.classList.remove('active'));
-                
-                const sec = document.getElementById('sec-' + id);
-                if (sec) {
-                    sec.classList.add('active');
-                } else if (sections.length > 0) {
-                    sections[0].classList.add('active');
-                    id = sections[0].id.replace('sec-', '');
-                }
-
-                const meta = TAB_META[id];
-                if (meta) {
-                    const titleEl = document.getElementById('pageTitle');
-                    const subtitleEl = document.getElementById('pageSubtitle');
-                    if (titleEl) titleEl.textContent = meta[0];
-                    if (subtitleEl) subtitleEl.textContent = meta[1];
-                }
-
-                localStorage.setItem('artist_active_tab', id);
-                if (id === 'schedule' && typeof renderScheduleDate === 'function') renderScheduleDate();
-                
-                window.scrollTo({ top: 0, behavior: 'instant' });
-            });
-        }
-
-        function nav(id, el) { switchTab(id, el); }
-
-        function toggleSidebar() {
-            const s = document.getElementById('mainSidebar');
-            const o = document.getElementById('sidebarOverlay');
-            const isOpen = s.classList.contains('open');
-            if (!isOpen) {
-                s.classList.add('open');
-                o.style.opacity = '1';
-                o.style.pointerEvents = 'auto';
-                document.body.style.overflow = 'hidden';
-            } else {
-                s.classList.remove('open');
-                o.style.opacity = '0';
-                o.style.pointerEvents = 'none';
-                document.body.style.overflow = '';
-            }
-        }
-
-        /* ── Shared Logic ── */
-        window.artShowDetails = function(btn) {
-            const dataStr = btn.getAttribute('data-appt');
-            if (!dataStr) return;
-            try {
-                const appt = JSON.parse(dataStr);
-                const modal = document.getElementById('apptDetailsModal');
-                const content = document.getElementById('apptDetailsContent');
-
-                let extra = appt.extra_details || {};
-                if (typeof extra === 'string') { try { extra = JSON.parse(extra); } catch(e) { extra = {}; } }
-
-                let html = `
-                    <div class="space-y-4">
-                        <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
-                            <label class="studio-label">Concept</label>
-                            <div class="text-text font-bold">${appt.tattoo_concept}</div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
-                                <label class="studio-label">Customer</label>
-                                <div class="text-text font-medium">${appt.customer_name}</div>
-                            </div>
-                            <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
-                                <label class="studio-label">Size</label>
-                                <div class="text-text font-medium">${extra.size || '—'}</div>
-                            </div>
-                        </div>
-                        <div class="p-4 rounded-xl bg-studio-bg border border-studio-border">
-                            <label class="studio-label">Artist Notes</label>
-                            <div class="text-muted text-xs italic">${extra.notes || 'No specific notes.'}</div>
-                        </div>
-                    </div>
-                `;
-                content.innerHTML = html;
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } catch (e) { console.error("Failed to parse appt data", e); }
-        };
-
-        window.closeApptDetails = function() {
-            document.getElementById('apptDetailsModal').classList.remove('active');
-            document.body.style.overflow = '';
-        };
-
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.replace('#', '');
-            const saved = localStorage.getItem('artist_active_tab');
-            const target = hash || saved || 'overview';
-            switchTab(target);
-
-            // Flash Cleanup
-            setTimeout(() => {
-                document.querySelectorAll('.flash-msg').forEach(f => {
-                    f.style.opacity = '0';
-                    setTimeout(() => f.remove(), 500);
-                });
-            }, 5000);
-        });
-    </script>
 </body>
 
 </html>

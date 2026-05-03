@@ -1,242 +1,363 @@
-<!-- SECTION: OWNER OVERVIEW — matches Customer Dashboard reference layout -->
-
-<!-- ── 3 Metric Cards ── -->
-<div class="metric-grid" style="margin-bottom:1.25rem;">
-
-    <!-- Revenue / Bookings -->
-    <div class="metric-card" style="border-top:3px solid #c8a040;">
-        <div class="metric-card-header">
-            <div class="metric-card-icon" style="background:#fef3c7;color:#c8a040;">
-                <i class="fas fa-indian-rupee-sign"></i>
+<div class="ov-container">
+    <!-- ── Section 1: Operational Vitals ── -->
+    <div class="ov-metric-grid">
+        <div class="ov-metric-card ov-card-gold">
+            <div class="ov-metric-header">
+                <div class="ov-metric-icon">
+                    <i class="fas fa-indian-rupee-sign"></i>
+                </div>
+                <span class="ov-metric-tag">Fiscal Yield</span>
             </div>
-            <span class="metric-card-tag" style="background:#fef3c7;color:#d97706;">Revenue</span>
-        </div>
-        <div class="metric-card-label">Total Yield</div>
-        <div class="metric-card-value">₹{{ total_revenue | default(0) }}</div>
-    </div>
-
-    <!-- Total Appointments -->
-    <div class="metric-card" style="border-top:3px solid #f59e0b;">
-        <div class="metric-card-header">
-            <div class="metric-card-icon" style="background:#fef3c7;color:#f59e0b;">
-                <i class="fas fa-calendar-check"></i>
+            <div class="ov-metric-body">
+                <div class="ov-metric-val">₹{{ "{:,.0f}".format(total_revenue | default(0)) }}</div>
+                <div class="ov-metric-lbl">Total Studio Revenue</div>
             </div>
-            <span class="metric-card-tag" style="background:#fef3c7;color:#f59e0b;">Bookings</span>
+            <div class="ov-card-glow"></div>
         </div>
-        <div class="metric-card-label">Total Appointments</div>
-        <div class="metric-card-value">{{ total_appointments | default(0) }}</div>
-    </div>
 
-    <!-- Pending Approvals -->
-    <div class="metric-card" style="border-top:3px solid #10b981;">
-        <div class="metric-card-header">
-            <div class="metric-card-icon" style="background:#dcfce7;color:#10b981;">
-                <i class="fas fa-check-circle"></i>
+        <div class="ov-metric-card ov-card-orange">
+            <div class="ov-metric-header">
+                <div class="ov-metric-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <span class="ov-metric-tag">Total Sessions</span>
             </div>
-            <span class="metric-card-tag" style="background:#dcfce7;color:#16a34a;">Pending</span>
-        </div>
-        <div class="metric-card-label">Awaiting Approval</div>
-        <div class="metric-card-value">{{ pending_count | default(0) }}</div>
-    </div>
-</div>
-
-<!-- ── Gold Hero Banner ── -->
-<div class="master-banner" style="margin-bottom:1.25rem;">
-    <div class="master-banner-eyebrow">
-        <i class="fas fa-bolt"></i> Studio Intelligence
-    </div>
-    <h1>Master Control.</h1>
-    <p>Real-time oversight of operations, artists, and financial performance.<br>All systems reporting optimal metrics.</p>
-    <div class="master-banner-actions">
-        <button onclick="switchTab('bookings')" class="btn-gold">
-            <i class="fas fa-calendar-alt"></i> Manage Schedule
-        </button>
-        <button onclick="switchTab('reports')" class="btn-outline">
-            <i class="fas fa-chart-pie"></i> Growth Analytics
-        </button>
-    </div>
-</div>
-
-<!-- ── 3 Quick Action Cards ── -->
-<div class="quick-actions-grid" style="margin-bottom:1.5rem;">
-
-    <!-- Session History -->
-    <div class="quick-action-card" onclick="switchTab('bookings')">
-        <div class="quick-action-icon-wrap">
-            <div class="quick-action-icon" style="background:#fef3c7;color:#d97706;">
-                <i class="fas fa-calendar-check"></i>
+            <div class="ov-metric-body">
+                <div class="ov-metric-val">{{ total_appointments | default(0) }}</div>
+                <div class="ov-metric-lbl">Managed Appointments</div>
             </div>
-            <div class="quick-action-title">All Bookings</div>
+            <div class="ov-card-glow"></div>
         </div>
-        <div class="quick-action-desc">
-            Review all studio bookings, approve or reject requests, and track session outcomes.
-        </div>
-        <div class="quick-action-link" style="color:#c8a040;">
-            View Bookings <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
+
+        <div class="ov-metric-card ov-card-emerald">
+            <div class="ov-metric-header">
+                <div class="ov-metric-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <span class="ov-metric-tag">Pending Ops</span>
+            </div>
+            <div class="ov-metric-body">
+                <div class="ov-metric-val">{{ pending_count | default(0) }}</div>
+                <div class="ov-metric-lbl">Awaiting Verification</div>
+            </div>
+            <div class="ov-card-glow"></div>
         </div>
     </div>
 
-    <!-- Artist Roster -->
-    <div class="quick-action-card" onclick="switchTab('artists')">
-        <div class="quick-action-icon-wrap">
-            <div class="quick-action-icon" style="background:#fef3c7;color:#d97706;">
-                <i class="fas fa-users"></i>
+    <!-- ── Section 2: Master Control Hero ── -->
+    <div class="ov-hero">
+        <div class="ov-hero-content">
+            <div class="ov-hero-eyebrow">
+                <i class="fas fa-bolt"></i> Operational Intelligence
             </div>
-            <div class="quick-action-title">Artist Roster</div>
+            <h1 class="ov-hero-title">Master Control Terminal</h1>
+            <p class="ov-hero-text">Real-time oversight of studio assets, artist performance, and financial streams. All systems reporting optimal functionality.</p>
+            <div class="ov-hero-actions">
+                <button onclick="switchTab('bookings')" class="ov-btn-gold">
+                    <i class="fas fa-calendar-alt"></i> Manage Schedule
+                </button>
+                <button onclick="switchTab('reports')" class="ov-btn-outline">
+                    <i class="fas fa-chart-pie"></i> Growth Analytics
+                </button>
+            </div>
         </div>
-        <div class="quick-action-desc">
-            Manage your team of world-class artists, their profiles, specialisations and assignments.
-        </div>
-        <div class="quick-action-link" style="color:#c8a040;">
-            Manage Team <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
+        <div class="ov-hero-visual">
+            <i class="fa-solid fa-dragon"></i>
         </div>
     </div>
 
-    <!-- Reports -->
-    <div class="quick-action-card" onclick="switchTab('reports')">
-        <div class="quick-action-icon-wrap">
-            <div class="quick-action-icon" style="background:#dcfce7;color:#16a34a;">
-                <i class="fas fa-chart-pie"></i>
+    <!-- ── Section 3: Quick Command Grid ── -->
+    <div class="ov-action-grid">
+        <div class="ov-action-card" onclick="switchTab('bookings')">
+            <div class="ov-action-header">
+                <div class="ov-action-icon ov-icon-amber"><i class="fas fa-calendar-check"></i></div>
+                <h3 class="ov-action-title">Booking Matrix</h3>
             </div>
-            <div class="quick-action-title">Growth Analytics</div>
+            <p class="ov-action-text">Review studio bookings, manage approvals, and track outcome logs.</p>
+            <div class="ov-action-footer">
+                Manage Schedule <i class="fas fa-arrow-right"></i>
+            </div>
         </div>
-        <div class="quick-action-desc">
-            Full financial analytics — revenue, payment methods, artist performance, and trends.
-        </div>
-        <div class="quick-action-link" style="color:#16a34a;">
-            View Reports <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
-        </div>
-    </div>
-</div>
 
-<!-- ── Recent Activity ── -->
-<div class="studio-card" style="padding:1.25rem;margin-bottom:1.25rem;">
-    <div class="section-row">
-        <div>
-            <div class="section-title-bar">
-                <span class="section-title">Recent Activity</span>
+        <div class="ov-action-card" onclick="switchTab('artists')">
+            <div class="ov-action-header">
+                <div class="ov-action-icon ov-icon-orange"><i class="fas fa-users"></i></div>
+                <h3 class="ov-action-title">Artist Roster</h3>
             </div>
-            <p style="font-size:0.7rem;color:#94a3b8;margin-top:0.2rem;">Latest studio transactions and system shifts</p>
+            <p class="ov-action-text">Oversee your elite team of artists, assignments, and specialisations.</p>
+            <div class="ov-action-footer">
+                Manage Team <i class="fas fa-arrow-right"></i>
+            </div>
         </div>
-        <button onclick="switchTab('bookings')"
-            style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.875rem;background:transparent;border:1.5px solid #ece8e0;border-radius:0.5rem;font-size:0.65rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:border-color 0.15s,color 0.15s;"
-            onmouseover="this.style.borderColor='#c8a040';this.style.color='#c8a040';"
-            onmouseout="this.style.borderColor='#ece8e0';this.style.color='#64748b';">
-            <i class="fas fa-expand-alt" style="font-size:0.6rem;"></i> View All
-        </button>
+
+        <div class="ov-action-card" onclick="switchTab('reports')">
+            <div class="ov-action-header">
+                <div class="ov-action-icon ov-icon-emerald"><i class="fas fa-chart-pie"></i></div>
+                <h3 class="ov-action-title">Growth Suite</h3>
+            </div>
+            <p class="ov-action-text">Full fiscal analytics, revenue trends, and artist yield metrics.</p>
+            <div class="ov-action-footer">
+                View Reports <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
     </div>
-    <div class="dash-table-container">
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th>Ref ID</th>
-                    <th>Client</th>
-                    <th>Artist</th>
-                    <th>Concept</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th style="text-align:center;">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if appointments %}
-                {% for a in appointments[:8] %}
-                <tr>
-                    <td style="font-family:monospace;color:#c8a040;font-weight:700;">#{{ a.appointment_id }}</td>
-                    <td style="color:#1a1a2e;font-weight:700;">{{ a.customer_name }}</td>
-                    <td style="color:#c8a040;font-weight:700;">{{ a.artist_name }}</td>
-                    <td style="font-style:italic;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"{{ a.tattoo_concept }}"</td>
-                    <td style="white-space:nowrap;">{{ a.appointment_date }}</td>
-                    <td>
-                        <span class="status-badge {% if a.status == 'Done' %}status-done{% elif a.status == 'Pending' %}status-pending{% elif a.status == 'Approved' %}status-approved{% else %}status-cancelled{% endif %}">
-                            {{ a.status }}
-                        </span>
-                    </td>
-                    <td style="text-align:center;">
-                        {% if a.status == 'Done' and not a.has_invoice %}
-                        <button onclick="prefillInvoice('{{ a.appointment_id }}')"
-                            style="padding:0.3rem 0.75rem;background:#c8a040;color:#fff;border:none;border-radius:0.375rem;font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;">
-                            Invoice
-                        </button>
+
+    <!-- ── Section 4: Real-time Streams ── -->
+    <div class="ov-streams-grid">
+        <!-- Recent Stream -->
+        <div class="ov-stream-card">
+            <div class="ov-stream-header">
+                <div class="ov-stream-title-wrap">
+                    <h3 class="ov-stream-title">Recent Activity Stream</h3>
+                    <p class="ov-stream-sub">Latest operational shifts & transactions</p>
+                </div>
+                <button onclick="switchTab('bookings')" class="ov-stream-btn">All Activity</button>
+            </div>
+            <div class="ov-table-wrap">
+                <table class="ov-table">
+                    <thead>
+                        <tr>
+                            <th>Ref ID</th>
+                            <th>Client Node</th>
+                            <th>Artist Node</th>
+                            <th>Concept</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if appointments %}
+                        {% for a in appointments[:6] %}
+                        <tr class="ov-row">
+                            <td class="ov-id">#{{ a.appointment_id }}</td>
+                            <td class="ov-client">{{ a.customer_name }}</td>
+                            <td class="ov-artist">{{ a.artist_name }}</td>
+                            <td class="ov-concept">"{{ a.tattoo_concept }}"</td>
+                            <td>
+                                <span class="ov-status ov-status-{{ a.status | lower }}">
+                                    {{ a.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
                         {% else %}
-                        <span style="color:#e2e8f0;">—</span>
+                        <tr>
+                            <td colspan="5">
+                                <div class="ov-empty">No activity detected</div>
+                            </td>
+                        </tr>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="7" style="padding:3rem;text-align:center;color:#94a3b8;">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0.5;">
-                            <i class="fas fa-calendar-xmark" style="font-size:1.75rem;"></i>
-                            <p style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">No appointments yet</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Artist Performance -->
+        <div class="ov-stream-card">
+            <div class="ov-stream-header">
+                <div class="ov-stream-title-wrap">
+                    <h3 class="ov-stream-title">Node Performance</h3>
+                    <p class="ov-stream-sub">Artist engagement and revenue yield</p>
+                </div>
+                <button onclick="switchTab('artists')" class="ov-stream-btn">Manage Nodes</button>
+            </div>
+            <div class="ov-table-wrap">
+                <table class="ov-table">
+                    <thead>
+                        <tr>
+                            <th>Artist</th>
+                            <th class="text-center">Load</th>
+                            <th class="text-center">Done</th>
+                            <th class="text-right">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if artist_performance %}
+                        {% for ap in artist_performance %}
+                        <tr class="ov-row">
+                            <td class="ov-artist-node">
+                                <span class="ov-artist-name">{{ ap.artist_name }}</span>
+                                <span class="ov-artist-spec">{{ ap.specialisation or 'Elite Artist' }}</span>
+                            </td>
+                            <td class="text-center ov-load">{{ ap.total_appts }}</td>
+                            <td class="text-center">
+                                <div class="ov-progress-mini">
+                                    {% set pct = (ap.done_appts / ap.total_appts * 100) if ap.total_appts > 0 else 0 %}
+                                    <div class="ov-progress-bar" style="width: {{ pct }}%"></div>
+                                </div>
+                            </td>
+                            <td class="text-right ov-revenue">₹{{ "{:,.0f}".format(ap.total_revenue | default(0)) }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4">
+                                <div class="ov-empty">No performance data synced</div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- ── Artist Performance ── -->
-<div class="studio-card" style="padding:1.25rem;">
-    <div class="section-row">
-        <div>
-            <div class="section-title-bar">
-                <span class="section-title">Artist Performance</span>
-            </div>
-            <p style="font-size:0.7rem;color:#94a3b8;margin-top:0.2rem;">Engagement metrics and revenue yield per artist</p>
-        </div>
-        <button onclick="switchTab('artists')"
-            style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.875rem;background:transparent;border:1.5px solid #ece8e0;border-radius:0.5rem;font-size:0.65rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:border-color 0.15s,color 0.15s;"
-            onmouseover="this.style.borderColor='#c8a040';this.style.color='#c8a040';"
-            onmouseout="this.style.borderColor='#ece8e0';this.style.color='#64748b';">
-            <i class="fas fa-users-gear" style="font-size:0.6rem;"></i> Manage Team
-        </button>
-    </div>
-    <div class="dash-table-container">
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th>Artist</th>
-                    <th>Specialty</th>
-                    <th style="text-align:center;">Total Appts</th>
-                    <th style="text-align:center;">Completed</th>
-                    <th style="text-align:center;">Pending</th>
-                    <th style="text-align:right;">Revenue Yield</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if artist_performance %}
-                {% for ap in artist_performance %}
-                <tr>
-                    <td style="color:#1a1a2e;font-weight:800;text-transform:uppercase;font-size:0.75rem;">{{ ap.artist_name }}</td>
-                    <td>
-                        {% set spec = (ap.specialisation or '') | lower %}
-                        {% if 'removal' in spec %}<span class="spec-badge spec-removal">{{ ap.specialisation }}</span>
-                        {% elif 'sketch' in spec or 'art' in spec %}<span class="spec-badge spec-sketch">{{ ap.specialisation }}</span>
-                        {% elif 'tattoo' in spec %}<span class="spec-badge spec-tattoo">{{ ap.specialisation }}</span>
-                        {% else %}<span class="spec-badge spec-default">{{ ap.specialisation or 'Tattoo Artist' }}</span>
-                        {% endif %}
-                    </td>
-                    <td style="text-align:center;font-weight:700;color:#1a1a2e;">{{ ap.total_appts }}</td>
-                    <td style="text-align:center;font-weight:700;color:#16a34a;">{{ ap.done_appts }}</td>
-                    <td style="text-align:center;font-weight:700;color:#d97706;">{{ ap.pending_appts }}</td>
-                    <td style="text-align:right;font-weight:900;color:#c8a040;font-size:0.85rem;">₹{{ "%.2f"|format(ap.total_revenue | default(0)) }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="6" style="padding:3rem;text-align:center;color:#94a3b8;">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0.5;">
-                            <i class="fas fa-chart-line" style="font-size:1.75rem;"></i>
-                            <p style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">No performance data yet</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<style>
+/* ── OVERVIEW DESIGN SYSTEM ── */
+.ov-container { display: flex; flex-direction: column; gap: 2rem; }
+
+/* Metric Cards */
+.ov-metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.ov-metric-card { 
+    position: relative; background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem;
+    padding: 1.75rem 1.75rem 1.75rem 2.25rem; overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.ov-metric-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 1rem; bottom: 1rem;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    transition: all 0.4s ease;
+}
+.ov-metric-card:hover { transform: translateY(-5px); border-color: var(--gold-dim); box-shadow: var(--shadow-lg); }
+.ov-metric-card:hover::before { top: 0.5rem; bottom: 0.5rem; }
+
+.ov-metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.ov-metric-icon { width: 3rem; height: 3rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.ov-metric-tag { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+
+.ov-card-gold::before  { background: linear-gradient(180deg, #fb3640, #ff6b35); box-shadow: 2px 0 12px rgba(251,54,64,0.4); }
+.ov-card-orange::before { background: linear-gradient(180deg, #f59e0b, #fb923c); box-shadow: 2px 0 12px rgba(245,158,11,0.4); }
+.ov-card-emerald::before { background: linear-gradient(180deg, #10b981, #06b6d4); box-shadow: 2px 0 12px rgba(16,185,129,0.4); }
+
+.ov-card-gold .ov-metric-icon { background: rgba(251, 54, 64, 0.1); color: #fb3640; border: 1px solid rgba(251, 54, 64, 0.2); }
+.ov-card-orange .ov-metric-icon { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+.ov-card-emerald .ov-metric-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+.ov-metric-val { font-family: var(--dt-font-display); font-size: 1.75rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; }
+.ov-metric-lbl { font-size: 0.7rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+.ov-card-glow { 
+    position: absolute; top: -50px; right: -50px; width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(251, 54, 64, 0.05) 0%, transparent 70%);
+    pointer-events: none; opacity: 0; transition: opacity 0.6s ease;
+}
+.ov-metric-card:hover .ov-card-glow { opacity: 1; }
+
+/* Hero */
+.ov-hero { 
+    background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface-1) 100%);
+    border: 1px solid var(--border-soft); border-radius: 2rem; padding: 3rem;
+    display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;
+}
+.ov-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 50%, rgba(251, 54, 64, 0.05) 0%, transparent 50%); }
+
+.ov-hero-content { position: relative; z-index: 1; max-width: 60%; }
+.ov-hero-eyebrow { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: var(--gold); letter-spacing: 0.2em; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.ov-hero-title { font-family: var(--dt-font-display); font-size: 3rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.25rem; }
+.ov-hero-text { font-size: 1rem; color: var(--text-3); line-height: 1.6; margin-bottom: 2rem; }
+
+.ov-hero-actions { display: flex; gap: 1rem; }
+.ov-btn-gold { 
+    background: var(--gold); color: #000; padding: 0.875rem 2rem; border-radius: 1rem; border: none;
+    font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 8px 25px rgba(251, 54, 64, 0.2); display: flex; align-items: center; gap: 0.75rem;
+}
+.ov-btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(251, 54, 64, 0.3); }
+
+.ov-btn-outline {
+    background: transparent; border: 1px solid var(--border-soft); color: var(--text-2); padding: 0.875rem 2rem; border-radius: 1rem;
+    font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ov-btn-outline:hover { background: var(--surface-2); border-color: var(--gold); color: var(--text-1); }
+
+.ov-hero-visual { font-size: 10rem; color: var(--text-1); opacity: 0.03; transform: rotate(-15deg); position: absolute; right: 3rem; top: 50%; translate: 0 -50%; }
+
+/* Action Grid */
+.ov-action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.ov-action-card { 
+    background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem;
+    padding: 1.75rem 1.75rem 1.75rem 2.25rem;
+    cursor: pointer; transition: all 0.3s; position: relative;
+}
+.ov-action-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 1rem; bottom: 1rem;
+    width: 4px; border-radius: 0 4px 4px 0;
+    background: var(--border-soft);
+    transition: all 0.3s ease;
+}
+.ov-action-card:nth-child(1)::before { background: linear-gradient(180deg, #f59e0b, #fb923c); }
+.ov-action-card:nth-child(2)::before { background: linear-gradient(180deg, #fb3640, #ff6b35); }
+.ov-action-card:nth-child(3)::before { background: linear-gradient(180deg, #10b981, #06b6d4); }
+.ov-action-card:hover { border-color: var(--gold); background: var(--surface-3); transform: translateY(-4px); }
+.ov-action-card:hover::before { top: 0.5rem; bottom: 0.5rem; box-shadow: 2px 0 12px rgba(251,54,64,0.25); }
+
+.ov-action-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+.ov-action-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.ov-icon-amber { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.ov-icon-orange { background: rgba(251, 54, 64, 0.1); color: #fb3640; }
+.ov-icon-emerald { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+.ov-action-title { font-size: 1rem; font-weight: 800; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.05em; }
+.ov-action-text { font-size: 0.75rem; color: var(--text-3); line-height: 1.5; margin-bottom: 1.5rem; }
+.ov-action-footer { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 0.5rem; }
+
+/* Streams Grid */
+.ov-streams-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; }
+.ov-stream-card { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem; padding: 1.75rem; }
+
+.ov-stream-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.ov-stream-title { font-size: 1.1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.05em; }
+.ov-stream-sub { font-size: 0.65rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+.ov-stream-btn { 
+    background: var(--surface-3); border: 1px solid var(--border-soft); border-radius: 0.75rem;
+    padding: 0.5rem 1rem; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; color: var(--text-2);
+    cursor: pointer; transition: all 0.2s;
+}
+.ov-stream-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Tables */
+.ov-table-wrap { overflow-x: auto; }
+.ov-table { width: 100%; border-collapse: separate; border-spacing: 0 0.4rem; }
+.ov-table th { padding: 0.75rem 1rem; text-align: left; font-size: 0.6rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.ov-row { background: var(--surface-3); transition: all 0.2s; }
+.ov-row:hover { background: var(--surface-1); transform: translateX(4px); }
+.ov-row td { padding: 1rem; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+.ov-row td:first-child { border-left: 1px solid var(--border-soft); border-radius: 0.75rem 0 0 0.75rem; }
+.ov-row td:last-child { border-right: 1px solid var(--border-soft); border-radius: 0 0.75rem 0.75rem 0; }
+
+.ov-id { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--gold); font-weight: 900; }
+.ov-client, .ov-artist-name { font-weight: 800; color: var(--text-1); font-size: 0.8rem; }
+.ov-artist, .ov-artist-spec { font-size: 0.65rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; }
+.ov-concept { font-size: 0.75rem; color: var(--text-2); font-style: italic; }
+
+.ov-status { padding: 0.35rem 0.75rem; border-radius: 2rem; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; display: inline-block; }
+.ov-status-done { background: rgba(16,185,129,0.1); color: #10b981; }
+.ov-status-pending { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.ov-status-approved { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+.ov-status-cancelled { background: var(--surface-2); color: var(--text-3); }
+
+.ov-load { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--text-2); }
+.ov-revenue { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--gold); font-size: 0.85rem; }
+
+.ov-progress-mini { width: 60px; height: 4px; background: var(--surface-2); border-radius: 2px; margin: 0 auto; overflow: hidden; }
+.ov-progress-bar { height: 100%; background: #10b981; border-radius: 2px; box-shadow: 0 0 8px #10b981; }
+
+/* Empty */
+.ov-empty { padding: 3rem; text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; opacity: 0.4; }
+
+/* Theme Adjust */
+[data-theme="ivory"] .ov-metric-card, 
+[data-theme="ivory"] .ov-hero,
+[data-theme="ivory"] .ov-action-card,
+[data-theme="ivory"] .ov-stream-card { background: #fff; border-color: #e2e8f0; }
+[data-theme="ivory"] .ov-row { background: #f8fafc; }
+[data-theme="ivory"] .ov-metric-val { color: #1a1a2e; }
+</style>

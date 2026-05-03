@@ -1,233 +1,273 @@
-<!-- SECTION: OWNER INVENTORY -->
+{% set total_value = 0 %}
+{% for item in inventory %}
+    {% set total_value = total_value + (item.quant_stock * item.unit_cost) %}
+{% endfor %}
+{% set critical_count = inventory | selectattr('quant_stock', 'le', 5) | list | length %}
 
-<!-- ── Strategic Resource Matrix ── -->
-<div class="studio-card p-8 mb-10">
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
-        <div>
-            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Global Inventory Vault</h3>
-            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Real-time Supply Chain
-                Monitoring</p>
+<div class="iv-container">
+    <!-- ── Header: Global Supply Chain ── -->
+    <header class="iv-header">
+        <div class="iv-header-meta">
+            <div class="iv-title-group">
+                <h2 class="iv-title">Strategic Resource Matrix</h2>
+                <div class="iv-subtitle">
+                    <span class="iv-live-dot"></span>
+                    Vault Status: <span class="iv-vault-status">Operational Optimization</span>
+                </div>
+            </div>
+            <div class="iv-metrics">
+                <div class="iv-metric-chip iv-metric-gold">
+                    <i class="fa-solid fa-vault"></i>
+                    <span class="iv-metric-val">₹{{ "%.0f"|format(total_value) }}</span>
+                    <span class="iv-metric-lbl">Net Vault Value</span>
+                </div>
+                <div class="iv-metric-chip iv-metric-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span class="iv-metric-val">{{ critical_count }}</span>
+                    <span class="iv-metric-lbl">Critical Alerts</span>
+                </div>
+            </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <select id="invArtistFilter" class="studio-input !py-3 !text-xs !w-48"
-                onchange="filterInventory('invArtistFilter')">
-                <option value="all">All Operational Units</option>
-                {% for artist in artists %}
-                <option value="{{ artist.artist_name | lower }}">{{ artist.artist_name }}</option>
-                {% endfor %}
-            </select>
-            <div class="relative flex-1 lg:flex-none lg:w-64">
-                <i
-                    class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-studio-text-secondary text-xs"></i>
-                <input type="text" id="invSearch" class="studio-input !pl-12 !py-3 !text-xs"
-                    placeholder="Search materials..." oninput="filterInventory('invSearch')">
+        <!-- ── Toolbar: Precision Filtering ── -->
+        <div class="iv-toolbar">
+            <div class="iv-filter-group">
+                <div class="iv-select-wrap">
+                    <i class="fa-solid fa-microchip"></i>
+                    <select id="invArtistFilter" class="iv-select">
+                        <option value="all">All Operational Units</option>
+                        {% for artist in artists %}
+                        <option value="{{ artist.artist_name | lower }}">{{ artist.artist_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="iv-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="invSearch" class="iv-search-input" placeholder="Search materials...">
+                </div>
             </div>
+        </div>
+    </header>
+
+    <!-- ── Main Resource Table ── -->
+    <div class="iv-content">
+        <div class="iv-table-wrap">
+            <table class="iv-table">
+                <thead>
+                    <tr>
+                        <th>Resource Material</th>
+                        <th>Assigned Node</th>
+                        <th>Classification</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-right">Unit Val</th>
+                        <th class="text-right">Net Asset</th>
+                        <th class="text-center">Integrity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if inventory %}
+                    {% for item in inventory %}
+                    <tr class="iv-row inv-row{% if item.quant_stock <= item.reorder_level %} iv-row-critical{% endif %}" data-artist="{{ (item.artist_name or 'main') | lower }}" data-search="{{ (item.item_name ~ ' ' ~ (item.artist_name or '')) | lower }}">
+                        <td>
+                            <div class="iv-material-info">
+                                <span class="iv-material-name">{{ item.item_name }}</span>
+                                <span class="iv-material-unit">{{ item.unit }}</span>
+                            </div>
+                        </td>
+                        <td class="iv-node-cell">{{ item.artist_name or 'Main Vault' }}</td>
+                        <td>
+                            <span class="iv-tag">{{ item.category or 'Unclassified' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="iv-stock-val {{ 'text-danger' if item.quant_stock <= item.reorder_level else 'text-success' }}">
+                                {{ item.quant_stock | round(1) }}
+                            </div>
+                        </td>
+                        <td class="text-right iv-val-cell">₹{{ "%.2f"|format(item.unit_cost | float) }}</td>
+                        <td class="text-right iv-net-cell">₹{{ "%.2f"|format((item.quant_stock | float) * (item.unit_cost | float)) }}</td>
+                        <td class="text-center">
+                            {% if item.quant_stock <= item.reorder_level %}
+                            <div class="iv-integrity iv-integrity-critical" title="Reorder Required">
+                                <span class="iv-integrity-pulse"></span> Critical
+                            </div>
+                            {% else %}
+                            <div class="iv-integrity iv-integrity-optimal">
+                                <span class="iv-integrity-pulse"></span> Optimal
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="iv-empty">No resource blocks detected</div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="dash-table-container">
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th>Resource Material</th>
-                    <th>Assigned Node</th>
-                    <th>Classification</th>
-                    <th class="text-center">Stock Level</th>
-                    <th class="text-center">Critical Threshold</th>
-                    <th class="text-right">Unit Value</th>
-                    <th class="text-right">Vault Net</th>
-                    <th class="text-center">Integrity</th>
-                </tr>
-            </thead>
-            <tbody id="invBody">
-                {% if inventory %}
-                {% for item in inventory %}
-                <tr class="inv-row group" data-artist="{{ (item.artist_name or 'main') | lower }}" data-search="{{ (item.item_name ~ ' ' ~ (item.artist_name or '')) | lower }}">
-                    <td>
-                        <div class="font-black text-studio-text text-sm uppercase">{{ item.item_name }}</div>
-                        <div class="text-[9px] font-bold text-studio-gold uppercase tracking-widest">{{ item.unit }}
-                        </div>
-                    </td>
-                    <td class="font-bold text-studio-text-secondary text-xs uppercase">{{ item.artist_name or 'Main
-                        Vault' }}</td>
-                    <td>
-                        <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-surface border border-studio-border text-[9px] font-black text-studio-text-secondary uppercase tracking-widest">
-                            {{ item.category or 'Unclassified' }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div
-                            class="font-mono font-black text-sm {{ 'text-studio-danger' if item.quant_stock <= item.reorder_level else 'text-emerald-500' }}">
-                            {% if item.unit in ['Pieces', 'Pairs', 'Box', 'Units', 'Pack', 'Needles'] %}
-                            {{ item.quant_stock | round(0) | int }}
-                            {% else %}
-                            {{ item.quant_stock | round(2) }}
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td class="text-center font-mono text-studio-text-secondary text-xs opacity-60">
-                        {{ item.reorder_level }}
-                    </td>
-                    <td class="text-right font-bold text-studio-text text-sm">₹{{ "%.2f"|format(item.unit_cost | float)
-                        }}</td>
-                    <td class="text-right font-black text-studio-gold text-sm italic">₹{{
-                        "%.2f"|format((item.quant_stock | float) * (item.unit_cost | float)) }}</td>
-                    <td class="text-center">
-                        {% if item.quant_stock <= item.reorder_level %} <span
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-studio-danger/10 text-studio-danger text-[9px] font-black uppercase tracking-widest border border-studio-danger/20">
-                            <i class="fas fa-bolt-lightning text-[8px]"></i> Critical
-                            </span>
-                            {% else %}
-                            <span
-                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">Optimal</span>
-                            {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="8" class="py-24 text-center">
-                        <div class="flex flex-col items-center opacity-30">
-                            <i class="fas fa-boxes-stacked text-4xl mb-6"></i>
-                            <p class="text-xs font-black uppercase tracking-widest">No Resource Blocks Detected</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
+    <!-- ── Consumption Protocol Log ── -->
+    <div class="iv-log-section">
+        <div class="iv-log-header">
+            <h3 class="iv-log-title">Consumption Vectors</h3>
+            <div class="iv-log-filters">
+                <input type="text" id="logSearch" class="iv-log-search" placeholder="Filter history...">
+            </div>
+        </div>
+        <div class="iv-log-table-wrap">
+            <table class="iv-log-table">
+                <thead>
+                    <tr>
+                        <th>Op ID</th>
+                        <th>Artist Node</th>
+                        <th>Material</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-right">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if usage_logs %}
+                    {% for log in usage_logs %}
+                    <tr class="iv-log-row log-row" data-artist="{{ log.artist_name | lower }}" data-search="{{ (log.artist_name ~ ' ' ~ log.item_name) | lower }}">
+                        <td class="iv-log-id">#{{ log.appointment_id }}</td>
+                        <td class="iv-log-artist">{{ log.artist_name }}</td>
+                        <td class="iv-log-material">{{ log.item_name }}</td>
+                        <td class="text-center iv-log-quant">
+                            {{ log.quantity }} <span class="iv-log-unit">{{ log.unit }}</span>
+                        </td>
+                        <td class="text-right iv-log-date">{{ log.consumption_date }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- ── Temporal Consumption Feed ── -->
-<div class="studio-card p-8">
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
-        <div>
-            <h3 class="text-xl font-black text-studio-text uppercase tracking-tight mb-1">Consumption Protocol Log</h3>
-            <p class="text-[10px] font-bold text-studio-text-secondary uppercase tracking-widest">Material Depletion
-                Sequence History</p>
-        </div>
+<style>
+/* ── INVENTORY DESIGN SYSTEM ── */
+.iv-container {
+    padding: 1.5rem;
+    background: var(--surface-1);
+    border-radius: 1.5rem;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
 
-        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <select id="logArtistFilter" class="studio-input !py-3 !text-xs !w-48"
-                onchange="filterLogs('logArtistFilter')">
-                <option value="all">All Operational Units</option>
-                {% for artist in artists %}
-                <option value="{{ artist.artist_name | lower }}">{{ artist.artist_name }}</option>
-                {% endfor %}
-            </select>
-            <div class="relative flex-1 lg:flex-none lg:w-64">
-                <i
-                    class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-studio-text-secondary text-xs"></i>
-                <input type="text" id="logSearch" class="studio-input !pl-12 !py-3 !text-xs"
-                    placeholder="Search history..." oninput="filterLogs('logSearch')">
-            </div>
-        </div>
-    </div>
+.iv-header { margin-bottom: 2rem; }
+.iv-header-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
 
-    <div class="dash-table-container">
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th class="w-32">Operation ID</th>
-                    <th>Artist Node</th>
-                    <th>Depleted Material</th>
-                    <th class="text-center">Quant Matrix</th>
-                    <th class="text-right">Sync Timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if usage_logs %}
-                {% for item in usage_logs %}
-                <tr class="log-row group" data-artist="{{ item.artist_name | lower }}" data-search="{{ (item.artist_name ~ ' ' ~ item.item_name) | lower }}">
-                    <td
-                        class="font-mono text-studio-text-secondary font-bold text-xs uppercase opacity-60 group-hover:opacity-100 transition-opacity">
-                        #{{ item.appointment_id }}
-                    </td>
-                    <td class="font-black text-studio-gold text-xs uppercase">{{ item.artist_name }}</td>
-                    <td class="font-bold text-studio-text text-sm uppercase">{{ item.item_name }}</td>
-                    <td class="text-center font-mono font-black text-studio-text text-xs">
-                        {{ item.quantity }} <span class="text-studio-gold opacity-60">{{ item.unit }}</span>
-                    </td>
-                    <td class="text-right text-[10px] font-bold text-studio-text-secondary uppercase tracking-wider">
-                        {{ item.consumption_date }}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="5" class="py-24 text-center">
-                        <div class="flex flex-col items-center opacity-30">
-                            <i class="fas fa-history text-4xl mb-6"></i>
-                            <p class="text-xs font-black uppercase tracking-widest">No Consumption Vectors Found</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
-</div>
+.iv-title { font-size: 1.75rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; }
+.iv-subtitle { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.25rem; }
 
-<script>
-    function syncAndFilter() {
-        const artist = document.getElementById('artistFilter').value;
-        const search = document.getElementById('inventorySearch').value.toLowerCase();
-        filterInventory(artist, search);
-        filterLogs(artist);
-    }
+.iv-live-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; animation: iv-pulse 2s infinite; }
+@keyframes iv-pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-    function filterInventory(artistId, term) {
-        const rows = document.querySelectorAll('#inventoryTable tbody tr');
-        rows.forEach(row => {
-            const rowArtist = row.getAttribute('data-artist');
-            const content = row.textContent.toLowerCase();
-            const artistMatch = !artistId || rowArtist === artistId;
-            const searchMatch = !term || content.includes(term);
-            row.style.display = (artistMatch && searchMatch) ? '' : 'none';
-        });
-    }
+.iv-metrics { display: flex; gap: 1rem; }
+.iv-metric-chip { padding: 0.75rem 1.25rem; background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1rem; display: flex; flex-direction: column; min-width: 120px; }
+.iv-metric-chip i { font-size: 0.9rem; margin-bottom: 0.4rem; }
+.iv-metric-val { font-size: 1.25rem; font-weight: 900; color: var(--text-1); }
+.iv-metric-lbl { font-size: 0.6rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; }
 
-    function filterLogs(artistId) {
-        const rows = document.querySelectorAll('#usageLogsTable tbody tr');
-        rows.forEach(row => {
-            const rowArtist = row.getAttribute('data-artist');
-            row.style.display = (!artistId || rowArtist === artistId) ? '' : 'none';
-        });
-    }
+.iv-metric-gold i { color: var(--gold); }
+.iv-metric-danger i { color: #ef4444; }
 
-    function populateInventoryMonths() {
-        const sel = document.getElementById('logMonthSelector');
-        if (!sel) return;
-        const rows = document.querySelectorAll('#usageLogsTable tbody tr');
-        const months = new Set();
-        rows.forEach(r => {
-            const dateStr = r.cells[3]?.textContent.trim();
-            if (dateStr) {
-                const date = new Date(dateStr);
-                if (!isNaN(date)) months.add(date.toLocaleString('default', { month: 'long', year: 'numeric' }));
-            }
-        });
-        months.forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = opt.textContent = m;
-            sel.appendChild(opt);
-        });
-    }
+/* Toolbar */
+.iv-toolbar { background: var(--surface-2); padding: 0.75rem; border-radius: 1.25rem; border: 1px solid var(--border-soft); }
+.iv-filter-group { display: flex; gap: 1rem; }
 
-    function filterInventoryByMonth() {
-        const target = document.getElementById('logMonthSelector').value;
-        const rows = document.querySelectorAll('#usageLogsTable tbody tr');
-        rows.forEach(row => {
-            const dateStr = row.cells[3]?.textContent.trim();
-            if (!target) { row.style.display = ''; return; }
-            const date = new Date(dateStr);
-            const mon = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-            row.style.display = (mon === target) ? '' : 'none';
-        });
-    }
+.iv-select-wrap, .iv-search-wrap { position: relative; display: flex; align-items: center; }
+.iv-select-wrap i, .iv-search-wrap i { position: absolute; left: 1rem; font-size: 0.75rem; color: var(--text-3); pointer-events: none; }
 
-    document.addEventListener('DOMContentLoaded', populateInventoryMonths);
-</script>
+.iv-select, .iv-search-input { 
+    background: var(--surface-3); border: 1px solid var(--border-soft); border-radius: 0.75rem;
+    padding: 0.6rem 1rem 0.6rem 2.5rem; color: var(--text-1); font-size: 0.75rem; font-weight: 700; outline: none; transition: all 0.2s;
+}
+.iv-select { width: 220px; appearance: none; }
+.iv-search-input { width: 300px; }
+.iv-select:focus, .iv-search-input:focus { border-color: var(--gold); background: var(--surface-1); }
+
+/* Table */
+.iv-table { width: 100%; border-collapse: separate; border-spacing: 0 0.4rem; }
+.iv-table th { padding: 1rem; text-align: left; font-size: 0.65rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.iv-row { background: var(--surface-2); transition: all 0.2s; }
+.iv-row:hover { background: var(--surface-3); transform: translateX(4px); }
+.iv-row td { padding: 1rem; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+.iv-row td:first-child { border-left: 1px solid var(--border-soft); border-radius: 0.75rem 0 0 0.75rem; }
+.iv-row td:last-child { border-right: 1px solid var(--border-soft); border-radius: 0 0.75rem 0.75rem 0; }
+
+.iv-material-name { display: block; font-weight: 800; color: var(--text-1); font-size: 0.85rem; text-transform: uppercase; }
+.iv-material-unit { font-size: 0.6rem; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.iv-node-cell { font-size: 0.75rem; font-weight: 700; color: var(--text-2); text-transform: uppercase; }
+.iv-tag { padding: 0.3rem 0.6rem; background: var(--surface-3); border: 1px solid var(--border-soft); border-radius: 0.5rem; font-size: 0.6rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; }
+
+.iv-stock-val { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 900; }
+.text-danger { color: #ef4444; }
+.text-success { color: #10b981; }
+
+.iv-val-cell { color: var(--text-2); font-size: 0.8rem; font-weight: 700; }
+.iv-net-cell { color: var(--gold); font-size: 0.85rem; font-weight: 900; font-style: italic; }
+
+.iv-integrity { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; border-radius: 2rem; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+.iv-integrity-pulse { width: 6px; height: 6px; border-radius: 50%; }
+
+.iv-integrity-optimal { background: rgba(16,185,129,0.1); color: #10b981; }
+.iv-integrity-optimal .iv-integrity-pulse { background: #10b981; box-shadow: 0 0 6px #10b981; }
+
+.iv-integrity-critical { background: rgba(239,68,68,0.1); color: #ef4444; }
+.iv-integrity-critical .iv-integrity-pulse { background: #ef4444; box-shadow: 0 0 6px #ef4444; animation: iv-pulse 1s infinite; }
+
+/* ── Critical Row Highlight ── */
+.iv-row-critical {
+    background: rgba(239, 68, 68, 0.06) !important;
+    border-left: 3px solid #ef4444;
+    position: relative;
+}
+.iv-row-critical:hover {
+    background: rgba(239, 68, 68, 0.12) !important;
+}
+.iv-row-critical td:first-child {
+    border-left: none !important; /* override default, left border is on tr */
+    border-radius: 0 !important;
+    padding-left: 1.25rem;
+}
+.iv-row-critical .iv-material-name {
+    color: #ef4444;
+}
+.iv-row-critical .iv-material-unit {
+    color: rgba(239, 68, 68, 0.7);
+}
+
+/* Log Section */
+.iv-log-section { margin-top: 3rem; background: var(--surface-2); padding: 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border-soft); }
+.iv-log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.iv-log-title { font-size: 1.1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.iv-log-search { background: var(--surface-3); border: 1px solid var(--border-soft); border-radius: 0.5rem; padding: 0.4rem 1rem; color: var(--text-1); font-size: 0.7rem; outline: none; }
+
+.iv-log-table { width: 100%; border-collapse: collapse; }
+.iv-log-table th { padding: 0.75rem; text-align: left; font-size: 0.6rem; font-weight: 800; color: var(--text-3); border-bottom: 1px solid var(--border-soft); text-transform: uppercase; }
+.iv-log-row td { padding: 0.75rem; border-bottom: 1px solid var(--border-soft); }
+.iv-log-id { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-3); }
+.iv-log-artist { font-weight: 900; color: var(--gold); font-size: 0.7rem; text-transform: uppercase; }
+.iv-log-material { font-weight: 700; color: var(--text-2); font-size: 0.75rem; }
+.iv-log-quant { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--text-1); font-size: 0.75rem; }
+.iv-log-unit { color: var(--gold); opacity: 0.6; font-size: 0.6rem; }
+.iv-log-date { font-size: 0.65rem; color: var(--text-3); font-weight: 700; }
+
+/* Empty */
+.iv-empty { padding: 3rem; text-align: center; color: var(--text-3); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.5; }
+
+/* Theme Adjust */
+[data-theme="ivory"] .iv-container { background: #fff; border-color: #e2e8f0; }
+[data-theme="ivory"] .iv-row { background: #f8fafc; }
+[data-theme="ivory"] .iv-metric-chip { background: #f8fafc; border-color: #e2e8f0; }
+[data-theme="ivory"] .iv-toolbar { background: #f8fafc; border-color: #e2e8f0; }
+</style>
