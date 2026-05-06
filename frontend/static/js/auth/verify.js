@@ -76,9 +76,17 @@ function resendOtp() {
     .then(response => {
         if (response.ok) {
             btn.textContent = 'OTP Resent!';
+            // Reset the 10-minute timer
+            if (typeof timeLeft !== 'undefined') {
+                timeLeft = 600; 
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                // Timer interval in HTML will pick this up
+            }
             setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = originalText;
+                if (btn.textContent === 'OTP Resent!') {
+                    btn.textContent = originalText;
+                }
             }, 5000);
         } else {
             throw new Error();

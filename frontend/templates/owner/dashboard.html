@@ -5,7 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Command | Dragon Tattoos Studio</title>
+    {% set title = "Owner Control | Dragon Tattoos" %}
+    {% set description = "Studio management and operational oversight." %}
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="{{ description or 'Dragon Tattoos Studio - Premium custom tattoos, realistic portraits, and professional laser removal in Bengaluru.' }}">
+    <meta name="keywords" content="tattoo studio, custom tattoos, dragon tattoos, laser removal, blackwork, fine line tattoos, Bengaluru tattoos">
+    <meta name="author" content="Dragon Tattoos Studio">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="og:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="twitter:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <link rel="canonical" href="{{ request.url }}">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Core Assets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,6 +42,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/owner/invoice.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/owner/profile.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/owner/reports.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owner/inquiries.css') }}">
 
 
     <script src="{{ url_for('static', filename='js/vendor/chart.min.js') }}"></script>
@@ -40,7 +63,7 @@
 
             <!-- Brand -->
             <div class="sidebar-brand">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo"
                     loading="lazy" decoding="async">
                 <div class="sidebar-brand-text">
                     <span class="sidebar-brand-name">Dragon Tattoos</span>
@@ -65,6 +88,9 @@
                     {% if pending_count > 0 %}
                     <span class="nav-badge">{{ pending_count }}</span>
                     {% endif %}
+                </button>
+                <button onclick="switchTab('inquiries')" class="nav-link" data-section="inquiries">
+                    <i class="fas fa-envelope-open-text"></i> Inquiries
                 </button>
                 <button onclick="switchTab('inventory')" class="nav-link" data-section="inventory">
                     <i class="fas fa-boxes-stacked"></i> Inventory
@@ -135,15 +161,15 @@
             </div>
 
             <!-- Flash Messages -->
-            <div id="flashContainer" style="position:fixed;top:1.5rem;right:1.5rem;z-index:1000;display:flex;flex-direction:column;gap:0.5rem;max-width:20rem;">
+            <div id="flashContainer">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                 {% for category, message in messages %}
-                <div class="flash-msg flash-{{ category }}"
+                <div class="flash-msg {{ 'success' if category == 'success' else 'error' if category == 'error' else 'info' }}"
                     onclick="this.remove()">
-                    <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} flash-icon"></i>
-                    <span class="flash-text">{{ message }}</span>
-                    <i class="fas fa-times flash-close"></i>
+                    <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    <span class="flex-1">{{ message }}</span>
+                    <i class="fas fa-times"></i>
                 </div>
                 {% endfor %}
                 {% endif %}
@@ -163,6 +189,9 @@
                 </section>
                 <section id="section-inventory" class="content-section">
                     {% include 'owner/sections/inventory.html' %}
+                </section>
+                <section id="section-inquiries" class="content-section">
+                    {% include 'owner/sections/inquiries.html' %}
                 </section>
                 <section id="section-reports" class="content-section">
                     {% include 'owner/sections/reports.html' %}
@@ -188,6 +217,7 @@
     <script src="{{ url_for('static', filename='js/owner/profile.js') }}"></script>
     <script src="{{ url_for('static', filename='js/owner/invoice.js') }}"></script>
     <script src="{{ url_for('static', filename='js/owner/reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/owner/inquiries.js') }}"></script>
 
     <!-- Dashboard Logic Core -->
     <script src="{{ url_for('static', filename='js/owner/dashboard.js') }}"></script>

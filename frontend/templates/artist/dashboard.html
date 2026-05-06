@@ -5,13 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Artist Dashboard</title>
+    {% set title = "Artist Portal | Dragon Tattoos" %}
+    {% set description = "Manage your schedule and studio gallery." %}
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="{{ description or 'Dragon Tattoos Studio - Premium custom tattoos, realistic portraits, and professional laser removal in Bengaluru.' }}">
+    <meta name="keywords" content="tattoo studio, custom tattoos, dragon tattoos, laser removal, blackwork, fine line tattoos, Bengaluru tattoos">
+    <meta name="author" content="Dragon Tattoos Studio">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="og:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="twitter:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <link rel="canonical" href="{{ request.url }}">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
     <!-- Premium Font Import -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Unified Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/artist/dashboard.css') }}?v=4.2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/artist/inquiries.css') }}">
 
     <script src="{{ url_for('static', filename='js/vendor/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/artist/dashboard.js') }}?v=4.0"></script>
@@ -22,6 +43,7 @@
     <script src="{{ url_for('static', filename='js/artist/schedule.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/artist/inventory.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/artist/messages.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/artist/inquiries.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/artist/gallery.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/artist/logusage.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/artist/history.js') }}" defer></script>
@@ -43,7 +65,7 @@
         <!-- ── SIDEBAR ────────────────────────────────────────── -->
         <aside id="mainSidebar" class="studio-sidebar">
             <div class="sidebar-brand">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" loading="lazy" decoding="async">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" loading="lazy" decoding="async">
                 <div class="sidebar-brand-text">
                     <span class="sidebar-brand-name">Dragon Tattoos</span>
                     <span class="sidebar-brand-sub">Artist Portal</span>
@@ -79,6 +101,13 @@
                 </button>
 
                 <div class="nav-section">Communication</div>
+                <button class="nav-link" id="nav-inquiries-artist" onclick="nav('inquiries', this)"
+                    data-section="inquiries">
+                    <i class="fas fa-bullseye text-[14px]"></i> New Leads
+                    {% if inquiries|length > 0 %}
+                    <span class="nav-badge !bg-studio-gold">{{ inquiries|length }}</span>
+                    {% endif %}
+                </button>
                 <button class="nav-link" id="nav-messages-artist" onclick="nav('messages', this)"
                     data-section="messages">
                     <i class="fas fa-comment-dots text-[14px]"></i> Messages
@@ -119,12 +148,11 @@
             <div id="flashMessages" class="px-[var(--studio-spacing)] pt-6">
                 <div id="flashContainer" class="flex flex-col gap-3">
                     {% for category, message in messages %}
-                    <div class="flex items-center gap-3 p-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest border shadow-sm transition-all duration-300 animate-in fade-in slide-in-from-top-2 {{ 'bg-studio-gold/10 text-studio-gold border-studio-gold/20' if category == 'success' else 'bg-red-500/10 text-red-500 border-red-500/20' }}"
+                    <div class="flash-msg {{ 'success' if category == 'success' else 'error' if category == 'error' else 'info' }}"
                         onclick="this.remove()">
-                        <i
-                            class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
                         <span class="flex-1">{{ message }}</span>
-                        <i class="fas fa-times opacity-40 hover:opacity-100 cursor-pointer"></i>
+                        <i class="fas fa-times"></i>
                     </div>
                     {% endfor %}
                 </div>
@@ -154,6 +182,9 @@
                 </section>
                 <section id="sec-messages" class="content-section">
                     {% include 'artist/sections/messages.html' %}
+                </section>
+                <section id="sec-inquiries" class="content-section">
+                    {% include 'artist/sections/inquiries.html' %}
                 </section>
                 <section id="sec-profile" class="content-section">
                     {% include 'artist/sections/profile.html' %}

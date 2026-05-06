@@ -17,10 +17,11 @@
 
 .book-outer-card {
     background: var(--surface);
+    background: linear-gradient(165deg, var(--surface) 0%, var(--bg) 100%);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 24px;
     padding: 3.5rem;
-    box-shadow: var(--shadow);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(251, 54, 64, 0.03);
     width: 100% !important;
     max-width: none !important;
     position: relative;
@@ -56,13 +57,22 @@
 }
 
 .step-num {
-    width: 32px; height: 32px;
-    background: var(--text-1);
-    color: var(--studio-bg);
-    border-radius: 50%;
+    width: 40px; height: 40px;
+    background: var(--surface-2);
+    color: var(--gold);
+    border: 1px solid var(--studio-border-hot);
+    border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 950;
+    font-size: 0.9rem; font-weight: 900;
     flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(251, 54, 64, 0.15);
+    transition: all 0.3s ease;
+}
+
+.book-step-block:hover .step-num {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 0 25px rgba(251, 54, 64, 0.3);
+    border-color: var(--gold);
 }
 
 [data-theme="ivory"] .step-num { background: #0F172A; color: #FFFFFF; }
@@ -96,19 +106,34 @@
 
 .svc-card-new {
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--studio-border);
-    border-radius: 18px;
-    padding: 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     position: relative;
-    display: flex; gap: 1.25rem; align-items: center;
+    display: flex; gap: 1.5rem; align-items: center;
+    overflow: hidden;
 }
 
 .svc-card-new:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(251, 54, 64, 0.04);
     border-color: var(--studio-border-hot);
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.svc-card-new::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(251, 54, 64, 0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.svc-card-new:hover::after {
+    opacity: 1;
 }
 
 [data-theme="ivory"] .svc-card-new { background: #F8FAFC; border-color: rgba(0,0,0,0.06); }
@@ -158,11 +183,17 @@
 }
 
 .book-input, .book-select, .book-textarea, .flatpickr-input {
-    width: 100%; background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--studio-border); border-radius: 14px;
-    padding: 0.9rem 1.25rem; color: var(--text-1);
-    font-size: 0.88rem; font-family: inherit;
-    transition: all 0.25s ease; outline: none;
+    width: 100%; 
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border); 
+    border-radius: 14px;
+    padding: 1rem 1.25rem; 
+    color: var(--text-1);
+    font-size: 0.9rem; 
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="ivory"] .book-input, 
@@ -172,9 +203,14 @@
     background: #F8FAFC; border-color: rgba(0,0,0,0.08); color: #0F172A; 
 }
 
+[data-theme="ivory"] .book-input::placeholder { 
+    color: #64748b; opacity: 0.8; 
+}
+
 .book-input:focus, .book-select:focus, .book-textarea:focus, .flatpickr-input:focus {
-    background: rgba(255, 255, 255, 0.06); border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
+    background: rgba(251, 54, 64, 0.03);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold), 0 0 25px rgba(251, 54, 64, 0.2);
 }
 
 [data-theme="ivory"] .book-input:focus, 
@@ -182,6 +218,17 @@
 [data-theme="ivory"] .book-textarea:focus,
 [data-theme="ivory"] .flatpickr-input:focus { 
     background: #FFFFFF; 
+}
+
+/* Fix for native select options visibility */
+.book-select option {
+    background-color: var(--surface);
+    color: var(--text-1);
+}
+
+[data-theme="ivory"] .book-select option {
+    background-color: #FFFFFF;
+    color: #0F172A;
 }
 
 .book-grid-2 { 
@@ -199,7 +246,16 @@
 }
 
 .drop-zone-new:hover, .drop-zone-new.drag-over {
-    border-color: var(--gold); background: var(--studio-accent-soft);
+    border-color: var(--gold); background: rgba(251, 54, 64, 0.05);
+}
+
+[data-theme="ivory"] .drop-zone-new { 
+    background: #F8FAFC; 
+    border-color: rgba(0,0,0,0.1); 
+}
+[data-theme="ivory"] .drop-zone-new:hover { 
+    background: #FFFFFF; 
+    border-color: var(--gold); 
 }
 
 .dz-remove-btn {
@@ -263,7 +319,22 @@
 
 .book-err { color: #f43f5e; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
 
-.dyn-block { display: none; animation: dynFadeIn 0.4s ease both; }
-@keyframes dynFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.dyn-block { 
+    display: none; 
+    animation: dynFadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; 
+}
 
-#commonFields { display: none; }
+@keyframes dynFadeIn { 
+    from { opacity: 0; transform: translateY(25px) scale(0.98); filter: blur(10px); } 
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } 
+}
+
+#commonFields { 
+    display: none; 
+    animation: commonReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes commonReveal {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,353 +1,253 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Register</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/register.css') }}">
-    <script src="{{ url_for('static', filename='js/auth/theme.js') }}"></script>
-</head>
+{% block title %}Dragon Tattoos | Create Account{% endblock %}
 
-<body
-    style="min-height:100vh;padding:1rem;padding-top:5rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:center;">
+{% block meta_description %}Join the Studio. Create an account to book your first session and experience premium tattoo artistry.{% endblock %}
 
-    <!-- NAVBAR -->
-    <nav>
-        <div
-            style="max-width:72rem;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;">
-            <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
-                <span id="navBrand"
-                    style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
-                    Tattoos</span>
-            </a>
-            <div style="display:flex;align-items:center;gap:1.75rem;">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link">Gallery</a>
-                <a href="/contact" class="nav-link">Contact</a>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/register.css') }}">
+<style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5rem 1.5rem 3rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Background Elements */
+    .bg-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        overflow: hidden;
+    }
+
+    .bg-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        pointer-events: none;
+    }
+
+    .bg-orb--1 { width: 400px; height: 400px; background: #c8a040; top: -100px; left: -100px; }
+    .bg-orb--2 { width: 500px; height: 500px; background: #8a6820; bottom: -150px; right: -150px; }
+    .bg-orb--3 { width: 300px; height: 300px; background: #e0b84a; top: 40%; left: 60%; }
+
+    .bg-embers {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    .ember {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: #c8a040;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #e0b84a;
+        opacity: 0;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="bg-layer">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+</div>
+
+<div class="card-wrap w-full page-enter mx-auto" style="max-width:580px;">
+    <div class="card-body">
+        <!-- Header -->
+        <div id="cardHeader" style="padding:2rem 2.5rem 1.25rem; text-align:center; border-bottom:1px solid rgba(200,160,64,0.15); background:linear-gradient(180deg, rgba(30,20,0,0.4) 0%, transparent 100%);">
+            <div id="logoCircle" style="display:inline-flex; align-items:center; justify-content:center; width:4rem; height:4rem; border-radius:50%; margin-bottom:1rem; overflow:hidden; border:2px solid rgba(200,160,64,0.4); box-shadow: 0 0 30px rgba(200,160,64,0.15); background:#0a0800;">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" style="width:100%; height:100%; object-fit:cover;">
             </div>
-            <div style="display:flex;align-items:center;gap:1rem;">
-                <button id="globalThemeBtn" onclick="toggleTheme()" title="Toggle theme"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:50%;background:transparent;border:1.5px solid rgba(200,160,64,0.3);color:#a89060;font-size:0.8rem;cursor:pointer;transition:all 0.2s;">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-                <a href="/login"
-                    style="padding:0.4rem 1.1rem;font-size:0.72rem;font-weight:600;background:#c8a040;color:#000;border-radius:20px;text-decoration:none;transition:background 0.2s;"
-                    onmouseover="this.style.background='#e0b84a'" onmouseout="this.style.background='#c8a040'">← Login</a>
+            <h1 class="title-grad" style="font-family:'Cinzel Decorative', cursive; font-size:1.8rem; letter-spacing:0.06em; margin:0 0 0.3rem; font-weight:700;">CREATE ACCOUNT</h1>
+            <p id="cardSubtitle" style="color:#a89060; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin:0; font-weight:600; opacity:0.8;">
+                Dragon Tattoos — Customer Registration
+            </p>
+
+            <!-- Step dots -->
+            <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1.25rem;">
+                <div class="step-dot active" id="dot1"></div>
+                <div style="height:1px; width:28px; background:rgba(200,160,64,0.15);"></div>
+                <div class="step-dot" id="dot2"></div>
+                <div style="height:1px; width:28px; background:rgba(200,160,64,0.15);"></div>
+                <div class="step-dot" id="dot3"></div>
             </div>
+            <p id="stepLabel" style="font-size:0.65rem; margin:0.5rem 0 0; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6; font-weight:600;">STEP 1 OF 3 — Personal Info</p>
         </div>
-    </nav>
 
-    <!-- BACKGROUND -->
-    <div class="bg-layer">
-        <div class="bg-orb bg-orb--1"></div>
-        <div class="bg-orb bg-orb--2"></div>
-        <div class="bg-orb bg-orb--3"></div>
-    </div>
-    <div class="bg-vignette"></div>
-    <div class="bg-noise"></div>
-    <div class="ambient-glow"></div>
-    <div class="bg-embers">
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-        <div class="ember"></div>
-    </div>
+        <!-- FORM -->
+        <div style="padding:2rem 2.5rem 2.5rem;">
+            <form id="registerForm" method="POST" action="/register" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <!-- REGISTER CARD -->
-    <div class="card-wrap w-full page-enter" style="max-width:580px;">
-        <div class="card-body">
+                <!-- STEP 1: Personal Info -->
+                <div id="step1">
+                    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-regular fa-user" style="margin-right:0.5rem;"></i>Full Name <span style="color:#dc3545;">*</span>
+                            </label>
+                            <input type="text" id="full_name" name="full_name" class="field" placeholder="Enter your full name" required pattern="^[A-Za-z\s\-'.]+$" oninput="this.value=this.value.replace(/[^A-Za-z\s\-'.]/g,''); liveValidate('full_name')">
+                            <p class="field-hint" id="hint_full_name" style="font-size:0.68rem; margin:0.3rem 0 0; display:none;"></p>
+                        </div>
 
-            <!-- Header -->
-            <div id="cardHeader"
-                style="padding:2rem 2.5rem 1.25rem;text-align:center;border-bottom:1px solid rgba(200,160,64,0.2);background:linear-gradient(180deg,rgba(30,20,0,0.5) 0%,transparent 100%);">
-                <div id="logoCircle"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;margin-bottom:0.85rem;overflow:hidden;border:2px solid rgba(200,160,64,0.55);box-shadow:0 0 28px rgba(200,160,64,0.25);background:#0a0800;">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-regular fa-envelope" style="margin-right:0.5rem;"></i>Email Address <span style="color:#dc3545;">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" class="field" placeholder="Enter your email address" required oninput="liveValidate('email')">
+                            <p class="field-hint" id="hint_email" style="font-size:0.68rem; margin:0.3rem 0 0; display:none;"></p>
+                        </div>
+
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-solid fa-phone" style="margin-right:0.5rem;"></i>Phone Number <span style="color:#dc3545;">*</span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" class="field" placeholder="Enter 10-digit mobile number" maxlength="10" required pattern="^[56789][0-9]{9}$" oninput="this.value=this.value.replace(/\D/g,''); liveValidate('phone')">
+                            <p class="field-hint" id="hint_phone" style="font-size:0.68rem; margin:0.3rem 0 0; display:none;"></p>
+                        </div>
+                    </div>
+                    <div style="margin-top:2rem; text-align:center;">
+                        <button type="button" onclick="goStep2()" class="btn-gold w-full">
+                            NEXT — Security & Password <i class="fa-solid fa-arrow-right" style="margin-left:0.5rem;"></i>
+                        </button>
+                    </div>
                 </div>
-                <h1 class="title-grad"
-                    style="font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:0.06em;margin:0 0 0.25rem;">CREATE
-                    ACCOUNT</h1>
-                <p id="cardSubtitle"
-                    style="color:#a89060;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;margin:0;">
-                    Dragon
-                    Tattoos — Customer Registration</p>
 
-                <!-- Step dots -->
-                <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;">
-                    <div class="step-dot active" id="dot1"></div>
-                    <div style="height:1px;width:28px;background:rgba(200,160,64,0.2);"></div>
-                    <div class="step-dot" id="dot2"></div>
-                    <div style="height:1px;width:28px;background:rgba(200,160,64,0.2);"></div>
-                    <div class="step-dot" id="dot3"></div>
+                <!-- STEP 2: Password -->
+                <div id="step2" style="display:none;">
+                    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-solid fa-lock" style="margin-right:0.5rem;"></i>Password <span style="color:#dc3545;">*</span>
+                            </label>
+                            <div style="position:relative;">
+                                <input type="password" id="password" name="password" class="field" placeholder="Min 8 characters" required oninput="checkStrength(); liveValidate('password')" style="padding-right:3rem;">
+                                <button type="button" onclick="togglePass('password','eyePass')" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#a89060;">
+                                    <i class="fa-regular fa-eye" id="eyePass"></i>
+                                </button>
+                            </div>
+                            <div class="strength-bar-bg" style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px; margin-top:0.5rem; overflow:hidden;">
+                                <div class="strength-bar" id="strengthBar" style="height:100%; width:0%; transition:all 0.3s;"></div>
+                            </div>
+                            <p id="strengthLabel" style="font-size:0.65rem; margin:0.3rem 0 0; opacity:0.6; font-weight:600; text-transform:uppercase;"></p>
+                        </div>
+
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-solid fa-lock" style="margin-right:0.5rem;"></i>Confirm Password <span style="color:#dc3545;">*</span>
+                            </label>
+                            <div style="position:relative;">
+                                <input type="password" id="confirm_password" name="confirm_password" class="field" placeholder="Re-enter your password" required oninput="liveValidate('confirm_password')" style="padding-right:3rem;">
+                                <button type="button" onclick="togglePass('confirm_password','eyeConf')" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#a89060;">
+                                    <i class="fa-regular fa-eye" id="eyeConf"></i>
+                                </button>
+                            </div>
+                            <p class="field-hint" id="hint_confirm_password" style="font-size:0.68rem; margin:0.3rem 0 0; display:none;"></p>
+                        </div>
+
+                        <div class="info-box" style="background:rgba(200,160,64,0.05); border:1px solid rgba(200,160,64,0.1); border-radius:0.75rem; padding:1rem;">
+                            <p style="font-size:0.65rem; margin:0 0 0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:#a89060; font-weight:700;">Password must contain:</p>
+                            <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                                <p id="rule_len" style="font-size:0.75rem; margin:0; opacity:0.8; color:#8b8b93;">✗ At least 8 characters</p>
+                                <p id="rule_upper" style="font-size:0.75rem; margin:0; opacity:0.8; color:#8b8b93;">✗ One uppercase letter</p>
+                                <p id="rule_num" style="font-size:0.75rem; margin:0; opacity:0.8; color:#8b8b93;">✗ One number</p>
+                                <p id="rule_spec" style="font-size:0.75rem; margin:0; opacity:0.8; color:#8b8b93;">✗ One special character</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:1rem; margin-top:2rem;">
+                        <button type="button" onclick="goBack(1)" class="btn-outline px-6">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button type="button" onclick="goStep3()" class="btn-gold flex-1">
+                            NEXT — Optional Info <i class="fa-solid fa-arrow-right" style="margin-left:0.5rem;"></i>
+                        </button>
+                    </div>
                 </div>
-                <p id="stepLabel" style="font-size:0.68rem;color:#666;margin:0.4rem 0 0;letter-spacing:0.1em;">STEP 1 OF
-                    3 — Personal Info</p>
-            </div>
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div style="padding:0.75rem 1.5rem 0;">
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:#fca5a5;">
-                    {{ message }}</div>
-                {% else %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,160,64,0.1);border:1px solid rgba(200,160,64,0.3);color:#e0b84a;">
-                    {{ message }}</div>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <!-- FORM -->
-            <div style="padding:1.75rem 2.5rem 2.25rem;">
-                <!-- FIX: Added CSRF token for security -->
-                <form id="registerForm" method="POST" action="/register" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <!-- ── STEP 1: Personal Info ── -->
-                    <div id="step1">
-                        <div style="display:flex;flex-direction:column;gap:1rem;">
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-regular fa-user" style="margin-right:0.4rem;"></i>Full Name <span
-                                        style="color:#dc3545;">*</span>
-                                </label>
-                                <!-- FIX: Relaxed name pattern to allow hyphens and apostrophes -->
-                                <input type="text" id="full_name" name="full_name" class="field"
-                                    placeholder="Enter your full name" required 
-                                    pattern="^[A-Za-z\s\-'.]+$"
-                                    oninput="this.value=this.value.replace(/[^A-Za-z\s\-'.]/g,''); liveValidate('full_name')">
-                                <p class="field-hint" id="hint_full_name"
-                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
+                <!-- STEP 3: Optional Info -->
+                <div id="step3" style="display:none;">
+                    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                        <div>
+                            <label style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(168,144,96,0.9);">
+                                <i class="fa-brands fa-instagram" style="margin-right:0.5rem;"></i>Instagram ID <span style="color:#666; font-weight:400; text-transform:none; letter-spacing:0; font-size:0.7rem;">(optional)</span>
+                            </label>
+                            <div style="position:relative;">
+                                <span style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:rgba(200,160,64,0.5); font-size:1rem; font-weight:600;">@</span>
+                                <input type="text" id="insta_id" name="insta_id" class="field" placeholder="your.handle" style="padding-left:2.25rem;">
                             </div>
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-regular fa-envelope" style="margin-right:0.4rem;"></i>Email Address
-                                    <span style="color:#dc3545;">*</span>
-                                </label>
-                                <input type="email" id="email" name="email" class="field"
-                                    placeholder="Enter your email address" required oninput="liveValidate('email')">
-                                <p class="field-hint" id="hint_email"
-                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
-                            </div>
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-solid fa-phone" style="margin-right:0.4rem;"></i>Phone Number <span
-                                        style="color:#dc3545;">*</span>
-                                </label>
-                                <input type="tel" id="phone" name="phone" class="field"
-                                    placeholder="Enter 10-digit mobile number" maxlength="10" required
-                                    oninput="this.value=this.value.replace(/\D/g,''); liveValidate('phone')">
-                                <p class="field-hint" id="hint_phone"
-                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
-                            </div>
-
                         </div>
-                        <div style="margin-top:1.5rem;text-align:center;">
-                            <button type="button" onclick="goStep2()" class="btn-gold">
-                                NEXT — Security &amp; Password <i class="fa-solid fa-arrow-right"
-                                    style="margin-left:0.5rem;"></i>
-                            </button>
+
+                        <div class="info-box" style="background:rgba(200,160,64,0.05); border:1px solid rgba(200,160,64,0.1); border-radius:0.75rem; padding:1rem;">
+                            <p style="font-size:0.65rem; color:#a89060; margin:0 0 0.75rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:700;">Account Summary</p>
+                            <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                    <span style="color:#8b8b93;">Name</span>
+                                    <span id="sum_name" style="color:#e0b84a; font-weight:600;">—</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                    <span style="color:#8b8b93;">Email</span>
+                                    <span id="sum_email" style="color:#e0b84a; font-weight:600;">—</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                                    <span style="color:#8b8b93;">Phone</span>
+                                    <span id="sum_phone" style="color:#e0b84a; font-weight:600;">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; align-items:flex-start; gap:0.75rem; margin-top:0.5rem;">
+                            <input type="checkbox" id="terms" required style="margin-top:0.25rem; accent-color:#c8a040; width:16px; height:16px; cursor:pointer;">
+                            <label for="terms" style="font-size:0.75rem; color:#8b8b93; cursor:pointer; line-height:1.5;">
+                                I agree to the <a href="#" style="color:#c8a040; font-weight:600;">Terms of Service</a> and confirm I am 18+ years old.
+                            </label>
                         </div>
                     </div>
 
-                    <!-- ── STEP 2: Password ── -->
-                    <div id="step2" style="display:none;">
-                        <div style="display:flex;flex-direction:column;gap:1rem;">
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-solid fa-lock" style="margin-right:0.4rem;"></i>Password <span
-                                        style="color:#dc3545;">*</span>
-                                </label>
-                                <div style="position:relative;">
-                                    <input type="password" id="password" name="password" class="field"
-                                        placeholder="Min 8 characters" required
-                                        oninput="checkStrength(); liveValidate('password')"
-                                        style="padding-right:2.75rem;">
-                                    <button type="button" onclick="togglePass('password','eyePass')"
-                                        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#a89060;padding:0;">
-                                        <i class="fa-regular fa-eye" id="eyePass"></i>
-                                    </button>
-                                </div>
-                                <!-- Strength bar -->
-                                <div class="strength-bar-bg">
-                                    <div class="strength-bar" id="strengthBar"></div>
-                                </div>
-                                <p id="strengthLabel" style="font-size:0.68rem;color:#666;margin:0.3rem 0 0;"></p>
-                            </div>
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-solid fa-lock" style="margin-right:0.4rem;"></i>Confirm Password <span
-                                        style="color:#dc3545;">*</span>
-                                </label>
-                                <div style="position:relative;">
-                                    <input type="password" id="confirm_password" name="confirm_password" class="field"
-                                        placeholder="Re-enter your password" required
-                                        oninput="liveValidate('confirm_password')" style="padding-right:2.75rem;">
-                                    <button type="button" onclick="togglePass('confirm_password','eyeConf')"
-                                        style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#a89060;padding:0;">
-                                        <i class="fa-regular fa-eye" id="eyeConf"></i>
-                                    </button>
-                                </div>
-                                <p class="field-hint" id="hint_confirm_password"
-                                    style="font-size:0.68rem;margin:0.3rem 0 0;display:none;"></p>
-                            </div>
-
-                            <!-- Password rules -->
-                            <div class="info-box"
-                                style="background:rgba(200,160,64,0.05);border:1px solid rgba(200,160,64,0.15);border-radius:0.6rem;padding:0.75rem 1rem;">
-                                <p
-                                    style="font-size:0.68rem;color:#666;margin:0 0 0.4rem;letter-spacing:0.06em;text-transform:uppercase;">
-                                    Password must contain:</p>
-                                <div style="display:flex;flex-direction:column;gap:0.25rem;">
-                                    <p id="rule_len" style="font-size:0.72rem;margin:0;color:#555;">✗ At least 8
-                                        characters</p>
-                                    <p id="rule_upper" style="font-size:0.72rem;margin:0;color:#555;">✗ One uppercase
-                                        letter</p>
-                                    <p id="rule_num" style="font-size:0.72rem;margin:0;color:#555;">✗ One number</p>
-                                    <p id="rule_spec" style="font-size:0.72rem;margin:0;color:#555;">✗ One special
-                                        character</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                            <button type="button" onclick="goBack(1)"
-                                style="padding:0.85rem 1.25rem;border:1px solid rgba(200,160,64,0.25);border-radius:0.65rem;background:transparent;color:#8b8b93;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
-                                onmouseover="this.style.borderColor='rgba(200,160,64,0.55)';this.style.color='#c8a040'"
-                                onmouseout="this.style.borderColor='rgba(200,160,64,0.25)';this.style.color='#8b8b93'">
-                                <i class="fa-solid fa-arrow-left"></i>
-                            </button>
-                            <button type="button" onclick="goStep3()" class="btn-gold" style="flex:1;">
-                                NEXT — Optional Info <i class="fa-solid fa-arrow-right" style="margin-left:0.5rem;"></i>
-                            </button>
-                        </div>
+                    <div style="display:flex; gap:1rem; margin-top:2rem;">
+                        <button type="button" onclick="goBack(2)" class="btn-outline px-6">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button type="submit" id="submitBtn" class="btn-gold flex-1">
+                            <i class="fa-solid fa-check" style="margin-right:0.5rem;"></i>CREATE ACCOUNT
+                        </button>
                     </div>
+                </div>
+            </form>
 
-                    <!-- ── STEP 3: Optional Info ── -->
-                    <div id="step3" style="display:none;">
-                        <div style="display:flex;flex-direction:column;gap:1rem;">
-
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.7rem;font-weight:600;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">
-                                    <i class="fa-brands fa-instagram" style="margin-right:0.4rem;"></i>Instagram ID
-                                    <span
-                                        style="color:#666;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.68rem;">
-                                        (optional)</span>
-                                </label>
-                                <div style="position:relative;">
-                                    <span
-                                        style="position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:rgba(200,160,64,0.5);font-size:0.9rem;">@</span>
-                                    <input type="text" id="insta_id" name="insta_id" class="field"
-                                        placeholder="your.instagram.handle" style="padding-left:2rem;">
-                                </div>
-                                <p style="font-size:0.68rem;color:#555;margin:0.3rem 0 0;">
-                                    We use this to share your tattoo photos (with permission).
-                                </p>
-                            </div>
-
-                            <!-- Summary -->
-                            <div class="info-box"
-                                style="background:rgba(200,160,64,0.05);border:1px solid rgba(200,160,64,0.15);border-radius:0.8rem;padding:1rem 1.1rem;">
-                                <p
-                                    style="font-size:0.7rem;color:#a89060;margin:0 0 0.6rem;letter-spacing:0.1em;text-transform:uppercase;">
-                                    Account Summary</p>
-                                <div style="display:flex;flex-direction:column;gap:0.35rem;">
-                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-                                        <span style="color:#666;">Name</span>
-                                        <span id="sum_name" style="color:#e0b84a;font-weight:500;">—</span>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-                                        <span style="color:#666;">Email</span>
-                                        <span id="sum_email" style="color:#e0b84a;font-weight:500;">—</span>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-                                        <span style="color:#666;">Phone</span>
-                                        <span id="sum_phone" style="color:#e0b84a;font-weight:500;">—</span>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-                                        <span style="color:#666;">Password</span>
-                                        <span style="color:#4ade80;font-weight:500;">••••••••</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Terms -->
-                            <div style="display:flex;align-items:flex-start;gap:0.6rem;">
-                                <input type="checkbox" id="terms" required
-                                    style="margin-top:0.1rem;accent-color:#c8a040;width:14px;height:14px;flex-shrink:0;cursor:pointer;">
-                                <label for="terms" style="font-size:0.74rem;color:#666;cursor:pointer;line-height:1.5;">
-                                    I agree to the <a href="#" style="color:#c8a040;text-decoration:none;"
-                                        onmouseover="this.style.textDecoration='underline'"
-                                        onmouseout="this.style.textDecoration='none'">Terms of Service</a>
-                                    and confirm that I am 18+ years old.
-                                </label>
-                            </div>
-
-                        </div>
-
-                        <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                            <button type="button" onclick="goBack(2)"
-                                style="padding:0.85rem 1.25rem;border:1px solid rgba(200,160,64,0.25);border-radius:0.65rem;background:transparent;color:#8b8b93;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;"
-                                onmouseover="this.style.borderColor='rgba(200,160,64,0.55)';this.style.color='#c8a040'"
-                                onmouseout="this.style.borderColor='rgba(200,160,64,0.25)';this.style.color='#8b8b93'">
-                                <i class="fa-solid fa-arrow-left"></i>
-                            </button>
-                            <button type="submit" id="submitBtn" class="btn-gold" style="flex:1;">
-                                <i class="fa-solid fa-check" style="margin-right:0.5rem;"></i>CREATE ACCOUNT
-                            </button>
-                        </div>
-                    </div>
-
-                </form>
-
-                <!-- Login link -->
-                <p style="text-align:center;margin-top:1.25rem;font-size:0.8rem;color:#555;">
-                    Already have an account?
-                    <a href="/login" style="color:#c8a040;font-weight:600;text-decoration:none;"
-                        onmouseover="this.style.color='#e0b84a'" onmouseout="this.style.color='#c8a040'">
-                        Login here →
-                    </a>
-                </p>
-            </div>
+            <p class="login-prompt" style="text-align:center; margin-top:1.5rem; font-size:0.85rem; color:#8b8b93;">
+                Already have an account? <a href="/login" style="color:#c8a040; font-weight:700;">Login here →</a>
+            </p>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script src="{{ url_for('static', filename='js/auth/register.js') }}"></script>
-
-</body>
-
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/auth/register.js') }}"></script>
+<script>
+    // Ember animation logic if needed, otherwise rely on CSS
+</script>
+{% endblock %}

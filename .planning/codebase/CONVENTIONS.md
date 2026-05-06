@@ -2,12 +2,12 @@
 
 ## Python / Flask
 - **Routing**: Use Blueprints for all features.
-- **Dependency**: `from db import get_db` for SQL access.
+- **Dependency**: `from .db import get_db` or `from backend.db import get_db` for SQL access.
 - **Database**: 
   - Use `cursor = conn.cursor(dictionary=True)` for readable results.
   - Close connections explicitly: `conn.close()`.
 - **Security**: 
-  - Mandatory role checks at the start of every route: `if session.get('role') != 'role_name':`.
+  - Mandatory role checks using the `@role_required` decorator.
   - Use `secure_filename` for all uploads.
 - **Style**:
   - Snake_case for functions and variables.

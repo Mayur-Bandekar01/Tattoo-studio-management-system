@@ -25,7 +25,7 @@ function handleRole(input) {
         if (u) {
             if (input.value === 'artist') {
                 u.placeholder = 'Artist ID (e.g. DRAG-ART-001)';
-                u.name = 'artist_id';
+                u.name = 'email';
                 u.type = 'text';
                 u.required = true;
             } else {

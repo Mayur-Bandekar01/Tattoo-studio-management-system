@@ -1,142 +1,151 @@
 /**
- * Dragon Tattoos — Contact Page Logic
- * Features: Theme Engine, Scroll Reveal, FAQ Toggles, Spotlight Effect
+ * DRAGON TATTOOS - Contact Page Logic
+ * Handles: Scroll Reveal, Spotlight Effect, Enquiry Form, and FAQ Accordion
  */
 
-(function() {
-    // ── 1. THEME ENGINE ──
-    const themes = ['noir', 'ivory'];
-    const saved = localStorage.getItem('siteTheme');
-    const initialTheme = themes.includes(saved) ? saved : 'noir';
-    document.documentElement.setAttribute('data-theme', initialTheme);
+document.addEventListener('DOMContentLoaded', () => {
+    initRevealObserver();
+    initSpotlightEffect();
+});
 
-    function syncLightModeClass(theme) {
-        if (theme === 'ivory') {
-            document.documentElement.classList.add('light-mode');
-        } else {
-            document.documentElement.classList.remove('light-mode');
-        }
-    }
-
-    window.toggleTheme = function() {
-        const current = document.documentElement.getAttribute('data-theme') || 'noir';
-        const next = current === 'noir' ? 'ivory' : 'noir';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('siteTheme', next);
-        syncLightModeClass(next);
-        applyThemeIcons(next);
+/**
+ * Reveal elements on scroll
+ */
+function initRevealObserver() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     };
 
-    function applyThemeIcons(theme) {
-        const btn = document.getElementById('globalThemeBtn');
-        if (!btn) return;
-        const configs = {
-            noir:  { icon: 'fa-moon', color: '#C9A84C', bg: 'rgba(8,8,26,0.92)',    border: 'rgba(201,168,76,0.45)' },
-            ivory: { icon: 'fa-sun',  color: '#8B1A2E', bg: 'rgba(250,248,243,0.95)', border: 'rgba(139,26,46,0.4)' },
-        };
-        const c = configs[theme] || configs.noir;
-        btn.innerHTML = `<i class="fa-solid ${c.icon}" style="font-size:1.1rem;"></i>`;
-        btn.style.background = c.bg;
-        btn.style.color = c.color;
-        btn.style.border = `1px solid ${c.border}`;
-    }
-
-    function injectThemeButton() {
-        if (document.getElementById('globalThemeBtn')) return;
-        const btn = document.createElement('button');
-        btn.id = 'globalThemeBtn';
-        btn.onclick = window.toggleTheme;
-        btn.style.cssText = `
-            position:fixed; bottom:20px; right:20px; z-index:9999;
-            width:46px; height:46px; border-radius:50%; cursor:pointer;
-            display:flex; align-items:center; justify-content:center;
-            backdrop-filter:blur(14px); transition:all 0.35s cubic-bezier(0.22,1,0.36,1);
-            box-shadow:0 4px 20px rgba(0,0,0,0.3);
-        `;
-        document.body.appendChild(btn);
-        applyThemeIcons(initialTheme);
-    }
-
-    // ── 2. SCROLL REVEAL ──
-    function initScrollReveal() {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    }
-
-    // ── 3. SPOTLIGHT EFFECT ──
-    function initSpotlight() {
-        document.querySelectorAll('.contact-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
         });
-    }
+    }, observerOptions);
 
-    // ── 4. FAQ TOGGLE ──
-    window.toggleFaq = function(btn) {
-        const body = btn.nextElementSibling;
-        const icon = btn.querySelector('.faq-icon');
-        if (!body || !icon) return;
-        const isOpen = body.classList.contains('open');
-        
-        // Close other FAQs
-        document.querySelectorAll('.faq-body').forEach(b => {
-            if (b !== body) b.classList.remove('open');
-        });
-        document.querySelectorAll('.faq-icon').forEach(i => {
-            if (i !== icon) i.classList.remove('open');
-        });
-        
-        if (!isOpen) { 
-            body.classList.add('open'); 
-            icon.classList.add('open'); 
-        } else {
-            body.classList.remove('open');
-            icon.classList.remove('open');
-        }
-    };
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
 
-    // ── 5. MOBILE MENU ──
-    window.toggleMobileMenu = function() {
-        const menu = document.getElementById('mobileMenu');
-        const btn = document.getElementById('burgerBtn');
-        if (!menu || !btn) return;
-        const isOpen = menu.classList.toggle('open');
-        btn.classList.toggle('open');
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-    };
-
-    // ── 6. INITIALIZATION ──
-    document.addEventListener('DOMContentLoaded', () => {
-        syncLightModeClass(initialTheme);
-        injectThemeButton();
-        initScrollReveal();
-        initSpotlight();
-
-        // Mobile menu links close
-        document.querySelectorAll('#mobileMenu a').forEach(a => {
-            a.addEventListener('click', () => {
-                const menu = document.getElementById('mobileMenu');
-                if (menu && menu.classList.contains('open')) window.toggleMobileMenu();
-            });
-        });
-
-        // Active Link Highlighting
-        const path = window.location.pathname;
-        document.querySelectorAll('.nav-link-landing').forEach(link => {
-            if (link.getAttribute('href') === path) link.classList.add('active');
-            else link.classList.remove('active');
+/**
+ * Spotlight Hover Effect for Contact Cards
+ */
+function initSpotlightEffect() {
+    document.querySelectorAll('.contact-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
         });
     });
-})();
+}
+
+/**
+ * Enquiry Form Handling
+ */
+async function sendEnquiry(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const btn = form.querySelector('button[type="submit"]');
+    if (!btn) return;
+
+    // Collect data using IDs
+    const fullName = document.getElementById('full_name');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const inquiryType = document.getElementById('inquiry_type');
+    const artistId = document.getElementById('artist_id');
+    const message = document.getElementById('message');
+
+    if (!fullName || !email || !phone || !inquiryType || !message) return;
+
+    const emailValue = email.value.trim().toLowerCase();
+    const phoneValue = phone.value.trim();
+
+    // Frontend Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue)) {
+        alert('Please enter a valid email address.');
+        email.focus();
+        return;
+    }
+
+    const phoneRegex = /^[56789]\d{9}$/;
+    if (!phoneRegex.test(phoneValue)) {
+        alert('Phone number must be 10 digits and start with 5, 6, 7, 8, or 9.');
+        phone.focus();
+        return;
+    }
+
+    const formData = {
+        full_name: fullName.value,
+        email: emailValue,
+        phone: phoneValue,
+        inquiry_type: inquiryType.value,
+        artist_id: artistId ? artistId.value : null,
+        message: message.value
+    };
+
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Sending...';
+    btn.disabled = true;
+    
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        const response = await fetch('/api/inquiry', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('Thank you for your inquiry! Our specialists will contact you within 24 hours.');
+            form.reset();
+        } else {
+            alert('Error: ' + (result.message || 'Could not submit inquiry.'));
+        }
+    } catch (error) {
+        console.error('Submission error:', error);
+        alert('Connection error. Please try again later.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+window.sendEnquiry = sendEnquiry;
+
+/**
+ * FAQ Toggle Logic
+ */
+function toggleFaq(btn) {
+    const body = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    const isOpen = body.classList.contains('open');
+    
+    // Close other FAQs
+    document.querySelectorAll('.faq-body').forEach(b => {
+        if (b !== body) b.classList.remove('open');
+    });
+    document.querySelectorAll('.faq-icon').forEach(i => {
+        if (i !== icon) i.classList.remove('open');
+    });
+    
+    if (!isOpen) { 
+        body.classList.add('open'); 
+        icon.classList.add('open'); 
+    } else {
+        body.classList.remove('open');
+        icon.classList.remove('open');
+    }
+}
+window.toggleFaq = toggleFaq;

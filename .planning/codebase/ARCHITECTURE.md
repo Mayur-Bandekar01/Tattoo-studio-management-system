@@ -3,13 +3,13 @@
 ## Model-Template-View (MTV)
 The application follows a traditional Flask MTV pattern:
 - **Models**: Handled via direct SQL queries in routes and utilities (no ORM like SQLAlchemy).
-- **Templates**: Jinja2 templates in the `/templates` directory.
-- **Views/Controllers**: Route functions in the `routes/` blueprints.
+- **Templates**: Jinja2 templates in the `frontend/templates` directory.
+- **Views/Controllers**: Route functions in the `backend/routes/` blueprints.
 
 ## Modularity
 - **Blueprints**: Used for logical separation of features (auth, customer, artist, owner, chat).
-- **Utilities**: Centralized logic for authentication (`auth_decorators.py`) and email (`email_service.py`).
-- **Database Access**: Centralized in `db.py` via `get_db()`.
+- **Utilities**: Centralized logic for authentication (`decorators.py`) and database maintenance.
+- **Database Access**: Centralized in `backend/db.py` via `get_db()`.
 
 ## Authentication & Authorization
 - **Session-based**: Flask sessions (`permanent_session_lifetime` set in `app.py`).

@@ -1,59 +1,49 @@
 # Project Architecture Analysis: Dragon Tattoos
 
 ## Overview
-This project is a **Flask-based Web Application** designed for a tattoo studio. It uses a monolithic architecture with server-side rendering (Jinja2) and a relational database (MySQL/MariaDB).
+Dragon Tattoos is a high-fidelity, role-based Studio Management System built with **Flask**. It follows a modular architecture designed for scalability, security, and a premium "Vibrant Obsidian" user experience.
 
 ## Core Architecture
 
-### 1. Backend (Logic & Routing)
-- **`app.py`**: The central entry point. Contains all route definitions (Landing, Auth, Dashboards) and business logic.
-- **`db.py`**: Handles database connection pooling using `mysql.connector`.
+### 1. Backend (Modular Logic)
+The backend is organized into a clean directory structure to separate concerns:
+- **`backend/app.py`**: The application factory. Handles global configurations (Security, Mail, Uploads) and registers blueprints.
+- **`backend/routes/`**: Decentralized route management using Flask Blueprints.
+    - `public.py`: Landing pages and static content.
+    - `auth.py`: Centralized authentication, registration, and password recovery.
+    - `customer.py`, `artist.py`, `owner.py`: Role-specific dashboard logic.
+    - `chat.py`: Real-time communication endpoints.
+- **`backend/db.py`**: Database abstraction layer using connection pooling for high-performance MySQL interactions.
 
-### 2. Frontend (UI/UX)
-- **Engine**: Jinja2 Templating.
-- **Styling**: Tailwind CSS (Local `tailwind.js`) with a dark/light theme system integrated directly into the templates.
-- **Structure**:
-    - `templates/landing/`: Public marketing pages.
-    - `templates/artist/`, `templates/customer/`, `templates/owner/`: Role-based protected dashboards.
-    - `static/js/theme.js`: Client-side theme switching logic.
-    - `static/images/logo.jpg`: Brand assets.
+### 2. Frontend (Vibrant Obsidian Design System)
+The frontend uses a custom-built, framework-free design system optimized for aesthetics and performance.
+- **Engine**: Jinja2 Server-Side Rendering.
+- **Styling**: Vanilla CSS3 with CSS Variables for theming (**Scarlet Obsidian** / **Ivory**).
+    - Located in `frontend/static/css/<role>/`.
+    - Uses an `@import` architecture for component-level modularity.
+- **Interactions**: Vanilla JavaScript (`frontend/static/js/`) for dashboard reactivity and theme management.
 
-### 3. Database Schema (Inferred)
-- **Tables**: `customer`, `artist`, `owner`, `appointment`, `inventory`, `invoice`, `payment`.
-- **Relationships**: Appointments link customers and artists; Invoices link to appointments.
+### 3. Data Integrity & Security
+- **RBAC**: Role-Based Access Control enforced at the route level.
+- **CSRF**: Global Cross-Site Request Forgery protection.
+- **Connection Pooling**: Efficient database resource management.
+- **Validation**: Strict server-side input validation for emails (inclusive of all providers), phones, and passwords.
+- **Unified Auth**: Intelligent credential matching supporting alphanumeric Artist IDs and primary email identifiers across a singular `email` parameter.
 
----
+## File Structure
 
-## File Structure Report
-
-| Component | Path | Description |
+| Layer | Path | Description |
 | :--- | :--- | :--- |
-| **Logic** | `app.py`, `db.py` | Flask app and DB connection. |
-| **Templates** | `templates/` | Role-based HTML templates. |
-| **Static** | `static/` | JS, Images, and assets. |
-| **Utilities** | `lint_html.py`, `test.py` | Basic connection check and HTML linter. |
+| **Logic** | `backend/routes/` | Role-based blueprints. |
+| **Data** | `backend/db.py` | Connection pooling. |
+| **UI** | `frontend/templates/` | Modular Jinja2 templates. |
+| **Assets** | `frontend/static/` | CSS, JS, and Brand Assets. |
+| **Spec** | `design-system/` | Design tokens and visual guides. |
+
+## Development Workflow
+The project utilizes the **GSD (Get Stuff Done)** methodology:
+- `.planning/`: Contains milestones, task manifests, and architectural decisions.
+- `.agent/`: Houses specialized AI agent instructions for Frontend, Backend, and Security.
 
 ---
-
-## Redundant / Useless Files Identified
-
-The following files are identified as "one-off" scripts or temporary patches that are no longer needed as their changes have been integrated into the core codebase:
-
-1.  **Patches/Fixes**:
-    - `fix_l813.py`: Fixed a specific syntax error in templates.
-    - `fix_visibility.py`: Likely an old visibility patch.
-    - `patch_dashboard_text.py`: Replaced Tailwind classes with variables.
-    - `patch_light_mode.py`: Integrated light mode CSS.
-    - `patch_orange_light.py`: Theme adjustment.
-    - `patch_pure_black.py`: Theme adjustment.
-2.  **Wrappers/Temp**:
-    - `run_wrapper.py`: Temporary script for running sub-agents/design tools.
-    - `tmp_checker.py`: Likely a temporary state check.
-    - `fix_visibility.py`: Redundant.
-3.  **Standard Exclusions**:
-    - `__pycache__`: Python byte-code cache.
-
-## Recommendations
-- **Consolidate Scripts**: Move useful utilities (`test.py`, `lint_html.py`) into a `/scripts` directory.
-- **Delete Redundant Patches**: Remove all `fix_*.py` and `patch_*.py` files to clean the root directory.
-- **Environment Variables**: Move the hardcoded DB password in `db.py` to a `.env` file.
+*Last Updated: 2026-05-05*

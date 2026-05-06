@@ -18,6 +18,8 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/login", methods=["GET"])
 def login():
+    if "role" in session:
+        return redirect(f"/{session['role']}/dashboard")
     return render_template("auth/login.html")
 
 
@@ -26,7 +28,7 @@ def handle_customer_login(cursor, password):
     if not email:
         return False, "Please enter your email!"
     cursor.execute(
-        "SELECT * FROM customer WHERE customer_email = %s AND password = %s",
+        "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s AND password = %s",
         (email, password),
     )
     user = cursor.fetchone()
@@ -43,25 +45,37 @@ def handle_customer_login(cursor, password):
 
 
 def handle_artist_login(cursor, password):
-    artist_id = request.form.get("artist_id", "").strip()
-    if not artist_id:
-        return False, "Please enter your Artist ID!"
+    login_val = request.form.get("email", "").strip()
+    if not login_val:
+        return False, "Please enter your Artist ID or Email!"
+
+    # 1. Try matching by Artist ID (e.g., DRAG-ART-001)
     cursor.execute(
-        "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
-        (artist_id, password),
+        "SELECT artist_id, artist_name, specialisation FROM artist WHERE artist_id = %s AND password = %s",
+        (login_val, password),
     )
-    user = cursor.fetchone()
-    if user:
+    artist = cursor.fetchone()
+    
+    # 2. Try matching by Email (artist_email column)
+    if not artist:
+        cursor.execute(
+            "SELECT artist_id, artist_name, specialisation FROM artist WHERE artist_email = %s AND password = %s",
+            (login_val, password),
+        )
+        artist = cursor.fetchone()
+
+    if artist:
         session.update(
             {
-                "user_id": user["artist_id"],
+                "user_id": artist["artist_id"],
                 "role": "artist",
-                "name": user["artist_name"],
-                "specialisation": user["specialisation"],
+                "name": artist["artist_name"],
+                "specialisation": artist["specialisation"],
             }
         )
         return True, "/artist/dashboard"
-    return False, "Invalid Artist ID or password!"
+
+    return False, "Invalid Artist ID/Email or Password."
 
 
 def handle_owner_login(cursor, password):
@@ -69,7 +83,7 @@ def handle_owner_login(cursor, password):
     if not email:
         return False, "Please enter your email!"
     cursor.execute(
-        "SELECT * FROM owner WHERE email = %s AND password = %s", (email, password)
+        "SELECT owner_id, name FROM owner WHERE email = %s AND password = %s", (email, password)
     )
     user = cursor.fetchone()
     if user:
@@ -105,7 +119,6 @@ def login_post():
         success, result = handler(cursor, password)
 
     if success:
-        session.permanent = True
         return redirect(result)
 
     flash(result)
@@ -126,6 +139,8 @@ def is_password_strong(password):
 
 @auth_bp.route("/register", methods=["GET"])
 def register():
+    if "role" in session:
+        return redirect(f"/{session['role']}/dashboard")
     return render_template("auth/register.html")
 
 
@@ -142,13 +157,13 @@ def register_post():
         return redirect("/register")
 
     # Email Validation
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+    if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email):
         flash("Please enter a valid email address!")
         return redirect("/register")
 
     # Phone Validation
-    if not re.match(r"^\d{10}$", phone):
-        flash("Phone number must be exactly 10 digits!")
+    if not re.match(r"^[56789]\d{9}$", phone):
+        flash("Invalid phone number! Must be 10 digits starting with 5-9.")
         return redirect("/register")
 
     # Password Validation
@@ -198,28 +213,43 @@ def forgot_password_post():
         return redirect("/forgot-password")
 
     conn = get_db()
-    with conn.cursor(dictionary=True) as cursor:
-        cursor.execute(
-            "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s",
-            (email,),
-        )
-        customer = cursor.fetchone()
+    user_data = None
+    role_found = None
 
-    if not customer:
+    with conn.cursor(dictionary=True) as cursor:
+        # Check Customer table
+        cursor.execute("SELECT customer_id as id, customer_name as name FROM customer WHERE customer_email = %s", (email,))
+        user_data = cursor.fetchone()
+        if user_data:
+            role_found = "customer"
+        else:
+            # Check Owner table
+            cursor.execute("SELECT owner_id as id, name FROM owner WHERE email = %s", (email,))
+            user_data = cursor.fetchone()
+            if user_data:
+                role_found = "owner"
+            else:
+                # Check Artist table - use correct column 'artist_email'
+                cursor.execute("SELECT artist_id as id, artist_name as name FROM artist WHERE artist_email = %s", (email,))
+                user_data = cursor.fetchone()
+                if user_data:
+                    role_found = "artist"
+
+    if not user_data:
         flash("No account found with this email address!", "error")
         return redirect("/forgot-password")
 
     otp = str(random.randint(100000, 999999))
     session["reset_otp"] = otp
     session["reset_email"] = email
+    session["reset_role"] = role_found
     session["otp_expiry"] = (datetime.now() + timedelta(minutes=10)).strftime(
         "%Y-%m-%d %H:%M:%S"
     )
 
     try:
         from ..app import mail
-
-        success = send_otp_email(mail, customer["customer_name"], email, otp)
+        success = send_otp_email(mail, user_data["name"], email, otp)
         if success:
             flash(
                 (
@@ -292,14 +322,20 @@ def reset_password():
         flash("Password must be at least 8 characters!", "error")
         return render_template("auth/reset_password.html")
 
+    role = session.get("reset_role", "customer")
     conn = get_db()
     with conn.cursor() as cursor:
-        cursor.execute(
-            "UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email)
-        )
+        if role == "customer":
+            cursor.execute("UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email))
+        elif role == "owner":
+            cursor.execute("UPDATE owner SET password = %s WHERE email = %s", (new_pass, email))
+        elif role == "artist":
+            cursor.execute("UPDATE artist SET password = %s WHERE artist_email = %s", (new_pass, email))
+        
         conn.commit()
 
     session.pop("otp_verified", None)
+    session.pop("reset_role", None)
     session.pop("reset_email", None)
     session.pop("otp_expiry", None)
 

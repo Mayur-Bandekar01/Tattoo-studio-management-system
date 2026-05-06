@@ -51,8 +51,9 @@
                             <option value="L">L (litres)</option>
                         </optgroup>
                         <optgroup label="Count">
+                            <option value="pcs">pcs (pieces)</option>
                             <option value="Pairs">Pairs</option>
-                            <option value="Pieces">Pieces</option>
+                            <option value="Units">Units</option>
                             <option value="Boxes">Boxes</option>
                             <option value="Packs">Packs</option>
                             <option value="Sets">Sets</option>
@@ -63,7 +64,6 @@
                         </optgroup>
                         <optgroup label="Other">
                             <option value="Tubes">Tubes</option>
-                            <option value="Bottles">Bottles</option>
                             <option value="Grams">Grams</option>
                         </optgroup>
                     </select>
@@ -142,7 +142,7 @@
             <tbody>
                 {% if inventory %}
                 {% for item in inventory %}
-                {% set stock_pct = [((item.quant_stock / (item.reorder_level * 3)) * 100) if item.reorder_level > 0 else (100 if item.quant_stock > 0 else 0), 100] | min %}
+                {% set stock_pct = [(((item.quant_stock | float) / ((item.reorder_level | float) * 3)) * 100) if item.reorder_level > 0 else (100 if item.quant_stock > 0 else 0), 100] | min %}
                 <tr class="reveal" style="--transition-delay: {{ loop.index0 * 30 }}ms;">
                     <td>
                         <div class="font-bold text-text text-sm">{{ item.item_name }}</div>
@@ -153,25 +153,25 @@
                     </td>
                     <td>
                         <span class="text-xs font-mono font-bold
-                            {% if item.quant_stock <= item.reorder_level %}text-red-500
-                            {% elif item.quant_stock <= item.reorder_level * 2 %}text-amber-500
+                            {% if (item.quant_stock | float) <= (item.reorder_level | float) %}text-red-500
+                            {% elif (item.quant_stock | float) <= (item.reorder_level | float) * 1.5 %}text-amber-500
                             {% else %}text-emerald-500{% endif %}">
                             {{ item.quant_stock | round(2) }} {{ item.unit }}
                         </span>
                         <div class="stock-progress mt-1.5">
-                            <div class="stock-bar {% if item.quant_stock <= item.reorder_level %}critical{% elif item.quant_stock <= item.reorder_level * 2 %}warning{% else %}optimal{% endif %}"
+                            <div class="stock-bar {% if (item.quant_stock | float) <= (item.reorder_level | float) %}critical{% elif (item.quant_stock | float) <= (item.reorder_level | float) * 1.5 %}warning{% else %}optimal{% endif %}"
                                  style="--stock-width: {{ stock_pct or 0 }}%; width: var(--stock-width);"></div>
                         </div>
                     </td>
                     <td class="font-mono text-[11px] text-muted opacity-60">{{ item.reorder_level }} {{ item.unit }}</td>
                     <td class="font-mono font-bold text-emerald-500 text-sm">₹{{ item.unit_cost | float | round(2) }}</td>
                     <td>
-                        {% if item.quant_stock <= item.reorder_level %}
-                        <span class="status-badge status-rejected !text-[9px]">Critical</span>
-                        {% elif item.quant_stock <= item.reorder_level * 2 %}
-                        <span class="status-badge status-pending !text-[9px]">Warning</span>
+                        {% if (item.quant_stock | float) <= (item.reorder_level | float) %}
+                        <span class="stock-status critical">Critical</span>
+                        {% elif (item.quant_stock | float) <= (item.reorder_level | float) * 1.5 %}
+                        <span class="stock-status warning">Warning</span>
                         {% else %}
-                        <span class="status-badge status-done !text-[9px]">Optimal</span>
+                        <span class="stock-status optimal">Optimal</span>
                         {% endif %}
                     </td>
                     <td>

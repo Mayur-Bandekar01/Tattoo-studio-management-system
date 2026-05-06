@@ -23,3 +23,4 @@ Reduce coupling between business logic and database layers while hardening the a
 - [ ] Phase 8: Advanced Session & Security Hardening (CSRF, Secure Flags) <!-- id: 3.2 -->
 - [x] Phase 11: Booking UI Refinement & Logic Hardening <!-- id: 2.3 -->
 - [x] Phase 12: Global Cleanup & Submission Optimization <!-- id: 1.7 -->
+- [x] Phase 13: Authentication & Branding Refinement (Inclusive Auth & Typography) <!-- id: 3.3 -->

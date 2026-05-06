@@ -1,76 +1,86 @@
-<div class="profile-layout-grid reveal">
-
+<div class="profile-grid reveal">
     <!-- Profile Info Card -->
-    <div class="profile-card">
-        <div class="profile-avatar-wrap">
-            <div class="profile-avatar-box">
+    <div class="profile-wrap">
+        <div class="profile-orb"></div>
+        <div class="profile-header">
+            <div class="profile-icon-box">
                 <i class="fas fa-pen-nib"></i>
             </div>
             <h3 class="profile-name">{{ customer_profile.customer_name if customer_profile else name }}</h3>
-            <p class="profile-tier">Studio Member</p>
+            <p class="profile-role">Studio Member</p>
+            <div class="profile-status-pill">
+                <span class="profile-status-dot"></span>
+                Active Member
+            </div>
         </div>
 
-        <ul class="profile-info-list">
-            <li class="profile-info-row">
-                <span class="profile-info-label">Customer ID</span>
-                <span class="profile-info-value font-mono">#{{ session.get('user_id') }}</span>
-            </li>
-            <li class="profile-info-row">
-                <span class="profile-info-label">Email</span>
-                <span class="profile-info-value">{{ customer_profile.customer_email if customer_profile else '—' }}</span>
-            </li>
-            <li class="profile-info-row">
-                <span class="profile-info-label">Contact</span>
-                <span class="profile-info-value">{{ customer_profile.phone if customer_profile else '—' }}</span>
-            </li>
-            <li class="profile-info-row">
-                <span class="profile-info-label">Instagram ID</span>
-                <span class="profile-info-value">{{ customer_profile.insta_id if customer_profile else '—' }}</span>
-            </li>
-        </ul>
+        <div class="profile-divider">
+            <div class="profile-divider-section-label">
+                <div class="profile-section-icon"><i class="fas fa-user"></i></div>
+                Account Identity
+            </div>
+        </div>
 
-        <div class="profile-stat-row">
-            <span class="profile-stat-label"><i class="fas fa-star"></i> Studio Member</span>
-            <span class="profile-stat-value">Active</span>
+        <div class="profile-details">
+            <div class="profile-row">
+                <span class="profile-row-key">Customer ID</span>
+                <span class="profile-row-val profile-row-mono">#{{ session.get('user_id') }}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-row-key">Email Address</span>
+                <span class="profile-row-val">{{ customer_profile.customer_email if customer_profile else '—' }}</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-row-key">Phone Line</span>
+                <span class="profile-row-val">{{ customer_profile.phone if customer_profile else '—' }}</span>
+            </div>
+            <div class="profile-row profile-row-last">
+                <span class="profile-row-key">Instagram ID</span>
+                <span class="profile-row-val">{{ customer_profile.insta_id if customer_profile else '—' }}</span>
+            </div>
         </div>
     </div>
 
     <!-- Security Card -->
-    <div class="profile-card card-security">
-        <div class="security-header">
-            <div class="security-icon">
-                <i class="fas fa-shield-alt" style="color:var(--accent-blue)"></i>
+    <div class="profile-wrap profile-security-card">
+        <div class="profile-orb profile-orb-scarlet"></div>
+        <div class="profile-security-header">
+            <div class="profile-lock-icon">
+                <i class="fas fa-shield-alt"></i>
             </div>
             <div>
-                <h3 class="profile-name" style="font-size:1.15rem">Security Settings</h3>
-                <p class="profile-tier" style="color:var(--accent-blue)">Password Management</p>
+                <h3 class="profile-name profile-card-title" style="font-size:1.15rem">Vault Security</h3>
+                <p class="profile-card-sub">Password & Credential Management</p>
             </div>
         </div>
 
-        <form method="POST" action="/customer/change-password">
+        <form class="profile-form" method="POST" action="/customer/change-password">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-            {% for field_id, label, placeholder in [
-                ('cur_pw',  'Current Password', 'Verify identity…'),
-                ('new_pw',  'New Password',     'Min. 8 characters'),
-                ('conf_pw', 'Confirm Password', 'Repeat new password')
+            {% for field_id, label, placeholder, icon in [
+                ('cur_pw',  'Current Password', 'Verify identity…', 'fa-lock'),
+                ('new_pw',  'New Password',     'Min. 8 characters', 'fa-key'),
+                ('conf_pw', 'Confirm Password', 'Repeat new password', 'fa-check-double')
             ] %}
-            <div class="form-field">
-                <label class="form-label" for="{{ field_id }}">{{ label }}</label>
-                <div class="form-input-wrap">
-                    <input class="form-input" id="{{ field_id }}" type="password"
+            <div class="profile-field">
+                <label class="profile-row-key" style="margin-bottom: 0.25rem;" for="{{ field_id }}">{{ label }}</label>
+                <div class="profile-input-wrap">
+                    <i class="fas {{ icon }} profile-input-icon"></i>
+                    <input class="book-input profile-input" id="{{ field_id }}" type="password"
                            name="{{ {'cur_pw':'current_password','new_pw':'new_password','conf_pw':'confirm_password'}[field_id] }}"
                            placeholder="{{ placeholder }}" required>
-                    <button type="button" class="form-pw-toggle" onclick="togglePw('{{ field_id }}', this)" aria-label="Toggle visibility">
+                    <button type="button" class="profile-eye-btn" onclick="togglePw('{{ field_id }}', this)" aria-label="Toggle visibility">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
             {% endfor %}
 
-            <button type="submit" class="profile-submit-btn">
-                <i class="fas fa-shield-alt"></i> Update Credentials
-            </button>
+            <div class="profile-submit-wrap">
+                <button type="submit" class="btn-gold profile-submit-btn">
+                    <i class="fas fa-shield-alt"></i> Update Credentials
+                </button>
+            </div>
         </form>
     </div>
-</div>
+</div>

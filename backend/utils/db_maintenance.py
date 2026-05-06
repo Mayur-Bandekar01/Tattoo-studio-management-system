@@ -127,3 +127,30 @@ def ensure_schema_consistency():
             conn.commit()
         except Exception as e:
             pass
+
+        # 11. DATA CONVERSION: Bottles to ml (User Request)
+        # Assuming 1 bottle of ink = 30ml, 1 bottle of sanitizer = 500ml
+        try:
+            # Update Inks
+            cursor.execute("""
+                UPDATE inventory 
+                SET quant_stock = quant_stock * 30, 
+                    reorder_level = reorder_level * 30,
+                    unit_cost = unit_cost / 30,
+                    unit = 'ml' 
+                WHERE (item_name LIKE '%Ink%' OR category = 'Ink') AND unit = 'Bottles'
+            """)
+            # Update Sanitizer
+            cursor.execute("""
+                UPDATE inventory 
+                SET quant_stock = quant_stock * 500, 
+                    reorder_level = reorder_level * 500,
+                    unit_cost = unit_cost / 500,
+                    unit = 'ml' 
+                WHERE item_name LIKE '%Sanitizer%' AND unit = 'Bottles'
+            """)
+            # Update Pieces to pcs
+            cursor.execute("UPDATE inventory SET unit = 'pcs' WHERE unit = 'Pieces'")
+            conn.commit()
+        except Exception as e:
+            pass

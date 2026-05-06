@@ -102,6 +102,15 @@
                   <i class="fas fa-comment-dots"></i>
                 </button>
 
+                {% if a.reference %}
+                <button class="appt-btn btn-view" title="View Reference Image"
+                        data-img="{{ url_for('static', filename=a.reference) }}"
+                        data-concept="{{ a.tattoo_concept }}"
+                        onclick="openLb(this.dataset.img, 'Concept Reference', 'Reference for: ' + this.dataset.concept)">
+                  <i class="fas fa-image"></i>
+                </button>
+                {% endif %}
+
                 {% if a.status == 'Approved' %}
                    <span class="status-tip">Awaiting Session</span>
                 {% endif %}

@@ -1,0 +1,48 @@
+<!-- artist/sections/inquiries.html -->
+<div class="artist-leads-container">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold text-studio-text tracking-tight mb-2">New Project Leads</h2>
+        <p class="text-studio-muted text-xs">Direct project inquiries assigned specifically to you.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+        {% if inquiries %}
+            {% for item in inquiries %}
+            <div class="lead-card group">
+                <div class="lead-header">
+                    <span class="lead-type">{{ item.inquiry_type }}</span>
+                    <span class="lead-date">{{ item.submitted_at[:16] }}</span>
+                </div>
+                <div class="lead-body">
+                    <h3>{{ item.full_name }}</h3>
+                    <div class="lead-message">"{{ item.message }}"</div>
+                </div>
+                <div class="lead-actions">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-[0.7rem] font-medium text-studio-muted">
+                            <i class="far fa-envelope mr-1.5 opacity-60"></i> {{ item.email }}
+                        </span>
+                        {% if item.phone %}
+                        <span class="text-[0.7rem] font-medium text-studio-muted">
+                            <i class="fas fa-phone mr-1.5 opacity-60"></i> {{ item.phone }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <a href="mailto:{{ item.email }}?subject=Re: {{ item.inquiry_type }} Inquiry - Dragon Tattoos" 
+                       class="btn-claim">
+                        <i class="fas fa-bolt"></i> Claim Lead
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="py-20 text-center glass-card">
+                <div class="w-16 h-16 bg-studio-gold/5 border border-studio-border/10 rounded-full flex items-center justify-center text-studio-muted mx-auto mb-4">
+                    <i class="fas fa-inbox text-xl"></i>
+                </div>
+                <h3 class="font-bold text-studio-text">All caught up!</h3>
+                <p class="text-xs text-studio-muted">No new leads available at the moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

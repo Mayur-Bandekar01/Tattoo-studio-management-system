@@ -21,11 +21,18 @@
                 opt.style.display = ''; 
                 return; 
             }
-            const spec = opt.dataset.specialisation || '';
+            const spec = (opt.dataset.specialisation || '').toLowerCase();
             let show = false;
-            if (type === 'tattoo') show = spec.includes('tattoo') || spec.includes('ink') || spec.includes('realism') || spec.includes('traditional');
-            else if (type === 'art') show = spec.includes('art') || spec.includes('paint') || spec.includes('sketch') || spec.includes('digital');
-            else if (type === 'removal') show = spec.includes('removal') || spec.includes('laser');
+            
+            if (type === 'tattoo') {
+                show = spec.includes('tattoo') || spec.includes('ink') || spec.includes('realism');
+            } else if (type === 'art') {
+                // Precise check: exclude 'tattoo artist' literal match, check for specific art terms
+                const isTattooOnly = spec === 'tattoo artist' || spec === 'tattooist';
+                show = !isTattooOnly && (spec.includes('sketch') || spec.includes('paint') || spec.includes('digital') || spec.includes('illustration') || spec.includes('fine art'));
+            } else if (type === 'removal') {
+                show = spec.includes('removal') || spec.includes('laser');
+            }
 
             opt.style.display = show ? '' : 'none';
             if (show) count++;
@@ -91,24 +98,24 @@
 
     // Initialize Flatpickr for Premium Calendar Experience
     (function() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
         const config = {
             altInput: true,
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",
-            minDate: "today",
-            disableMobile: "true",
+            minDate: tomorrow,
+            disableMobile: true,
             animate: true,
-            monthSelectorType: "static",
-            onOpen: function(selectedDates, dateStr, instance) {
-                // Adjust position if needed
-            }
+            monthSelectorType: "static"
         };
 
         const apptDate = document.getElementById('apptDate');
         if (apptDate) {
             flatpickr(apptDate, {
                 ...config,
-                placeholder: "Select session date"
+                placeholder: "Select your session date"
             });
         }
 

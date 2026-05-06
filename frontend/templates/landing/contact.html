@@ -1,1035 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Contact</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Roboto', 'sans-serif'], display: ['"Cinzel Decorative"', 'cursive'] },
-                    colors: {
-                        apple: {
-                            bg: 'var(--bg)',
-                            text: 'var(--text)',
-                            muted: 'var(--muted)',
-                            card: 'var(--card-bg)',
-                            border: 'var(--border)',
-                            gold: 'var(--accent, #c8a040)',
-                            goldLight: '#e0b84a'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        * {
-            -webkit-font-smoothing: antialiased;
-        }
+{% block title %}Dragon Tattoos | Contact Us{% endblock %}
 
-        body {
-            background: #000;
-            color: #f5f5f7;
-            overflow-x: hidden;
-        }
+{% block meta_description %}Book your next session or consultation. Connect with Dragon Tattoos Studio for premium custom art in Bengaluru.{% endblock %}
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 1.5rem;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.72);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            transform: translateY(-100%);
-            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-        }
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing/contact.css') }}">
+{% endblock %}
 
-        @keyframes navSlideDown {
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, #f5f5f7, #c8a040, #f5f5f7);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 5s linear infinite;
-        }
-
-        .pill-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f5f5f7;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            transform: translateY(-100%);
-            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            right: 50%;
-            height: 2px;
-            background: #c8a040;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            border-radius: 2px;
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            left: 0;
-            right: 0;
-        }
-
-        .nav-link.active {
-            color: #f5f5f7;
-        }    
+{% block content %}
+<section class="relative pt-36 pb-20 px-6 overflow-hidden">
+    <div class="bg-grid"></div>
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-20 relative z-10">
         
-        .nav-link {
-            color: #86868b;
-            font-size: 0.78rem;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            transition: color 0.25s;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .burger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-        }
-
-        .burger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: #86868b;
-            border-radius: 2px;
-            transition: all 0.3s;
-            margin: 5px 0;
-        }
-
-        .burger.open span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .burger.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.open span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-        .mobile-menu {
-            position: fixed;
-            inset: 0;
-            z-index: 99;
-            background: rgba(0, 0, 0, 0.97);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
-            transform: translateY(-100%);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-            pointer-events: none;
-        }
-
-        .mobile-menu.open {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .mobile-menu a {
-            font-family: 'Cinzel', serif;
-            font-size: 1.75rem;
-            color: #86868b;
-            text-decoration: none;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: color 0.25s;
-        }
-
-        .mobile-menu a:hover,
-        .mobile-menu a.active {
-            color: #c8a040;
-        }
-
-        .mobile-menu-divider {
-            width: 40px;
-            height: 1px;
-            background: rgba(200, 160, 64, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            .burger {
-                display: block;
-            }
-        }
-
-        /* FAQ */
-        .faq-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .faq-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.25rem 0;
-            background: none;
-            border: none;
-            color: #f5f5f7;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .faq-btn:hover .faq-q {
-            color: #c8a040;
-        }
-
-        .faq-q {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .faq-icon {
-            color: #c8a040;
-            font-size: 0.75rem;
-            transition: transform 0.3s;
-            flex-shrink: 0;
-        }
-
-        .faq-icon.open {
-            transform: rotate(135deg);
-        }
-
-        .faq-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .faq-body.open {
-            max-height: 200px;
-        }
-
-        .faq-body p {
-            padding-bottom: 1.25rem;
-            color: #86868b;
-            font-size: 0.82rem;
-            line-height: 1.7;
-        }
-
-        .page-hero {
-            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
-            padding: 9rem 1.5rem 5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.2), transparent);
-        }
-
-        .page-hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-d1 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-d2 {
-            transition-delay: 0.2s;
-        }
-
-        .reveal-d3 {
-            transition-delay: 0.3s;
-        }
-
-        .reveal-d4 {
-            transition-delay: 0.4s;
-        }
-
-        .reveal-d5 {
-            transition-delay: 0.5s;
-        }
-
-        .contact-card {
-            background: rgba(29, 29, 31, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 1.5rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 1.25rem;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .contact-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(200, 160, 64, 0.06), transparent 40%);
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-        }
-
-        .contact-card:hover {
-            background: linear-gradient(180deg, rgba(42, 42, 45, 0.9) 0%, rgba(29, 29, 31, 1) 100%);
-            border-color: rgba(200, 160, 64, 0.4);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(200, 160, 64, 0.05);
-        }
-
-        .contact-card:hover::before {
-            opacity: 1;
-        }
-
-        .contact-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: rgba(200, 160, 64, 0.1);
-            border: 1px solid rgba(200, 160, 64, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #c8a040;
-            flex-shrink: 0;
-            transition: background 0.3s, transform 0.3s;
-        }
-
-        .contact-card:hover .contact-icon {
-            background: rgba(200, 160, 64, 0.18);
-            transform: scale(1.08);
-        }
-
-        .map-card {
-            background: rgba(29, 29, 31, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 1.5rem;
-            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
-        }
-
-        .map-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(200, 160, 64, 0.08), transparent 70%);
-            opacity: 0.5;
-        }
-
-        .map-card:hover {
-            border-color: rgba(200, 160, 64, 0.3);
-            transform: scale(1.01);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-        }
-
-        /* form */
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            outline: none;
-            font-size: 0.9rem;
-            color: #f5f5f7;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            font-family: 'Roboto', sans-serif;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(200, 160, 64, 0.5);
-            box-shadow: 0 0 20px rgba(200, 160, 64, 0.1), inset 0 2px 4px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-
-        label {
-            transition: all 0.3s ease;
-            display: block;
-            margin-bottom: 0.75rem;
-            color: rgba(245, 245, 247, 0.6);
-            font-weight: 500;
-        }
-
-        div:focus-within label {
-            color: #c8a040;
-            transform: translateX(4px);
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            color: #555;
-        }
-
-        select option {
-            background: #1d1d1f;
-            color: #f5f5f7;
-        }
-
-        footer {
-            background: #000;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .footer-link {
-            color: #86868b;
-            font-size: 0.75rem;
-            transition: color 0.2s;
-            text-decoration: none;
-        }
-
-        .footer-link:hover {
-            color: #c8a040;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #000
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #3a3a3c;
-            border-radius: 4px
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #c8a040
-        }
-
-        /* ── LIGHT THEME (White + Orange Energetic) ── */
-        html.light-mode body {
-            --bg: #ffffff;
-            --bg-grad: rgba(249, 115, 22, 0.05);
-            --sidebar-bg: rgba(255, 255, 255, 0.96);
-            --topbar-bg: rgba(255, 255, 255, 0.96);
-            --card-bg: rgba(255, 250, 245, 0.8);
-            --card-hover: #ffedd5;
-            --border: rgba(253, 186, 116, 0.4);
-            --border-h: #f97316;
-            --text: #1f2937;
-            --muted: #6b7280;
-            --accent: #f97316;
-            --nav-muted: #9ca3af;
-            --nav-item: #4b5563;
-            --nav-hover: #f97316;
-            --shadow: rgba(249, 115, 22, 0.08);
-
-            background-color: var(--bg) !important;
-            color: var(--text) !important;
-        }
-
-        html.light-mode .contact-card,
-        html.light-mode .map-card,
-        html.light-mode div[style*="background: var(--card-bg)"] {
-            background: rgba(255, 255, 255, 0.7) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border: 1px solid var(--border) !important;
-        }
-
-        html.light-mode .navbar,
-        html.light-mode nav {
-            background: rgba(255, 255, 255, 0.88) !important;
-            border-bottom: 1px solid var(--border) !important;
-        }
-
-        html.light-mode .nav-link {
-            color: var(--muted) !important;
-        }
-
-        html.light-mode .nav-link:hover,
-        html.light-mode .nav-link.active {
-            color: var(--accent) !important;
-        }
-
-        html.light-mode .mobile-menu {
-            background: rgba(255, 255, 255, 0.98) !important;
-        }
-
-        html.light-mode .mobile-menu a {
-            color: var(--muted) !important;
-        }
-
-        html.light-mode .mobile-menu a:hover,
-        html.light-mode .mobile-menu a.active {
-            color: var(--accent) !important;
-        }
-
-        html.light-mode .hero-section,
-        html.light-mode .page-hero,
-        html.light-mode section,
-        html.light-mode .section-dark,
-        html.light-mode .section-surface {
-            background: var(--bg) !important;
-        }
-
-        html.light-mode .feature-card,
-        html.light-mode .testi-card,
-        html.light-mode .value-card,
-        html.light-mode .artist-card,
-        html.light-mode .stat-card,
-        html.light-mode .contact-card,
-        html.light-mode .map-card {
-            background: var(--card-bg) !important;
-            border: 1px solid var(--border) !important;
-            box-shadow: 0 4px 20px var(--shadow) !important;
-        }
-
-        html.light-mode .feature-card:hover,
-        html.light-mode .testi-card:hover,
-        html.light-mode .value-card:hover,
-        html.light-mode .artist-card:hover,
-        html.light-mode .stat-card:hover,
-        html.light-mode .contact-card:hover {
-            background: var(--card-hover) !important;
-            border-color: var(--border-h) !important;
-        }
-
-        html.light-mode .testi-quote,
-        html.light-mode .testi-detail,
-        html.light-mode .footer-link {
-            color: var(--muted) !important;
-        }
-
-        html.light-mode .testi-name,
-        html.light-mode .footer-brand {
-            color: var(--text) !important;
-        }
-
-        html.light-mode footer,
-        html.light-mode nav~* footer {
-            background: #fffaf5 !important;
-            border-top: 1px solid var(--border) !important;
-        }
-
-        html.light-mode .btn-outline {
-            border-color: var(--border) !important;
-            color: var(--text) !important;
-            background: rgba(249, 115, 22, 0.05) !important;
-        }
-
-        html.light-mode .burger span {
-            background: var(--muted) !important;
-        }
-
-        html.light-mode ::-webkit-scrollbar-track {
-            background: var(--bg) !important;
-        }
-
-        html.light-mode ::-webkit-scrollbar-thumb {
-            background: var(--accent) !important;
-        }
-
-        html.light-mode input,
-        html.light-mode textarea,
-        html.light-mode select {
-            background: white !important;
-            border-color: var(--border) !important;
-            color: var(--text) !important;
-        }
-
-        /* Fix FAQ in light mode */
-        html.light-mode .faq-item {
-            border-bottom-color: rgba(0, 0, 0, 0.1) !important;
-        }
-
-        html.light-mode .faq-btn {
-            color: var(--text) !important;
-        }
-
-        html.light-mode .faq-body p {
-            color: var(--muted) !important;
-        }
-
-        /* Fix inline-background cards in light mode */
-        html.light-mode div[style*='background:#1d1d1f'] {
-            background: var(--card-bg) !important;
-            border-color: var(--border) !important;
-        }
-
-        /* Fix footer-link */
-        html.light-mode .footer-link {
-            color: var(--muted) !important;
-        }
-
-        /* global transition */
-        *,
-        *::before,
-        *::after {
-            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
-        }
-    </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-</head>
-
-<body>
-
-    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
-        <a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a>
-        <a href="/gallery">Gallery</a><a href="/contact" class="active">Contact</a>
-        <div class="mobile-menu-divider"></div>
-        <div class="flex gap-4">
-            <a href="/login"
-                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
-            <a href="/register"
-                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
-        </div>
-    </div>
-
-    <nav class="navbar">
-        <div class="w-full flex items-center justify-between px-6 md:px-10">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-8 h-8 rounded-full object-cover border border-apple-gold/20 shadow-lg">
-                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
-            </div>
-            <div class="hidden md:flex items-center gap-14">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link">Gallery</a>
-                <a href="/contact" class="nav-link active">Contact</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex gap-3">
-                    <a href="/login"
-                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">Login</a>
-                    <a href="/register"
-                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">Register</a>
-                </div>
-                <button class="burger md:hidden" id="burgerBtn" onclick="toggleMobileMenu()"
-                    aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="page-hero text-center flex flex-col items-center justify-center relative overflow-hidden">
-        <div class="page-hero-grid"></div>
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-full bg-[#c8a040] opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
-        <div class="relative z-10 -mt-8 md:-mt-12 max-w-3xl mx-auto reveal">
-            <div class="inline-flex items-center justify-center gap-3 mb-6 px-4 py-1.5 rounded-full border border-apple-gold/20 bg-apple-gold/5 backdrop-blur-md">
-                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
-                <p class="text-apple-gold text-[0.7rem] uppercase tracking-[0.2em] font-medium">Get In Touch</p>
-                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
-            </div>
-            <h1 class="font-display text-5xl md:text-7xl text-apple-text mb-6 tracking-[0.05em] drop-shadow-2xl" style="font-family: 'Cinzel Decorative', cursive;">
-                CONTACT US
+        <!-- Info Column -->
+        <div>
+            <span class="inline-block py-1 px-3 rounded-full bg-apple-gold/10 border border-apple-gold/20 text-apple-gold text-[0.6rem] font-bold tracking-widest uppercase mb-6">Contact & Bookings</span>
+            <h1 class="font-display text-5xl md:text-7xl text-apple-text mb-8 tracking-tighter leading-none">
+                Start your <br/> <span class="text-apple-accent">Journey</span>
             </h1>
-            <p class="text-apple-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
-                Walk in, call us or drop a message. We're always happy to discuss your next tattoo!
+            <p class="text-apple-muted text-lg font-light leading-relaxed mb-12">
+                We prioritize quality over quantity. Due to high demand, we recommend booking consultations at least 2 weeks in advance.
             </p>
-        </div>
-    </div>
 
-    <section class="py-24 px-6">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+            <div class="space-y-8">
+                <div class="flex items-start gap-6">
+                    <div class="w-12 h-12 rounded-xl bg-apple-gold/5 border border-apple-border/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-apple-text text-lg mb-1">Visit the Studio</h3>
+                        <p class="text-apple-muted text-sm font-light">New Bus Stand Complex<br/>Haliyal 581329, Karnataka</p>
+                    </div>
+                </div>
 
-            <!-- contact info -->
-            <div class="space-y-6">
-                <div class="mb-4 reveal">
-                    <span class="pill-tag">Studio Info</span>
+                <div class="flex items-start gap-6">
+                    <div class="w-12 h-12 rounded-xl bg-apple-gold/5 border border-apple-border/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-apple-text text-lg mb-1">Email Us</h3>
+                        <p class="text-apple-muted text-sm font-light">hello@dragontattoos.com<br/>bookings@dragontattoos.com</p>
+                    </div>
                 </div>
 
-                <div class="contact-card reveal reveal-d1">
-                    <div class="contact-icon"><i class="fa-solid fa-location-dot text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Studio Address</p>
-                        <p class="text-apple-muted text-xs leading-relaxed">123 Ink Street, Art District<br>Bengaluru,
-                            Karnataka 560001</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d2">
-                    <div class="contact-icon"><i class="fa-solid fa-phone text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Phone</p>
-                        <p class="text-apple-muted text-xs">+91 98765 43210</p>
-                        <p class="text-apple-muted text-xs">+91 87654 32109</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d3">
-                    <div class="contact-icon"><i class="fa-solid fa-envelope text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Email</p>
-                        <p class="text-apple-muted text-xs">studio@dragontattoos.com</p>
-                        <p class="text-apple-muted text-xs">bookings@dragontattoos.com</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d4">
-                    <div class="contact-icon"><i class="fa-solid fa-clock text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Working Hours</p>
-                        <p class="text-apple-muted text-xs">Mon – Sat: 10:00 AM – 8:00 PM</p>
-                        <p class="text-apple-muted text-xs">Sunday: By Appointment Only</p>
-                    </div>
-                </div>
-                <div class="contact-card reveal reveal-d5">
-                    <div class="contact-icon"><i class="fa-brands fa-instagram text-sm"></i></div>
-                    <div>
-                        <p class="font-semibold text-apple-text text-sm mb-1">Instagram</p>
-                        <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank" rel="noopener noreferrer" class="text-apple-muted text-xs hover:text-apple-gold transition-colors">@dragontattooshaliyal</a>
-                        <p class="text-apple-muted text-xs mt-0.5">Follow us for latest work & updates</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- map + quick info -->
-            <div class="reveal reveal-d1">
-                <div class="mb-4">
-                    <span class="pill-tag">Find Us</span>
-                </div>
-                <div class="map-card mb-6">
-                    <div class="w-20 h-20 rounded-full bg-apple-gold/10 flex items-center justify-center border border-apple-gold/20 mb-2">
-                        <i class="fa-solid fa-map-location-dot text-apple-gold text-3xl"></i>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-apple-text text-lg font-semibold mb-1">123 Ink Street, Bengaluru</p>
-                        <p class="text-apple-muted/60 text-xs tracking-widest uppercase">Premium Art District</p>
-                    </div>
-                    <a href="https://maps.google.com/?q=123+Ink+Street+Bengaluru+Karnataka+560001" target="_blank" rel="noopener noreferrer"
-                        class="mt-4 px-8 py-3 bg-apple-gold text-black text-[0.7rem] font-bold uppercase tracking-widest rounded-full hover:bg-apple-goldLight transition-all shadow-[0_10px_20px_rgba(200,160,64,0.2)] hover:-translate-y-1">
-                        <i class="fa-solid fa-location-arrow mr-2"></i>Navigate Now
-                    </a>
-                </div>
-                <div class="flex items-center gap-5 p-6 rounded-2xl"
-                    style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
-                    <div
-                        class="w-12 h-12 rounded-xl bg-apple-gold/10 border border-apple-gold/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-car text-apple-gold text-lg"></i>
+                <div class="flex items-start gap-6">
+                    <div class="w-12 h-12 rounded-xl bg-apple-gold/5 border border-apple-border/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-clock"></i>
                     </div>
                     <div>
-                        <p class="text-apple-text text-sm font-bold mb-1">Elite Accessibility</p>
-                        <p class="text-apple-muted text-xs leading-relaxed opacity-80">5 min walk from MG Road Metro Station. Dedicated valet parking available for our guests.</p>
+                        <h3 class="font-display text-apple-text text-lg mb-1">Studio Hours</h3>
+                        <p class="text-apple-muted text-sm font-light">Tue - Sun: 11:00 AM - 08:00 PM<br/>Monday: Closed for Art</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- ENQUIRY FORM -->
-    <section class="py-24 px-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <div class="mb-4">
-                    <span class="pill-tag">Drop a Message</span>
-                </div>
-                <h2 class="font-display text-4xl md:text-5xl text-apple-text tracking-tight mb-4">Send an Enquiry</h2>
-                <p class="text-apple-muted text-base max-w-lg mx-auto opacity-80">Not sure yet? Send us your idea and we'll get back to you with a custom consultation!</p>
-            </div>
-
-            <form action="/contact" method="POST" class="p-10 rounded-[2.5rem] reveal reveal-d1"
-                style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(20px); box-shadow: 0 40px 100px rgba(0,0,0,0.4);">
-                <div class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="fullName" class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Full
-                                Name</label>
-                            <input type="text" id="fullName" name="fullName" placeholder="Your name" required>
+        <!-- Form Column -->
+        <div class="relative">
+            <div class="absolute inset-0 bg-apple-gold/5 rounded-3xl blur-3xl opacity-20"></div>
+            <div class="relative bg-apple-card/40 backdrop-blur-xl border border-apple-border/10 rounded-3xl p-8 md:p-10 shadow-2xl">
+                <h2 class="font-display text-2xl text-apple-text mb-8">Inquiry Form</h2>
+                <form id="enquiryForm" class="space-y-6" onsubmit="sendEnquiry(event)">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" class="contact-input" placeholder="e.g. Alex Chen" required>
                         </div>
-                        <div>
-                            <label for="phone" class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Phone
-                                Number</label>
-                            <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                        <div class="space-y-2">
+                            <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Email Address</label>
+                            <input type="email" id="email" name="email" class="contact-input" placeholder="alex@example.com" required>
                         </div>
                     </div>
-                    <div>
-                        <label for="email" class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Email
-                            Address</label>
-                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Phone Number (5-9 start)</label>
+                            <input type="tel" id="phone" name="phone" class="contact-input" placeholder="10-digit number" maxlength="10" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Inquiry Type</label>
+                            <select id="inquiry_type" name="inquiry_type" class="contact-input appearance-none">
+                                <option value="tattoo">Tattoo Specialist</option>
+                                <option value="sketch">Sketch Specialist</option>
+                                <option value="removal">Tattoo Removal Specialist</option>
+                                <option value="general">General Message</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label for="style" class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Tattoo
-                            Style</label>
-                        <select id="style" name="style">
-                            <option value="">Select a style...</option>
-                            <option>Blackwork</option>
-                            <option>Fine Line</option>
-                            <option>Realism</option>
-                            <option>Traditional</option>
-                            <option>Watercolour</option>
-                            <option>Not Sure Yet</option>
+                    <div class="space-y-2">
+                        <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Artist Preference</label>
+                        <select id="artist_id" name="artist_id" class="contact-input appearance-none">
+                            <option value="">Select Artist (Optional - Inquiry will show for all artists if empty)</option>
+                            {% for artist in artists %}
+                            <option value="{{ artist.artist_id }}">{{ artist.artist_name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
-                    <div>
-                        <label for="message" class="text-apple-muted text-xs font-semibold uppercase tracking-widest block mb-2">Your
-                            Message</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your tattoo idea..." required></textarea>
+                    <div class="space-y-2">
+                        <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Your Message</label>
+                        <textarea id="message" name="message" class="contact-input min-h-[120px] py-4" placeholder="Describe your vision, size, and placement..." required></textarea>
                     </div>
-                    <button type="submit"
-                        class="w-full py-5 bg-gradient-to-br from-apple-gold via-apple-goldLight to-apple-gold text-black font-bold text-[0.8rem] uppercase tracking-[0.25em] rounded-2xl hover:shadow-[0_20px_40px_rgba(200,160,64,0.3)] transition-all hover:-translate-y-1.5 active:scale-[0.98] relative overflow-hidden group">
-                        <span class="relative z-10 flex items-center justify-center">
-                            <i class="fa-solid fa-paper-plane mr-3 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500 ease-out"></i>
-                            Send My Enquiry
-                        </span>
-                        <div class="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
+                    <button type="submit" class="w-full py-5 bg-apple-gold text-black rounded-xl font-bold tracking-tight hover:bg-apple-goldLt transition-all shadow-xl">
+                        Send Message
                     </button>
-                    <p class="text-center text-xs text-apple-muted">
-                        Or simply
-                        <a href="/register" class="text-apple-gold hover:underline">create an account</a>
-                        to book directly online!
-                    </p>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <!-- FAQ SECTION -->
-    <section class="py-20 px-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="text-center mb-16 reveal">
-                <div class="mb-4">
-                    <span class="pill-tag">Got Questions?</span>
-                </div>
-                <h2 class="font-display text-4xl md:text-5xl text-apple-text tracking-tight">Frequently Asked</h2>
-            </div>
-            <div class="reveal reveal-d1">
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)" type="button">
-                        <span class="faq-q">Do I need to book an appointment in advance?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Yes, we strongly recommend booking ahead to secure your preferred artist and time slot. Walk-ins
-                            are welcome but subject to availability. You can book online through your account.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)" type="button">
-                        <span class="faq-q">How long does a tattoo session take?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Session duration depends on the size and detail of the design. Small tattoos may take 1–2 hours,
-                            while large sleeves or detailed realism can span multiple sessions of 4–6 hours each.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)" type="button">
-                        <span class="faq-q">What should I do before my appointment?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>Stay hydrated, eat a proper meal beforehand, wear comfortable clothing that allows easy access to
-                            the tattoo area. Avoid alcohol for 24 hours before your session.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-btn" onclick="toggleFaq(this)" type="button">
-                        <span class="faq-q">How do I take care of my tattoo after the session?</span>
-                        <i class="fa-solid fa-plus faq-icon"></i>
-                    </button>
-                    <div class="faq-body">
-                        <p>We provide full aftercare instructions after every session. In general: keep it clean, apply
-                            provided ointment, avoid sun and swimming for 2–3 weeks and do not pick at the healing skin.</p>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
-    </section>
 
-    <footer class="py-12 px-6 border-t border-white/5 bg-[#050505]">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="flex items-center gap-4">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-8 h-8 rounded-full object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
-                <span class="font-display text-apple-muted text-[0.65rem] tracking-[0.3em] uppercase font-bold">Dragon Tattoos Studio</span>
-            </div>
-            <div class="flex flex-wrap justify-center gap-8 md:gap-12">
-                <a href="/" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Home</a>
-                <a href="/about" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">About</a>
-                <a href="/services" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Services</a>
-                <a href="/gallery" class="footer-link uppercase text-[0.6rem] tracking-[0.2em] font-bold">Gallery</a>
-                <a href="/contact" class="footer-link active uppercase text-[0.6rem] tracking-[0.2em] font-bold text-apple-gold">Contact</a>
-            </div>
-            <p class="text-apple-muted/30 text-[0.6rem] uppercase tracking-widest font-medium">© 2025 Dragon Tattoos Studio</p>
-        </div>
-    </footer>
+    </div>
+</section>
+{% endblock %}
 
-    <script>
-        // Intersection Observer for Reveal Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Spotlight Hover Effect
-        document.querySelectorAll('.contact-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
-
-        function sendEnquiry(event) {
-            event.preventDefault();
-            const btn = event.currentTarget;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Sending...';
-            btn.disabled = true;
-            
-            setTimeout(() => {
-                alert('Thank you for your enquiry! We will contact you within 24 hours.');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }, 1500);
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const btn = document.getElementById('burgerBtn');
-            const isOpen = menu.classList.toggle('open');
-            btn.classList.toggle('open');
-            btn.setAttribute('aria-expanded', isOpen);
-            menu.setAttribute('aria-hidden', !isOpen);
-            document.body.style.overflow = isOpen ? 'hidden' : '';
-        }
-
-        document.querySelectorAll('#mobileMenu a').forEach(a => {
-            a.addEventListener('click', toggleMobileMenu);
-        });
-
-        function toggleFaq(btn) {
-            const body = btn.nextElementSibling;
-            const icon = btn.querySelector('.faq-icon');
-            const isOpen = body.classList.contains('open');
-            
-            // Close other FAQs
-            document.querySelectorAll('.faq-body').forEach(b => {
-                if (b !== body) b.classList.remove('open');
-            });
-            document.querySelectorAll('.faq-icon').forEach(i => {
-                if (i !== icon) i.classList.remove('open');
-            });
-            
-            if (!isOpen) { 
-                body.classList.add('open'); 
-                icon.classList.add('open'); 
-            } else {
-                body.classList.remove('open');
-                icon.classList.remove('open');
-            }
-        }
-    </script>
-</body>
-
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing/contact.js') }}"></script>
+{% endblock %}

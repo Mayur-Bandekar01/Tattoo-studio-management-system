@@ -8,7 +8,7 @@ The system handles studio operations by dividing functionality across three dist
 *   **Artist:** Can log in, view/manage their assigned appointments, manage their specific tattoo gallery, and log inventory usage during tattoo sessions.
 *   **Owner/Admin:** Can oversee all operations, view statistics, manage all appointments, oversee global inventory, and view financial reports.
 
-The application serves server-rendered HTML pages using Jinja2 templates and maintains stateful sessions for authentication.
+The application serves server-rendered HTML pages using Jinja2 templates and maintains stateful sessions for authentication. It features a robust, inclusive authentication system supporting multiple email providers and alphanumeric Artist IDs, integrated with a high-contrast "Vibrant Obsidian" design system.
 
 ---
 
@@ -17,10 +17,10 @@ These folders compose the core architecture of the Flask application and are str
 
 | Folder | Purpose |
 | ------ | ------- |
-| `routes/` | **Controllers / Blueprints:** Contains the Python files that define the URL endpoints and business logic for each user role (`artist.py`, `customer.py`, `owner.py`, `auth.py`). This prevents `app.py` from becoming too large. |
-| `templates/` | **Views (HTML):** Contains all the Jinja2 HTML templates. Flask heavily relies on this folder to render the web pages sent to the user's browser. |
-| `static/` | **Assets & Uploads:** Contains all CSS stylesheets, JavaScript files, static images (like logos), and user uploads (e.g., gallery images, reference images for appointments). Essential for styling and media. |
-| `utils/` | **Shared Helpers:** Contains reusable utility functions, such as email sending logic (`email_service.py`) and authorization decorators (`auth_decorators.py`). |
+| `backend/routes/` | **Controllers / Blueprints:** Contains the Python files that define the URL endpoints and business logic for each user role (`artist.py`, `customer.py`, `owner.py`, `auth.py`). |
+| `frontend/templates/` | **Views (HTML):** Contains all the Jinja2 HTML templates. Flask heavily relies on this folder to render the web pages. |
+| `frontend/static/` | **Assets & Uploads:** Contains all CSS stylesheets, JavaScript files, static images, and user uploads (e.g., gallery images). |
+| `backend/utils/` | **Shared Helpers:** Contains reusable utility functions, such as email sending logic and database maintenance scripts. |
 | `.agent/` | **AI & Workflows:** (Specific to this repository) Contains the skills, agent configurations, and testing scripts used by the AI coding assistant. Required for AI tooling but not for the Flask app itself. |
 | `docs/` | **Documentation:** Stores planning documents (like this file) and markdown guides. |
 

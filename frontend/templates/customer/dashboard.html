@@ -5,7 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dragon Tattoos | Customer Dashboard</title>
+    {% set title = "Customer Dashboard | Dragon Tattoos" %}
+    {% set description = "Manage your sessions and view your artistic journey." %}
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="{{ description or 'Dragon Tattoos Studio - Premium custom tattoos, realistic portraits, and professional laser removal in Bengaluru.' }}">
+    <meta name="keywords" content="tattoo studio, custom tattoos, dragon tattoos, laser removal, blackwork, fine line tattoos, Bengaluru tattoos">
+    <meta name="author" content="Dragon Tattoos Studio">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="og:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{{ title or 'Dragon Tattoos | Premium Studio' }}">
+    <meta property="twitter:description" content="{{ description or 'Where Art Meets Skin. Experience uncompromising quality and precision ink at Dragon Tattoos.' }}">
+    <meta property="twitter:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    <link rel="canonical" href="{{ request.url }}">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Unified Design System -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/customer/dashboard.css') }}?v=4.4.0">
@@ -31,7 +56,7 @@
     ══════════════════════════════════════ -->
     <header class="mobile-nav-header">
         <div class="mobile-logo">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo">
             <span>DRAGON TATTOOS</span>
         </div>
         <div class="flex items-center gap-3">
@@ -53,7 +78,7 @@
     <aside id="mainSidebar" class="studio-sidebar">
 
         <div class="sidebar-brand">
-            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo" loading="lazy" decoding="async">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" loading="lazy" decoding="async">
             <div class="sidebar-brand-text">
                 <span class="sidebar-brand-name">Dragon Tattoos</span>
                 <span class="sidebar-brand-sub">Customer Portal</span>
@@ -123,19 +148,14 @@
             </div>
         </header>
 
-        <!-- Flash messages -->
-        <div id="flashContainer" style="padding: 0 var(--dt-spacing-md);">
+        <div id="flashContainer">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
                 <div class="flash-msg {{ category }}" onclick="this.remove()" role="alert">
-                    <i class="fas
-                        {% if category == 'success' %}fa-check-circle
-                        {% elif category == 'error' %}fa-exclamation-circle
-                        {% else %}fa-info-circle{% endif %}">
-                    </i>
-                    <span>{{ message }}</span>
-                    <i class="fas fa-times" style="margin-left:auto; font-size:0.7rem; opacity:0.5;"></i>
+                    <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
+                    <span class="flex-1">{{ message }}</span>
+                    <i class="fas fa-times"></i>
                 </div>
                 {% endfor %}
             {% endif %}

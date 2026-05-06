@@ -299,19 +299,23 @@
     };
 
     // Success Modal
-    window.closeSuccessModal = function() {
-        const modal = document.getElementById('bookingSuccessModal');
-        if (modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-    };
-
     window.showSuccessModal = function() {
         const modal = document.getElementById('bookingSuccessModal');
         if (modal) {
             modal.style.display = 'flex';
-            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+            document.body.style.overflow = 'hidden';
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => { modal.classList.add('lb-visible'); });
+            });
+        }
+    };
+
+    window.closeSuccessModal = function() {
+        const modal = document.getElementById('bookingSuccessModal');
+        if (modal) {
+            modal.classList.remove('lb-visible');
+            document.body.style.overflow = '';
+            setTimeout(() => { modal.style.display = 'none'; }, 400);
         }
     };
 

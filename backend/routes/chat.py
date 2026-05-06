@@ -5,6 +5,36 @@ from ..db import get_db
 chat_bp = Blueprint("chat", __name__)
 
 
+def _conversation_allowed(cursor, role, user_id, other_role, other_id, appointment_id=None):
+    if role == other_role or role not in ("customer", "artist"):
+        return False
+
+    if role == "customer":
+        customer_id = str(user_id)
+        artist_id = str(other_id)
+    else:
+        customer_id = str(other_id)
+        artist_id = str(user_id)
+
+    params = [customer_id, artist_id]
+    appointment_filter = ""
+    if appointment_id is not None:
+        if not str(appointment_id).isdigit():
+            return False
+        appointment_filter = " AND appointment_id = %s"
+        params.append(appointment_id)
+
+    cursor.execute(
+        f"""
+        SELECT appointment_id FROM appointment
+        WHERE customer_id = %s AND artist_id = %s{appointment_filter}
+        LIMIT 1
+        """,
+        tuple(params),
+    )
+    return cursor.fetchone() is not None
+
+
 # ── GET messages for a thread ────────────────────────────────
 @chat_bp.route("/chat/messages")
 def chat_get_messages():
@@ -21,6 +51,9 @@ def chat_get_messages():
 
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
+        if not _conversation_allowed(cursor, role, user_id, other_role, other_id):
+            return jsonify({"error": "Forbidden"}), 403
+
         cursor.execute(
             """
             SELECT * FROM messages
@@ -79,7 +112,12 @@ def chat_send():
         return jsonify({"error": "Message too long"}), 400
 
     conn = get_db()
-    with conn.cursor() as cursor:
+    with conn.cursor(dictionary=True) as cursor:
+        if not _conversation_allowed(
+            cursor, role, session["user_id"], other_role, other_id, appt_id
+        ):
+            return jsonify({"error": "Forbidden"}), 403
+
         cursor.execute(
             """
             INSERT INTO messages
@@ -119,6 +157,8 @@ def chat_unread_threads():
     if role not in ("customer", "artist"):
         return jsonify({"threads": []})
 
+    user_id = str(session["user_id"])
+    other_role = "artist" if role == "customer" else "customer"
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
@@ -131,6 +171,11 @@ def chat_unread_threads():
             (str(session["user_id"]), role),
         )
         rows = cursor.fetchall()
+        rows = [
+            row
+            for row in rows
+            if _conversation_allowed(cursor, role, user_id, other_role, row["sender_id"])
+        ]
 
     return jsonify(
         {
@@ -207,6 +252,11 @@ def chat_threads():
              user_id, user_id, user_id, role),
         )
         rows = cursor.fetchall()
+        rows = [
+            row
+            for row in rows
+            if _conversation_allowed(cursor, role, user_id, other_role, row["other_id"])
+        ]
 
     threads = [
         {
@@ -266,7 +316,10 @@ def chat_delete_thread():
 
     user_id = str(session["user_id"])
     conn = get_db()
-    with conn.cursor() as cursor:
+    with conn.cursor(dictionary=True) as cursor:
+        if not _conversation_allowed(cursor, role, user_id, other_role, other_id):
+            return jsonify({"error": "Forbidden"}), 403
+
         # Delete ONLY messages sent by the current user in this thread
         cursor.execute(
             """

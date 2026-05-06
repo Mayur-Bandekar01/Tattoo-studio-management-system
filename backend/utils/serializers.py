@@ -18,4 +18,10 @@ def sanitize_for_json(data):
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
     if isinstance(data, (date, datetime)):
         return data.isoformat()
+    try:
+        from decimal import Decimal
+        if isinstance(data, Decimal):
+            return float(data)
+    except ImportError:
+        pass
     return data

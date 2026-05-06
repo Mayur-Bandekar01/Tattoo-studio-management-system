@@ -11,5 +11,11 @@
 - **Summary**: Expanded system capabilities for artists and owners, including booking management improvements and analytics dashboard expansion.
 
 ## [v3.0] Technical Debt & System Hardening
-- **Status**: IN_PROGRESS
-- **Goal**: Reduce coupling between business logic and database layers while hardening the application.
+- **Status**: COMPLETED
+- **Completed At**: 2026-05-04
+- **Summary**: Booking UI refinement and logic hardening.
+
+## [v3.1] Authentication & Branding Refinement
+- **Status**: COMPLETED
+- **Completed At**: 2026-05-05
+- **Summary**: Implemented a unified, robust authentication flow supporting alphanumeric Artist IDs and inclusive email validation. Standardized landing page branding and expanded the gallery system.

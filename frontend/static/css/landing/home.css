@@ -1,15 +1,11 @@
-/* ── Home Page Unified Architecture ── */
-@import url('font-awesome-embedded.css');
-@import url('fonts-embedded.css');
-@import url('design-system.css');
-@import url('navbar.css');
 
-*,
-*::before,
-*::after {
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
+/* ── HOME SPECIFIC OVERRIDES ── */
+body {
+    background-color: var(--studio-bg);
 }
+
+
+
 
 /* ── BG TEXTURES ──────────────────────────────────────── */
 .bg-grid {
@@ -36,6 +32,42 @@
     filter: blur(80px);
     z-index: 0;
     pointer-events: none;
+}
+
+/* ── EMBERS ── */
+.ember {
+    position: absolute;
+    border-radius: 50%;
+    background: #c8a040;
+    opacity: 0;
+    animation: emberRise linear infinite;
+    filter: blur(0.5px);
+    box-shadow: 0 0 4px #c8a040;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes emberRise {
+    0% {
+        bottom: -5%;
+        opacity: 0;
+        transform: translateX(0);
+    }
+
+    8% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.25;
+        transform: translateX(22px);
+    }
+
+    100% {
+        bottom: 106%;
+        opacity: 0;
+        transform: translateX(-12px);
+    }
 }
 
 /* ── HERO ANIMATIONS ── */
@@ -72,6 +104,7 @@
         opacity: 0;
         transform: scale(1.04) translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -83,6 +116,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -112,22 +146,22 @@
 
 /* ── BENTO CARDS ── */
 .bento-card {
-    background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.85) 100%);
+    background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 15px 45px -12px rgba(0, 0, 0, 0.9);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     position: relative;
     overflow: hidden;
 }
 
 .bento-card:hover {
-    border-color: rgba(255, 255, 255, 0.1);
-    border-top-color: rgba(255, 255, 255, 0.24);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8);
+    border-color: rgba(200, 160, 64, 0.3);
+    border-top-color: rgba(200, 160, 64, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(200, 160, 64, 0.05);
 }
 
 .bento-card::before {
@@ -137,8 +171,31 @@
     left: 0;
     right: 0;
     height: 100%;
-    background: radial-gradient(800px circle at top center, rgba(255, 255, 255, 0.025), transparent 45%);
+    background: radial-gradient(800px circle at top center, rgba(200, 160, 64, 0.03), transparent 60%);
     pointer-events: none;
+}
+
+/* ── STAT CARDS ── */
+.stat-card {
+    background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    padding: 2.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.stat-card:hover {
+    border-color: rgba(200, 160, 64, 0.3);
+    border-top-color: rgba(200, 160, 64, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(200, 160, 64, 0.05);
 }
 
 /* ── BUTTONS ── */
@@ -225,6 +282,32 @@
     transition: all 0.4s ease;
 }
 
+/* ── STATS PILL ── */
+.stats-glass {
+    background: rgba(18, 18, 22, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(200, 160, 64, 0.15);
+    border-radius: 24px;
+    padding: 1.25rem 2.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    animation: statsFloat 4s ease-in-out infinite;
+}
+
+@keyframes statsFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.stats-icon {
+    background: linear-gradient(135deg, #e0ba5a, #c8a040);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 0.9rem;
+}
+
 /* ── SCROLL REVEAL ── */
 .reveal {
     opacity: 0;
@@ -237,18 +320,33 @@
     transform: translateY(0);
 }
 
-.reveal-d1 { transition-delay: 0.1s; }
-.reveal-d2 { transition-delay: 0.2s; }
-.reveal-d3 { transition-delay: 0.3s; }
-.reveal-d4 { transition-delay: 0.4s; }
+.reveal-d1 {
+    transition-delay: 0.1s;
+}
+
+.reveal-d2 {
+    transition-delay: 0.2s;
+}
+
+.reveal-d3 {
+    transition-delay: 0.3s;
+}
+
+.reveal-d4 {
+    transition-delay: 0.4s;
+}
 
 /* ── TESTIMONIAL ── */
 .testi-card {
-    background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.85) 100%);
+    background: linear-gradient(180deg, rgba(18, 18, 22, 0.85) 0%, rgba(10, 10, 12, 0.95) 100%);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
-    padding: 1.75rem;
+    padding: 2rem;
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -265,11 +363,12 @@
 }
 
 .testi-quote {
-    color: #8b8b93;
-    font-size: 0.85rem;
-    line-height: 1.7;
+    color: #a1a1aa;
+    font-size: 0.95rem;
+    line-height: 1.6;
     font-style: italic;
-    margin: 0.75rem 0;
+    margin: 1rem 0 1.5rem 0;
+    flex-grow: 1;
 }
 
 .testi-name {
@@ -301,15 +400,34 @@ footer {
 }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #030303; }
-::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #c8a040; }
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #030303;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a2a30;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #c8a040;
+}
 
 /* ── BOUNCE ARROW ── */
 @keyframes arrowBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(6px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(6px);
+    }
 }
 
 .arrow-bounce {
@@ -318,11 +436,20 @@ footer {
 
 /* ── PULSING RING ── */
 @keyframes outerRing {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.06); opacity: 1; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.06);
+        opacity: 1;
+    }
 }
 
-/* ── LIGHT THEME ── */
+/* ── LIGHT THEME (White + Orange Energetic) ── */
 html.light-mode body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
@@ -334,25 +461,16 @@ html.light-mode body {
     --muted: #6b7280;
     --accent: #f97316;
     --shadow: rgba(249, 115, 22, 0.1);
+
     background: var(--bg) !important;
     color: var(--text) !important;
 }
 
-html.light-mode .navbar {
-    background: rgba(255, 255, 255, 0.88) !important;
-    border-bottom: 1px solid var(--border) !important;
+
+/* ── LIGHT MODE HOME OVERRIDES ── */
+html.light-mode section {
+    background: var(--bg) !important;
 }
-
-html.light-mode .nav-link { color: var(--muted) !important; }
-html.light-mode .nav-link:hover,
-html.light-mode .nav-link.active { color: var(--accent) !important; }
-
-html.light-mode .mobile-menu { background: rgba(255, 255, 255, 0.98) !important; }
-html.light-mode .mobile-menu a { color: var(--muted) !important; }
-html.light-mode .mobile-menu a:hover,
-html.light-mode .mobile-menu a.active { color: var(--accent) !important; }
-
-html.light-mode section { background: var(--bg) !important; }
 
 html.light-mode .bento-card,
 html.light-mode .stat-card,
@@ -368,26 +486,11 @@ html.light-mode .bento-card:hover {
 }
 
 html.light-mode .testi-quote,
-html.light-mode .testi-detail,
-html.light-mode .footer-link { color: var(--muted) !important; }
-
-html.light-mode .testi-name,
-html.light-mode .footer-brand { color: var(--text) !important; }
-
-html.light-mode footer {
-    background: #fffaf5 !important;
-    border-top: 1px solid var(--border) !important;
+html.light-mode .testi-detail {
+    color: var(--muted) !important;
 }
 
-html.light-mode .pill-tag {
-    background: rgba(249, 115, 22, 0.1) !important;
-    border-color: var(--border) !important;
-    color: var(--accent) !important;
-}
-
-html.light-mode .btn-outline {
-    background: rgba(249, 115, 22, 0.05) !important;
-    border-color: var(--border) !important;
+html.light-mode .testi-name {
     color: var(--text) !important;
 }
 
@@ -396,10 +499,38 @@ html.light-mode .bg-grid {
         linear-gradient(90deg, rgba(249, 115, 22, 0.05) 1px, transparent 1px) !important;
 }
 
-html.light-mode .burger span { background: var(--muted) !important; }
-html.light-mode ::-webkit-scrollbar-track { background: var(--bg) !important; }
-html.light-mode ::-webkit-scrollbar-thumb { background: var(--accent) !important; }
+/* Fix inline-background testimonial avatars */
+html.light-mode div[style*='background:linear-gradient(135deg,#1e1e22'] {
+    background: rgba(249, 115, 22, 0.08) !important;
+    border-color: rgba(249, 115, 22, 0.3) !important;
+}
 
-*, *::before, *::after {
+/* ── STATS PILL LIGHT MODE ── */
+html.light-mode .stats-glass {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(249, 115, 22, 0.2) !important;
+    border-top-color: rgba(249, 115, 22, 0.4) !important;
+    box-shadow: 0 15px 35px rgba(249, 115, 22, 0.15) !important;
+}
+
+html.light-mode .stats-glass .text-apple-gold {
+    color: #f97316 !important;
+}
+
+html.light-mode .stats-glass .stats-icon {
+    background: linear-gradient(135deg, #fb923c, #f97316) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+html.light-mode .stats-glass .bg-white\/5 {
+    background-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+*,
+*::before,
+*::after {
     transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
 }
+

@@ -41,8 +41,6 @@ def artist_dashboard():
             (artist_id,),
         )
         appointments = cursor.fetchall()
-        
-        # Standardize date/time objects for JSON-safe template rendering
         appointments = sanitize_for_json(appointments)
 
         # CORE FEATURE: Only fetch inventory items belonging to THIS artist
@@ -51,15 +49,18 @@ def artist_dashboard():
             (artist_id,),
         )
         inventory = cursor.fetchall()
+        inventory = sanitize_for_json(inventory)
 
         cursor.execute(
             "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
             (artist_id,),
         )
         gallery = cursor.fetchall()
+        gallery = sanitize_for_json(gallery)
 
         cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
         artist_profile = cursor.fetchone()
+        artist_profile = sanitize_for_json(artist_profile)
 
         # FETCH: Recent consumption logs for this artist
         cursor.execute(
@@ -74,6 +75,15 @@ def artist_dashboard():
         )
         usage_logs = cursor.fetchall()
         usage_logs = sanitize_for_json(usage_logs)
+
+        # FETCH: Relevant Public Inquiries (Assigned to THIS artist)
+        cursor.execute("""
+            SELECT * FROM inquiry 
+            WHERE artist_id = %s
+            ORDER BY submitted_at DESC
+        """, (artist_id,))
+        inquiries = cursor.fetchall()
+        inquiries = sanitize_for_json(inquiries)
 
     # Stats
     total_count = len(appointments)
@@ -95,6 +105,7 @@ def artist_dashboard():
         artist_profile=artist_profile,
         appointments=appointments,
         inventory=inventory,
+        inquiries=inquiries,
         usage_logs=usage_logs,
         my_gallery=gallery,
         total_count=total_count,
@@ -417,4 +428,41 @@ def artist_gallery_delete(gallery_id):
         cursor.execute("DELETE FROM gallery WHERE gallery_id = %s", (gallery_id,))
         conn.commit()
     flash("Image removed from gallery.", "success")
+    return redirect("/artist/dashboard")
+
+
+@artist_bp.route("/artist/change-password", methods=["POST"])
+@role_required("artist")
+def artist_change_password():
+    current = request.form.get("current_password", "").strip()
+    new_pass = request.form.get("new_password", "").strip()
+    confirm = request.form.get("confirm_password", "").strip()
+
+    if not all([current, new_pass, confirm]):
+        flash("Please fill in all password fields!", "error")
+        return redirect("/artist/dashboard")
+    if new_pass != confirm:
+        flash("New passwords do not match!", "error")
+        return redirect("/artist/dashboard")
+    if len(new_pass) < 8:
+        flash("New password must be at least 8 characters!", "error")
+        return redirect("/artist/dashboard")
+
+    conn = get_db()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
+            (session["user_id"], current),
+        )
+        if not cursor.fetchone():
+            flash("Current password is incorrect!", "error")
+            return redirect("/artist/dashboard")
+
+        cursor.execute(
+            "UPDATE artist SET password = %s WHERE artist_id = %s",
+            (new_pass, session["user_id"]),
+        )
+        conn.commit()
+
+    flash("Password updated successfully!", "success")
     return redirect("/artist/dashboard")

@@ -1,1103 +1,278 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Gallery</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Roboto', 'sans-serif'], display: ['"Cinzel Decorative"', 'cursive'] },
-                    colors: {
-                        apple: {
-                            bg: 'var(--bg)', text: 'var(--text)', muted: 'var(--muted)',
-                            card: 'var(--card-bg)', border: 'var(--border)',
-                            gold: 'var(--accent, #c8a040)', goldLight: '#e0b84a'
-                        }
-                    },
-                    animation: {
-                        'shimmer': 'shimmer 2s linear infinite',
-                    },
-                    keyframes: {
-                        shimmer: {
-                            '0%': { backgroundPosition: '-200% 0' },
-                            '100%': { backgroundPosition: '200% 0' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        * {
-            -webkit-font-smoothing: antialiased;
-        }
-
-        :root {
-            --bg-primary: #000000;
-            --bg-primary-rgb: 0, 0, 0;
-            --bg-secondary: #050505;
-            --text-primary: #f5f5f7;
-            --text-muted: #86868b;
-            --accent-color: #c8a040;
-            --accent-rgb: 200, 160, 64;
-            --accent-light: #e0b84a;
-            --card-bg: #141414;
-            --border-subtle: rgba(255, 255, 255, 0.06);
-        }
-
-        html.light-mode {
-            --bg-primary: #ffffff;
-            --bg-primary-rgb: 255, 255, 255;
-            --bg-secondary: #f8fafc;
-            --text-primary: #0f172a;
-            --text-muted: #64748b;
-            --accent-color: #f97316;
-            --accent-rgb: 249, 115, 22;
-            --accent-light: #fb923c;
-            --card-bg: #ffffff;
-            --border-subtle: #e2e8f0;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 1.5rem;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            background: rgba(var(--bg-primary-rgb, 0, 0, 0), 0.72);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            transform: translateY(-100%);
-            animation: navSlideDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-        }
-
-        @keyframes navSlideDown {
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scroll-line {
-            0% { transform: translateY(-100%); }
-            50% { transform: translateY(0); }
-            100% { transform: translateY(100%); }
-        }
-
-        .animate-scroll-line {
-            animation: scroll-line 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-        }
-
-        .nav-link {
-            color: #86868b;
-            font-size: 0.78rem;
-            font-weight: 400;
-            letter-spacing: 0.03em;
-            transition: color 0.25s;
-            text-decoration: none;
-            position: relative;
-            padding-bottom: 2px;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            right: 50%;
-            height: 1px;
-            background: #c8a040;
-            transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1), right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .nav-link:hover {
-            color: var(--accent-color);
-        }
-
-        .nav-link:hover::after {
-            left: 0;
-            right: 0;
-        }
-
-        .nav-link.active {
-            color: var(--accent-color);
-        }
-
-        .nav-link.active::after {
-            left: 0;
-            right: 0;
-            background: var(--accent-color);
-            height: 2px;
-        }
-
-        /* BURGER */
-        .burger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 6px;
-        }
-
-        .burger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: #86868b;
-            border-radius: 2px;
-            transition: all 0.3s;
-            margin: 5px 0;
-        }
-
-        .burger.open span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .burger.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.open span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-        @media (max-width: 768px) {
-            .burger {
-                display: block;
-            }
-        }
-
-        /* MOBILE MENU */
-        .mobile-menu {
-            position: fixed;
-            inset: 0;
-            z-index: 99;
-            background: rgba(0, 0, 0, 0.97);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
-            transform: translateY(-100%);
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-            pointer-events: none;
-        }
-
-        .mobile-menu.open {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .mobile-menu a {
-            font-family: 'Cinzel', serif;
-            font-size: 1.75rem;
-            color: #86868b;
-            text-decoration: none;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: color 0.25s;
-        }
-
-        .mobile-menu a:hover,
-        .mobile-menu a.active {
-            color: #c8a040;
-        }
-
-        .mobile-menu-divider {
-            width: 40px;
-            height: 1px;
-            background: var(--accent-color);
-            opacity: 0.3;
-        }
-
-        /* HERO */
-        .page-hero {
-            padding: 9rem 1.5rem 5rem;
-            position: relative;
-            overflow: hidden;
-            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200, 160, 64, 0.06) 0%, transparent 60%), #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .page-hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-            opacity: 0.2;
-        }
-
-        .page-hero-grid {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, #f5f5f7, #c8a040, #f5f5f7);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 5s linear infinite;
-        }
-
-        .pill-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f5f5f7;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .pill-tag-gold {
-            background: rgba(200, 160, 64, 0.08);
-            border-color: rgba(200, 160, 64, 0.25);
-            color: #c8a040;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        @keyframes scrollLine {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        .animate-scroll-line {
-            animation: scrollLine 2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-        }
-
-        .filter-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #86868b;
-            padding: 0.6rem 1.5rem;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            letter-spacing: 0.05em;
-        }
-
-        .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(200, 160, 64, 0.3);
-            color: #f5f5f7;
-            transform: translateY(-2px);
-        }
-
-        .filter-btn.active {
-            background: #c8a040;
-            border-color: #c8a040;
-            color: #000;
-            box-shadow: 0 8px 20px rgba(200, 160, 64, 0.3);
-            font-weight: 600;
-        }
-
-        .stats-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4rem;
-            padding: 2.5rem 3rem;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 32px;
-            margin-bottom: 4rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-item {
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-badge {
-            font-size: 0.6rem;
-            padding: 3px 10px;
-            border-radius: 6px;
-            background: rgba(200, 160, 64, 0.1);
-            color: #c8a040;
-            border: 1px solid rgba(200, 160, 64, 0.2);
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-
-        /* PREMIUM FRAMING */
-        .gallery-item {
-            background: linear-gradient(180deg, rgba(20, 20, 24, 0.8) 0%, rgba(10, 10, 12, 0.95) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
-            border-radius: 24px;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-            cursor: pointer;
-            position: relative;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            perspective: 1000px;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-15px) rotateX(2deg) rotateY(-2deg);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(200, 160, 64, 0.08);
-            border-color: rgba(200, 160, 64, 0.4);
-            border-top-color: rgba(200, 160, 64, 0.6);
-        }
-
-        .gallery-item:hover .gallery-img {
-            transform: scale(1.15) rotate(1deg);
-        }
-
-        .gallery-img-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8) 100%);
-            opacity: 0.4;
-            transition: opacity 0.4s ease;
-        }
-
-        .gallery-item:hover .gallery-img-container::after {
-            opacity: 0.7;
-        }
-
-        .gallery-img-container {
-            overflow: hidden;
-            aspect-ratio: 4 / 5;
-            position: relative;
-            background: #0a0a0c;
-        }
-
-        .gallery-img-container::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transform: translateX(-100%);
-            animation: shimmer-load 2s infinite;
-            z-index: 1;
-        }
-
-        @keyframes shimmer-load {
-            100% { transform: translateX(100%); }
-        }
-
-        .gallery-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            filter: none !important;
-        }
-
-        .gallery-tag {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            z-index: 10;
-            padding: 0.35rem 0.75rem;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 99px;
-            color: #c8a040;
-            font-size: 0.6rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(-5px);
-            transition: all 0.4s ease;
-        }
-
-        .gallery-item:hover .gallery-tag {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .gallery-item:hover .gallery-img {
-            transform: scale(1.1);
-        }
-
-        /* REVEAL */
-        .reveal {
-            opacity: 0;
-            transform: translateY(28px);
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-d1 {
-            transition-delay: 0.05s;
-        }
-
-        .reveal-d2 {
-            transition-delay: 0.1s;
-        }
-
-        .reveal-d3 {
-            transition-delay: 0.15s;
-        }
-
-        .reveal-d4 {
-            transition-delay: 0.2s;
-        }
-
-        .gallery-placeholder {
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--card-bg) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 0.5rem;
-            height: 200px;
-        }
-
-        /* LIGHTBOX */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(25px);
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.35s;
-        }
-
-        .lightbox.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .lightbox-img {
-            max-height: 100%;
-            max-width: 95vw;
-            border-radius: 12px;
-            object-fit: contain;
-            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.9);
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .lightbox-close:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: rotate(90deg);
-        }
-
-        .lb-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #fff;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .lb-nav:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #c8a040;
-            color: #c8a040;
-        }
-
-        .lb-prev {
-            left: 2rem;
-        }
-
-        .lb-next {
-            right: 2rem;
-        }
-
-        .lightbox-info {
-            position: relative;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(20px);
-            padding: 2rem;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            width: 100%;
-        }
-
-        .lightbox-img-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            min-height: 0;
-        }
-
-        /* STATS BAR */
-        .stats-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3rem;
-            padding: 1.5rem;
-            background: rgba(200, 160, 64, 0.04);
-            border: 1px solid rgba(200, 160, 64, 0.1);
-            border-radius: 16px;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        /* FOOTER */
-        footer {
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        .footer-link {
-            color: #86868b;
-            font-size: 0.75rem;
-            transition: color 0.2s;
-            text-decoration: none;
-        }
-
-        .footer-link:hover {
-            color: #c8a040;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #3a3a3c;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #c8a040;
-        }
-
-        /* LIGHT MODE - Orange Energetic Theme (Unified with other pages) */
-        html.light-mode body {
-            background-color: var(--bg-primary) !important;
-            color: var(--text-primary) !important;
-        }
-
-        html.light-mode .text-gradient {
-            background: linear-gradient(to right, var(--text-primary), var(--accent-color), var(--text-primary));
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-
-        html.light-mode .filter-btn {
-            background: #f3f4f6;
-            border-color: #e5e7eb;
-            color: #4b5563;
-        }
-
-        html.light-mode .filter-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        html.light-mode .filter-btn.active {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #fff;
-            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
-        }
-
-        html.light-mode .gallery-item {
-            background: #fff;
-            border-color: #eee;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-        }
-
-        html.light-mode .gallery-item:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 30px 60px rgba(249, 115, 22, 0.15);
-        }
-
-        html.light-mode .stat-badge {
-            background: rgba(249, 115, 22, 0.08);
-            border-color: rgba(249, 115, 22, 0.2);
-            color: var(--accent-color);
-        }
-
-        html.light-mode .navbar {
-            background: rgba(255, 255, 255, 0.88) !important;
-            border-bottom: 1px solid var(--border-subtle) !important;
-        }
-
-        html.light-mode .nav-link {
-            color: var(--text-muted) !important;
-        }
-
-        html.light-mode .nav-link:hover,
-        html.light-mode .nav-link.active {
-            color: var(--accent-color) !important;
-        }
-
-        html.light-mode .mobile-menu {
-            background: rgba(255, 255, 255, 0.98) !important;
-        }
-
-        html.light-mode .mobile-menu a {
-            color: var(--text-muted) !important;
-        }
-
-        html.light-mode .mobile-menu a:hover,
-        html.light-mode .mobile-menu a.active {
-            color: var(--accent-color) !important;
-        }
-
-        html.light-mode .footer-link {
-            color: var(--text-muted) !important;
-        }
-
-        html.light-mode .footer-link:hover {
-            color: var(--accent-color) !important;
-        }
-
-        html.light-mode ::-webkit-scrollbar-track {
-            background: var(--bg-primary) !important;
-        }
-
-        html.light-mode ::-webkit-scrollbar-thumb {
-            background: var(--accent-color) !important;
-        }
-
-        *,
-        *::before,
-        *::after {
-            transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease;
-        }
-    </style>
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-</head>
-
-<body>
-
-    <!-- LIGHTBOX -->
-    <div class="lightbox" id="lightbox">
-        <button class="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
-
-        <button class="lb-nav lb-prev" onclick="changeLightbox(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-        <button class="lb-nav lb-next" onclick="changeLightbox(1)"><i class="fa-solid fa-chevron-right"></i></button>
-
-        <div class="lightbox-img-wrapper">
-            <img id="lbImg" class="lightbox-img" src="" alt="Gallery Image">
+{% extends "base.html" %}
+
+{% block title %}Dragon Tattoos | Portfolio Gallery{% endblock %}
+
+{% block meta_description %}View our curated gallery of masterpieces. From intricate blackwork to hyper-realistic portraits, witness the craftsmanship of Dragon Tattoos.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing/gallery.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="relative pt-36 pb-20 px-6 min-h-[60vh] flex flex-col items-center justify-center overflow-hidden">
+    <div class="bg-grid"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+        <span class="inline-block py-1.5 px-4 rounded-full bg-apple-gold/10 border border-apple-gold/20 text-apple-gold text-[0.65rem] font-semibold tracking-[0.2em] uppercase mb-8">Curated Portfolio</span>
+        <h1 class="font-display text-5xl md:text-8xl text-apple-text leading-[0.95] mb-8 tracking-tighter">
+            The <span class="text-apple-accent">Collection</span>
+        </h1>
+        <p class="max-w-xl mx-auto text-apple-muted text-lg mb-12 font-light leading-relaxed">
+            A testament to precision, creativity, and the permanent fusion of identity and art. Explore our latest works across all genres.
+        </p>
+    </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="sticky top-[72px] z-40 py-6 px-6 bg-apple-bg/80 backdrop-blur-xl border-y border-apple-border/5">
+    <div class="gallery-filters max-w-6xl mx-auto flex flex-wrap justify-center gap-4" role="tablist" aria-label="Gallery Categories">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-controls="gallery-grid">All Pieces</button>
+        <button class="filter-btn" data-filter="tattoo" role="tab" aria-selected="false" aria-controls="gallery-grid">Tattoo</button>
+        <button class="filter-btn" data-filter="sketch" role="tab" aria-selected="false" aria-controls="gallery-grid">Sketch</button>
+        <button class="filter-btn" data-filter="removal" role="tab" aria-selected="false" aria-controls="gallery-grid">Tattoo Removal</button>
+    </div>
+</div>
+
+<!-- Gallery Grid -->
+<div class="section-padding pt-0">
+    <div class="max-w-7xl mx-auto">
+        <div id="gallery-grid" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+            
+            <!-- Item 1: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo" 
+                 data-img="{{ url_for('static', filename='images/gallery_portrait.jpg') }}"
+                 data-title="The Warrior's Path" data-artist="Mayur Bandekar" 
+                 data-style="Hyper-Realism" data-spec="12 Hours • Arm Piece"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='images/gallery_portrait.jpg') }}" alt="Hyper-Realism Portrait" class="gallery-img" loading="lazy">
+                    <div class="gallery-tag">Realism</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">The Warrior's Path</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • 12 Hours</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo"
+                 data-img="{{ url_for('static', filename='images/gallery_sleeve.jpg') }}"
+                 data-title="Vortex Mandala" data-artist="Kiran S." 
+                 data-style="Blackwork" data-spec="42 Hours • Full Sleeve"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='images/gallery_sleeve.jpg') }}" alt="Geometric Blackwork Sleeve" class="gallery-img">
+                    <div class="gallery-tag">Blackwork</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Vortex Mandala</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • 42 Hours</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3: Sketch -->
+            <div class="gallery-item group reveal" data-category="sketch"
+                 data-img="{{ url_for('static', filename='images/gallery_sketch.jpg') }}"
+                 data-title="Cobra Flash" data-artist="Mayur Bandekar" 
+                 data-style="Illustrative" data-spec="Charcoal & Ink"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[1/1]">
+                    <img src="{{ url_for('static', filename='images/gallery_sketch.jpg') }}" alt="Artist Sketch" class="gallery-img">
+                    <div class="gallery-tag">Original Sketch</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Cobra Flash</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Charcoal & Ink</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4: Removal -->
+            <div class="gallery-item group reveal" data-category="removal"
+                 data-img="{{ url_for('static', filename='images/gallery_removal.jpg') }}"
+                 data-title="Clear Horizon" data-artist="Clinical Team" 
+                 data-style="Laser Therapy" data-spec="Session 4 of 6"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[1/1]">
+                    <img src="{{ url_for('static', filename='images/gallery_removal.jpg') }}" alt="Tattoo Removal" class="gallery-img">
+                    <div class="gallery-tag">Laser Removal</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Clear Horizon</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Removal • Session 4 of 6</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo"
+                 data-img="{{ url_for('static', filename='images/gallery_traditional.jpg') }}"
+                 data-title="Old School Fury" data-artist="Kiran S." 
+                 data-style="Traditional" data-spec="Classic Color"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[4/5]">
+                    <img src="{{ url_for('static', filename='images/gallery_traditional.jpg') }}" alt="Traditional Tiger" class="gallery-img">
+                    <div class="gallery-tag">Traditional</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Old School Fury</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Classic Color</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo"
+                 data-img="{{ url_for('static', filename='images/style_blackwork.jpg') }}"
+                 data-title="Obsidian Geometry" data-artist="Mayur Bandekar" 
+                 data-style="Blackwork" data-spec="Custom Chest Piece"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[1/1]">
+                    <img src="{{ url_for('static', filename='images/style_blackwork.jpg') }}" alt="Custom Blackwork" class="gallery-img">
+                    <div class="gallery-tag">Blackwork</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Obsidian Geometry</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Design</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 7: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo"
+                 data-img="{{ url_for('static', filename='images/style_realistic.jpg') }}"
+                 data-title="Hyper-Focus" data-artist="Mayur Bandekar" 
+                 data-style="Micro-Realism" data-spec="Eye Portrait"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[1/1]">
+                    <img src="{{ url_for('static', filename='images/style_realistic.jpg') }}" alt="Realistic Detail" class="gallery-img">
+                    <div class="gallery-tag">Realism</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Hyper-Focus</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Portrait Detail</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 8: Tattoo -->
+            <div class="gallery-item group reveal" data-category="tattoo"
+                 data-img="{{ url_for('static', filename='images/gallery_botanical.jpg') }}"
+                 data-title="Serene Flora" data-artist="Kiran S." 
+                 data-style="Fine Line" data-spec="Single Needle Botanical"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[1/1]">
+                    <img src="{{ url_for('static', filename='images/gallery_botanical.jpg') }}" alt="Botanical Piece" class="gallery-img">
+                    <div class="gallery-tag">Fine Line</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Serene Flora</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Single Needle</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 9: Uploaded Tattoo 1 -->
+            <div class="gallery-item group reveal" data-category="tattoo" 
+                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1773496586.png') }}"
+                 data-title="Dragon Spirit I" data-artist="Dragon Tattoos" 
+                 data-style="Custom Art" data-spec="New Release"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1773496586.png') }}" alt="Dragon Art 001" class="gallery-img">
+                    <div class="gallery-tag">New Release</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Dragon Spirit I</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Art</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 10: Uploaded Tattoo 2 -->
+            <div class="gallery-item group reveal" data-category="tattoo" 
+                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1774094082.jpg') }}"
+                 data-title="Dragon Spirit II" data-artist="Dragon Tattoos" 
+                 data-style="Custom Art" data-spec="New Release"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1774094082.jpg') }}" alt="Dragon Art 001 Alt" class="gallery-img">
+                    <div class="gallery-tag">New Release</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Dragon Spirit II</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Art</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 11: Uploaded Sketch 3 -->
+            <div class="gallery-item group reveal" data-category="sketch" 
+                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1774096039.png') }}"
+                 data-title="Mythical Beast I" data-artist="Dragon Tattoos" 
+                 data-style="Custom Art" data-spec="New Release"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1774096039.png') }}" alt="Dragon Art 002" class="gallery-img">
+                    <div class="gallery-tag">New Release</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Mythical Beast I</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Custom Art</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 12: Uploaded Sketch 4 -->
+            <div class="gallery-item group reveal" data-category="sketch" 
+                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1775332289.png') }}"
+                 data-title="Mythical Beast II" data-artist="Dragon Tattoos" 
+                 data-style="Custom Art" data-spec="New Release"
+                 onclick="openLightbox(this)">
+                <div class="gallery-img-container aspect-[3/4]">
+                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1775332289.png') }}" alt="Dragon Art 002 Alt" class="gallery-img">
+                    <div class="gallery-tag">New Release</div>
+                    <div class="gallery-overlay">
+                        <h3 class="font-display text-xl text-white mb-1">Mythical Beast II</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Custom Art</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="lightbox-info">
-            <div class="max-w-xl mx-auto">
-                <span id="lbStyle" class="stat-badge mb-3 pointer-events-none"></span>
-                <h2 id="lbTitle" class="font-display text-2xl md:text-4xl text-white mt-1 leading-tight"></h2>
-                <div class="flex items-center justify-center gap-4 mt-3">
-                    <p id="lbArtist" class="text-apple-gold text-base tracking-wide uppercase font-bold"></p>
-                    <div class="w-1 h-1 bg-white/20 rounded-full"></div>
-                    <p id="lbSpec" class="text-white/50 text-sm italic"></p>
-                </div>
+        <!-- No Results message -->
+        <div id="noResults" class="hidden py-32 text-center reveal">
+            <div class="text-6xl text-apple-gold/20 mb-6"><i class="fas fa-search"></i></div>
+            <h3 class="font-display text-2xl text-apple-text mb-2">No masterpieces found</h3>
+            <p class="text-apple-muted">Try selecting a different category.</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close Lightbox">&times;</button>
+    <button class="lb-nav lb-prev" onclick="changeLightbox(-1)" aria-label="Previous Image"><i class="fas fa-chevron-left"></i></button>
+    <button class="lb-nav lb-next" onclick="changeLightbox(1)" aria-label="Next Image"><i class="fas fa-chevron-right"></i></button>
+    
+    <div class="lightbox-img-wrapper">
+        <img id="lbImg" src="" alt="" class="lightbox-img">
+    </div>
+
+    <div class="lightbox-info">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6 text-left">
+            <div>
+                <span id="lbStyle" class="text-apple-gold text-[0.6rem] font-bold tracking-[0.2em] uppercase mb-2 block">STYLE</span>
+                <h2 id="lbTitle" class="font-display text-3xl text-white mb-1">Title</h2>
+                <p id="lbArtist" class="text-apple-muted text-sm font-light">By Artist</p>
+            </div>
+            <div class="text-right">
+                <p id="lbSpec" class="text-white/40 text-[0.6rem] font-bold tracking-widest uppercase">SPEC DETAILS</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- MOBILE MENU -->
-    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/services">Services</a>
-        <a href="/gallery" class="active">Gallery</a>
-        <a href="/contact">Contact</a>
-        <div class="mobile-menu-divider"></div>
-        <div class="flex gap-4">
-            <a href="/login"
-                style="font-size:0.85rem;border:1px solid rgba(255,255,255,0.15);padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Login</a>
-            <a href="/register"
-                style="font-size:0.85rem;background:#c8a040;color:#000;padding:0.5rem 1.25rem;border-radius:20px;font-family:'Inter',sans-serif;">Register</a>
-        </div>
+<!-- CTA -->
+<section class="py-32 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2 class="font-display text-4xl text-apple-text mb-8">Inspired by our <span class="text-apple-accent">Work?</span></h2>
+        <a href="/contact" class="px-12 py-5 bg-apple-gold text-black rounded-full font-bold tracking-tight hover:bg-apple-goldLt transition-all shadow-xl inline-block">Consult with an Artist</a>
     </div>
+</section>
+{% endblock %}
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="w-full flex items-center justify-between px-6 md:px-10">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-9 h-9 rounded-full object-cover border border-apple-gold/20 shadow-lg">
-                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
-            </div>
-            <div class="hidden md:flex items-center gap-14">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link active">Gallery</a>
-                <a href="/contact" class="nav-link">Contact</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="hidden md:flex gap-3">
-                    <a href="/login"
-                        class="px-6 py-2 text-xs font-medium text-apple-muted border border-apple-border rounded-full hover:text-apple-text hover:border-white/20 transition-all backdrop-blur-sm">Login</a>
-                    <a href="/register"
-                        class="px-6 py-2 text-xs font-semibold bg-apple-gold text-black rounded-full hover:bg-apple-goldLight transition-all shadow-[0_4px_15px_rgba(200,160,64,0.3)]">Register</a>
-                </div>
-                <button class="burger md:hidden" id="burgerBtn"
-                    onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <div class="page-hero text-center flex flex-col items-center justify-center relative overflow-hidden">
-        <div class="page-hero-grid"></div>
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-full bg-[#c8a040] opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
-        <div class="relative z-10 -mt-8 md:-mt-12 max-w-3xl mx-auto reveal">
-            <div class="inline-flex items-center justify-center gap-3 mb-6 px-4 py-1.5 rounded-full border border-apple-gold/20 bg-apple-gold/5 backdrop-blur-md">
-                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
-                <p class="text-apple-gold text-[0.7rem] uppercase tracking-[0.2em] font-medium">The Visual Legacy</p>
-                <i class="fa-solid fa-star text-apple-gold text-[0.6rem]"></i>
-            </div>
-            <h1 class="font-display text-5xl md:text-7xl text-apple-text mb-6 tracking-[0.05em] drop-shadow-2xl" style="font-family: 'Cinzel Decorative', cursive;">
-                GALLERY
-            </h1>
-            <p class="text-apple-muted text-lg md:text-xl max-w-xl mx-auto leading-relaxed font-light" style="font-family: 'Roboto', sans-serif; opacity: 0.85;">
-                Blending ancient tradition with modern precision. Every tattoo is a masterpiece crafted with surgical skill and artistic vision.
-            </p>
-        </div>
-    </div>
-
-    <!-- MAIN SECTION -->
-    <section id="portfolio" class="py-16 px-6" style="background: var(--bg-secondary);">
-        <div class="max-w-6xl mx-auto">
-
-            <div class="text-center mb-16 reveal">
-                <div class="mb-4">
-                    <span class="pill-tag">Portfolio</span>
-                </div>
-                <h2 class="font-display text-4xl md:text-5xl text-gradient tracking-tight mb-8" style="font-family: 'Cinzel Decorative', cursive;">The Collection</h2>
-            </div>
-
-            <!-- Stats Bar — only show if images exist -->
-            {% if gallery %}
-            <div class="stats-bar reveal">
-                <div class="stat-item">
-                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
-                        gallery|length }}</p>
-                    <p
-                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
-                        Artworks</p>
-                </div>
-                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
-                <div class="stat-item">
-                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
-                        artist_count }}</p>
-                    <p
-                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
-                        Artists</p>
-                </div>
-                <div style="width:1px;height:32px;background:rgba(255,255,255,0.08);"></div>
-                <div class="stat-item">
-                    <p style="font-family:'Cinzel Decorative', cursive; font-size:1.5rem; font-weight:700; color:#c8a040;">{{
-                        styles_count }}</p>
-                    <p
-                        style="font-size:0.68rem;color:#86868b;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">
-                        Styles</p>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Filter Pills -->
-            <div class="flex flex-wrap gap-5 justify-center mb-16 reveal">
-                <button class="filter-btn active" onclick="filterGallery('all',this)">All Masterpieces</button>
-                <button class="filter-btn" onclick="filterGallery('Tattoo',this)">Tattoo</button>
-                <button class="filter-btn" onclick="filterGallery('Sketch',this)">Sketch</button>
-                <button class="filter-btn" onclick="filterGallery('Tattoo Removal',this)">Tattoo Removal</button>
-            </div>
-
-            <!-- ═══════════════════════════════════════════
-             GALLERY GRID — FROM DATABASE
-        ═══════════════════════════════════════════ -->
-            {% if gallery %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="galleryGrid">
-                {% for item in gallery %}
-                <div class="gallery-item reveal reveal-d{{ loop.index % 4 + 1 }}"
-                    data-category="{{ item.style or 'Other' }}"
-                    data-img="{{ url_for('static', filename=item.image_path) }}"
-                    data-title="{{ item.caption or 'Untitled' }}" data-artist="{{ item.artist_name }}"
-                    data-spec="{{ item.specialisation or '' }}" data-style="{{ item.style or '' }}"
-                    onclick="openLightbox(this)">
-
-                    <!-- Image Container -->
-                    <div class="gallery-img-container">
-                        <div class="gallery-tag">{{ item.style or 'Art' }}</div>
-                        <img src="{{ url_for('static', filename=item.image_path) }}"
-                            alt="{{ item.caption or 'Tattoo' }}" class="gallery-img" loading="lazy">
-                    </div>
-
-                    <!-- Metadata Bar -->
-                    <div class="p-6 border-t border-white/5 bg-gradient-to-b from-transparent to-white/[0.01]">
-                        <div class="flex items-center justify-between">
-                            <div class="space-y-1">
-                                <p class="text-apple-text font-medium text-[0.9rem] tracking-tight truncate max-w-[160px]">
-                                    {{ item.caption or 'Untitled' }}
-                                </p>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-1 h-1 rounded-full bg-apple-gold/40"></span>
-                                    <p class="text-apple-muted text-[0.65rem] uppercase tracking-wider font-medium">by {{ item.artist_name }}</p>
-                                </div>
-                            </div>
-                            <div class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-apple-gold/30 group-hover:text-apple-gold transition-colors">
-                                <i class="fa-solid fa-plus text-[0.7rem]"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- No results after filter -->
-            <div id="noResults" style="display:none;" class="text-center py-16">
-                <i class="fa-solid fa-filter"
-                    style="font-size:2.5rem;color:rgba(200,160,64,0.2);display:block;margin-bottom:1rem;"></i>
-                <p style="color:#86868b;font-size:0.88rem;">No artworks found in this style yet.</p>
-            </div>
-
-            {% else %}
-            <!-- ── Empty State (no images uploaded yet) ── -->
-            <div class="text-center py-20">
-                <div
-                    style="width:80px;height:80px;border-radius:20px;background:rgba(200,160,64,0.06);border:1px solid rgba(200,160,64,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
-                    <i class="fa-solid fa-images" style="font-size:2rem;color:rgba(200,160,64,0.3);"></i>
-                </div>
-                <h3 class="font-display text-xl mb-2" style="color: var(--text-primary);">Gallery Coming Soon</h3>
-                <p style="color:#86868b;font-size:0.85rem;max-width:380px;margin:0 auto;line-height:1.7;">
-                    Our artists are creating amazing work. Photos will appear here as sessions are completed.
-                </p>
-                <a href="/register"
-                    style="display:inline-block;margin-top:1.75rem;padding:0.65rem 1.75rem;background:#c8a040;color:#000;border-radius:20px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-decoration:none;">
-                    Book Your Session
-                </a>
-            </div>
-            {% endif %}
-
-            <!-- Book CTA -->
-            <div class="mt-20 relative overflow-hidden reveal">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(200,160,64,0.05)_0%,transparent_70%)]"></div>
-                <div class="relative z-10 p-12 rounded-[32px] border border-white/5 bg-white/[0.02] backdrop-blur-md text-center max-w-4xl mx-auto">
-                    <div class="mb-4">
-                        <span class="pill-tag">Inspiration</span>
-                    </div>
-                    <h3 class="font-display text-3xl md:text-4xl text-gradient mb-6 tracking-tight" style="font-family: 'Cinzel Decorative', cursive;">Your Story, Our Canvas</h3>
-                    <p class="text-apple-muted text-lg mb-10 leading-relaxed max-w-xl mx-auto opacity-80">
-                        Book a consultation with one of our artists and turn your idea into a permanent masterpiece.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                        <a href="/register"
-                            class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-bold bg-apple-gold text-black hover:bg-[#e0b84a] transition-all hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(200,160,64,0.4)] active:scale-95">
-                            <i class="fa-solid fa-calendar-check mr-2 text-[0.7rem]"></i>Book Now
-                        </a>
-                        <a href="/services"
-                            class="inline-flex items-center justify-center px-10 py-4 rounded-full text-xs uppercase tracking-widest font-semibold border border-white/10 text-apple-text hover:border-apple-gold hover:text-apple-gold transition-all hover:-translate-y-1 backdrop-blur-sm">
-                            <i class="fa-solid fa-wand-magic-sparkles mr-2 text-[0.7rem]"></i>View Services
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="py-8 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    class="w-7 h-7 rounded-full object-cover opacity-80">
-                <span class="font-display text-apple-muted text-xs tracking-widest uppercase">Dragon Tattoos
-                    Studio</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="/" class="footer-link">Home</a>
-                <a href="/about" class="footer-link">About</a>
-                <a href="/services" class="footer-link">Services</a>
-                <a href="/gallery" class="footer-link">Gallery</a>
-                <a href="/contact" class="footer-link">Contact</a>
-            </div>
-            <p style="color:rgba(134,134,139,0.4);font-size:0.72rem;">© 2025 Dragon Tattoos Studio</p>
-        </div>
-    </footer>
-
-    <script>
-        // ── REVEAL OBSERVER
-        const obs = new IntersectionObserver(entries => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-        }, { threshold: 0.08 });
-        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-        function scrollToGallery() {
-            document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // ── FILTER
-        function filterGallery(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            let visible = 0;
-            document.querySelectorAll('.gallery-item').forEach(item => {
-                const show = cat === 'all' || item.dataset.category === cat;
-                item.style.display = show ? 'block' : 'none';
-                if (show) visible++;
-            });
-            const nr = document.getElementById('noResults');
-            if (nr) nr.style.display = visible === 0 ? 'block' : 'none';
-        }
-
-        // ── LIGHTBOX
-        let currentLbIndex = -1;
-        let lbItems = [];
-
-        function openLightbox(el) {
-            updateLbItems();
-            currentLbIndex = lbItems.indexOf(el);
-            renderLightbox(el);
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function updateLbItems() {
-            lbItems = Array.from(document.querySelectorAll('.gallery-item'))
-                .filter(item => item.style.display !== 'none');
-        }
-
-        function renderLightbox(el) {
-            const img = el.dataset.img;
-            const title = el.dataset.title;
-            const artist = el.dataset.artist;
-            const style = el.dataset.style;
-            const spec = el.dataset.spec;
-
-            document.getElementById('lbImg').src = img;
-            document.getElementById('lbTitle').textContent = title;
-            document.getElementById('lbArtist').textContent = 'By ' + artist;
-            document.getElementById('lbStyle').textContent = style || 'Ink';
-            document.getElementById('lbSpec').textContent = spec || '';
-        }
-
-        function changeLightbox(dir) {
-            if (lbItems.length === 0) return;
-            currentLbIndex = (currentLbIndex + dir + lbItems.length) % lbItems.length;
-            renderLightbox(lbItems[currentLbIndex]);
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        document.getElementById('lightbox').addEventListener('click', function (e) { if (e.target === this) closeLightbox(); });
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') changeLightbox(1);
-            if (e.key === 'ArrowLeft') changeLightbox(-1);
-        });
-
-        // ── MOBILE MENU
-        function toggleMobileMenu() {
-            const m = document.getElementById('mobileMenu');
-            const b = document.getElementById('burgerBtn');
-            const isOpen = m.classList.toggle('open');
-            b.classList.toggle('open');
-            b.setAttribute('aria-expanded', isOpen);
-            m.setAttribute('aria-hidden', !isOpen);
-            document.body.style.overflow = isOpen ? 'hidden' : '';
-        }
-        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', toggleMobileMenu));
-    </script>
-</body>
-
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing/gallery.js') }}"></script>
+{% endblock %}

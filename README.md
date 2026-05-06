@@ -27,7 +27,8 @@ python run.py
 - **Customer Hub**: Seamless booking experience for Tattoos, Art/Sketching, and Removal services with real-time status tracking.
 - **Premium Aesthetics**: Framework-free Vanilla CSS3 architecture optimized for clarity, precision, and a luxury studio feel.
 - **Financial Suite**: Consolidated invoicing and payment recording with automated billing states.
-- **Security & Performance**: Global CSRF protection, secured session management, and MySQL connection pooling.
+- **Inclusive Authentication**: Robust login system supporting all email providers and alphanumeric Artist IDs (e.g., DRAG-ART-001).
+- **Security & Performance**: Global CSRF protection, secured session management with unified parameter handling, and MySQL connection pooling.
 
 ## Configuration
 
@@ -37,7 +38,7 @@ The application uses environment variables for all sensitive data and configurat
 |----------|-------------|---------|
 | `DB_HOST` | MySQL Database Host | `localhost` |
 | `DB_USER` | MySQL Database User | `root` |
-| `DB_PASS` | MySQL Database Password | - |
+| `DB_PASSWORD` | MySQL Database Password (`DB_PASS` is also accepted for older local setups) | - |
 | `DB_NAME` | Database Name | `dragon_tattoos` |
 | `DB_POOL_SIZE`| Database Connection Pool Size | `5` |
 | `SECRET_KEY` | Flask Secret Key (Required for Session & CSRF) | - |

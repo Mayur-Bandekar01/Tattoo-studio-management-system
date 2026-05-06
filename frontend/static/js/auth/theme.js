@@ -33,11 +33,11 @@
         
         if (theme === 'ivory') {
             if (icon) icon.className = 'fas fa-sun';
-            btn.style.color = '#845EC2';
-            btn.style.borderColor = 'rgba(132, 94, 194, 0.4)';
+            btn.style.color = '#f97316';
+            btn.style.borderColor = 'rgba(249, 115, 22, 0.4)';
         } else {
             if (icon) icon.className = 'fas fa-moon';
-            btn.style.color = '#a89060';
+            btn.style.color = '#c8a040';
             btn.style.borderColor = 'rgba(200, 160, 64, 0.3)';
         }
     }

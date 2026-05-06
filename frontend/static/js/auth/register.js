@@ -34,8 +34,14 @@ function goStep2() {
     
     let ok = true;
     if (name.length < 2) { showHint('full_name', 'error', 'Enter your full name'); ok = false; }
-    if (!/\S+@\S+\.\S+/.test(email)) { showHint('email', 'error', 'Enter a valid email'); ok = false; }
-    if (!/^\d{10}$/.test(phone)) { showHint('phone', 'error', 'Enter a valid 10-digit number'); ok = false; }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) { 
+        showHint('email', 'error', 'Please enter a valid email address'); 
+        ok = false; 
+    }
+    if (!/^[56789]\d{9}$/.test(phone) || /^(\d)\1{9}$/.test(phone)) { 
+        showHint('phone', 'error', 'Enter a valid 10-digit mobile number'); 
+        ok = false; 
+    }
     if (ok) showStep(2);
 }
 
@@ -82,14 +88,15 @@ function liveValidate(field) {
             : showHint(field, 'error', isAlpha ? 'Enter your full name' : 'Name can only contain letters, spaces, hyphens and apostrophes');
     }
     if (field === 'email') {
-        /\S+@\S+\.\S+/.test(val)
-            ? showHint(field, 'success', '✓ Valid email')
-            : showHint(field, 'error', 'Enter a valid email address');
+        const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val);
+        isValidEmail
+            ? showHint(field, 'success', '✓ Valid email address')
+            : showHint(field, 'error', 'Please enter a valid email address');
     }
     if (field === 'phone') {
-        /^\d{10}$/.test(val)
+        (/^[56789]\d{9}$/.test(val) && !/^(\d)\1{9}$/.test(val))
             ? showHint(field, 'success', '✓ Valid number')
-            : showHint(field, 'error', 'Must be exactly 10 digits');
+            : showHint(field, 'error', 'Enter a valid 10-digit mobile number');
     }
     if (field === 'password') {
         const pwInput = document.getElementById('password');

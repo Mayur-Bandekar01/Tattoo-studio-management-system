@@ -13,7 +13,7 @@ Process user authentication.
 **Parameters:**
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| email | string | Yes | User email |
+| email | string | Yes | User email OR Artist ID |
 | password | string | Yes | User password |
 
 **Response:**
@@ -56,7 +56,7 @@ View studio contact details or submit an inquiry.
 
 ## Dashboards
 
-### GET /customer_dashboard
+### GET /customer/dashboard
 View the unified customer hub for appointments and status tracking.
 
 *Requires Authentication (Session Role: Customer)*

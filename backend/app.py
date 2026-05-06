@@ -1,6 +1,6 @@
 import os
 from datetime import timedelta
-from flask import Flask, redirect, flash, request
+from flask import Flask, redirect, flash, request, session
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
@@ -21,13 +21,9 @@ app.jinja_env.auto_reload = True
 # Debug set to False for production-ready state
 
 # ── SECURITY CONFIGURATION ───────────────────────────────────
-app.secret_key = os.getenv("SECRET_KEY")
-if not app.secret_key:
-    # Force runtime error in production, allow no fallback in dev to ensure .env is used
-    raise RuntimeError(
-        "CRITICAL: SECRET_KEY is not set in environment or .env. Secure starting requires a valid key."
-    )
-app.permanent_session_lifetime = timedelta(days=365)
+# Generate a random key on every startup so sessions are invalidated on restart
+app.secret_key = os.urandom(24)
+app.permanent_session_lifetime = timedelta(days=30)
 
 # CSRF Protection (Global)
 csrf = CSRFProtect(app)
@@ -36,7 +32,10 @@ csrf = CSRFProtect(app)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB Limit
 
 # ── MAIL CONFIG ──────────────────────────────────────────────
-app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
+if not app.config["MAIL_SERVER"]:
+    raise RuntimeError("CRITICAL: MAIL_SERVER is not set in environment or .env.")
+
 app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", 587))
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
@@ -69,26 +68,26 @@ def add_no_cache(response):
 
 # ── DATABASE LIFECYCLE ──
 @app.teardown_appcontext
-def close_db(error):
-    from flask import g
-
-    db = g.pop("db", None)
-    if db is not None:
-        try:
-            db.close()
-        except Exception:
-            pass
+def shutdown_session(exception=None):
+    from .db import close_db
+    close_db(exception)
 
 
 # ── ERROR HANDLERS ───────────────────────────────────────────
 @app.errorhandler(404)
 def page_not_found(e):
+    app.logger.warning(f"404 Error: {request.path} [Referrer: {request.referrer}]")
+    if "role" in session:
+        return redirect(f"/{session['role']}/dashboard")
     return redirect("/")
 
 
 @app.errorhandler(500)
 def server_error(e):
+    app.logger.error(f"500 Error: {str(e)}", exc_info=True)
     flash("Something went wrong. Please try again.", "error")
+    if "role" in session:
+        return redirect(f"/{session['role']}/dashboard")
     return redirect("/")
 
 
@@ -106,4 +105,5 @@ with app.app_context():
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(host="0.0.0.0", port=port, debug=debug)

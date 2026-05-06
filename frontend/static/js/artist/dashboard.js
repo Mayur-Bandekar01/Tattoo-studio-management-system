@@ -71,6 +71,7 @@ const TAB_META = {
     inventory: ['Inventory Control', 'Track studio supplies and stock'],
     logusage: ['Log Usage', 'Record consumption during sessions'],
     gallery: ['My Portfolio', 'Exhibit your unique artistry'],
+    inquiries: ['New Leads', 'Public inquiries filtered for specialists'],
     messages: ['Messages', 'Client communication hub'],
     profile: ['My Profile', 'Manage your artist identity'],
     history: ['History', 'Chronicle of completed masterpieces']

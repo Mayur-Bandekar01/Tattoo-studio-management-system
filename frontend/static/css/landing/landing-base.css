@@ -1,0 +1,371 @@
+/* 
+   ═══════════════════════════════════════
+   PROJECT: Dragon Tattoos - Landing Base
+   STYLE: Vibrant Obsidian (Consolidated)
+   VERSION: 4.0.0
+   ═══════════════════════════════════════ 
+*/
+
+:root {
+    /* 1. Global Core Colors */
+    --studio-bg: #030303;
+    --studio-surface: #050505;
+    --studio-card: rgba(8, 8, 8, 0.95);
+    --studio-gold: #c8a040;
+    --studio-gold-dim: rgba(200, 160, 64, 0.3);
+    --studio-grad: linear-gradient(135deg, #e0ba5a, #c8a040, #b8860b);
+    
+    /* Text & Neutral */
+    --text-primary: #f5f5f7;
+    --text-muted: #86868b;
+    --border-base: rgba(255, 255, 255, 0.06);
+    
+    /* Variable Assignments (Dark Mode Default) */
+    --bg-primary: #030303;
+    --bg-primary-rgb: 0, 0, 0;
+    --bg-secondary: #050505;
+    --accent-color: #c8a040;
+    --accent-rgb: 200, 160, 64;
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --card-bg: rgba(15, 15, 18, 0.8);
+
+    /* Typography */
+    --font-heading: 'Cinzel Decorative', cursive;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Transitions */
+    --transition-smooth: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ════════════════════════ RESET & BASE ════════════════════════ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.4);
+    --shadow-glow: 0 0 20px rgba(200, 160, 64, 0.2);
+}
+
+/* ── Accessibility & Focus ── */
+:focus-visible {
+    outline: 2px solid var(--studio-gold);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 16px;
+}
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ════════════════════════ GLOBAL COMPONENTS ════════════════════════ */
+
+/* Buttons */
+.btn-studio {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 12px; /* Architectural rounding */
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+    border: none;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.navbar .btn-primary {
+    background: var(--studio-grad);
+    color: #000 !important;
+    box-shadow: 0 4px 15px rgba(200, 160, 64, 0.2);
+}
+
+.navbar .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(200, 160, 64, 0.4);
+}
+
+.navbar .btn-outline {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+}
+
+.navbar .btn-outline:hover {
+    border-color: var(--studio-gold);
+    background: rgba(200, 160, 64, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Flash Messages */
+.flash-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    backdrop-filter: blur(8px);
+}
+
+.flash-msg.success { background: rgba(5, 150, 105, 0.1); border-color: #059669; color: #059669; }
+.flash-msg.error { background: rgba(220, 38, 38, 0.1); border-color: #dc2626; color: #dc2626; }
+
+/* ════════════════════════ SHARED LAYOUT ════════════════════════ */
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 1rem; /* Floating from top */
+    left: 50%;
+    transform: translate(-50%, -120%); /* Offset for animation */
+    width: calc(100% - 2rem);
+    max-width: 1400px;
+    height: 64px; /* Taller for premium feel */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    background: rgba(var(--bg-primary-rgb, 0, 0, 0), 0.75);
+    backdrop-filter: saturate(180%) blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: navSlideDownFloat 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes navSlideDownFloat {
+    to { transform: translate(-50%, 0); }
+}
+
+/* NAV LINKS ANIMATION */
+.nav-link {
+    position: relative;
+    color: var(--text-muted);
+    font-size: 0.75rem; /* Slightly smaller for elegance */
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 0;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+}
+
+.nav-link:hover, 
+.nav-link.active {
+    color: var(--studio-gold);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--studio-grad);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 12px rgba(200, 160, 64, 0.5);
+}
+
+.nav-link:hover::after, 
+.nav-link.active::after {
+    transform: scaleX(1);
+}
+
+/* BURGER */
+.burger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    transition: var(--transition-smooth);
+}
+
+.burger:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #86868b;
+    border-radius: 2px;
+    transition: all 0.3s;
+    margin: 5px 0;
+}
+
+.burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+    .burger { display: block; }
+}
+
+/* MOBILE MENU */
+.mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.97);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+    pointer-events: none;
+}
+
+.mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobile-menu a {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    color: #86868b;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.25s;
+}
+
+.mobile-menu a:hover,
+.mobile-menu a.active {
+    color: var(--studio-gold);
+}
+
+/* FOOTER */
+footer {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-subtle);
+    padding: 4rem 1.5rem;
+}
+
+.footer-link {
+    color: #86868b;
+    font-size: 0.75rem;
+    transition: color 0.2s;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: var(--studio-gold);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a3a3c;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--studio-gold);
+}
+
+/* ════════════════════════ LIGHT MODE ════════════════════════ */
+html.light-mode {
+    --bg-primary: #ffffff;
+    --bg-primary-rgb: 255, 255, 255;
+    --bg-secondary: #f8fafc;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --accent-color: #f97316;
+    --accent-rgb: 249, 115, 22;
+    --card-bg: #ffffff;
+    --border-subtle: #e2e8f0;
+}
+
+html.light-mode body {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+html.light-mode .navbar {
+    background: rgba(255, 255, 255, 0.88) !important;
+    border: 1px solid var(--border-subtle) !important;
+}
+
+html.light-mode .btn-outline {
+    background: rgba(0, 0, 0, 0.03) !important;
+    color: #000000 !important;
+    border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light-mode .mobile-menu {
+    background: rgba(255, 255, 255, 0.98) !important;
+}
+
+html.light-mode .mobile-menu a {
+    color: var(--text-muted) !important;
+}
+
+html.light-mode .mobile-menu a:hover,
+html.light-mode .mobile-menu a.active {
+    color: var(--accent-color) !important;
+}
+
+html.light-mode footer {
+    background: #fffaf5 !important;
+}
+
+html.light-mode ::-webkit-scrollbar-track {
+    background: var(--bg-primary) !important;
+}
+
+html.light-mode ::-webkit-scrollbar-thumb {
+    background: var(--accent-color) !important;
+}
+
+/* ════════════════════════ FLASH MESSAGES (LIGHT MODE) ════════════════════════ */
+html.light-mode .flash-message:not(.text-green-400) {
+    background: rgba(39, 24, 126, 0.08) !important;
+    border: 1px solid rgba(39, 24, 126, 0.15) !important;
+    color: #27187E !important;
+    box-shadow: 0 10px 25px rgba(39, 24, 126, 0.1) !important;
+}
+
+html.light-mode .flash-message i:not(.fa-circle-check) {
+    color: #27187E !important;
+}

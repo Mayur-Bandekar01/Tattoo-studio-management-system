@@ -13,9 +13,16 @@ def role_required(role):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             # Check the role stored in the user's session
-            if session.get("role") != role:
-                flash(f"Access denied. {role.capitalize()} role required.", "error")
-                return redirect("/login")
+            user_role = session.get("role")
+            if user_role != role:
+                if user_role:
+                    # User is logged in but has the wrong role
+                    flash(f"Access denied. Your {user_role} account cannot access {role} areas.", "error")
+                    return redirect(f"/{user_role}/dashboard")
+                else:
+                    # User is not logged in at all
+                    flash(f"Please login as a {role.capitalize()} to access this page.", "info")
+                    return redirect("/login")
             return f(*args, **kwargs)
 
         return decorated_function

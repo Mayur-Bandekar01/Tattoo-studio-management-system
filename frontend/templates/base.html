@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dragon Tattoos | Premium Tattoo Studio{% endblock %}</title>
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="{% block meta_description %}Explore the artistry of Dragon Tattoos. Premium custom tattoos, realistic portraits, and professional ink in a studio dedicated to excellence.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}tattoo studio, custom tattoos, dragon tattoos, laser removal, blackwork, fine line tattoos, Bengaluru tattoos{% endblock %}">
+    <meta name="author" content="Dragon Tattoos Studio">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{% block og_title %}Dragon Tattoos | Premium Tattoo Studio{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Explore the artistry of Dragon Tattoos. Premium custom tattoos, realistic portraits, and professional ink in a studio dedicated to excellence.{% endblock %}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-banner.jpg', _external=True) }}">
+    
+    <!-- Accessibility & Motion -->
+    <link rel="canonical" href="{{ request.url }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Core External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'system-ui', 'sans-serif'],
+                        display: ['"Cinzel Decorative"', 'cursive'],
+                    },
+                    colors: {
+                        apple: {
+                            bg: 'var(--bg)',
+                            text: 'var(--text)',
+                            muted: 'var(--muted)',
+                            card: 'var(--card-bg)',
+                            border: 'var(--border)',
+                            accent: 'var(--accent, #c8a040)',
+                            gold: '#c8a040',
+                            goldLt: '#e0b84a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global Theme CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing/landing-base.css') }}">
+    {% block extra_css %}{% endblock %}
+
+    <!-- Global Theme Support -->
+    <script src="{{ url_for('static', filename='js/auth/theme.js') }}"></script>
+</head>
+
+<body>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+        <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a>
+        <a href="/services" class="{% if request.path == '/services' %}active{% endif %}">Services</a>
+        <a href="/gallery" class="{% if request.path == '/gallery' %}active{% endif %}">Gallery</a>
+        <a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}">Contact</a>
+        <div style="width:40px;height:1px;background:rgba(200,160,64,0.3)"></div>
+        <div class="flex flex-col gap-4 w-full px-10">
+            {% if session.get('role') %}
+                <a href="/{{ session['role'] }}/dashboard"
+                    class="w-full text-center py-4 border border-apple-border text-apple-text rounded-xl font-semibold text-lg">Dashboard</a>
+                <a href="/logout"
+                    class="w-full text-center py-4 bg-apple-gold text-black rounded-xl font-bold text-lg shadow-xl">Logout</a>
+            {% else %}
+                <a href="/login"
+                    class="w-full text-center py-4 border border-apple-border text-apple-text rounded-xl font-semibold text-lg">Login</a>
+                <a href="/register"
+                    class="w-full text-center py-4 bg-apple-gold text-black rounded-xl font-bold text-lg shadow-xl">Register Now</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="w-full flex items-center justify-between px-6 md:px-12 relative">
+            <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location.href='/'">
+                <div class="relative">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Logo"
+                        class="w-10 h-10 rounded-full object-cover border border-apple-gold/30 shadow-lg group-hover:border-apple-gold/60 transition-all duration-500">
+                    <div class="absolute inset-0 rounded-full bg-apple-gold/5 group-hover:bg-transparent transition-all"></div>
+                </div>
+                <span class="font-display text-apple-text text-sm tracking-[0.2em] uppercase font-bold">Dragon Tattoos</span>
+            </div>
+            <div class="hidden md:flex items-center gap-12 nav-links absolute left-1/2 transform -translate-x-1/2">
+                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}">About</a>
+                <a href="/services" class="nav-link {% if request.path == '/services' %}active{% endif %}">Services</a>
+                <a href="/gallery" class="nav-link {% if request.path == '/gallery' %}active{% endif %}">Gallery</a>
+                <a href="/contact" class="nav-link {% if request.path == '/contact' %}active{% endif %}">Contact</a>
+            </div>
+            <div class="flex items-center gap-5">
+                <button id="globalThemeBtn" onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full border border-apple-border text-apple-muted hover:text-apple-accent hover:border-apple-accent/40 hover:bg-apple-gold/5 transition-all backdrop-blur-md" title="Toggle Theme">
+                    <i id="themeIcon" class="fas fa-moon"></i>
+                </button>
+                <div class="flex items-center gap-4">
+                    {% if session.get('role') %}
+                        <a href="/{{ session['role'] }}/dashboard"
+                            class="btn-studio btn-outline !py-2 !px-6 !text-[0.7rem]">
+                            Dashboard
+                        </a>
+                        <a href="/logout"
+                            class="btn-studio btn-primary !py-2 !px-6 !text-[0.7rem]">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="/login"
+                            class="btn-studio btn-outline !py-2 !px-6 !text-[0.7rem]">
+                            Login
+                        </a>
+                        <a href="/register"
+                            class="btn-studio btn-primary !py-2 !px-6 !text-[0.7rem]">
+                            Register
+                        </a>
+                    {% endif %}
+                </div>
+                <button class="burger" id="burgerBtn" onclick="toggleMobileMenu()" aria-label="Menu"
+                    aria-expanded="false" aria-controls="mobileMenu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="fixed top-24 right-6 z-[100] flex flex-col gap-4 max-w-sm w-full pointer-events-none">
+                    {% for category, message in messages %}
+                        <div class="flash-message p-4 rounded-xl border backdrop-blur-xl pointer-events-auto animate-slide-in shadow-2xl
+                            {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
+                            {% elif category == 'success' %}bg-green-500/10 border-green-500/20 text-green-400
+                            {% else %}bg-apple-gold/10 border-apple-gold/20 text-apple-gold{% endif %}">
+                            <div class="flex items-center gap-3">
+                                <i class="fas {% if category == 'error' %}fa-circle-exclamation{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
+                                <p class="text-sm font-medium">{{ message }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    {% block footer %}
+    <footer class="pt-16 pb-8 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo"
+                            class="w-6 h-6 rounded-full object-cover opacity-80">
+                        <span class="font-display text-apple-text text-xs tracking-widest uppercase">Dragon Tattoos
+                            Studio</span>
+                    </div>
+                    <p class="text-apple-muted text-sm max-w-xs">Premium tattoo studio. Engineered for perfection, one
+                        design at a time.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-widest text-apple-text mb-4">Studio</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/about" class="footer-link">About Us</a></li>
+                        <li><a href="/services" class="footer-link">Services</a></li>
+                        <li><a href="/gallery" class="footer-link">Portfolio</a></li>
+                        <li><a href="/contact" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-widest text-apple-text mb-4">Account</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/register" class="footer-link">Create Account</a></li>
+                        <li><a href="/login" class="footer-link">Login</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-widest text-apple-text mb-4">Follow</h4>
+                    <div class="footer-socials">
+                        <a href="#" class="social-link" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" aria-label="Find us on Pinterest"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <a href="https://www.instagram.com/dragontattooshaliyal/" target="_blank"
+                            rel="noopener noreferrer"
+                            class="footer-link text-lg hover:text-apple-accent" aria-label="Visit our Instagram"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://x.com/dragontattoos" target="_blank" rel="noopener noreferrer"
+                            class="footer-link text-lg hover:text-apple-accent" aria-label="Visit our X account"><i
+                                class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-8 flex justify-between items-center text-xs text-apple-muted"
+                style="border-color:rgba(255,255,255,0.05)">
+                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
+                <a href="#" class="footer-link">↑ Back to top</a>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+
+    <!-- Global JS -->
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const btn = document.getElementById('burgerBtn');
+            const isOpen = menu.classList.contains('active');
+            
+            menu.classList.toggle('active');
+            btn.classList.toggle('active');
+            btn.setAttribute('aria-expanded', !isOpen);
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        // Flash message auto-hide
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = document.querySelectorAll('.flash-message');
+            messages.forEach(msg => {
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                    msg.style.transform = 'translateX(20px)';
+                    setTimeout(() => msg.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

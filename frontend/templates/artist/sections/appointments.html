@@ -58,9 +58,9 @@
                     </td>
                     
                     <td class="text-center">
-                        <button class="btn-icon-only btn-icon-view mx-auto"
+                        <button class="btn-icon-only btn-icon-view mx-auto group"
                             onclick="artShowDetails(this)" data-appt='{{ appt | tojson | safe }}' title="View Full Details">
-                            <i class="fas fa-eye text-xs"></i>
+                            <i class="fas fa-eye text-xs transition-transform group-hover:scale-125"></i>
                         </button>
                     </td>
                     
@@ -97,12 +97,12 @@
                                 <form method="POST" action="/artist/approve/{{ appt.appointment_id }}" class="flex items-center gap-2">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="number" name="duration_hours" placeholder="Hrs" min="1" max="12" class="input-mini" required title="Estimated Duration">
-                                    <button type="submit" class="btn-studio btn-action-gold !py-1.5 !px-3 !text-[10px]">Approve</button>
+                                    <button type="submit" class="btn-studio btn-action-gold !py-1.5 !px-4 !text-[10px] uppercase font-bold tracking-wider">Approve</button>
                                 </form>
                                 <form method="POST" action="/artist/reject/{{ appt.appointment_id }}">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <button type="submit" class="btn-icon-only btn-icon-reject" title="Reject Booking">
-                                        <i class="fas fa-times"></i>
+                                    <button type="submit" class="btn-icon-only btn-icon-reject group" title="Reject Booking">
+                                        <i class="fas fa-times transition-transform group-hover:rotate-90"></i>
                                     </button>
                                 </form>
                             </div>

@@ -44,15 +44,16 @@
 
     <!-- ── Premium Hero Banner ── -->
     <div class="master-banner">
-        <div class="master-banner-eyebrow" style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.7);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+        <div class="master-banner-glow"></div>
+        <div class="master-banner-eyebrow">
             <i class="fas fa-sparkles"></i> Welcome back, {{ name }}
         </div>
         {% if upcoming %}
             {% set next_appt = upcoming[0] %}
-            <h1>Next Session.</h1>
+            <h2>Next Session.</h2>
             <p>Your next artistic journey is scheduled for <strong>{{ next_appt.appointment_date }}</strong> at <strong>{{ next_appt.appointment_time }}</strong> with Artist <strong>{{ next_appt.artist_name }}</strong>.</p>
         {% else %}
-            <h1>Your Canvas Awaits.</h1>
+            <h2>Your Canvas Awaits.</h2>
             <p>Our world-class artists are ready to transform your vision into a permanent masterpiece. Explore our portfolio or start your next booking today.</p>
         {% endif %}
         

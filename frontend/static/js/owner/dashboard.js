@@ -79,6 +79,7 @@
             reports: { title: 'Analytics & Reports', subtitle: 'Revenue insights and performance metrics' },
             invoice: { title: 'Invoicing', subtitle: 'Generate and manage client invoices' },
             payment: { title: 'Payments', subtitle: 'Record and track incoming transactions' },
+            inquiries: { title: 'Inquiries Management', subtitle: 'Review and manage all public studio inquiries' },
             profile: { title: 'Account Settings', subtitle: 'Owner profile and security preferences' },
         },
 

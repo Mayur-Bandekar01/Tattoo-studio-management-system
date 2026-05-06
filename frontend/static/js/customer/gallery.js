@@ -27,13 +27,21 @@
 
   // ── Lightbox bridge ──
   window.openLbFromItem = function (el) {
-    if (typeof window.openLb === 'function') {
-      window.openLb(el.dataset.img, el.dataset.title, el.dataset.description, {
-        artist: el.dataset.artist,
-        style : el.dataset.style,
-        date  : el.dataset.date,
-        tags  : el.dataset.tags
-      });
+    if (typeof window.openGalLb === 'function') {
+      const items = Array.from(document.querySelectorAll('.gallery-item'))
+        .filter(item => item.style.display !== 'none')
+        .map(item => ({
+          img: item.dataset.img,
+          title: item.dataset.title,
+          description: item.dataset.description,
+          artist: item.dataset.artist,
+          style: item.dataset.style,
+          date: item.dataset.date,
+          tags: item.dataset.tags
+        }));
+      
+      const index = items.findIndex(item => item.img === el.dataset.img);
+      window.openGalLb(items, index >= 0 ? index : 0);
     }
   };
 

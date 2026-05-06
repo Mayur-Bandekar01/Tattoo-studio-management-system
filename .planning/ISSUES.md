@@ -40,3 +40,7 @@
 ### [FIXED] ISS-003: Database Connection Pooling
 
 - **Resolution:** Verified that `mysql.connector.pooling` is correctly implemented in `db.py` with a configurable pool size.
+
+### [FIXED] ISS-007: Artist Authentication Failure (Field Mismatch & Alphanumeric IDs)
+
+- **Resolution:** Standardized the login identifier field name to `email` across all roles on the frontend. Refactored the backend Artist login handler to robustly match against both `artist_id` (alphanumeric) and `artist_email` columns.

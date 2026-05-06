@@ -1,0 +1,103 @@
+<!-- owner/sections/inquiries.html -->
+<div class="inquiries-container">
+    <div class="inquiry-stats-grid">
+        <div class="inquiry-stat-card">
+            <div class="stat-card-icon"><i class="fas fa-paper-plane"></i></div>
+            <div class="stat-content">
+                <div class="report-card-title">Total Outreach</div>
+                <div class="report-card-value">{{ inquiries|length }}</div>
+            </div>
+        </div>
+        <div class="inquiry-stat-card">
+            <div class="stat-card-icon" style="color: var(--gold);"><i class="fas fa-envelope-open-text"></i></div>
+            <div class="stat-content">
+                <div class="report-card-title">Active Queries</div>
+                <div class="report-card-value" style="color: var(--gold);">
+                    {% set new_count = inquiries|selectattr('status', 'equalto', 'New')|rejectattr('inquiry_type', 'equalto', 'Artist')|list|length %}
+                    {{ new_count }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header-row">
+        <div class="search-box-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="inquirySearch" placeholder="Search by name, email or message..." onkeyup="filterInquiries()">
+        </div>
+        <div class="filter-group">
+            <span class="filter-label">Filter:</span>
+            <select id="typeFilter" onchange="filterInquiries()">
+                <option value="all">All Types</option>
+                <option value="tattoo">Tattoo</option>
+                <option value="sketch">Sketch</option>
+                <option value="removal">Removal</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="inquiry-table-wrapper">
+        <table class="inquiry-table">
+            <thead>
+                <tr>
+                    <th>Client Detail</th>
+                    <th>Interest Type</th>
+                    <th>Requested Artist</th>
+                    <th>Message Snippet</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if inquiries %}
+                    {% for item in inquiries if item.inquiry_type|lower != 'artist' %}
+                    <tr class="inquiry-row">
+                        <td>
+                            <div class="client-info-main">
+                                <span class="client-name">{{ item.full_name }}</span>
+                                <span class="inquiry-date">{{ item.submitted_at }}</span>
+                            </div>
+                            <div class="client-email">{{ item.email }}</div>
+                        </td>
+                        <td>
+                            <span class="inquiry-type-badge type-{{ item.inquiry_type }}">
+                                {{ item.inquiry_type }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="artist-req-name">
+                                {{ item.requested_artist or 'Any Artist' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="inquiry-message-preview" title="{{ item.message }}">
+                                "{{ item.message }}"
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ item.status|lower }}">
+                                {{ item.status }}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ item.email }}&su=Tattoo Inquiry Response - Dragon Tattoos&body=Hi {{ item.full_name }}," 
+                               target="_blank" 
+                               class="btn-action-mini" 
+                               title="Reply via Gmail">
+                                <i class="fas fa-reply"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 4rem; color: var(--text-3);">
+                            <i class="fas fa-inbox" style="font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            No inquiries found yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>

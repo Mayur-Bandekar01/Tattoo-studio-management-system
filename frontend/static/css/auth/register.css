@@ -2,16 +2,13 @@
 .bg-layer {
     position: fixed;
     inset: 0;
-    z-index: -10;
+    z-index: -9;
     pointer-events: none;
     overflow: hidden;
 }
 
 .bg-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    animation: orbFloat ease-in-out infinite alternate;
+    display: none;
 }
 
 .bg-orb--1 {
@@ -66,7 +63,7 @@
     inset: 0;
     z-index: -9;
     pointer-events: none;
-    background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, #030303 100%);
+    background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, #000000 100%);
 }
 
 .bg-noise {
@@ -79,16 +76,7 @@
 }
 
 .ambient-glow {
-    position: fixed;
-    top: -10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60vw;
-    height: 400px;
-    z-index: -7;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(200, 160, 64, 0.08) 0%, transparent 65%);
-    filter: blur(60px);
+    display: none;
 }
 
 /* ── EMBERS ── */
@@ -241,6 +229,35 @@
 }
 
 html.light-mode .info-box {
-    background: rgba(132, 94, 194, 0.05);
-    border-color: rgba(132, 94, 194, 0.18);
+    background: #F7F7FF !important;
+    border-color: rgba(39, 24, 126, 0.15) !important;
+}
+
+html.light-mode .info-box p {
+    color: #27187E !important;
+}
+
+html.light-mode .step-dot {
+    background: rgba(39, 24, 126, 0.2) !important;
+}
+
+html.light-mode .step-dot.active {
+    background: #27187E !important;
+    box-shadow: 0 0 10px rgba(39, 24, 126, 0.3) !important;
+}
+
+html.light-mode .bg-layer {
+    background: #F7F7FF !important;
+}
+
+html.light-mode .bg-orb--1 { background: radial-gradient(circle, rgba(39, 24, 126, 0.08) 0%, transparent 70%) !important; }
+html.light-mode .bg-orb--2 { background: radial-gradient(circle, rgba(39, 24, 126, 0.05) 0%, transparent 70%) !important; }
+html.light-mode .bg-orb--3 { background: radial-gradient(circle, rgba(39, 24, 126, 0.03) 0%, transparent 70%) !important; }
+
+html.light-mode .bg-vignette {
+    background: radial-gradient(ellipse 70% 65% at 50% 50%, transparent 0%, rgba(39, 24, 126, 0.05) 100%) !important;
+}
+
+html.light-mode .bg-embers {
+    display: none !important;
 }

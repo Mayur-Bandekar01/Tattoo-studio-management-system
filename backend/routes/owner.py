@@ -91,6 +91,16 @@ def owner_dashboard():
         usage_logs = cursor.fetchall()
         usage_logs = sanitize_for_json(usage_logs)
 
+        # FETCH: Public Inquiries (With requested artist info)
+        cursor.execute("""
+            SELECT i.*, ar.artist_name as requested_artist
+            FROM inquiry i
+            LEFT JOIN artist ar ON i.artist_id = ar.artist_id
+            ORDER BY i.submitted_at DESC
+        """)
+        inquiries = cursor.fetchall()
+        inquiries = sanitize_for_json(inquiries)
+
     # Derived Python Stats
     low_stock_items = [
         i
@@ -109,6 +119,7 @@ def owner_dashboard():
         invoices=sanitize_for_json(invoices),
         payments=sanitize_for_json(payments),
         inventory=sanitize_for_json(inventory),
+        inquiries=inquiries,
         usage_logs=usage_logs,
         artist_performance=sanitize_for_json(perf["artist_performance"]),
         payment_methods=sanitize_for_json(perf["payment_methods"]),
@@ -132,8 +143,8 @@ def owner_dashboard():
             1 for p in payments if p.get("status") == "Pending Approval"
         ),
         returning_customers=stats["returning_customers"],
-        monthly_revenue=stats["monthly_revenue"],
-        monthly_target=stats["monthly_target"],
+        monthly_revenue=sanitize_for_json(stats["monthly_revenue"]),
+        monthly_target=sanitize_for_json(stats["monthly_target"]),
         pending_revenue=sum(
             (i.get("total_amt") or 0)
             for i in invoices
@@ -183,7 +194,7 @@ def owner_delete_invoice(invoice_id):
         cursor.execute("DELETE FROM invoice WHERE invoice_id = %s", (invoice_id,))
         conn.commit()
     flash("Invoice deleted.", "success")
-    return redirect("/owner/reports")
+    return redirect("/owner/dashboard")
 
 
 # ── ARTIST MANAGEMENT (Add/Delete/List) ──────────────────────
@@ -215,7 +226,14 @@ def owner_artist_add():
                 (artist_id, artist_name, artist_email, password, phone, specialisation)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """,
-                (artist_id, artist_name, artist_email, password, phone, specialisation),
+                (
+                    artist_id,
+                    artist_name,
+                    artist_email,
+                    password,
+                    phone,
+                    specialisation,
+                ),
             )
             conn.commit()
             flash(f"Artist '{artist_name}' added successfully!", "success")
@@ -397,20 +415,47 @@ def owner_inventory_delete(item_id):
 @owner_bp.route("/owner/generate-invoice", methods=["POST"])
 @role_required("owner")
 def owner_generate_invoice():
-    appt_id = request.form.get("appointment_id")
-    base_amt = request.form.get("base_amount", "0")
-    tax_amt = request.form.get("tax_amount", "0")
-    total_amt = request.form.get("total_amount", "0")
+    appt_id = request.form.get("appointment_id", "").strip()
+    base_amt = request.form.get("base_amount", "0").strip()
+    tax_amt = request.form.get("tax_amount", "0").strip()
+    total_amt = request.form.get("total_amount", "0").strip()
 
-    if not appt_id or not total_amt or float(total_amt) <= 0:
+    if (
+        not appt_id
+        or not appt_id.isdigit()
+        or not all(is_valid_numeric(v) for v in (base_amt, tax_amt, total_amt))
+        or float(total_amt) <= 0
+        or float(base_amt) < 0
+        or float(tax_amt) < 0
+    ):
         flash("Invalid invoice details!", "error")
         return redirect("/owner/dashboard")
 
     conn = get_db()
-    with conn.cursor() as cursor:
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute(
+            "SELECT status FROM appointment WHERE appointment_id = %s",
+            (appt_id,),
+        )
+        appointment = cursor.fetchone()
+        if not appointment:
+            flash("Appointment not found!", "error")
+            return redirect("/owner/dashboard")
+        if appointment["status"] != "Done":
+            flash("Invoices can only be generated for completed appointments.", "error")
+            return redirect("/owner/dashboard")
+
+        cursor.execute(
+            "SELECT invoice_id FROM invoice WHERE appointment_id = %s",
+            (appt_id,),
+        )
+        if cursor.fetchone():
+            flash("An invoice already exists for this appointment.", "error")
+            return redirect("/owner/dashboard")
+
         cursor.execute("""
             INSERT INTO invoice (appointment_id, base_amt, tax_amt, total_amt, generated_date, pay_status)
-            VALUES (%s, %s, %s, %s, CURDATE(), 'Unpaid')
+            VALUES (%s, %s, %s, %s, CURDATE(), 'Pending')
         """, (appt_id, base_amt, tax_amt, total_amt))
         conn.commit()
     flash("Invoice generated successfully!", "success")
@@ -541,16 +586,16 @@ def owner_change_password():
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
-            "SELECT * FROM owner WHERE password = %s",
-            (current,),
+            "SELECT * FROM owner WHERE owner_id = %s AND password = %s",
+            (session["user_id"], current),
         )
         if not cursor.fetchone():
             flash("Current password is incorrect!", "error")
             return redirect("/owner/dashboard")
 
         cursor.execute(
-            "UPDATE owner SET password = %s",
-            (new_pass,),
+            "UPDATE owner SET password = %s WHERE owner_id = %s",
+            (new_pass, session["user_id"]),
         )
         conn.commit()
     flash("Password updated successfully!", "success")

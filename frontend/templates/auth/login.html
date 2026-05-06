@@ -1,205 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tattoos | Studio Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+{% block title %}Dragon Tattoos | Studio Login{% endblock %}
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Cinzel', 'serif'] },
-                    colors: {
-                        gold: '#c8a040',
-                        goldLt: '#e0b84a',
-                        goldDk: '#8a6820',
-                    }
-                }
-            }
-        }
-    </script>
+{% block meta_description %}Access your customer or artist portal. Experience uncompromising quality and precision ink at Dragon Tattoos.{% endblock %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
-    <script src="{{ url_for('static', filename='js/auth/theme.js') }}"></script>
-</head>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
+<style>
+    /* Scoped layout fix for Login Page */
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6rem 1.5rem 4rem;
+        position: relative;
+        z-index: 1;
+    }
 
-<body
-    style="min-height:100vh;padding:1rem;padding-top:5rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:center;">
+    /* Background Elements Scoped to this page */
+    .mesh-bg {
+        position: fixed;
+        inset: 0;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(200, 160, 64, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(200, 160, 64, 0.05) 0%, transparent 40%);
+        z-index: -2;
+    }
 
-    <!-- NAVBAR -->
-    <nav>
-        <div
-            style="width:100%;display:flex;align-items:center;justify-content:space-between;">
-            <a href="/" style="display:flex;align-items:center;gap:0.7rem;text-decoration:none;">
-                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                    style="width:2rem;height:2rem;border-radius:50%;object-fit:cover;">
-                <span id="navBrand"
-                    style="font-family:'Cinzel',serif;color:#f5f5f7;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;">Dragon
-                    Tattoos</span>
-            </a>
-            <div style="display:flex;align-items:center;gap:3.50rem;">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/about" class="nav-link">About</a>
-                <a href="/services" class="nav-link">Services</a>
-                <a href="/gallery" class="nav-link">Gallery</a>
-                <a href="/contact" class="nav-link">Contact</a>
+    .ambient-glow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(200, 160, 64, 0.08) 0%, transparent 70%);
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}{% endblock %}
+
+{% block content %}
+<!-- BACKGROUND ELEMENTS -->
+<div class="mesh-bg"></div>
+<div class="ambient-glow"></div>
+
+<div class="card-wrap w-full page-enter mx-auto" style="max-width:580px;">
+    <div class="card-body">
+        <!-- Header -->
+        <div id="cardHeader" style="padding:2.5rem 2.5rem 1.5rem; text-align:center; border-bottom:1px solid rgba(200,160,64,0.15); background:linear-gradient(180deg, rgba(30,20,0,0.4) 0%, transparent 100%);">
+            <div id="logoCircle" style="display:inline-flex; align-items:center; justify-content:center; width:5rem; height:5rem; border-radius:50%; margin-bottom:1.25rem; overflow:hidden; border:2px solid rgba(200,160,64,0.4); box-shadow: 0 0 30px rgba(200,160,64,0.15); background:#0a0800;">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" style="width:100%; height:100%; object-fit:cover;">
             </div>
-            <div style="display:flex;align-items:center;gap:1rem;">
-                <button id="globalThemeBtn" class="header-theme-btn" onclick="toggleTheme()" title="Toggle theme"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:50%;background:transparent;border:1.5px solid rgba(200,160,64,0.3);color:#a89060;font-size:0.8rem;cursor:pointer;transition:all 0.2s;">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-                <a href="/" class="btn-home">← Home</a>
-            </div>
+            <h1 class="title-grad" style="font-family:'Cinzel Decorative', cursive; font-size:2rem; letter-spacing:0.08em; margin-bottom:0.4rem; font-weight: 700;">DRAGON TATTOOS</h1>
+            <p id="cardSubtitle" style="color:#a89060; font-size:0.75rem; letter-spacing:0.25em; text-transform:uppercase; margin:0; font-weight: 600; opacity: 0.8;">
+                Studio Management System
+            </p>
         </div>
-    </nav>
 
+        <!-- Form Container -->
+        <div style="padding:2.5rem;">
+            <form id="loginForm" method="POST" action="/login" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
+                <!-- Role Selector -->
+                <div style="margin-bottom:1.75rem;">
+                    <label style="display:block; font-size:0.75rem; font-weight:700; color:#a89060; margin-bottom:0.8rem; letter-spacing:0.12em; text-transform:uppercase;">Select Your Role</label>
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.8rem;">
+                        <div>
+                            <input type="radio" name="role" id="r-cust" value="customer" class="sr-only" required onchange="handleRole(this)">
+                            <label for="r-cust" class="role-card" id="lbl-cust">
+                                <i class="fa-regular fa-user" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
+                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Customer</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="role" id="r-art" value="artist" class="sr-only" onchange="handleRole(this)">
+                            <label for="r-art" class="role-card" id="lbl-art">
+                                <i class="fa-solid fa-pen-nib" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
+                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Artist</span>
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="role" id="r-own" value="owner" class="sr-only" onchange="handleRole(this)">
+                            <label for="r-own" class="role-card" id="lbl-own">
+                                <i class="fa-solid fa-crown" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
+                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Owner</span>
+                            </label>
+                        </div>
+                    </div>
 
-
-    <!-- LOGIN CARD -->
-    <div class="card-wrap w-full page-enter" style="max-width:620px;">
-        <div class="card-body">
-
-            <!-- Header -->
-            <div id="cardHeader"
-                style="padding:2.25rem 2.5rem 1.5rem;text-align:center;border-bottom:1px solid rgba(200,160,64,0.2);background:linear-gradient(180deg,rgba(30,20,0,0.5) 0%,transparent 100%);">
-                <div id="logoCircle"
-                    style="display:inline-flex;align-items:center;justify-content:center;width:4.75rem;height:4.75rem;border-radius:50%;margin-bottom:1rem;overflow:hidden;border:2px solid rgba(200,160,64,0.55);box-shadow:0 0 28px rgba(200,160,64,0.25),0 0 8px rgba(200,160,64,0.15);background:#0a0800;">
-                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
-                        style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    <!-- Register Prompt -->
+                    <div class="reg-prompt" id="registerPrompt" style="margin-top: 1.25rem;">
+                        <p style="font-size:0.85rem; color:#8b8b93; margin:0;">
+                            New customer? <a href="/register" style="color:#c8a040; font-weight:700; text-decoration:none;" class="hover:text-goldLt transition-colors">Register here →</a>
+                        </p>
+                    </div>
                 </div>
-                <h1 class="title-grad"
-                    style="font-family:'Cinzel',serif;font-size:1.85rem;letter-spacing:0.06em;margin:0 0 0.3rem;">DRAGON
-                    TATTOOS</h1>
-                <p id="cardSubtitle"
-                    style="color:#a89060;font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;margin:0;">
-                    Studio Management System</p>
-            </div>
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div style="padding:0.75rem 1.5rem 0;">
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:#fca5a5;">
-                    {{ message }}</div>
-                {% else %}
-                <div
-                    style="padding:0.6rem 0.9rem;border-radius:0.5rem;font-size:0.82rem;margin-bottom:0.4rem;background:rgba(200,160,64,0.1);border:1px solid rgba(200,160,64,0.3);color:#e0b84a;">
-                    {{ message }}</div>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <!-- Form -->
-            <div style="padding:2rem 2.5rem 2.5rem;">
-                <form id="loginForm" method="POST" action="/login" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <!-- Role Selector -->
-                    <div style="margin-bottom:1.25rem;">
-                        <label
-                            style="display:block;font-size:0.72rem;font-weight:600;color:#a89060;margin-bottom:0.6rem;letter-spacing:0.10em;text-transform:uppercase;">Select
-                            Your Role</label>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;">
-                            <div>
-                                <input type="radio" name="role" id="r-cust" value="customer" class="sr-only" required
-                                    onchange="handleRole(this)">
-                                <label for="r-cust" class="role-card" id="lbl-cust">
-                                    <i class="fa-regular fa-user" style="font-size:1.1rem;margin-bottom:0.3rem;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Customer</span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" name="role" id="r-art" value="artist" class="sr-only"
-                                    onchange="handleRole(this)">
-                                <label for="r-art" class="role-card" id="lbl-art">
-                                    <i class="fa-solid fa-pen-nib" style="font-size:1.1rem;margin-bottom:0.3rem;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Artist</span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="radio" name="role" id="r-own" value="owner" class="sr-only"
-                                    onchange="handleRole(this)">
-                                <label for="r-own" class="role-card" id="lbl-own">
-                                    <i class="fa-solid fa-crown" style="font-size:1.1rem;margin-bottom:0.3rem;"></i>
-                                    <span
-                                        style="font-size:0.63rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Owner</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Register Prompt (customer only) -->
-                        <div class="reg-prompt" id="registerPrompt">
-                            <p style="font-size:0.8rem;color:#8b8b93;margin:0;">
-                                New customer? <a href="/register"
-                                    style="color:#c8a040;font-weight:600;text-decoration:none;"
-                                    onmouseover="this.style.color='#e0b84a'"
-                                    onmouseout="this.style.color='#c8a040'">Register here →</a>
-                            </p>
+                <!-- Fields Section -->
+                <div class="form-section" id="formSection" style="display:flex; flex-direction:column; gap:1.25rem;">
+                    <div>
+                        <label for="username" style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color: rgba(168, 144, 96, 0.9);">Email / ID</label>
+                        <input type="email" id="username" name="email" class="field" placeholder="Enter your email address" required oninput="validate()" autocomplete="username">
+                    </div>
+                    <div style="position:relative;">
+                        <label for="password" style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color: rgba(168, 144, 96, 0.9);">Password</label>
+                        <div style="position:relative;">
+                            <input type="password" id="password" name="password" class="field" placeholder="Enter your password" required oninput="validate()" autocomplete="current-password" style="padding-right:3rem;">
+                            <button type="button" onclick="toggleEye()" id="eyeBtn" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#a89060;" aria-label="Toggle password visibility">
+                                <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Form Fields -->
-                    <div class="form-section" id="formSection" style="display:flex;flex-direction:column;gap:1rem;">
-                        <div>
-                            <label for="username"
-                                style="display:block;font-size:0.7rem;font-weight:600;color:#a89060;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">Email
-                                / ID</label>
-                            <input type="email" id="username" name="email" class="field"
-                                placeholder="Enter your email address" required oninput="validate()"
-                                autocomplete="username">
-                        </div>
-                        <div>
-                            <label for="password"
-                                style="display:block;font-size:0.7rem;font-weight:600;color:#a89060;margin-bottom:0.4rem;letter-spacing:0.08em;text-transform:uppercase;">Password</label>
-                            <div style="position:relative;">
-                                <input type="password" id="password" name="password" class="field"
-                                    placeholder="Enter your password" required oninput="validate()"
-                                    autocomplete="current-password" style="padding-right:2.75rem;">
-                                <button type="button" onclick="toggleEye()" id="eyeBtn"
-                                    style="position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#a89060;transition:color 0.2s;padding:0;"
-                                    onmouseover="this.style.color='#e0b84a'" onmouseout="this.style.color='#a89060'"
-                                    aria-label="Toggle password visibility">
-                                    <i class="fa-regular fa-eye" id="eyeIcon"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Forgot Password Link -->
-                        <div id="forgotPasswordContainer" style="text-align:right;margin-top:-0.25rem;display:none;">
-                            <a href="/forgot-password"
-                                style="font-size:0.72rem;color:#a89060;text-decoration:none;transition:color 0.2s;"
-                                onmouseover="this.style.color='#e0b84a'" onmouseout="this.style.color='#a89060'">
-                                Forgot password?
-                            </a>
-                        </div>
+                    <!-- Forgot Password -->
+                    <div id="forgotPasswordContainer" style="text-align:right; margin-top:-0.5rem; display:none;">
+                        <a href="/forgot-password" style="font-size:0.75rem; color:#a89060; text-decoration:none; font-weight: 500;" class="hover:text-goldLt transition-colors">
+                            Forgot password?
+                        </a>
                     </div>
+                </div>
 
-                    <!-- Buttons -->
-                    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
-                        <button type="submit" id="submitBtn" class="btn-gold" disabled>LOGIN</button>
-                        <button type="button" class="btn-outline" onclick="resetForm()">RESET</button>
-                    </div>
-                </form>
-            </div>
+                <!-- Action Buttons -->
+                <div style="display:flex; gap:1rem; margin-top:2rem;">
+                    <button type="submit" id="submitBtn" class="btn-gold w-full" disabled>LOGIN</button>
+                    <button type="button" class="btn-outline px-8" onclick="resetForm()">RESET</button>
+                </div>
+            </form>
         </div>
-      <script src="{{ url_for('static', filename='js/auth/auth.js') }}"></script>
     </div>
-</body>
+</div>
+{% endblock %}
 
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/auth/auth.js') }}"></script>
+<script>
+    // Local Page Animations or Fixes
+    document.addEventListener('DOMContentLoaded', () => {
+        // Any specific login page initialization
+    });
+</script>
+{% endblock %}

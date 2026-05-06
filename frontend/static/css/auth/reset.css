@@ -40,7 +40,7 @@
 }
 
 .card-inner {
-    background: #050505;
+    background: #000000;
     border-radius: calc(1.5rem - 2px);
     padding: 2.5rem;
     overflow: hidden;
@@ -341,48 +341,51 @@
 
 /* ── Light Mode ── */
 html.light-mode .glass-card {
-    background: linear-gradient(145deg, #4a3896 0%, #27187E 35%, #1d1066 55%, #150a4d 100%);
-    box-shadow: 0 20px 60px rgba(39,24,126,0.2);
+    background: linear-gradient(145deg, #27187E 0%, #1e1261 100%);
+    box-shadow: 0 20px 60px rgba(39, 24, 126, 0.15);
 }
 html.light-mode .card-inner { background: #ffffff; }
 html.light-mode .card-title {
     background: linear-gradient(135deg, #27187E, #4a3896);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-html.light-mode .card-subtitle { color: #6b7280; }
-html.light-mode .input-label { color: rgba(39,24,126,0.75); }
+html.light-mode .card-subtitle { color: rgba(39, 24, 126, 0.6); }
+html.light-mode .input-label { color: #27187E; opacity: 0.8; }
 html.light-mode .input-field {
-    background: #f8f9fa; border-color: rgba(39,24,126,0.3); color: #1f2937;
+    background: #f8f9fa; border-color: rgba(39, 24, 126, 0.2); color: #27187E;
 }
-html.light-mode .input-field::placeholder { color: rgba(39,24,126,0.3); }
+html.light-mode .input-field::placeholder { color: rgba(39, 24, 126, 0.35); }
 html.light-mode .input-field:focus {
-    border-color: rgba(39,24,126,0.8);
-    box-shadow: 0 0 0 3px rgba(39,24,126,0.1);
+    border-color: #27187E;
+    box-shadow: 0 0 0 3px rgba(39, 24, 126, 0.1);
 }
-html.light-mode .input-icon { color: rgba(39,24,126,0.4); }
+html.light-mode .input-icon { color: rgba(39, 24, 126, 0.4); }
 html.light-mode .input-icon:hover { color: #27187E; }
-html.light-mode .strength-panel { background: rgba(39,24,126,0.04); border-color: rgba(39,24,126,0.15); }
-html.light-mode .strength-label { color: rgba(39,24,126,0.55); }
+html.light-mode .strength-panel { background: #F7F7FF; border-color: rgba(39, 24, 126, 0.15); }
+html.light-mode .strength-label { color: rgba(39, 24, 126, 0.55); }
 html.light-mode .strength-value { color: #27187E; }
-html.light-mode .strength-bar { background: rgba(39,24,126,0.08); }
-html.light-mode .req-item { color: rgba(39,24,126,0.5); }
+html.light-mode .strength-bar { background: rgba(39, 24, 126, 0.1); }
+html.light-mode .req-item { color: rgba(39, 24, 126, 0.5); }
 html.light-mode .submit-btn {
-    background: linear-gradient(135deg, #27187E, #4a3896);
+    background: #27187E;
     color: #ffffff;
-    box-shadow: 0 4px 20px rgba(39,24,126,0.3);
+    box-shadow: 0 4px 20px rgba(39, 24, 126, 0.25);
 }
-html.light-mode .submit-btn:not(:disabled):hover { box-shadow: 0 8px 30px rgba(39,24,126,0.4); }
-html.light-mode .back-link { color: rgba(39,24,126,0.5); }
+html.light-mode .submit-btn:not(:disabled):hover { 
+    background: #1e1261;
+    box-shadow: 0 8px 30px rgba(39, 24, 126, 0.35); 
+}
+html.light-mode .back-link { color: rgba(39, 24, 126, 0.5); }
 html.light-mode .back-link:hover { color: #27187E; }
 html.light-mode .icon-ring {
-    background: rgba(39,24,126,0.08); border-color: rgba(39,24,126,0.3); color: #27187E;
+    background: #F7F7FF; border-color: rgba(39, 24, 126, 0.3); color: #27187E;
 }
-html.light-mode .mesh-bg { background: #F7F7FF; }
-html.light-mode .navbar { background: rgba(247,247,255,0.9); border-bottom-color: rgba(39,24,126,0.12); }
+html.light-mode .mesh-bg { background: #F7F7FF !important; }
+html.light-mode .navbar { background: rgba(247, 247, 255, 0.95); border-bottom-color: rgba(39, 24, 126, 0.12); }
 html.light-mode .brand-text { color: #27187E; }
-html.light-mode .nav-link { color: rgba(39,24,126,0.6); }
+html.light-mode .nav-link { color: rgba(39, 24, 126, 0.6); }
 html.light-mode .nav-link:hover { color: #27187E; }
-html.light-mode .icon-btn { border-color: rgba(39,24,126,0.2); color: rgba(39,24,126,0.6); }
+html.light-mode .icon-btn { border-color: rgba(39, 24, 126, 0.2); color: rgba(39, 24, 126, 0.6); }
 html.light-mode .icon-btn:hover { border-color: #27187E; color: #27187E; }
 
 @media (max-width: 480px) {
