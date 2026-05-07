@@ -43,21 +43,21 @@
     </div>
 
     <!-- ── Premium Hero Banner ── -->
-    <div class="master-banner">
+    <div class="master-banner reveal">
         <div class="master-banner-glow"></div>
-        <div class="master-banner-eyebrow">
+        <div class="master-banner-eyebrow reveal" style="animation-delay: 0.1s;">
             <i class="fas fa-sparkles"></i> Welcome back, {{ name }}
         </div>
         {% if upcoming %}
             {% set next_appt = upcoming[0] %}
-            <h2>Next Session.</h2>
-            <p>Your next artistic journey is scheduled for <strong>{{ next_appt.appointment_date }}</strong> at <strong>{{ next_appt.appointment_time }}</strong> with Artist <strong>{{ next_appt.artist_name }}</strong>.</p>
+            <h2 class="reveal" style="animation-delay: 0.2s;">Next Session.</h2>
+            <p class="reveal" style="animation-delay: 0.3s;">Your next artistic journey is scheduled for <strong>{{ next_appt.appointment_date }}</strong> at <strong>{{ next_appt.appointment_time }}</strong> with Artist <strong>{{ next_appt.artist_name }}</strong>.</p>
         {% else %}
-            <h2>Your Canvas Awaits.</h2>
-            <p>Our world-class artists are ready to transform your vision into a permanent masterpiece. Explore our portfolio or start your next booking today.</p>
+            <h2 class="reveal" style="animation-delay: 0.2s;">Your Canvas Awaits.</h2>
+            <p class="reveal" style="animation-delay: 0.3s;">Our world-class artists are ready to transform your vision into a permanent masterpiece. Explore our portfolio or start your next booking today.</p>
         {% endif %}
         
-        <div class="master-banner-actions">
+        <div class="master-banner-actions reveal" style="animation-delay: 0.4s;">
             {% if upcoming %}
                 <button onclick="switchTab('appointments')" class="btn-gold">
                     <i class="fas fa-calendar-alt"></i> View My Sessions

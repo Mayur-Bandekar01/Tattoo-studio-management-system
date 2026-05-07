@@ -6,6 +6,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     initRevealObserver();
     initStatsCounter();
+    
+    // Initialize Global Lightbox for Home Page Style Cards
+    if (window.dragonLightbox) {
+        const styleCards = document.querySelectorAll('.style-card');
+        window.dragonLightbox.bind(styleCards, (el) => {
+            const img = el.querySelector('img');
+            const title = el.querySelector('h3')?.textContent;
+            const desc = el.querySelector('p')?.textContent;
+            return {
+                src: img.src,
+                caption: title,
+                artist: desc || 'Signature Style'
+            };
+        });
+    }
 });
 
 /**

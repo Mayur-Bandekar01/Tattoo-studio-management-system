@@ -110,23 +110,37 @@
 
 /* -- MASTER BANNER -- */
 .master-banner { 
-    background: var(--surface);
-    background: linear-gradient(165deg, var(--surface) 0%, #0d0d0f 40%, var(--bg) 100%);
-    border: 1px solid var(--border);
-    border-radius: 24px;
+    background: #09090b;
+    background: linear-gradient(165deg, #18181b 0%, #09090b 40%, #000000 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
     padding: 3.5rem 3.5rem;
-    margin-bottom: 1.5rem; 
+    margin-bottom: 2rem; 
     position: relative;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
+/* Grain Overlay for Premium Depth */
 .master-banner::before {
     content: '';
     position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Scarlet Vertical Accent Glow */
+.master-banner::after {
+    content: '';
+    position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 8px;
-    background: linear-gradient(to bottom, var(--gold), #ff8a00, var(--gold-light));
+    width: 6px;
+    background: linear-gradient(to bottom, #fb3640, #ff4d56, #fb3640);
+    box-shadow: 4px 0 20px rgba(251, 54, 64, 0.3);
     z-index: 2;
 }
 
@@ -135,22 +149,15 @@
     position: absolute;
     inset: 0;
     background: 
-        radial-gradient(circle at 70% 20%, var(--gold-glow) 0%, transparent 50%),
-        radial-gradient(circle at 95% 50%, rgba(251, 54, 64, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 10% 80%, rgba(201, 168, 76, 0.05) 0%, transparent 40%);
-    opacity: 0.6;
+        radial-gradient(circle at 85% 15%, rgba(251, 54, 64, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(251, 54, 64, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 0% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+    opacity: 0.8;
     pointer-events: none;
     z-index: 0;
 }
 
-.master-banner::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fb3640' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.5;
-    z-index: 0;
-}
+/* Removed generic grid pattern in favor of custom grain */
 
 .master-banner > * { position: relative; z-index: 1; }
 
@@ -193,44 +200,59 @@
 }
 
 .master-banner .btn-gold {
-    background: var(--text-1);
-    color: var(--bg);
-    border: none;
-    padding: 1.125rem 2.5rem;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #fb3640 0%, #db2a32 100%);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.125rem 2.75rem;
+    border-radius: 14px;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    letter-spacing: 0.12em;
+    box-shadow: 0 10px 30px rgba(251, 54, 64, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.master-banner .btn-gold::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+.master-banner .btn-gold:hover::before {
+    left: 100%;
 }
 
 .master-banner .btn-gold:hover {
-    background: var(--gold);
-    color: #000;
-    transform: translateY(-4px);
-    box-shadow: 0 15px 40px var(--gold-glow);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 45px rgba(251, 54, 64, 0.4);
+    filter: brightness(1.1);
 }
 
 .master-banner .btn-outline-white {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--text-2);
-    padding: 1.125rem 2.5rem;
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 1.125rem 2.75rem;
+    border-radius: 14px;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    letter-spacing: 0.12em;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .master-banner .btn-outline-white:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: var(--text-1);
-    color: var(--text-1);
-    transform: translateY(-4px);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(255, 255, 255, 0.1);
 }
 
 /* Light Mode Overrides for Banner */
@@ -242,11 +264,25 @@
 /* Removed redundant glow override to preserve vertical accent line */
 
 [data-theme="ivory"] .master-banner .btn-gold {
-    background: #18181b;
+    background: linear-gradient(135deg, #18181b 0%, #000000 100%);
     color: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="ivory"] .master-banner .btn-gold:hover {
-    background: var(--gold);
+    background: linear-gradient(135deg, #fb3640 0%, #db2a32 100%);
+    color: #ffffff;
+    box-shadow: 0 15px 35px rgba(251, 54, 64, 0.25);
+}
+
+[data-theme="ivory"] .master-banner .btn-outline-white {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #475569;
+}
+
+[data-theme="ivory"] .master-banner .btn-outline-white:hover {
+    background: #18181b;
+    border-color: #18181b;
     color: #ffffff;
 }

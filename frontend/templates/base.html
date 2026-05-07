@@ -224,7 +224,31 @@
     </footer>
     {% endblock %}
 
+    <!-- LIGHTBOX (GLOBAL) -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image Preview">
+        <button class="lightbox-close" id="lbClose" aria-label="Close Preview">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous Image">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="lb-nav lb-next" id="lbNext" aria-label="Next Image">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="lightbox-img-wrapper" id="lbWrapper">
+            <img src="" alt="" class="lightbox-img" id="lbImg">
+        </div>
+
+        <div class="lightbox-info">
+            <h3 id="lbCaption" class="font-display text-xl text-apple-text mb-1"></h3>
+            <p id="lbArtist" class="text-xs text-apple-gold tracking-widest uppercase font-semibold"></p>
+        </div>
+    </div>
+
     <!-- Global JS -->
+    <script src="{{ url_for('static', filename='js/landing/lightbox.js') }}"></script>
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');

@@ -62,69 +62,34 @@ function initFiltering() {
 document.addEventListener('DOMContentLoaded', () => {
     initFiltering();
     initRevealObserver();
-    initLightbox();
+    
+    // Initialize Global Lightbox for Gallery Items
+    if (window.dragonLightbox) {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        window.dragonLightbox.bind(galleryItems, (el) => {
+            // Match the data attributes from gallery.html
+            return {
+                src: el.getAttribute('data-img'),
+                caption: el.getAttribute('data-title'),
+                artist: 'Artist: ' + (el.getAttribute('data-artist') || 'Dragon Tattoos')
+            };
+        });
+    }
 });
 
 /**
- * Lightbox System
+ * Legacy support for inline onclick="openLightbox(this)"
+ * Re-routing to the new global instance
  */
-let currentLbIndex = -1;
-let lbItems = [];
-
-function initLightbox() {
-    const lightbox = document.getElementById('lightbox');
-    if (!lightbox) return;
-
-    lightbox.addEventListener('click', function (e) { 
-        if (e.target === this) closeLightbox(); 
-    });
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') changeLightbox(1);
-        if (e.key === 'ArrowLeft') changeLightbox(-1);
-    });
-
-    // Expose to window
-    window.openLightbox = openLightbox;
-    window.closeLightbox = closeLightbox;
-    window.changeLightbox = changeLightbox;
-}
-
-function openLightbox(el) {
-    updateLbItems();
-    currentLbIndex = lbItems.indexOf(el);
-    renderLightbox(el);
-    document.getElementById('lightbox').classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-
-function updateLbItems() {
-    lbItems = Array.from(document.querySelectorAll('.gallery-item'))
-        .filter(item => item.style.display !== 'none');
-}
-
-function renderLightbox(el) {
-    const img = el.dataset.img;
-    const title = el.dataset.title;
-    const artist = el.dataset.artist;
-    const style = el.dataset.style;
-    const spec = el.dataset.spec;
-
-    document.getElementById('lbImg').src = img;
-    document.getElementById('lbTitle').textContent = title;
-    document.getElementById('lbArtist').textContent = 'By ' + artist;
-    document.getElementById('lbStyle').textContent = style || 'Ink';
-    document.getElementById('lbSpec').textContent = spec || '';
-}
-
-function changeLightbox(dir) {
-    if (lbItems.length === 0) return;
-    currentLbIndex = (currentLbIndex + dir + lbItems.length) % lbItems.length;
-    renderLightbox(lbItems[currentLbIndex]);
-}
-
-function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-    document.body.style.overflow = '';
-}
+window.openLightbox = (el) => {
+    if (window.dragonLightbox) {
+        const items = document.querySelectorAll('.gallery-item');
+        window.dragonLightbox.items = Array.from(items).filter(i => i.style.display !== 'none');
+        window.dragonLightbox.currentIndex = window.dragonLightbox.items.indexOf(el);
+        window.dragonLightbox.open(el, (e) => ({
+            src: e.getAttribute('data-img'),
+            caption: e.getAttribute('data-title'),
+            artist: 'Artist: ' + (e.getAttribute('data-artist') || 'Dragon Tattoos')
+        }));
+    }
+};

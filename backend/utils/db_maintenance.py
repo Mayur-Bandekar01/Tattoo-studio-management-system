@@ -154,3 +154,25 @@ def ensure_schema_consistency():
             conn.commit()
         except Exception as e:
             pass
+
+        # 12. Seed Gallery (Portfolio)
+        cursor.execute("SELECT COUNT(*) as count FROM gallery")
+        if cursor.fetchone()["count"] == 0:
+            gallery_to_seed = [
+                ("DRAG-ART-001", "images/gallery_portrait.jpg", "The Warrior's Path", "Tattoo"),
+                ("DRAG-ART-001", "images/gallery_sleeve.jpg", "Vortex Mandala", "Tattoo"),
+                ("DRAG-ART-001", "images/gallery_sketch.jpg", "Cobra Flash", "Sketch"),
+                ("DRAG-ART-003", "images/gallery_removal.jpg", "Clear Horizon", "Tattoo Removal"),
+                ("DRAG-ART-001", "images/gallery_traditional.jpg", "Old School Fury", "Tattoo"),
+                ("DRAG-ART-001", "images/style_blackwork.jpg", "Obsidian Geometry", "Tattoo"),
+                ("DRAG-ART-001", "images/style_realistic.jpg", "Hyper-Focus", "Tattoo"),
+                ("DRAG-ART-001", "images/gallery_botanical.jpg", "Serene Flora", "Tattoo"),
+            ]
+            try:
+                cursor.executemany("""
+                    INSERT INTO gallery (artist_id, image_path, caption, style) 
+                    VALUES (%s, %s, %s, %s)
+                """, gallery_to_seed)
+                conn.commit()
+            except Exception as e:
+                pass

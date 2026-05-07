@@ -37,197 +37,24 @@
     <div class="max-w-7xl mx-auto">
         <div id="gallery-grid" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             
-            <!-- Item 1: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo" 
-                 data-img="{{ url_for('static', filename='images/gallery_portrait.jpg') }}"
-                 data-title="The Warrior's Path" data-artist="Mayur Bandekar" 
-                 data-style="Hyper-Realism" data-spec="12 Hours • Arm Piece"
-                 onclick="openLightbox(this)">
+            {% for item in gallery %}
+            <div class="gallery-item group reveal" 
+                 data-category="{% if item.style == 'Tattoo' %}tattoo{% elif item.style == 'Sketch' %}sketch{% elif item.style == 'Tattoo Removal' %}removal{% else %}tattoo{% endif %}" 
+                 data-img="{{ url_for('static', filename=item.image_path) }}"
+                 data-title="{{ item.caption or 'Untitled Masterpiece' }}" 
+                 data-artist="{{ item.artist_name }}" 
+                 data-style="{{ item.style or 'Custom Art' }}" 
+                 data-spec="{{ item.uploaded_at.strftime('%d %b %Y') if item.uploaded_at else '' }}">
                 <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='images/gallery_portrait.jpg') }}" alt="Hyper-Realism Portrait" class="gallery-img" loading="lazy">
-                    <div class="gallery-tag">Realism</div>
+                    <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork by ' ~ item.artist_name }}" class="gallery-img" loading="lazy">
+                    <div class="gallery-tag">{{ item.style or 'Ink' }}</div>
                     <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">The Warrior's Path</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • 12 Hours</p>
+                        <h3 class="font-display text-xl text-white mb-1">{{ item.caption or 'Untitled' }}</h3>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">{{ item.artist_name }} • {{ item.style or 'Tattoo' }}</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Item 2: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo"
-                 data-img="{{ url_for('static', filename='images/gallery_sleeve.jpg') }}"
-                 data-title="Vortex Mandala" data-artist="Kiran S." 
-                 data-style="Blackwork" data-spec="42 Hours • Full Sleeve"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='images/gallery_sleeve.jpg') }}" alt="Geometric Blackwork Sleeve" class="gallery-img">
-                    <div class="gallery-tag">Blackwork</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Vortex Mandala</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • 42 Hours</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 3: Sketch -->
-            <div class="gallery-item group reveal" data-category="sketch"
-                 data-img="{{ url_for('static', filename='images/gallery_sketch.jpg') }}"
-                 data-title="Cobra Flash" data-artist="Mayur Bandekar" 
-                 data-style="Illustrative" data-spec="Charcoal & Ink"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[1/1]">
-                    <img src="{{ url_for('static', filename='images/gallery_sketch.jpg') }}" alt="Artist Sketch" class="gallery-img">
-                    <div class="gallery-tag">Original Sketch</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Cobra Flash</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Charcoal & Ink</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 4: Removal -->
-            <div class="gallery-item group reveal" data-category="removal"
-                 data-img="{{ url_for('static', filename='images/gallery_removal.jpg') }}"
-                 data-title="Clear Horizon" data-artist="Clinical Team" 
-                 data-style="Laser Therapy" data-spec="Session 4 of 6"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[1/1]">
-                    <img src="{{ url_for('static', filename='images/gallery_removal.jpg') }}" alt="Tattoo Removal" class="gallery-img">
-                    <div class="gallery-tag">Laser Removal</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Clear Horizon</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Removal • Session 4 of 6</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 5: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo"
-                 data-img="{{ url_for('static', filename='images/gallery_traditional.jpg') }}"
-                 data-title="Old School Fury" data-artist="Kiran S." 
-                 data-style="Traditional" data-spec="Classic Color"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[4/5]">
-                    <img src="{{ url_for('static', filename='images/gallery_traditional.jpg') }}" alt="Traditional Tiger" class="gallery-img">
-                    <div class="gallery-tag">Traditional</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Old School Fury</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Classic Color</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 6: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo"
-                 data-img="{{ url_for('static', filename='images/style_blackwork.jpg') }}"
-                 data-title="Obsidian Geometry" data-artist="Mayur Bandekar" 
-                 data-style="Blackwork" data-spec="Custom Chest Piece"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[1/1]">
-                    <img src="{{ url_for('static', filename='images/style_blackwork.jpg') }}" alt="Custom Blackwork" class="gallery-img">
-                    <div class="gallery-tag">Blackwork</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Obsidian Geometry</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Design</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 7: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo"
-                 data-img="{{ url_for('static', filename='images/style_realistic.jpg') }}"
-                 data-title="Hyper-Focus" data-artist="Mayur Bandekar" 
-                 data-style="Micro-Realism" data-spec="Eye Portrait"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[1/1]">
-                    <img src="{{ url_for('static', filename='images/style_realistic.jpg') }}" alt="Realistic Detail" class="gallery-img">
-                    <div class="gallery-tag">Realism</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Hyper-Focus</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Portrait Detail</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 8: Tattoo -->
-            <div class="gallery-item group reveal" data-category="tattoo"
-                 data-img="{{ url_for('static', filename='images/gallery_botanical.jpg') }}"
-                 data-title="Serene Flora" data-artist="Kiran S." 
-                 data-style="Fine Line" data-spec="Single Needle Botanical"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[1/1]">
-                    <img src="{{ url_for('static', filename='images/gallery_botanical.jpg') }}" alt="Botanical Piece" class="gallery-img">
-                    <div class="gallery-tag">Fine Line</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Serene Flora</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Single Needle</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 9: Uploaded Tattoo 1 -->
-            <div class="gallery-item group reveal" data-category="tattoo" 
-                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1773496586.png') }}"
-                 data-title="Dragon Spirit I" data-artist="Dragon Tattoos" 
-                 data-style="Custom Art" data-spec="New Release"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1773496586.png') }}" alt="Dragon Art 001" class="gallery-img">
-                    <div class="gallery-tag">New Release</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Dragon Spirit I</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Art</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 10: Uploaded Tattoo 2 -->
-            <div class="gallery-item group reveal" data-category="tattoo" 
-                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1774094082.jpg') }}"
-                 data-title="Dragon Spirit II" data-artist="Dragon Tattoos" 
-                 data-style="Custom Art" data-spec="New Release"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-001_1774094082.jpg') }}" alt="Dragon Art 001 Alt" class="gallery-img">
-                    <div class="gallery-tag">New Release</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Dragon Spirit II</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Tattoo • Custom Art</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 11: Uploaded Sketch 3 -->
-            <div class="gallery-item group reveal" data-category="sketch" 
-                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1774096039.png') }}"
-                 data-title="Mythical Beast I" data-artist="Dragon Tattoos" 
-                 data-style="Custom Art" data-spec="New Release"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1774096039.png') }}" alt="Dragon Art 002" class="gallery-img">
-                    <div class="gallery-tag">New Release</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Mythical Beast I</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Custom Art</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 12: Uploaded Sketch 4 -->
-            <div class="gallery-item group reveal" data-category="sketch" 
-                 data-img="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1775332289.png') }}"
-                 data-title="Mythical Beast II" data-artist="Dragon Tattoos" 
-                 data-style="Custom Art" data-spec="New Release"
-                 onclick="openLightbox(this)">
-                <div class="gallery-img-container aspect-[3/4]">
-                    <img src="{{ url_for('static', filename='uploads/gallery/gallery_DRAG-ART-002_1775332289.png') }}" alt="Dragon Art 002 Alt" class="gallery-img">
-                    <div class="gallery-tag">New Release</div>
-                    <div class="gallery-overlay">
-                        <h3 class="font-display text-xl text-white mb-1">Mythical Beast II</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">Sketch • Custom Art</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
         <!-- No Results message -->
@@ -237,30 +64,6 @@
             <p class="text-apple-muted">Try selecting a different category.</p>
         </div>
 
-    </div>
-</div>
-
-<!-- Lightbox Modal -->
-<div id="lightbox" class="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close Lightbox">&times;</button>
-    <button class="lb-nav lb-prev" onclick="changeLightbox(-1)" aria-label="Previous Image"><i class="fas fa-chevron-left"></i></button>
-    <button class="lb-nav lb-next" onclick="changeLightbox(1)" aria-label="Next Image"><i class="fas fa-chevron-right"></i></button>
-    
-    <div class="lightbox-img-wrapper">
-        <img id="lbImg" src="" alt="" class="lightbox-img">
-    </div>
-
-    <div class="lightbox-info">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6 text-left">
-            <div>
-                <span id="lbStyle" class="text-apple-gold text-[0.6rem] font-bold tracking-[0.2em] uppercase mb-2 block">STYLE</span>
-                <h2 id="lbTitle" class="font-display text-3xl text-white mb-1">Title</h2>
-                <p id="lbArtist" class="text-apple-muted text-sm font-light">By Artist</p>
-            </div>
-            <div class="text-right">
-                <p id="lbSpec" class="text-white/40 text-[0.6rem] font-bold tracking-widest uppercase">SPEC DETAILS</p>
-            </div>
-        </div>
     </div>
 </div>
 
