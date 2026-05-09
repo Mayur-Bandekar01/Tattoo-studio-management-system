@@ -2,16 +2,12 @@
    PROFILE SECTION  (sec-profile)
    ══════════════════════════════════════ */
 
-/* Grid: two equal columns, aligned top */
+/* Grid: dynamic columns, aligned top */
 .profile-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     align-items: start;
-}
-
-@media (max-width: 1024px) {
-    .profile-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Base card ── */
@@ -213,6 +209,12 @@
 /* ── Card Specific Accents ── */
 .profile-info-card {
     border-left-color: #10b981 !important; /* Emerald for Identity */
+}
+
+/* ── Profile Edit Card Specific ── */
+.profile-edit-card {
+    padding: 2rem;
+    border-left-color: var(--gold) !important;
 }
 
 .profile-security-card { 

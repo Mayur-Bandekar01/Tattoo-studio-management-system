@@ -58,82 +58,99 @@
 <div class="card-wrap w-full page-enter mx-auto" style="max-width:580px;">
     <div class="card-body">
         <!-- Header -->
-        <div id="cardHeader" style="padding:2.5rem 2.5rem 1.5rem; text-align:center; border-bottom:1px solid rgba(200,160,64,0.15); background:linear-gradient(180deg, rgba(30,20,0,0.4) 0%, transparent 100%);">
-            <div id="logoCircle" style="display:inline-flex; align-items:center; justify-content:center; width:5rem; height:5rem; border-radius:50%; margin-bottom:1.25rem; overflow:hidden; border:2px solid rgba(200,160,64,0.4); box-shadow: 0 0 30px rgba(200,160,64,0.15); background:#0a0800;">
+        <div id="cardHeader" style="padding:2rem 2.5rem 1.25rem; text-align:center; border-bottom:1px solid rgba(200,160,64,0.15); background:linear-gradient(180deg, rgba(30,20,0,0.4) 0%, transparent 100%);">
+            <div id="logoCircle" style="display:inline-flex; align-items:center; justify-content:center; width:4rem; height:4rem; border-radius:50%; margin-bottom:1rem; overflow:hidden; border:2px solid rgba(200,160,64,0.4); box-shadow: 0 0 30px rgba(200,160,64,0.15); background:#0a0800;">
                 <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" style="width:100%; height:100%; object-fit:cover;">
             </div>
-            <h1 class="title-grad" style="font-family:'Cinzel Decorative', cursive; font-size:2rem; letter-spacing:0.08em; margin-bottom:0.4rem; font-weight: 700;">DRAGON TATTOOS</h1>
-            <p id="cardSubtitle" style="color:#a89060; font-size:0.75rem; letter-spacing:0.25em; text-transform:uppercase; margin:0; font-weight: 600; opacity: 0.8;">
+            <h1 class="title-grad" style="font-family:'Cinzel Decorative', cursive; font-size:1.8rem; letter-spacing:0.06em; margin:0 0 0.3rem; font-weight:700;">DRAGON TATTOOS</h1>
+            <p id="cardSubtitle" style="color:#a89060; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin:0; font-weight:600; opacity:0.8;">
                 Studio Management System
             </p>
         </div>
 
         <!-- Form Container -->
-        <div style="padding:2.5rem;">
+        <div class="form-container">
             <form id="loginForm" method="POST" action="/login" autocomplete="off">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <!-- Role Selector -->
-                <div style="margin-bottom:1.75rem;">
-                    <label style="display:block; font-size:0.75rem; font-weight:700; color:#a89060; margin-bottom:0.8rem; letter-spacing:0.12em; text-transform:uppercase;">Select Your Role</label>
-                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.8rem;">
+                <div class="role-selector-wrap">
+                    <label class="section-label">Select Your Role</label>
+                    <div class="role-grid">
                         <div>
                             <input type="radio" name="role" id="r-cust" value="customer" class="sr-only" required onchange="handleRole(this)">
                             <label for="r-cust" class="role-card" id="lbl-cust">
-                                <i class="fa-regular fa-user" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
-                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Customer</span>
+                                <i class="fa-regular fa-user"></i>
+                                <span>Customer</span>
                             </label>
                         </div>
                         <div>
                             <input type="radio" name="role" id="r-art" value="artist" class="sr-only" onchange="handleRole(this)">
                             <label for="r-art" class="role-card" id="lbl-art">
-                                <i class="fa-solid fa-pen-nib" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
-                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Artist</span>
+                                <i class="fa-solid fa-pen-nib"></i>
+                                <span>Artist</span>
                             </label>
                         </div>
                         <div>
                             <input type="radio" name="role" id="r-own" value="owner" class="sr-only" onchange="handleRole(this)">
                             <label for="r-own" class="role-card" id="lbl-own">
-                                <i class="fa-solid fa-crown" style="font-size:1.2rem; margin-bottom:0.4rem;"></i>
-                                <span style="font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Owner</span>
+                                <i class="fa-solid fa-crown"></i>
+                                <span>Owner</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Register Prompt -->
-                    <div class="reg-prompt" id="registerPrompt" style="margin-top: 1.25rem;">
-                        <p style="font-size:0.85rem; color:#8b8b93; margin:0;">
-                            New customer? <a href="/register" style="color:#c8a040; font-weight:700; text-decoration:none;" class="hover:text-goldLt transition-colors">Register here →</a>
+                    <div class="reg-prompt" id="registerPrompt">
+                        <p>
+                            New customer? <a href="/register">Register here →</a>
                         </p>
                     </div>
                 </div>
 
                 <!-- Fields Section -->
-                <div class="form-section" id="formSection" style="display:flex; flex-direction:column; gap:1.25rem;">
+                <div class="form-section" id="formSection">
                     <div>
-                        <label for="username" style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color: rgba(168, 144, 96, 0.9);">Email / ID</label>
+                        <label for="username" class="field-label">Email / ID</label>
                         <input type="email" id="username" name="email" class="field" placeholder="Enter your email address" required oninput="validate()" autocomplete="username">
                     </div>
-                    <div style="position:relative;">
-                        <label for="password" style="display:block; font-size:0.75rem; font-weight:600; margin-bottom:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color: rgba(168, 144, 96, 0.9);">Password</label>
-                        <div style="position:relative;">
+                    <div class="relative">
+                        <label for="password" class="field-label">Password</label>
+                        <div class="relative">
                             <input type="password" id="password" name="password" class="field" placeholder="Enter your password" required oninput="validate()" autocomplete="current-password" style="padding-right:3rem;">
-                            <button type="button" onclick="toggleEye()" id="eyeBtn" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#a89060;" aria-label="Toggle password visibility">
+                            <button type="button" onclick="toggleEye()" id="eyeBtn" class="eye-toggle" aria-label="Toggle password visibility">
                                 <i class="fa-regular fa-eye" id="eyeIcon"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Forgot Password -->
-                    <div id="forgotPasswordContainer" style="text-align:right; margin-top:-0.5rem; display:none;">
-                        <a href="/forgot-password" style="font-size:0.75rem; color:#a89060; text-decoration:none; font-weight: 500;" class="hover:text-goldLt transition-colors">
+                    <div id="forgotPasswordContainer" class="forgot-password-wrap">
+                        <a href="/forgot-password">
                             Forgot password?
                         </a>
+                    </div>
+
+                    <!-- CAPTCHA Section -->
+                    <div id="captchaContainer" class="captcha-section">
+                        <label for="captcha" class="field-label">Enter Your Captcha</label>
+                        <div class="captcha-input-wrap">
+                            <div id="captchaDisplay" class="captcha-box" onclick="refreshCaptcha()" title="Click to refresh">
+                                <span id="captchaText">-----</span>
+                                <div class="captcha-noise"></div>
+                            </div>
+                            <div class="flex-1" style="flex: 1;">
+                                <input type="text" id="captcha" name="captcha" class="field captcha-field" placeholder="ENTER CODE" required oninput="validate()" maxlength="5" autocomplete="off">
+                            </div>
+                            <button type="button" onclick="refreshCaptcha()" class="btn-icon" title="Refresh Code">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display:flex; gap:1rem; margin-top:2rem;">
+                <div class="form-actions">
                     <button type="submit" id="submitBtn" class="btn-gold w-full" disabled>LOGIN</button>
                     <button type="button" class="btn-outline px-8" onclick="resetForm()">RESET</button>
                 </div>

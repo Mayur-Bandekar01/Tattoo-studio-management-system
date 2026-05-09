@@ -242,6 +242,9 @@
 
 .status-new { background: var(--gold); color: #000; box-shadow: 0 4px 12px rgba(200, 160, 64, 0.3); }
 .status-replied { background: rgba(255, 255, 255, 0.05); color: var(--text-3); border: 1px solid var(--border); }
+.status-claimed { background: rgba(76, 217, 100, 0.1); color: #4cd964; border: 1px solid rgba(76, 217, 100, 0.2); }
+
+[data-theme="ivory"] .status-claimed { background: rgba(40, 167, 69, 0.05); color: #28a745; border-color: rgba(40, 167, 69, 0.1); }
 
 .inquiry-message-preview {
     max-width: 260px;

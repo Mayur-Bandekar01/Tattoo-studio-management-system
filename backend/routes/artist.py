@@ -11,6 +11,7 @@ from flask import (
     flash,
     current_app,
 )
+from werkzeug.security import generate_password_hash, check_password_hash
 from ..db import get_db
 from ..utils.decorators import role_required
 from ..utils.validators import (
@@ -76,11 +77,13 @@ def artist_dashboard():
         usage_logs = cursor.fetchall()
         usage_logs = sanitize_for_json(usage_logs)
 
-        # FETCH: Relevant Public Inquiries (Assigned to THIS artist)
+        # FETCH: Relevant Public Inquiries (Assigned to THIS artist OR unassigned)
         cursor.execute("""
-            SELECT * FROM inquiry 
-            WHERE artist_id = %s
-            ORDER BY submitted_at DESC
+            SELECT i.*, ar.artist_name as requested_artist
+            FROM inquiry i
+            LEFT JOIN artist ar ON i.artist_id = ar.artist_id
+            WHERE i.artist_id = %s OR i.artist_id IS NULL
+            ORDER BY i.submitted_at DESC
         """, (artist_id,))
         inquiries = cursor.fetchall()
         inquiries = sanitize_for_json(inquiries)
@@ -451,18 +454,71 @@ def artist_change_password():
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
-            "SELECT * FROM artist WHERE artist_id = %s AND password = %s",
-            (session["user_id"], current),
+            "SELECT password FROM artist WHERE artist_id = %s",
+            (session["user_id"],),
         )
-        if not cursor.fetchone():
+        user = cursor.fetchone()
+        if not user or not check_password_hash(user["password"], current):
             flash("Current password is incorrect!", "error")
             return redirect("/artist/dashboard")
 
+        hashed_pass = generate_password_hash(new_pass)
         cursor.execute(
             "UPDATE artist SET password = %s WHERE artist_id = %s",
-            (new_pass, session["user_id"]),
+            (hashed_pass, session["user_id"]),
         )
         conn.commit()
 
     flash("Password updated successfully!", "success")
     return redirect("/artist/dashboard")
+
+
+@artist_bp.route("/artist/lead/claim/<int:inquiry_id>", methods=["POST"])
+@role_required("artist")
+def artist_claim_lead(inquiry_id):
+    """Claim an unassigned inquiry."""
+    conn = get_db()
+    with conn.cursor(dictionary=True) as cursor:
+        cursor.execute("SELECT artist_id FROM inquiry WHERE inquiry_id = %s", (inquiry_id,))
+        row = cursor.fetchone()
+        if not row:
+            flash("Lead not found!", "error")
+        elif row["artist_id"]:
+            flash("This lead has already been claimed or assigned.", "error")
+        else:
+            cursor.execute(
+                "UPDATE inquiry SET artist_id = %s, status = 'Claimed' WHERE inquiry_id = %s",
+                (session["user_id"], inquiry_id),
+            )
+            conn.commit()
+            flash("Lead claimed successfully! You can now contact the client.", "success")
+    return redirect("/artist/dashboard#sec-messages")
+
+
+@artist_bp.route("/artist/profile/update", methods=["POST"])
+@role_required("artist")
+def artist_profile_update():
+    """Update artist profile details."""
+    name = request.form.get("artist_name", "").strip()
+    specialisation = request.form.get("specialisation", "").strip()
+    phone = request.form.get("phone", "").strip()
+    email = request.form.get("artist_email", "").strip()
+
+    if not all([name, specialisation, phone, email]):
+        flash("All fields are required!", "error")
+        return redirect("/artist/dashboard#sec-profile")
+
+    conn = get_db()
+    with conn.cursor() as cursor:
+        try:
+            cursor.execute("""
+                UPDATE artist 
+                SET artist_name = %s, specialisation = %s, phone = %s, artist_email = %s
+                WHERE artist_id = %s
+            """, (name, specialisation, phone, email, session["user_id"]))
+            conn.commit()
+            session["name"] = name  # Update session name
+            flash("Profile updated successfully!", "success")
+        except Exception as e:
+            flash(f"Error updating profile: {str(e)}", "error")
+    return redirect("/artist/dashboard#sec-profile")

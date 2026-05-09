@@ -10,10 +10,20 @@ from flask import (
     flash,
     current_app,
 )
+from werkzeug.security import generate_password_hash, check_password_hash
 from ..db import get_db
 from ..utils.email_service import send_otp_email
 
 auth_bp = Blueprint("auth", __name__)
+
+
+@auth_bp.route("/captcha", methods=["GET"])
+def get_captcha():
+    # Generate a simple 5-character alphanumeric CAPTCHA
+    chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # Removed confusing chars like 0, O, 1, I
+    captcha_text = "".join(random.choices(chars, k=5))
+    session["captcha"] = captcha_text
+    return {"captcha": captcha_text}
 
 
 @auth_bp.route("/login", methods=["GET"])
@@ -28,11 +38,11 @@ def handle_customer_login(cursor, password):
     if not email:
         return False, "Please enter your email!"
     cursor.execute(
-        "SELECT customer_id, customer_name FROM customer WHERE customer_email = %s AND password = %s",
-        (email, password),
+        "SELECT customer_id, customer_name, password FROM customer WHERE customer_email = %s",
+        (email,),
     )
     user = cursor.fetchone()
-    if user:
+    if user and check_password_hash(user["password"], password):
         session.update(
             {
                 "user_id": user["customer_id"],
@@ -51,20 +61,20 @@ def handle_artist_login(cursor, password):
 
     # 1. Try matching by Artist ID (e.g., DRAG-ART-001)
     cursor.execute(
-        "SELECT artist_id, artist_name, specialisation FROM artist WHERE artist_id = %s AND password = %s",
-        (login_val, password),
+        "SELECT artist_id, artist_name, specialisation, password FROM artist WHERE artist_id = %s",
+        (login_val,),
     )
     artist = cursor.fetchone()
     
     # 2. Try matching by Email (artist_email column)
     if not artist:
         cursor.execute(
-            "SELECT artist_id, artist_name, specialisation FROM artist WHERE artist_email = %s AND password = %s",
-            (login_val, password),
+            "SELECT artist_id, artist_name, specialisation, password FROM artist WHERE artist_email = %s",
+            (login_val,),
         )
         artist = cursor.fetchone()
 
-    if artist:
+    if artist and check_password_hash(artist["password"], password):
         session.update(
             {
                 "user_id": artist["artist_id"],
@@ -83,10 +93,10 @@ def handle_owner_login(cursor, password):
     if not email:
         return False, "Please enter your email!"
     cursor.execute(
-        "SELECT owner_id, name FROM owner WHERE email = %s AND password = %s", (email, password)
+        "SELECT owner_id, name, password FROM owner WHERE email = %s", (email,)
     )
     user = cursor.fetchone()
-    if user:
+    if user and check_password_hash(user["password"], password):
         session.update(
             {"user_id": user["owner_id"], "role": "owner", "name": user["name"]}
         )
@@ -98,9 +108,15 @@ def handle_owner_login(cursor, password):
 def login_post():
     role = request.form.get("role", "").strip()
     password = request.form.get("password", "").strip()
+    captcha_input = request.form.get("captcha", "").strip().upper()
+    stored_captcha = session.get("captcha", "")
 
-    if not role or not password:
-        flash("Please fill all fields!")
+    if not role or not password or not captcha_input:
+        flash("Please fill all fields, including CAPTCHA!")
+        return redirect("/login")
+
+    if captcha_input != stored_captcha:
+        flash("Invalid CAPTCHA code! Please try again.")
         return redirect("/login")
 
     conn = get_db()
@@ -180,12 +196,13 @@ def register_post():
             flash("Email already registered! Please login.")
             return redirect("/register")
 
+        hashed_password = generate_password_hash(password)
         cursor.execute(
             """
             INSERT INTO customer (customer_name, customer_email, password, phone, insta_id)
             VALUES (%s, %s, %s, %s, %s)
         """,
-            (name, email, password, phone, insta_id),
+            (name, email, hashed_password, phone, insta_id),
         )
         conn.commit()
     flash("Account created successfully! Please login.")
@@ -323,14 +340,15 @@ def reset_password():
         return render_template("auth/reset_password.html")
 
     role = session.get("reset_role", "customer")
+    hashed_password = generate_password_hash(new_pass)
     conn = get_db()
     with conn.cursor() as cursor:
         if role == "customer":
-            cursor.execute("UPDATE customer SET password = %s WHERE customer_email = %s", (new_pass, email))
+            cursor.execute("UPDATE customer SET password = %s WHERE customer_email = %s", (hashed_password, email))
         elif role == "owner":
-            cursor.execute("UPDATE owner SET password = %s WHERE email = %s", (new_pass, email))
+            cursor.execute("UPDATE owner SET password = %s WHERE email = %s", (hashed_password, email))
         elif role == "artist":
-            cursor.execute("UPDATE artist SET password = %s WHERE artist_email = %s", (new_pass, email))
+            cursor.execute("UPDATE artist SET password = %s WHERE artist_email = %s", (hashed_password, email))
         
         conn.commit()
 

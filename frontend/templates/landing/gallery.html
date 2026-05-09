@@ -6,6 +6,34 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/landing/gallery.css') }}">
+<style>
+    /* Absolute Force-Visibility for Masterpiece Word */
+    #lbCaption {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.25em !important;
+        font-size: 1.5rem !important;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 40px rgba(200,160,64,0.2) !important;
+        display: block !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    #lbArtist {
+        color: #c8a040 !important;
+        opacity: 0.9 !important;
+        letter-spacing: 0.3em !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+    }
+
+    .lightbox-info {
+        background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%) !important;
+        padding-bottom: 4rem !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -23,14 +51,44 @@
 </section>
 
 <!-- FILTER BAR -->
-<div class="sticky top-[72px] z-40 py-6 px-6 bg-apple-bg/80 backdrop-blur-xl border-y border-apple-border/5">
-    <div class="gallery-filters max-w-6xl mx-auto flex flex-wrap justify-center gap-4" role="tablist" aria-label="Gallery Categories">
-        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-controls="gallery-grid">All Pieces</button>
-        <button class="filter-btn" data-filter="tattoo" role="tab" aria-selected="false" aria-controls="gallery-grid">Tattoo</button>
-        <button class="filter-btn" data-filter="sketch" role="tab" aria-selected="false" aria-controls="gallery-grid">Sketch</button>
-        <button class="filter-btn" data-filter="removal" role="tab" aria-selected="false" aria-controls="gallery-grid">Tattoo Removal</button>
+<div class="sticky top-[80px] z-40 py-6 px-6 bg-apple-bg/80 backdrop-blur-xl border-y border-apple-border/5">
+    <div class="gallery-filters max-w-6xl mx-auto flex flex-wrap justify-center gap-3 md:gap-4" role="tablist" aria-label="Gallery Categories">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All Pieces</button>
+        <button class="filter-btn" data-filter="tattoo" role="tab" aria-selected="false">Tattoos</button>
+        <button class="filter-btn" data-filter="sketch" role="tab" aria-selected="false">Sketches</button>
+        <button class="filter-btn" data-filter="removal" role="tab" aria-selected="false">Laser Removal</button>
     </div>
 </div>
+
+<!-- FEATURED COLLECTIONS -->
+<section class="py-24 px-6 bg-apple-gold/5">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 reveal">
+            <div>
+                <span class="text-apple-gold text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-4 block">Curated Series</span>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Masterpiece <span class="text-apple-accent">Collections</span></h2>
+            </div>
+            <p class="text-apple-muted text-sm font-light max-w-sm">Deep dives into specialized themes and large-scale projects.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="relative group rounded-3xl overflow-hidden aspect-[16/7] border border-white/5 reveal">
+                <img src="{{ url_for('static', filename='images/gallery_sleeve.jpg') }}" alt="Sleeve Mastery" class="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
+                    <h3 class="font-display text-2xl text-white mb-2">Sleeve Mastery</h3>
+                    <p class="text-apple-muted text-xs font-light">Large-scale narrative compositions spanning from shoulder to wrist.</p>
+                </div>
+            </div>
+            <div class="relative group rounded-3xl overflow-hidden aspect-[16/7] border border-white/5 reveal reveal-d2">
+                <img src="{{ url_for('static', filename='images/gallery_portrait.jpg') }}" alt="Portrait Excellence" class="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8">
+                    <h3 class="font-display text-2xl text-white mb-2">Portrait Excellence</h3>
+                    <p class="text-apple-muted text-xs font-light">Hyper-realistic captures of emotion, heritage, and identity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Gallery Grid -->
 <div class="section-padding pt-0">
@@ -38,19 +96,34 @@
         <div id="gallery-grid" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             
             {% for item in gallery %}
+            {% set artist_lower = item.artist_name | lower %}
+            {% if 'arjun' in artist_lower %}
+                {% set item_cat = 'tattoo' %}
+                {% set item_style = 'Tattoo' %}
+            {% elif 'priya' in artist_lower %}
+                {% set item_cat = 'sketch' %}
+                {% set item_style = 'Sketch' %}
+            {% elif 'rahul' in artist_lower %}
+                {% set item_cat = 'removal' %}
+                {% set item_style = 'Tattoo Removal' %}
+            {% else %}
+                {% set item_cat = (item.style or 'tattoo') | lower | replace(' ', '') %}
+                {% set item_style = item.style or 'Tattoo' %}
+            {% endif %}
+
             <div class="gallery-item group reveal" 
-                 data-category="{% if item.style == 'Tattoo' %}tattoo{% elif item.style == 'Sketch' %}sketch{% elif item.style == 'Tattoo Removal' %}removal{% else %}tattoo{% endif %}" 
+                 data-category="{{ item_cat }}" 
                  data-img="{{ url_for('static', filename=item.image_path) }}"
                  data-title="{{ item.caption or 'Untitled Masterpiece' }}" 
                  data-artist="{{ item.artist_name }}" 
-                 data-style="{{ item.style or 'Custom Art' }}" 
+                 data-style="{{ item_style }}" 
                  data-spec="{{ item.uploaded_at.strftime('%d %b %Y') if item.uploaded_at else '' }}">
                 <div class="gallery-img-container aspect-[3/4]">
                     <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.caption or 'Artwork by ' ~ item.artist_name }}" class="gallery-img" loading="lazy">
-                    <div class="gallery-tag">{{ item.style or 'Ink' }}</div>
+                    <div class="gallery-tag">{{ item_style }}</div>
                     <div class="gallery-overlay">
                         <h3 class="font-display text-xl text-white mb-1">{{ item.caption or 'Untitled' }}</h3>
-                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">{{ item.artist_name }} • {{ item.style or 'Tattoo' }}</p>
+                        <p class="text-apple-gold/80 text-[0.6rem] font-bold tracking-widest uppercase">{{ item.artist_name }} • {{ item_style }}</p>
                     </div>
                 </div>
             </div>

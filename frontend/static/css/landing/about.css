@@ -226,7 +226,7 @@ footer {
 }
 
 /* ── LIGHT THEME (White + Orange Energetic) ── */
-html.light-mode body {
+body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
     --sidebar-bg: rgba(255, 255, 255, 0.96);
@@ -249,44 +249,44 @@ html.light-mode body {
 
 
 
-html.light-mode .hero-section,
-html.light-mode .page-hero,
-html.light-mode section,
-html.light-mode .section-dark,
-html.light-mode .section-surface {
+.hero-section,
+.page-hero,
+section,
+.section-dark,
+.section-surface {
     background: var(--bg) !important;
 }
 
-html.light-mode .feature-card,
-html.light-mode .testi-card,
-html.light-mode .value-card,
-html.light-mode .artist-card,
-html.light-mode .stat-card {
+.feature-card,
+.testi-card,
+.value-card,
+.artist-card,
+.stat-card {
     background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     box-shadow: 0 4px 20px var(--shadow) !important;
 }
 
-html.light-mode .feature-card:hover,
-html.light-mode .testi-card:hover,
-html.light-mode .value-card:hover,
-html.light-mode .artist-card:hover,
-html.light-mode .stat-card:hover {
+.feature-card:hover,
+.testi-card:hover,
+.value-card:hover,
+.artist-card:hover,
+.stat-card:hover {
     background: var(--card-hover) !important;
     border-color: var(--border-h) !important;
 }
 
-html.light-mode .testi-quote,
-html.light-mode .testi-detail {
+.testi-quote,
+.testi-detail {
     color: var(--muted) !important;
 }
 
-html.light-mode .testi-name {
+.testi-name {
     color: var(--text) !important;
 }
 
-html.light-mode footer,
-html.light-mode nav~* footer {
+footer,
+nav~* footer {
     background: #fffaf5 !important;
     border-top: 1px solid var(--border) !important;
 }

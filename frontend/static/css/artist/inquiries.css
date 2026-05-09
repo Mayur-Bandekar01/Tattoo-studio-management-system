@@ -144,3 +144,59 @@
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ── Status & Open Lead Enhancements ── */
+.is-open-lead {
+    border-color: rgba(var(--studio-gold-rgb, 212, 175, 55), 0.2);
+    background: linear-gradient(145deg, rgba(var(--studio-gold-rgb, 212, 175, 55), 0.05) 0%, rgba(255,255,255,0.01) 100%);
+}
+
+.lead-badge-open {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--studio-gold, #d4af37);
+    color: #000;
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 0.4rem 1.2rem;
+    border-bottom-left-radius: 1.5rem;
+    letter-spacing: 0.1em;
+    box-shadow: -5px 5px 15px rgba(0,0,0,0.2);
+}
+
+.status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.status-tag.claimed {
+    color: #4cd964;
+    background: rgba(76, 217, 100, 0.1);
+    border-color: rgba(76, 217, 100, 0.2);
+}
+
+.btn-mini {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
+    border-radius: 1rem;
+}
+
+[data-theme="ivory"] .status-tag {
+    background: #f8f9fa;
+    border-color: rgba(0,0,0,0.05);
+    color: #1a1a2e;
+}
+
+[data-theme="ivory"] .status-tag.claimed {
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+    border-color: rgba(40, 167, 69, 0.1);
+}

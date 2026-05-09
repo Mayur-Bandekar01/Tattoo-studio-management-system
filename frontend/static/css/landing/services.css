@@ -427,7 +427,7 @@ body {
 
 
 /* ── LIGHT THEME (White + Orange Energetic) ── */
-html.light-mode body {
+body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
     --sidebar-bg: rgba(255, 255, 255, 0.96);
@@ -450,61 +450,61 @@ html.light-mode body {
 
 
 
-html.light-mode .hero-section,
-html.light-mode .page-hero,
-html.light-mode .section-dark,
-html.light-mode .section-surface {
+.hero-section,
+.page-hero,
+.section-dark,
+.section-surface {
     background: var(--bg) !important;
 }
 
-html.light-mode section {
+section {
     background: var(--bg);
 }
 
-html.light-mode .pricing-faq-section {
+.pricing-faq-section {
     background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%) !important;
     border-top: 1px solid rgba(249, 115, 22, 0.18) !important;
     border-bottom: 1px solid rgba(249, 115, 22, 0.18) !important;
 }
 
-html.light-mode .process-section {
+.process-section {
     background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%) !important;
 }
 
-html.light-mode .feature-card,
-html.light-mode .testi-card,
-html.light-mode .value-card,
-html.light-mode .artist-card,
-html.light-mode .stat-card,
-html.light-mode .service-card,
-html.light-mode .process-step,
-html.light-mode .pricing-card,
-html.light-mode .faq-item {
+.feature-card,
+.testi-card,
+.value-card,
+.artist-card,
+.stat-card,
+.service-card,
+.process-step,
+.pricing-card,
+.faq-item {
     background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     box-shadow: 0 4px 20px var(--shadow) !important;
 }
 
-html.light-mode .feature-card:hover,
-html.light-mode .testi-card:hover,
-html.light-mode .value-card:hover,
-html.light-mode .artist-card:hover,
-html.light-mode .stat-card:hover,
-html.light-mode .service-card:hover,
-html.light-mode .process-step:hover,
-html.light-mode .pricing-card:hover,
-html.light-mode .faq-item:hover {
+.feature-card:hover,
+.testi-card:hover,
+.value-card:hover,
+.artist-card:hover,
+.stat-card:hover,
+.service-card:hover,
+.process-step:hover,
+.pricing-card:hover,
+.faq-item:hover {
     background: var(--card-hover) !important;
     border-color: var(--border-h) !important;
 }
 
-html.light-mode .pricing-card-icon {
+.pricing-card-icon {
     background: rgba(249, 115, 22, 0.1) !important;
     border-color: rgba(249, 115, 22, 0.25) !important;
     color: var(--accent) !important;
 }
 
-html.light-mode .text-gradient {
+.text-gradient {
     background: linear-gradient(90deg, #1f2937 0%, #c2410c 48%, #1f2937 100%) !important;
     background-size: 180% auto !important;
     -webkit-background-clip: text !important;
@@ -512,58 +512,58 @@ html.light-mode .text-gradient {
     -webkit-text-fill-color: transparent !important;
 }
 
-html.light-mode .pill-tag,
-html.light-mode .pill-tag-gold {
+.pill-tag,
+.pill-tag-gold {
     background: rgba(249, 115, 22, 0.08) !important;
     border: 1px solid rgba(249, 115, 22, 0.35) !important;
     color: #c2410c !important;
     box-shadow: 0 8px 24px rgba(249, 115, 22, 0.08) !important;
 }
 
-html.light-mode .filter-btn {
+.filter-btn {
     background: #ffffff !important;
     border: 1px solid rgba(249, 115, 22, 0.32) !important;
     color: #4b5563 !important;
     box-shadow: 0 8px 22px rgba(124, 45, 18, 0.06) !important;
 }
 
-html.light-mode .filter-btn:hover {
+.filter-btn:hover {
     background: #fff7ed !important;
     border-color: var(--accent) !important;
     color: #c2410c !important;
     box-shadow: 0 12px 28px rgba(249, 115, 22, 0.12) !important;
 }
 
-html.light-mode .filter-btn.active {
+.filter-btn.active {
     background: var(--accent) !important;
     border-color: var(--accent) !important;
     color: #111827 !important;
     box-shadow: 0 14px 30px rgba(249, 115, 22, 0.28) !important;
 }
 
-html.light-mode .faq-summary {
+.faq-summary {
     color: var(--text) !important;
 }
 
-html.light-mode .faq-icon {
+.faq-icon {
     color: var(--accent) !important;
 }
 
-html.light-mode .faq-body {
+.faq-body {
     color: var(--muted) !important;
 }
 
-html.light-mode .testi-quote,
-html.light-mode .testi-detail {
+.testi-quote,
+.testi-detail {
     color: var(--muted) !important;
 }
 
-html.light-mode .testi-name {
+.testi-name {
     color: var(--text) !important;
 }
 
-html.light-mode footer,
-html.light-mode nav~* footer {
+footer,
+nav~* footer {
     background: #fffaf5 !important;
     border-top: 1px solid var(--border) !important;
 }

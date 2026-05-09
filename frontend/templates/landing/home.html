@@ -65,42 +65,235 @@
 <!-- ─────────────── FEATURED STYLES ─────────────── -->
 <section class="py-32 px-6 bg-apple-card/50">
     <div class="max-w-6xl mx-auto">
-        <div class="mb-16 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="mb-16 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 reveal">
             <div>
                 <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Our Signature <span class="text-apple-accent">Styles</span></h2>
-                <p class="text-apple-muted max-w-md text-sm">Mastering the technical complexity of diverse tattoo genres.</p>
+                <p class="text-apple-muted max-w-md text-sm">Mastering the technical complexity of diverse tattoo genres with precision and artistic integrity.</p>
             </div>
             <a href="/services" class="text-apple-gold text-xs font-semibold tracking-widest uppercase hover:text-apple-goldLt flex items-center gap-2 group transition-all">
-                Explore Services <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                Explore All Services <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
             </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Style 1 -->
-            <div class="style-card group">
+            <div class="style-card group reveal reveal-d1">
                 <div class="overflow-hidden rounded-2xl mb-6 aspect-[4/5] bg-black">
                     <img src="{{ url_for('static', filename='images/style_blackwork.jpg') }}" alt="Blackwork Tattoo Style" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
                 </div>
                 <h3 class="text-xl font-display text-apple-text mb-2 tracking-wide">Blackwork</h3>
-                <p class="text-apple-muted text-sm font-light">Bold, solid black ink art with high contrast and geometric precision.</p>
+                <p class="text-apple-muted text-sm font-light">Bold, solid black ink art with high contrast and geometric precision for those who seek powerful statements.</p>
             </div>
 
             <!-- Style 2 -->
-            <div class="style-card group">
+            <div class="style-card group reveal reveal-d2">
                 <div class="overflow-hidden rounded-2xl mb-6 aspect-[4/5] bg-black">
                     <img src="{{ url_for('static', filename='images/style_realistic.jpg') }}" alt="Realistic Tattoo Portraits" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
                 </div>
                 <h3 class="text-xl font-display text-apple-text mb-2 tracking-wide">Realistic Portraits</h3>
-                <p class="text-apple-muted text-sm font-light">Life-like detail and soft shading capturing the essence of your loved ones.</p>
+                <p class="text-apple-muted text-sm font-light">Life-like detail and soft shading capturing the essence of your loved ones in a permanent tribute.</p>
             </div>
 
             <!-- Style 3 -->
-            <div class="style-card group">
+            <div class="style-card group reveal reveal-d3">
                 <div class="overflow-hidden rounded-2xl mb-6 aspect-[4/5] bg-black">
                     <img src="{{ url_for('static', filename='images/style_traditional.jpg') }}" alt="Traditional Tattoo Style" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
                 </div>
                 <h3 class="text-xl font-display text-apple-text mb-2 tracking-wide">Traditional</h3>
-                <p class="text-apple-muted text-sm font-light">Classic bold lines and iconic color palettes that stand the test of time.</p>
+                <p class="text-apple-muted text-sm font-light">Classic bold lines and iconic color palettes that stand the test of time, honoring the heritage of ink.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────── PHILOSOPHY ─────────────── -->
+<section class="py-32 px-6 overflow-hidden relative">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div class="relative reveal">
+            <div class="relative z-10 rounded-3xl overflow-hidden border border-white/5 shadow-2xl aspect-square">
+                <img src="{{ url_for('static', filename='images/philosophy_bg.png') }}" alt="Studio Philosophy" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+            <!-- Decorative ring -->
+            <div class="absolute -top-10 -left-10 w-40 h-40 border border-apple-gold/20 rounded-full blur-sm"></div>
+            <div class="absolute -bottom-10 -right-10 w-60 h-60 border border-apple-gold/10 rounded-full"></div>
+        </div>
+
+        <div class="reveal reveal-d2">
+            <span class="text-apple-gold text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-6 block">Our Essence</span>
+            <h2 class="font-display text-4xl md:text-5xl text-apple-text mb-8 leading-[1.1] tracking-tight">The Philosophy of <br/> <span class="text-apple-accent italic">Timeless Art</span></h2>
+            <div class="space-y-6 text-apple-muted font-light leading-relaxed">
+                <p>At Dragon Tattoos, we believe a tattoo is more than ink—it's a narrative written on the skin. Our studio is built on the foundation of technical excellence and creative collaboration.</p>
+                <p>We approach every piece with the reverence it deserves, ensuring that the final result is not just a tattoo, but a masterpiece that will age gracefully alongside you. From the first sketch to the final touch, we are committed to your vision.</p>
+            </div>
+            
+            <div class="mt-12 grid grid-cols-2 gap-8">
+                <div>
+                    <h4 class="text-apple-text font-display text-lg mb-2">Integrity</h4>
+                    <p class="text-apple-muted text-xs font-light">Unwavering standards of hygiene and artistic honesty in every drop of ink.</p>
+                </div>
+                <div>
+                    <h4 class="text-apple-text font-display text-lg mb-2">Evolution</h4>
+                    <p class="text-apple-muted text-xs font-light">Constantly refining our craft and embracing the latest in tattoo technology.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────── THE PROCESS ─────────────── -->
+<section class="py-32 px-6 bg-black/20">
+    <div class="max-w-6xl mx-auto text-center mb-20 reveal">
+        <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">The Journey to <span class="text-apple-accent">Perfection</span></h2>
+        <p class="text-apple-muted max-w-xl mx-auto text-sm font-light">Your comfort and confidence are our priority. We've refined our process to ensure a seamless experience from concept to completion.</p>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center text-center reveal reveal-d1">
+            <div class="w-full aspect-video rounded-2xl overflow-hidden mb-8 border border-white/5 relative group">
+                <img src="{{ url_for('static', filename='images/process_1.png') }}" alt="Consultation" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute top-4 left-4 w-10 h-10 rounded-full bg-apple-gold text-black flex items-center justify-center font-bold text-lg shadow-lg">1</div>
+            </div>
+            <h3 class="text-xl font-display text-apple-text mb-4">Consultation</h3>
+            <p class="text-apple-muted text-xs font-light leading-relaxed">Collaborate with our artists to refine your concept, discuss placement, and finalize the artistic direction.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center text-center reveal reveal-d2">
+            <div class="w-full aspect-video rounded-2xl overflow-hidden mb-8 border border-white/5 relative group">
+                <img src="{{ url_for('static', filename='images/process_2.png') }}" alt="The Session" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute top-4 left-4 w-10 h-10 rounded-full bg-apple-gold text-black flex items-center justify-center font-bold text-lg shadow-lg">2</div>
+            </div>
+            <h3 class="text-xl font-display text-apple-text mb-4">The Session</h3>
+            <p class="text-apple-muted text-xs font-light leading-relaxed">Relax in our premium studio as our masters bring your design to life using the finest pigments and precision tools.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center text-center reveal reveal-d3">
+            <div class="w-full aspect-video rounded-2xl overflow-hidden mb-8 border border-white/5 relative group">
+                <img src="{{ url_for('static', filename='images/process_3.png') }}" alt="Aftercare" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="absolute top-4 left-4 w-10 h-10 rounded-full bg-apple-gold text-black flex items-center justify-center font-bold text-lg shadow-lg">3</div>
+            </div>
+            <h3 class="text-xl font-display text-apple-text mb-4">Aftercare</h3>
+            <p class="text-apple-muted text-xs font-light leading-relaxed">Receive detailed guidance and professional aftercare support to ensure your masterpiece heals beautifully and stays vivid.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────── TESTIMONIALS ─────────────── -->
+<section class="py-32 px-6 overflow-hidden">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-20 reveal">
+            <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Voices of the <span class="text-apple-accent">Inked</span></h2>
+            <p class="text-apple-muted text-sm font-light">Join the community of those who carry our mark of excellence.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="testi-card reveal reveal-d1">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-quote">"The level of detail in my realistic portrait is absolutely mind-blowing. It's not just a tattoo; it's a living tribute. The studio atmosphere is unmatched."</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-apple-gold/40 to-apple-gold flex items-center justify-center text-black font-bold">AS</div>
+                    <div>
+                        <p class="testi-name">Arjun Sharma</p>
+                        <p class="testi-detail">Bengaluru, India</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testi-card reveal reveal-d2">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-quote">"Professionalism at its peak. The artist took my vague idea and turned it into a geometric masterpiece. The process was smooth and very hygienic."</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/40 to-indigo-500 flex items-center justify-center text-white font-bold">MK</div>
+                    <div>
+                        <p class="testi-name">Meera Kapoor</p>
+                        <p class="testi-detail">Design Architect</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testi-card reveal reveal-d3">
+                <div class="testi-stars">★★★★★</div>
+                <p class="testi-quote">"I traveled from another city just for Dragon Tattoos, and it was worth every mile. Their traditional work is authentic and the colors are vibrant."</p>
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/40 to-emerald-500 flex items-center justify-center text-white font-bold">JD</div>
+                    <div>
+                        <p class="testi-name">John Doe</p>
+                        <p class="testi-detail">Tattoo Collector</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────── FAQ ─────────────── -->
+<section class="py-32 px-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-16 reveal">
+            <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Common <span class="text-apple-accent">Inquiries</span></h2>
+            <p class="text-apple-muted text-sm font-light">Transparent answers to your most frequent questions.</p>
+        </div>
+
+        <div class="space-y-4">
+            <details class="group bg-apple-card/30 border border-white/5 rounded-2xl p-6 reveal reveal-d1">
+                <summary class="flex justify-between items-center cursor-pointer list-none font-display text-apple-text tracking-wide">
+                    <span>How do I book a consultation?</span>
+                    <span class="text-apple-gold transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                </summary>
+                <p class="mt-4 text-apple-muted text-sm font-light leading-relaxed">
+                    You can book a consultation directly through our contact page or by clicking the "Book Appointment" button. We'll match you with the artist best suited for your style.
+                </p>
+            </details>
+
+            <details class="group bg-apple-card/30 border border-white/5 rounded-2xl p-6 reveal reveal-d2">
+                <summary class="flex justify-between items-center cursor-pointer list-none font-display text-apple-text tracking-wide">
+                    <span>What is your hygiene protocol?</span>
+                    <span class="text-apple-gold transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                </summary>
+                <p class="mt-4 text-apple-muted text-sm font-light leading-relaxed">
+                    We maintain medical-grade sterilization standards. All needles are single-use, and our workspace is thoroughly sanitized between every session. Your safety is our absolute priority.
+                </p>
+            </details>
+
+            <details class="group bg-apple-card/30 border border-white/5 rounded-2xl p-6 reveal reveal-d3">
+                <summary class="flex justify-between items-center cursor-pointer list-none font-display text-apple-text tracking-wide">
+                    <span>How much does a tattoo cost?</span>
+                    <span class="text-apple-gold transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                </summary>
+                <p class="mt-4 text-apple-muted text-sm font-light leading-relaxed">
+                    Pricing varies based on the complexity, size, and artist. During your consultation, we'll provide a transparent quote based on the estimated time required for your custom design.
+                </p>
+            </details>
+
+            <details class="group bg-apple-card/30 border border-white/5 rounded-2xl p-6 reveal reveal-d4">
+                <summary class="flex justify-between items-center cursor-pointer list-none font-display text-apple-text tracking-wide">
+                    <span>Can I bring my own design?</span>
+                    <span class="text-apple-gold transition-transform group-open:rotate-180"><i class="fas fa-chevron-down"></i></span>
+                </summary>
+                <p class="mt-4 text-apple-muted text-sm font-light leading-relaxed">
+                    Absolutely. Whether you have a finished design or just a rough idea, our artists will work with you to refine it and ensure it's optimized for the best possible tattoo result.
+                </p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────── FINAL CTA ─────────────── -->
+<section class="py-32 px-6">
+    <div class="max-w-5xl mx-auto relative rounded-[3rem] overflow-hidden bg-apple-gold/5 border border-apple-gold/10 p-12 md:p-24 text-center reveal">
+        <!-- Glow -->
+        <div class="absolute -top-1/2 -left-1/2 w-full h-full bg-apple-gold/5 blur-[120px] rounded-full"></div>
+        <div class="absolute -bottom-1/2 -right-1/2 w-full h-full bg-apple-gold/5 blur-[120px] rounded-full"></div>
+        
+        <div class="relative z-10">
+            <span class="text-apple-gold text-[0.65rem] font-bold tracking-[0.4em] uppercase mb-8 block">Ready for your mark?</span>
+            <h2 class="font-display text-5xl md:text-7xl text-apple-text mb-10 leading-tight">Begin Your <br/> <span class="text-apple-accent">Transformation</span></h2>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="/contact" class="px-12 py-5 bg-apple-gold text-black rounded-full font-bold text-base hover:bg-apple-goldLt transition-all shadow-[0_10px_40px_rgba(200,160,64,0.4)]">Secure Your Session</a>
+                <a href="/gallery" class="px-12 py-5 bg-white/5 text-apple-text border border-white/10 rounded-full font-bold text-base hover:bg-white/10 transition-all backdrop-blur-md">Explore the Vault</a>
             </div>
         </div>
     </div>

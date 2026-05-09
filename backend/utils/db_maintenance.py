@@ -1,13 +1,13 @@
 # utils/db_maintenance.py
-from ..db import get_db
+from werkzeug.security import generate_password_hash
+from ..db import db_pool
 
 
 def ensure_schema_consistency():
     """Perform basic schema checks and data seeding with isolated blocks to prevent cascade failures."""
     try:
-        conn = get_db()
+        conn = db_pool.get_connection()
     except Exception as e:
-        # Maintenance connection error
         return
 
     with conn.cursor(dictionary=True) as cursor:
@@ -32,10 +32,11 @@ def ensure_schema_consistency():
         # 2. Seed Artists
         cursor.execute("SELECT COUNT(*) as count FROM artist")
         if cursor.fetchone()["count"] == 0:
+            hashed_pass = generate_password_hash("pass123")
             artists_to_seed = [
-                ("DRAG-ART-001", "Arjun Mehta", "arjun@dragon.ink", "9999999901", "Tattoo Artist", "pass123", "images/artist1.jpg"),
-                ("DRAG-ART-002", "Priya Sharma", "priya@dragon.ink", "9999999902", "Sketch Artist", "pass123", "images/artist2.jpg"),
-                ("DRAG-ART-003", "Rahul Verma", "rahul@dragon.ink", "9999999903", "Laser Removal Specialist", "pass123", "images/artist3.jpg"),
+                ("DRAG-ART-001", "Arjun Mehta", "arjun@dragon.ink", "9999999901", "Tattoo Artist", hashed_pass, "images/artist1.jpg"),
+                ("DRAG-ART-002", "Priya Sharma", "priya@dragon.ink", "9999999902", "Sketch Artist", hashed_pass, "images/artist2.jpg"),
+                ("DRAG-ART-003", "Rahul Verma", "rahul@dragon.ink", "9999999903", "Laser Removal Specialist", hashed_pass, "images/artist3.jpg"),
             ]
             try:
                 cursor.executemany("INSERT INTO artist (artist_id, artist_name, artist_email, phone, specialisation, password, profile_image) VALUES (%s, %s, %s, %s, %s, %s, %s)", artists_to_seed)
@@ -75,7 +76,8 @@ def ensure_schema_consistency():
         # 6. Seed Owner
         cursor.execute("SELECT COUNT(*) as count FROM owner")
         if cursor.fetchone()["count"] == 0:
-            run_step("Seed Owner", "INSERT INTO owner (name, email, password) VALUES (%s, %s, %s)", ("Dragon Owner", "owner@dragon.com", "Owner@123"))
+            hashed_owner_pass = generate_password_hash("Owner@123")
+            run_step("Seed Owner", "INSERT INTO owner (name, email, password) VALUES (%s, %s, %s)", ("Dragon Owner", "owner@dragon.com", hashed_owner_pass))
 
         # 7. Gallery Likes
         run_step("Create gallery_likes", """
@@ -128,7 +130,13 @@ def ensure_schema_consistency():
         except Exception as e:
             pass
 
-        # 11. DATA CONVERSION: Bottles to ml (User Request)
+        # 12. Inquiry Status (Ensure it's VARCHAR and supports 'Claimed')
+        cursor.execute("SHOW COLUMNS FROM inquiry LIKE 'status'")
+        col = cursor.fetchone()
+        if col and 'enum' in col['Type'].lower():
+            run_step("Convert inquiry status to VARCHAR", "ALTER TABLE inquiry MODIFY COLUMN status VARCHAR(20) DEFAULT 'New'")
+
+        # 13. DATA CONVERSION: Bottles to ml (User Request)
         # Assuming 1 bottle of ink = 30ml, 1 bottle of sanitizer = 500ml
         try:
             # Update Inks
@@ -176,3 +184,6 @@ def ensure_schema_consistency():
                 conn.commit()
             except Exception as e:
                 pass
+
+if __name__ == "__main__":
+    ensure_schema_consistency()

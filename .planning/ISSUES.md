@@ -2,12 +2,6 @@
 
 ## Security
 
-### ISS-001: Plain Text Password Storage
-
-**Discovered:** 2026-04-04
-**Type:** Security
-**Description:** User passwords (Customers, Artists, Owners) are stored and verified in plain text. (Audit Note: Resolved on 2026-04-19 but REVERTED per user requirement for direct readability).
-**Effort:** Medium
 
 ## Stability & Performance
 
@@ -41,6 +35,8 @@
 
 - **Resolution:** Verified that `mysql.connector.pooling` is correctly implemented in `db.py` with a configurable pool size.
 
-### [FIXED] ISS-007: Artist Authentication Failure (Field Mismatch & Alphanumeric IDs)
-
 - **Resolution:** Standardized the login identifier field name to `email` across all roles on the frontend. Refactored the backend Artist login handler to robustly match against both `artist_id` (alphanumeric) and `artist_email` columns.
+
+### [FIXED] ISS-001: Plain Text Password Storage
+
+- **Resolution:** Enforced `werkzeug.security` password hashing (`pbkdf2:sha256`) across all roles (Customer, Artist, Owner). Updated registration, profile password changes, and admin-side artist creation to use hashing. Executed a migration script to hash all existing plain-text credentials in the database.

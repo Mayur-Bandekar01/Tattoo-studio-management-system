@@ -29,32 +29,68 @@ function initFiltering() {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.gallery-item');
     const grid = document.getElementById('gallery-grid');
+    const noResults = document.getElementById('noResults');
+
+    if (!filterBtns.length || !grid) return;
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const cat = btn.getAttribute('data-filter');
+            const filterValue = btn.getAttribute('data-filter');
             
-            // UI Update
-            filterBtns.forEach(b => b.classList.remove('active'));
+            // 1. Update UI Buttons
+            filterBtns.forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
             btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
 
-            // Staggered Animation
+            // 2. Start Animation Transition
+            grid.style.opacity = '0.3';
+            grid.style.transform = 'translateY(10px)';
             grid.classList.add('filtering');
             
             setTimeout(() => {
                 let visibleCount = 0;
+                
                 items.forEach(item => {
-                    const match = cat === 'all' || item.getAttribute('data-category') === cat;
-                    item.style.display = match ? 'block' : 'none';
-                    if (match) visibleCount++;
+                    const itemCategory = item.getAttribute('data-category') || '';
+                    // Match logic: 'all' or partial string match (e.g. 'tattooremoval' contains 'removal')
+                    const isMatch = filterValue === 'all' || itemCategory.includes(filterValue);
+                    
+                    if (isMatch) {
+                        item.style.display = 'block';
+                        // Re-trigger reveal animation if it was hidden
+                        item.classList.add('visible');
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
                 });
 
+                // 3. End Animation Transition
+                grid.style.opacity = '1';
+                grid.style.transform = 'translateY(0)';
                 grid.classList.remove('filtering');
                 
-                // Toggle No Results
-                const nr = document.getElementById('noResults');
-                if (nr) nr.style.display = visibleCount === 0 ? 'block' : 'none';
-            }, 300);
+                // 4. Toggle No Results state
+                if (noResults) {
+                    if (visibleCount === 0) {
+                        noResults.classList.remove('hidden');
+                        noResults.classList.add('flex'); // Ensure it shows as flex for centering
+                        noResults.classList.add('visible');
+                    } else {
+                        noResults.classList.add('hidden');
+                        noResults.classList.remove('flex');
+                    }
+                }
+
+                // 5. Scroll to grid if user is far down (optional but helpful UX)
+                const gridTop = grid.getBoundingClientRect().top + window.pageYOffset - 150;
+                if (window.scrollY > gridTop + 200) {
+                    window.scrollTo({ top: gridTop, behavior: 'smooth' });
+                }
+            }, 350);
         });
     });
 }
@@ -71,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return {
                 src: el.getAttribute('data-img'),
                 caption: el.getAttribute('data-title'),
-                artist: 'Artist: ' + (el.getAttribute('data-artist') || 'Dragon Tattoos')
+                artist: (el.getAttribute('data-artist') || 'Dragon Tattoos') + ' • ' + (el.getAttribute('data-style') || 'Tattoo')
             };
         });
     }
@@ -89,7 +125,7 @@ window.openLightbox = (el) => {
         window.dragonLightbox.open(el, (e) => ({
             src: e.getAttribute('data-img'),
             caption: e.getAttribute('data-title'),
-            artist: 'Artist: ' + (e.getAttribute('data-artist') || 'Dragon Tattoos')
+            artist: (e.getAttribute('data-artist') || 'Dragon Tattoos') + ' • ' + (e.getAttribute('data-style') || 'Tattoo')
         }));
     }
 };

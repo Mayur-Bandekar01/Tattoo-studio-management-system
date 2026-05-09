@@ -9,6 +9,7 @@ from flask import (
     flash,
     current_app,
 )
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date, datetime, timedelta
 from ..db import get_db
 from ..utils.decorators import role_required
@@ -220,6 +221,7 @@ def owner_artist_add():
     conn = get_db()
     with conn.cursor() as cursor:
         try:
+            hashed_password = generate_password_hash(password)
             cursor.execute(
                 """
                 INSERT INTO artist
@@ -230,7 +232,7 @@ def owner_artist_add():
                     artist_id,
                     artist_name,
                     artist_email,
-                    password,
+                    hashed_password,
                     phone,
                     specialisation,
                 ),
@@ -586,16 +588,18 @@ def owner_change_password():
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
-            "SELECT * FROM owner WHERE owner_id = %s AND password = %s",
-            (session["user_id"], current),
+            "SELECT password FROM owner WHERE owner_id = %s",
+            (session["user_id"],),
         )
-        if not cursor.fetchone():
+        user = cursor.fetchone()
+        if not user or not check_password_hash(user["password"], current):
             flash("Current password is incorrect!", "error")
             return redirect("/owner/dashboard")
 
+        hashed_pass = generate_password_hash(new_pass)
         cursor.execute(
             "UPDATE owner SET password = %s WHERE owner_id = %s",
-            (new_pass, session["user_id"]),
+            (hashed_pass, session["user_id"]),
         )
         conn.commit()
     flash("Password updated successfully!", "success")

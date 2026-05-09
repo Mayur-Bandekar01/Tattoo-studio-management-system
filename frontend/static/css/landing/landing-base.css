@@ -29,6 +29,12 @@
     --border-subtle: rgba(255, 255, 255, 0.06);
     --card-bg: rgba(15, 15, 18, 0.8);
 
+    /* Tailwind Mappings */
+    --bg: var(--bg-primary);
+    --text: var(--text-primary);
+    --muted: var(--text-muted);
+    --border: var(--border-subtle);
+
     /* Typography */
     --font-heading: 'Cinzel Decorative', cursive;
     --font-body: 'Inter', sans-serif;
@@ -315,6 +321,12 @@ html.light-mode {
     --accent-rgb: 249, 115, 22;
     --card-bg: #ffffff;
     --border-subtle: #e2e8f0;
+
+    /* Tailwind Mappings */
+    --bg: var(--bg-primary);
+    --text: var(--text-primary);
+    --muted: var(--text-muted);
+    --border: var(--border-subtle);
 }
 
 html.light-mode body {
@@ -470,9 +482,26 @@ html.light-mode .flash-message:not(.text-green-400) {
 .lightbox-info {
     padding: 2.5rem 2rem;
     text-align: center;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
     position: relative;
     z-index: 2005;
+}
+
+.lightbox-info h3,
+#lbCaption {
+    color: #ffffff !important;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.lightbox-info p,
+#lbArtist {
+    color: var(--studio-gold) !important;
+    opacity: 0.95 !important;
+    letter-spacing: 0.2em;
 }
 
 .lightbox.loading::after {

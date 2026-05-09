@@ -432,7 +432,7 @@ footer {
 }
 
 /* ── LIGHT THEME (White + Orange Energetic) ── */
-html.light-mode body {
+body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
     --sidebar-bg: rgba(255, 255, 255, 0.96);
@@ -453,202 +453,202 @@ html.light-mode body {
     color: var(--text) !important;
 }
 
-html.light-mode .contact-card,
-html.light-mode .map-card,
-html.light-mode div[style*="background: var(--card-bg)"] {
+.contact-card,
+.map-card,
+div[style*="background: var(--card-bg)"] {
     background: rgba(255, 255, 255, 0.7) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     border: 1px solid var(--border) !important;
 }
 
-html.light-mode .navbar,
-html.light-mode nav {
+.navbar,
+nav {
     background: rgba(255, 255, 255, 0.88) !important;
     border: 1px solid var(--border) !important;
 }
 
-html.light-mode .nav-link {
+.nav-link {
     color: var(--muted) !important;
 }
 
-html.light-mode .nav-link:hover,
-html.light-mode .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--accent) !important;
 }
 
-html.light-mode .mobile-menu {
+.mobile-menu {
     background: rgba(255, 255, 255, 0.98) !important;
 }
 
-html.light-mode .mobile-menu a {
+.mobile-menu a {
     color: var(--muted) !important;
 }
 
-html.light-mode .mobile-menu a:hover,
-html.light-mode .mobile-menu a.active {
+.mobile-menu a:hover,
+.mobile-menu a.active {
     color: var(--accent) !important;
 }
 
-html.light-mode .hero-section,
-html.light-mode .page-hero,
-html.light-mode section,
-html.light-mode .section-dark,
-html.light-mode .section-surface {
+.hero-section,
+.page-hero,
+section,
+.section-dark,
+.section-surface {
     background: var(--bg) !important;
 }
 
-html.light-mode .feature-card,
-html.light-mode .testi-card,
-html.light-mode .value-card,
-html.light-mode .artist-card,
-html.light-mode .stat-card,
-html.light-mode .contact-card,
-html.light-mode .map-card {
+.feature-card,
+.testi-card,
+.value-card,
+.artist-card,
+.stat-card,
+.contact-card,
+.map-card {
     background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     box-shadow: 0 4px 20px var(--shadow) !important;
 }
 
-html.light-mode .feature-card:hover,
-html.light-mode .testi-card:hover,
-html.light-mode .value-card:hover,
-html.light-mode .artist-card:hover,
-html.light-mode .stat-card:hover,
-html.light-mode .contact-card:hover {
+.feature-card:hover,
+.testi-card:hover,
+.value-card:hover,
+.artist-card:hover,
+.stat-card:hover,
+.contact-card:hover {
     background: var(--card-hover) !important;
     border-color: var(--border-h) !important;
 }
 
-html.light-mode .pill-tag {
+.pill-tag {
     background: rgba(249, 115, 22, 0.08) !important;
     border-color: rgba(249, 115, 22, 0.28) !important;
     color: var(--text) !important;
 }
 
-html.light-mode .map-card {
+.map-card {
     background: linear-gradient(180deg, rgba(255, 247, 237, 0.96), rgba(255, 255, 255, 0.92)) !important;
     border: 1px solid rgba(249, 115, 22, 0.28) !important;
     box-shadow: 0 22px 55px rgba(124, 45, 18, 0.12) !important;
 }
 
-html.light-mode .map-card::before {
+.map-card::before {
     background: radial-gradient(circle at center, rgba(249, 115, 22, 0.12), transparent 68%) !important;
     opacity: 1 !important;
 }
 
-html.light-mode .map-card .bg-apple-gold\/10 {
+.map-card .bg-apple-gold\/10 {
     background: rgba(249, 115, 22, 0.12) !important;
 }
 
-html.light-mode .map-card .border-apple-gold\/20 {
+.map-card .border-apple-gold\/20 {
     border-color: rgba(249, 115, 22, 0.35) !important;
 }
 
-html.light-mode .map-card .text-apple-text {
+.map-card .text-apple-text {
     color: var(--text) !important;
 }
 
-html.light-mode .map-card .text-apple-muted\/60 {
+.map-card .text-apple-muted\/60 {
     color: var(--muted) !important;
 }
 
-html.light-mode .location-note {
+.location-note {
     background: rgba(255, 247, 237, 0.9) !important;
     border-color: rgba(249, 115, 22, 0.24) !important;
     box-shadow: 0 14px 35px rgba(124, 45, 18, 0.08) !important;
 }
 
-html.light-mode .testi-quote,
-html.light-mode .testi-detail {
+.testi-quote,
+.testi-detail {
     color: var(--muted) !important;
 }
 
-html.light-mode .testi-name {
+.testi-name {
     color: var(--text) !important;
 }
 
-html.light-mode footer,
-html.light-mode nav~* footer {
+footer,
+nav~* footer {
     background: #fffaf5 !important;
     border-top: 1px solid var(--border) !important;
 }
 
 
-html.light-mode input,
-html.light-mode textarea,
-html.light-mode select {
+input,
+textarea,
+select {
     background: white !important;
     border-color: var(--border) !important;
     color: var(--text) !important;
 }
 
-html.light-mode .enquiry-form-card {
+.enquiry-form-card {
     background: linear-gradient(180deg, rgba(255, 247, 237, 0.96), rgba(255, 255, 255, 0.94)) !important;
     border: 1px solid rgba(249, 115, 22, 0.26) !important;
     box-shadow: 0 36px 90px rgba(124, 45, 18, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
 
-html.light-mode .enquiry-form-card::before {
+.enquiry-form-card::before {
     background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.13), transparent 46%) !important;
 }
 
-html.light-mode .enquiry-form-card label {
+.enquiry-form-card label {
     color: #6b7280 !important;
 }
 
-html.light-mode .enquiry-form-card div:focus-within label {
+.enquiry-form-card div:focus-within label {
     color: #c2410c !important;
 }
 
-html.light-mode .enquiry-form-card input,
-html.light-mode .enquiry-form-card textarea,
-html.light-mode .enquiry-form-card select {
+.enquiry-form-card input,
+.enquiry-form-card textarea,
+.enquiry-form-card select {
     background: rgba(255, 255, 255, 0.94) !important;
     border: 1px solid rgba(249, 115, 22, 0.28) !important;
     color: var(--text) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 10px 24px rgba(124, 45, 18, 0.08) !important;
 }
 
-html.light-mode .enquiry-form-card input:focus,
-html.light-mode .enquiry-form-card textarea:focus,
-html.light-mode .enquiry-form-card select:focus {
+.enquiry-form-card input:focus,
+.enquiry-form-card textarea:focus,
+.enquiry-form-card select:focus {
     background: #ffffff !important;
     border-color: #f97316 !important;
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12), 0 14px 30px rgba(124, 45, 18, 0.12) !important;
 }
 
-html.light-mode .enquiry-form-card input::placeholder,
-html.light-mode .enquiry-form-card textarea::placeholder {
+.enquiry-form-card input::placeholder,
+.enquiry-form-card textarea::placeholder {
     color: #9ca3af !important;
 }
 
-html.light-mode .enquiry-form-card select option {
+.enquiry-form-card select option {
     background: #ffffff !important;
     color: var(--text) !important;
 }
 
 /* Fix FAQ in light mode */
-html.light-mode .faq-item {
+.faq-item {
     border-bottom-color: rgba(0, 0, 0, 0.1) !important;
 }
 
-html.light-mode .faq-btn {
+.faq-btn {
     color: var(--text) !important;
 }
 
-html.light-mode .faq-body p {
+.faq-body p {
     color: var(--muted) !important;
 }
 
 /* Fix inline-background cards in light mode */
-html.light-mode div[style*='background:#1d1d1f'] {
+div[style*='background:#1d1d1f'] {
     background: var(--card-bg) !important;
     border-color: var(--border) !important;
 }
 
 /* Fix footer-link */
-html.light-mode .footer-link {
+.footer-link {
     color: var(--muted) !important;
 }
 

@@ -24,14 +24,8 @@ def _conversation_allowed(cursor, role, user_id, other_role, other_id, appointme
         appointment_filter = " AND appointment_id = %s"
         params.append(appointment_id)
 
-    cursor.execute(
-        f"""
-        SELECT appointment_id FROM appointment
-        WHERE customer_id = %s AND artist_id = %s{appointment_filter}
-        LIMIT 1
-        """,
-        tuple(params),
-    )
+    query = "SELECT appointment_id FROM appointment WHERE customer_id = %s AND artist_id = %s" + appointment_filter + " LIMIT 1"
+    cursor.execute(query, tuple(params))
     return cursor.fetchone() is not None
 
 

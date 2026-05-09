@@ -12,6 +12,7 @@ from flask import (
     flash,
     current_app,
 )
+from werkzeug.security import generate_password_hash, check_password_hash
 from ..db import get_db
 
 from ..utils.decorators import role_required
@@ -430,16 +431,18 @@ def customer_change_password():
     conn = get_db()
     with conn.cursor(dictionary=True) as cursor:
         cursor.execute(
-            "SELECT * FROM customer WHERE customer_id = %s AND password = %s",
-            (session["user_id"], current),
+            "SELECT password FROM customer WHERE customer_id = %s",
+            (session["user_id"],),
         )
-        if not cursor.fetchone():
+        user = cursor.fetchone()
+        if not user or not check_password_hash(user["password"], current):
             flash("Current password is incorrect!", "error")
             return redirect("/customer/dashboard")
 
+        hashed_pass = generate_password_hash(new_pass)
         cursor.execute(
             "UPDATE customer SET password = %s WHERE customer_id = %s",
-            (new_pass, session["user_id"]),
+            (hashed_pass, session["user_id"]),
         )
         conn.commit()
     flash("Password updated successfully!", "success")

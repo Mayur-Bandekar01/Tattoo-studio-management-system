@@ -83,13 +83,15 @@ function resetEye() {
 function validate() {
     const u = document.getElementById('username');
     const p = document.getElementById('password');
-    if (!u || !p) return;
+    const c = document.getElementById('captcha');
+    if (!u || !p || !c) return;
     const uv = u.value.trim();
     const pv = p.value;
+    const cv = c.value.trim();
     const role = document.querySelector('input[name="role"]:checked');
     const btn = document.getElementById('submitBtn');
     if (btn) {
-        btn.disabled = !(uv.length >= 1 && pv.length >= 6 && !!role);
+        btn.disabled = !(uv.length >= 1 && pv.length >= 6 && cv.length === 5 && !!role);
     }
 }
 
@@ -111,5 +113,33 @@ function resetForm() {
         u.type = 'email';
     }
     resetEye();
+    refreshCaptcha();
     validate();
 }
+
+async function refreshCaptcha() {
+    const display = document.getElementById('captchaDisplay');
+    const text = document.getElementById('captchaText');
+    const field = document.getElementById('captcha');
+    
+    if (display) display.classList.add('refreshing');
+    if (field) field.value = '';
+    
+    try {
+        const res = await fetch('/captcha');
+        const data = await res.json();
+        if (text) text.innerText = data.captcha;
+    } catch (e) {
+        if (text) text.innerText = 'ERROR';
+    } finally {
+        if (display) {
+            setTimeout(() => display.classList.remove('refreshing'), 400);
+        }
+        validate();
+    }
+}
+
+// Initial captcha load
+document.addEventListener('DOMContentLoaded', () => {
+    refreshCaptcha();
+});

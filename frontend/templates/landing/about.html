@@ -24,20 +24,20 @@
 </section>
 
 <!-- STORY SECTION -->
-<section class="py-24 px-6 border-y border-apple-border/10">
+<section class="py-24 px-6 border-y border-apple-border/10 overflow-hidden">
     <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-        <div class="relative group">
+        <div class="relative group reveal">
             <div class="absolute -inset-4 bg-apple-gold/5 rounded-3xl blur-2xl group-hover:bg-apple-gold/10 transition-all"></div>
             <div class="relative overflow-hidden rounded-2xl aspect-square border border-apple-border/20 shadow-2xl bg-black">
                 <img src="{{ url_for('static', filename='images/about_philosophy.jpg') }}" alt="Our Philosophy - Artistic Mastery" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700">
             </div>
         </div>
-        <div>
-            <h2 class="font-display text-3xl text-apple-text mb-6">Our Philosophy</h2>
-            <p class="text-apple-muted mb-6 leading-relaxed">
+        <div class="reveal reveal-d2">
+            <h2 class="font-display text-4xl text-apple-text mb-6">Our <span class="text-apple-accent">Philosophy</span></h2>
+            <p class="text-apple-muted mb-6 leading-relaxed font-light">
                 At Dragon Tattoos, we believe in the technical mastery of the craft. Every line must be precise, every shadow must be soft, and every saturation must be perfect. Our studio is built on three pillars: Artistic Excellence, Medical-Grade Safety, and Absolute Originality.
             </p>
-            <p class="text-apple-muted leading-relaxed">
+            <p class="text-apple-muted leading-relaxed font-light">
                 Whether you are getting your first piece or completing a bodysuit, our commitment to quality remains unwavering. We treat every project with the same level of obsession and care.
             </p>
         </div>
@@ -45,29 +45,93 @@
 </section>
 
 <!-- VALUES GRID -->
-<section class="py-32 px-6">
+<section class="py-32 px-6 bg-black/20">
     <div class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div class="text-center">
+            <div class="text-center reveal">
                 <div class="w-16 h-16 rounded-2xl bg-apple-gold/5 border border-apple-gold/10 flex items-center justify-center mx-auto mb-8 text-apple-gold text-2xl">
                     <i class="fas fa-shield-virus"></i>
                 </div>
                 <h3 class="font-display text-xl text-apple-text mb-4">Supreme Safety</h3>
-                <p class="text-apple-muted text-sm font-light">Exceeding hospital standards for sterilization. Your health is our highest priority, utilizing top-tier barrier protection and equipment.</p>
+                <p class="text-apple-muted text-sm font-light leading-relaxed">Exceeding hospital standards for sterilization. Your health is our highest priority, utilizing top-tier barrier protection and surgical-grade equipment.</p>
             </div>
-            <div class="text-center">
+            <div class="text-center reveal reveal-d1">
                 <div class="w-16 h-16 rounded-2xl bg-apple-gold/5 border border-apple-gold/10 flex items-center justify-center mx-auto mb-8 text-apple-gold text-2xl">
                     <i class="fas fa-gem"></i>
                 </div>
                 <h3 class="font-display text-xl text-apple-text mb-4">Custom Design</h3>
-                <p class="text-apple-muted text-sm font-light">We never repeat a tattoo. Every piece is custom-drawn for the individual, ensuring your art remains as unique as your story.</p>
+                <p class="text-apple-muted text-sm font-light leading-relaxed">We never repeat a tattoo. Every piece is custom-drawn for the individual, ensuring your art remains as unique as the story it tells on your skin.</p>
             </div>
-            <div class="text-center">
+            <div class="text-center reveal reveal-d2">
                 <div class="w-16 h-16 rounded-2xl bg-apple-gold/5 border border-apple-gold/10 flex items-center justify-center mx-auto mb-8 text-apple-gold text-2xl">
                     <i class="fas fa-medal"></i>
                 </div>
                 <h3 class="font-display text-xl text-apple-text mb-4">Award Winning</h3>
-                <p class="text-apple-muted text-sm font-light">Our artists are internationally recognized and specialized in diverse styles, from hyper-realism to ancient geometric patterns.</p>
+                <p class="text-apple-muted text-sm font-light leading-relaxed">Our artists are internationally recognized and specialized in diverse styles, from hyper-realism to ancient geometric patterns and fine-line art.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THE ROSTER -->
+<section class="py-32 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-20 reveal">
+            <div>
+                <span class="text-apple-gold text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-4 block">The Masters</span>
+                <h2 class="font-display text-4xl text-apple-text tracking-tight">Our Resident <span class="text-apple-accent">Artists</span></h2>
+            </div>
+            <p class="text-apple-muted text-sm font-light max-w-sm">Curating the world's most talented creators to bring your vision to life.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Artist 1 -->
+            <div class="flex flex-col md:flex-row gap-8 items-center reveal">
+                <div class="w-48 h-48 rounded-full overflow-hidden border-2 border-white/5 shrink-0">
+                    <img src="{{ url_for('static', filename='images/artist_about_1.png') }}" alt="Master Artist" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl text-apple-text mb-2">Vikram 'The Blade'</h3>
+                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Senior Realism Specialist</p>
+                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-4">With 15 years of international experience, Vikram specializes in hyper-realistic portraits and complex black & grey compositions.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fas fa-globe"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artist 2 -->
+            <div class="flex flex-col md:flex-row gap-8 items-center reveal reveal-d2">
+                <div class="w-48 h-48 rounded-full overflow-hidden border-2 border-white/5 shrink-0">
+                    <img src="{{ url_for('static', filename='images/artist_about_2.png') }}" alt="Master Artist" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h3 class="font-display text-2xl text-apple-text mb-2">Elena Rossi</h3>
+                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Fine-Line & Geometric Expert</p>
+                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-4">Elena is renowned for her surgical precision in minimalist botanical art and sacred geometry, blending ancient symbols with modern aesthetics.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fas fa-globe"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STUDIO ETHICS -->
+<section class="py-32 px-6 bg-apple-gold/5">
+    <div class="max-w-4xl mx-auto text-center reveal">
+        <h2 class="font-display text-4xl text-apple-text mb-8">Our Ethical <span class="text-apple-accent">Code</span></h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+            <div class="p-8 rounded-3xl bg-black/40 border border-white/5">
+                <h4 class="text-apple-text font-display text-lg mb-4">Authentic Connection</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">We believe in a client-first approach. We listen, advise, and collaborate to ensure every tattoo is a reflection of the wearer's true self.</p>
+            </div>
+            <div class="p-8 rounded-3xl bg-black/40 border border-white/5">
+                <h4 class="text-apple-text font-display text-lg mb-4">Sustainable Practice</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">From eco-friendly disposables to vegan-friendly inks, we strive to minimize our environmental footprint without compromising on quality.</p>
             </div>
         </div>
     </div>

@@ -55,6 +55,69 @@
             </div>
         </div>
 
+        <!-- 2. Edit Profile Card -->
+        <div class="profile-wrap profile-edit-card">
+            <!-- Glow orb (gold tint) -->
+            <div class="profile-orb"></div>
+
+            <div class="profile-security-header">
+                <div class="profile-lock-icon" style="background: rgba(212,175,55,0.12); border-color: rgba(212,175,55,0.2);">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <div>
+                    <h3 class="card-title profile-card-title">Update Profile</h3>
+                    <p class="profile-card-sub">Refine your public artist details</p>
+                </div>
+            </div>
+
+            <form method="POST" action="/artist/profile/update" class="profile-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="profile-field">
+                    <label class="studio-label">Display Name</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-signature"></i></div>
+                        <input class="studio-input profile-input" type="text" name="artist_name" 
+                               value="{{ artist_profile.artist_name if artist_profile else name }}" required>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <label class="studio-label">Specialisation</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-award"></i></div>
+                        <input class="studio-input profile-input" type="text" name="specialisation" 
+                               value="{{ artist_profile.specialisation if artist_profile else '' }}" placeholder="e.g. Blackwork, Realism" required>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <label class="studio-label">Phone Number</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-phone"></i></div>
+                        <input class="studio-input profile-input" type="text" name="phone" 
+                               value="{{ artist_profile.phone if artist_profile else '' }}" required>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <label class="studio-label">Email Address</label>
+                    <div class="profile-input-wrap">
+                        <div class="profile-input-icon"><i class="fas fa-envelope"></i></div>
+                        <input class="studio-input profile-input" type="email" name="artist_email" 
+                               value="{{ artist_profile.artist_email if artist_profile else '' }}" required>
+                    </div>
+                </div>
+
+                <div class="profile-submit-wrap">
+                    <button type="submit" class="btn-studio btn-primary profile-submit-btn">
+                        <i class="fas fa-check-circle"></i>
+                        Save Profile Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- 2. Security Settings Card -->
         <div class="profile-wrap profile-security-card">
 

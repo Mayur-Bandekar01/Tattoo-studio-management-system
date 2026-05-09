@@ -138,6 +138,149 @@ body {
     pointer-events: none;
 }
 
+/* ── Refined Login UI Components ── */
+.card-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(200, 160, 64, 0.15);
+    background: linear-gradient(180deg, rgba(30, 20, 0, 0.4) 0%, transparent 100%);
+}
+
+.logo-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    border: 2px solid rgba(200, 160, 64, 0.4);
+    box-shadow: 0 0 30px rgba(200, 160, 64, 0.15);
+    background: #0a0800;
+}
+
+.logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-subtitle {
+    color: #a89060;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.form-container {
+    padding: 2.5rem;
+}
+
+.role-selector-wrap {
+    margin-bottom: 1.75rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #a89060;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+}
+
+.role-card i {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.role-card span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(168, 144, 96, 0.9);
+}
+
+.eye-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a89060;
+}
+
+.forgot-password-wrap {
+    text-align: right;
+    margin-top: -0.5rem;
+    display: none;
+}
+
+.forgot-password-wrap a {
+    font-size: 0.75rem;
+    color: #a89060;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.captcha-section {
+    margin-top: 0.5rem;
+}
+
+.captcha-input-wrap {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.captcha-field {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    text-align: center;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.reg-prompt p {
+    font-size: 0.85rem;
+    color: #8b8b93;
+    margin: 0;
+}
+
+.reg-prompt a {
+    color: #c8a040;
+    font-weight: 700;
+    text-decoration: none;
+}
+
 .login-prompt {
     text-align: center;
     margin-top: 1.5rem;
@@ -259,28 +402,103 @@ body {
     animation: pageIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes pageIn {
-    from {
-        opacity: 0;
-        transform: scale(0.97) translateY(14px);
-    }
-
-    to {
-        opacity: 1;
-        transform: none;
-    }
+/* CAPTCHA Styles */
+.captcha-box {
+    position: relative;
+    background: linear-gradient(135deg, rgba(200, 160, 64, 0.12) 0%, rgba(10, 8, 0, 0.95) 100%);
+    border: 1px solid rgba(200, 160, 64, 0.35);
+    border-radius: 0.65rem;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    overflow: hidden;
+    user-select: none;
+    min-width: 110px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
-/* ── LIGHT MODE ── */
+.captcha-box:hover {
+    border-color: rgba(200, 160, 64, 0.6);
+    background: linear-gradient(135deg, rgba(200, 160, 64, 0.2) 0%, rgba(20, 15, 0, 0.95) 100%);
+}
+
+#captchaText {
+    font-family: 'Cinzel Decorative', cursive;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 0.15em;
+    color: #c8a040;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(200, 160, 64, 0.3);
+    font-style: italic;
+    filter: blur(0.4px);
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+.captcha-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.captcha-box::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.4), transparent);
+    top: 50%;
+    left: -50%;
+    transform: rotate(-15deg);
+    pointer-events: none;
+}
+
+.captcha-box.refreshing #captchaText {
+    opacity: 0;
+    transform: translateY(5px);
+}
+
+.btn-icon {
+    background: rgba(200, 160, 64, 0.1);
+    border: 1px solid rgba(200, 160, 64, 0.2);
+    color: #a89060;
+    width: 44px;
+    height: 44px;
+    border-radius: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+    background: rgba(200, 160, 64, 0.2);
+    border-color: #c8a040;
+    color: #fff;
+    transform: rotate(180deg);
+}
+
+/* ── LIGHT MODE OVERRIDES ── */
 html.light-mode body {
     background: #F7F7FF !important;
     color: #27187E !important;
 }
 
+html.light-mode .mesh-bg {
+    background: radial-gradient(circle at 20% 30%, rgba(39, 24, 126, 0.03) 0%, transparent 40%);
+}
+
 html.light-mode .card-wrap {
-    padding: 3px;
     background: linear-gradient(145deg, #27187E 0%, #1e1261 100%);
-    box-shadow: none;
+    box-shadow: 0 20px 50px rgba(39, 24, 126, 0.1);
 }
 
 html.light-mode .card-body {
@@ -289,9 +507,9 @@ html.light-mode .card-body {
 }
 
 html.light-mode .field {
-    background: #ffffff;
+    background: #ffffff !important;
     border: 1.5px solid rgba(39, 24, 126, 0.15);
-    color: #27187E;
+    color: #27187E !important;
 }
 
 html.light-mode .field::placeholder {
@@ -319,7 +537,6 @@ html.light-mode .role-card.active {
     background: #27187E;
     color: #ffffff !important;
     border-color: #27187E;
-    box-shadow: 0 8px 20px rgba(39, 24, 126, 0.25);
 }
 
 html.light-mode .role-card.active i,
@@ -361,17 +578,15 @@ html.light-mode label {
     opacity: 0.8;
 }
 
-
-
 html.light-mode #cardHeader {
     background: transparent !important;
-    border-bottom-color: rgba(39, 24, 126, 0.15) !important;
+    border-bottom-color: rgba(39, 24, 126, 0.1) !important;
 }
 
 html.light-mode #logoCircle {
     background: #F7F7FF !important;
-    border-color: rgba(39, 24, 126, 0.4) !important;
-    box-shadow: 0 0 16px rgba(39, 24, 126, 0.1) !important;
+    border-color: rgba(39, 24, 126, 0.3) !important;
+    box-shadow: 0 0 16px rgba(39, 24, 126, 0.08) !important;
 }
 
 html.light-mode #cardSubtitle {
@@ -379,7 +594,7 @@ html.light-mode #cardSubtitle {
 }
 
 html.light-mode .reg-prompt {
-    background: #F7F7FF !important;
+    background: rgba(39, 24, 126, 0.04) !important;
     border: 1px solid rgba(39, 24, 126, 0.1) !important;
 }
 
@@ -391,36 +606,36 @@ html.light-mode .reg-prompt a {
     color: #27187E !important;
 }
 
-html.light-mode .form-section label {
-    color: #27187E !important;
-    opacity: 0.8;
-}
-
-html.light-mode #forgotPasswordContainer a {
-    color: #27187E !important;
-    opacity: 0.7;
-}
-
 html.light-mode #eyeBtn {
     color: #27187E !important;
     opacity: 0.5;
 }
 
-html.light-mode .login-prompt {
-    color: rgba(39, 24, 126, 0.6) !important;
+html.light-mode .captcha-box {
+    background: #F7F7FF !important;
+    border-color: rgba(39, 24, 126, 0.2) !important;
 }
 
-html.light-mode .login-prompt a {
+html.light-mode #captchaText {
+    color: #27187E !important;
+    text-shadow: none;
+    opacity: 0.8;
+}
+
+html.light-mode .btn-icon {
+    background: rgba(39, 24, 126, 0.05) !important;
+    border-color: rgba(39, 24, 126, 0.1) !important;
     color: #27187E !important;
 }
 
-/* FIX #3: Scoped transition instead of global * selector */
+/* ── SHARED TRANSITIONS ── */
 body, nav, .card-wrap, .card-body, .field, .role-card, 
-.btn-gold, .btn-outline, .title-grad, label, .reg-prompt {
+.btn-gold, .btn-outline, .title-grad, label, .reg-prompt, .captcha-box {
     transition: background-color 0.4s ease, border-color 0.4s ease, 
-                color 0.35s ease, box-shadow 0.4s ease;
+                color 0.35s ease, box-shadow 0.4s ease, transform 0.3s ease;
 }
 
-.ambient-glow {
+html.light-mode .ambient-glow {
     display: none !important;
 }
+

@@ -148,9 +148,96 @@
     </div>
 </section>
 
+<!-- SAFETY SECTION -->
+<section class="py-32 px-6 overflow-hidden">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div class="reveal">
+            <span class="text-apple-gold text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-6 block">Standard of Excellence</span>
+            <h2 class="font-display text-4xl md:text-5xl text-apple-text mb-8 leading-tight">Clinical Precision <br/> <span class="text-apple-accent">Medical Safety</span></h2>
+            <p class="text-apple-muted text-sm font-light leading-relaxed mb-8">
+                Your health is our ultimate priority. We operate under strict clinical guidelines, exceeding industry standards to ensure a safe, sterile environment for every procedure.
+            </p>
+            
+            <div class="space-y-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-apple-gold/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-apple-text font-display text-base mb-1">Single-Use Everything</h4>
+                        <p class="text-apple-muted text-[0.7rem] font-light">From needles to ink caps, every component that touches your skin is 100% disposable and single-use.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-apple-gold/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-apple-text font-display text-base mb-1">Advanced Sterilization</h4>
+                        <p class="text-apple-muted text-[0.7rem] font-light">Our studio utilizes medical-grade autoclaves and ultrasonic cleaners for non-disposable technical equipment.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-apple-gold/10 flex items-center justify-center text-apple-gold shrink-0">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-apple-text font-display text-base mb-1">Pigment Integrity</h4>
+                        <p class="text-apple-muted text-[0.7rem] font-light">We only use world-class, REACH-compliant vegan inks that are heavy-metal free and dermatologically tested.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative reveal reveal-d2">
+            <div class="rounded-3xl overflow-hidden border border-white/5 shadow-2xl relative group">
+                <img src="{{ url_for('static', filename='images/style_realistic.jpg') }}" alt="Safety Standards" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-24 h-24 rounded-full border border-apple-gold/40 flex items-center justify-center bg-black/40 backdrop-blur-md">
+                        <i class="fas fa-shield-virus text-apple-gold text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AFTERCARE GUIDE -->
+<section class="py-32 px-6 bg-apple-card/30">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-20 reveal">
+            <h2 class="font-display text-4xl text-apple-text mb-4 tracking-tight">Aftercare <span class="text-apple-accent">Commitment</span></h2>
+            <p class="text-apple-muted max-w-xl mx-auto text-sm font-light">Art requires care. We provide every client with a premium aftercare kit and a 24/7 support line for healing inquiries.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="p-8 rounded-2xl border border-white/5 bg-black/40 reveal">
+                <div class="text-apple-gold text-xl mb-6"><i class="fas fa-soap"></i></div>
+                <h4 class="text-apple-text font-display text-lg mb-4">Cleanse</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">Gently wash with unscented, antimicrobial soap twice a day. Pat dry with a fresh paper towel.</p>
+            </div>
+            <div class="p-8 rounded-2xl border border-white/5 bg-black/40 reveal reveal-d1">
+                <div class="text-apple-gold text-xl mb-6"><i class="fas fa-droplet"></i></div>
+                <h4 class="text-apple-text font-display text-lg mb-4">Hydrate</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">Apply a thin layer of recommended ointment. Avoid over-moisturizing to let the skin breathe.</p>
+            </div>
+            <div class="p-8 rounded-2xl border border-white/5 bg-black/40 reveal reveal-d2">
+                <div class="text-apple-gold text-xl mb-6"><i class="fas fa-sun"></i></div>
+                <h4 class="text-apple-text font-display text-lg mb-4">Protect</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">Avoid direct sunlight, swimming, and heavy sweating for at least 14 days post-session.</p>
+            </div>
+            <div class="p-8 rounded-2xl border border-white/5 bg-black/40 reveal reveal-d3">
+                <div class="text-apple-gold text-xl mb-6"><i class="fas fa-hand-dots"></i></div>
+                <h4 class="text-apple-text font-display text-lg mb-4">Patience</h4>
+                <p class="text-apple-muted text-xs font-light leading-relaxed">Never pick or scratch. Let the natural healing process take its course for vivid, lasting results.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- CT SECTION -->
 <section class="py-32 px-6 border-t border-apple-border/10">
-    <div class="max-w-4xl mx-auto text-center">
+    <div class="max-w-4xl mx-auto text-center reveal">
         <h2 class="font-display text-4xl md:text-5xl text-apple-text mb-8">Ready for your <span class="text-apple-accent">next piece?</span></h2>
         <p class="text-apple-muted text-lg font-light mb-12">Consultations are complimentary. Let's discuss your vision and turn it into reality.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-6">

@@ -399,6 +399,39 @@ footer {
     color: #c8a040;
 }
 
+/* ── FAQ ACCORDION ── */
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+details[open] summary .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+details {
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+details[open] {
+    border-color: rgba(200, 160, 64, 0.3);
+    background: rgba(200, 160, 64, 0.05);
+}
+
+/* ── LIGHT MODE FAQ OVERRIDES ── */
+body[data-theme="ivory"] details {
+    background: rgba(249, 115, 22, 0.03) !important;
+    border-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+body[data-theme="ivory"] details[open] {
+    border-color: rgba(249, 115, 22, 0.4) !important;
+    background: rgba(249, 115, 22, 0.08) !important;
+}
+
+body[data-theme="ivory"] summary {
+    color: #1f2937 !important;
+}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar {
     width: 5px;
@@ -450,7 +483,7 @@ footer {
 }
 
 /* ── LIGHT THEME (White + Orange Energetic) ── */
-html.light-mode body {
+body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
     --card-bg: #fffaf5;
@@ -468,63 +501,63 @@ html.light-mode body {
 
 
 /* ── LIGHT MODE HOME OVERRIDES ── */
-html.light-mode section {
+section {
     background: var(--bg) !important;
 }
 
-html.light-mode .bento-card,
-html.light-mode .stat-card,
-html.light-mode .testi-card {
+.bento-card,
+.stat-card,
+.testi-card {
     background: var(--card-bg) !important;
     border-color: var(--border) !important;
     box-shadow: 0 4px 20px var(--shadow) !important;
 }
 
-html.light-mode .bento-card:hover {
+.bento-card:hover {
     background: var(--card-hover) !important;
     border-color: var(--border-h) !important;
 }
 
-html.light-mode .testi-quote,
-html.light-mode .testi-detail {
+.testi-quote,
+.testi-detail {
     color: var(--muted) !important;
 }
 
-html.light-mode .testi-name {
+.testi-name {
     color: var(--text) !important;
 }
 
-html.light-mode .bg-grid {
+.bg-grid {
     background-image: linear-gradient(rgba(249, 115, 22, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(249, 115, 22, 0.05) 1px, transparent 1px) !important;
 }
 
 /* Fix inline-background testimonial avatars */
-html.light-mode div[style*='background:linear-gradient(135deg,#1e1e22'] {
+div[style*='background:linear-gradient(135deg,#1e1e22'] {
     background: rgba(249, 115, 22, 0.08) !important;
     border-color: rgba(249, 115, 22, 0.3) !important;
 }
 
 /* ── STATS PILL LIGHT MODE ── */
-html.light-mode .stats-glass {
+.stats-glass {
     background: rgba(255, 255, 255, 0.8) !important;
     border-color: rgba(249, 115, 22, 0.2) !important;
     border-top-color: rgba(249, 115, 22, 0.4) !important;
     box-shadow: 0 15px 35px rgba(249, 115, 22, 0.15) !important;
 }
 
-html.light-mode .stats-glass .text-apple-gold {
+.stats-glass .text-apple-gold {
     color: #f97316 !important;
 }
 
-html.light-mode .stats-glass .stats-icon {
+.stats-glass .stats-icon {
     background: linear-gradient(135deg, #fb923c, #f97316) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
 }
 
-html.light-mode .stats-glass .bg-white\/5 {
+.stats-glass .bg-white\/5 {
     background-color: rgba(249, 115, 22, 0.1) !important;
 }
 

@@ -66,7 +66,12 @@
                         </td>
                         <td>
                             <span class="artist-req-name">
-                                {{ item.requested_artist or 'Any Artist' }}
+                                {% if item.status == 'Claimed' %}
+                                    <i class="fas fa-user-check" style="color: #4cd964; margin-right: 4px;"></i>
+                                    {{ item.requested_artist }}
+                                {% else %}
+                                    {{ item.requested_artist or 'Any Artist' }}
+                                {% endif %}
                             </span>
                         </td>
                         <td>
@@ -75,7 +80,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="status-badge status-{{ item.status|lower }}">
+                            <span class="status-badge status-{{ item.status|lower }} {% if item.status == 'Claimed' %}claimed{% endif %}">
                                 {{ item.status }}
                             </span>
                         </td>

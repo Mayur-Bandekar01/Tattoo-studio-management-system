@@ -8,30 +8,56 @@
     <div class="grid grid-cols-1 gap-6">
         {% if inquiries %}
             {% for item in inquiries %}
-            <div class="lead-card group">
+            <div class="lead-card group {% if not item.artist_id %}is-open-lead{% endif %}">
+                {% if not item.artist_id %}
+                <div class="lead-badge-open">OPEN LEAD</div>
+                {% endif %}
+
                 <div class="lead-header">
                     <span class="lead-type">{{ item.inquiry_type }}</span>
-                    <span class="lead-date">{{ item.submitted_at[:16] }}</span>
+                    <span class="lead-date">{{ item.submitted_at }}</span>
                 </div>
                 <div class="lead-body">
                     <h3>{{ item.full_name }}</h3>
                     <div class="lead-message">"{{ item.message }}"</div>
+                    {% if not item.artist_id and item.requested_artist %}
+                    <p class="text-[0.7rem] text-studio-gold mt-2">
+                        <i class="fas fa-user-tag mr-1"></i> Requested: {{ item.requested_artist }}
+                    </p>
+                    {% endif %}
                 </div>
                 <div class="lead-actions">
                     <div class="flex flex-col gap-1">
-                        <span class="text-[0.7rem] font-medium text-studio-muted">
+                        <span class="text-[0.8rem] font-medium text-studio-text">
                             <i class="far fa-envelope mr-1.5 opacity-60"></i> {{ item.email }}
                         </span>
                         {% if item.phone %}
-                        <span class="text-[0.7rem] font-medium text-studio-muted">
+                        <span class="text-[0.8rem] font-medium text-studio-text">
                             <i class="fas fa-phone mr-1.5 opacity-60"></i> {{ item.phone }}
                         </span>
                         {% endif %}
                     </div>
-                    <a href="mailto:{{ item.email }}?subject=Re: {{ item.inquiry_type }} Inquiry - Dragon Tattoos" 
-                       class="btn-claim">
-                        <i class="fas fa-bolt"></i> Claim Lead
-                    </a>
+                    
+                    {% if not item.artist_id %}
+                        <form action="/artist/lead/claim/{{ item.inquiry_id }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-claim">
+                                <i class="fas fa-bolt"></i> Claim Lead
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="flex gap-2">
+                            <span class="status-tag claimed">
+                                <i class="fas fa-check-circle"></i> Claimed
+                            </span>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ item.email }}&su=Tattoo Inquiry Response - Dragon Tattoos&body=Hi {{ item.full_name }}," 
+                               target="_blank" 
+                               class="btn-studio btn-mini" 
+                               title="Reply via Gmail">
+                                <i class="fas fa-reply"></i> Reply
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

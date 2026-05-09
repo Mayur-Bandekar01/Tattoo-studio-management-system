@@ -209,42 +209,80 @@
 /* Metric Cards */
 .ov-metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
 .ov-metric-card { 
-    position: relative; background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem;
-    padding: 1.75rem 1.75rem 1.75rem 2.25rem; overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    position: relative; 
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem;
+    padding: 1.75rem 1.75rem 1.75rem 2.25rem; 
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
+
 .ov-metric-card::before {
     content: '';
     position: absolute;
-    left: 0; top: 1rem; bottom: 1rem;
+    left: 0; top: 0; bottom: 0;
     width: 4px;
-    border-radius: 0 4px 4px 0;
-    transition: all 0.4s ease;
+    border-radius: 0;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 2;
 }
-.ov-metric-card:hover { transform: translateY(-5px); border-color: var(--gold-dim); box-shadow: var(--shadow-lg); }
-.ov-metric-card:hover::before { top: 0.5rem; bottom: 0.5rem; }
 
-.ov-metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-.ov-metric-icon { width: 3rem; height: 3rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
-.ov-metric-tag { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+.ov-metric-card:hover { 
+    transform: translateY(-8px) scale(1.02); 
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+}
 
-.ov-card-gold::before  { background: linear-gradient(180deg, #fb3640, #ff6b35); box-shadow: 2px 0 12px rgba(251,54,64,0.4); }
-.ov-card-orange::before { background: linear-gradient(180deg, #f59e0b, #fb923c); box-shadow: 2px 0 12px rgba(245,158,11,0.4); }
-.ov-card-emerald::before { background: linear-gradient(180deg, #10b981, #06b6d4); box-shadow: 2px 0 12px rgba(16,185,129,0.4); }
+.ov-metric-card:hover::before { width: 6px; }
 
-.ov-card-gold .ov-metric-icon { background: rgba(251, 54, 64, 0.1); color: #fb3640; border: 1px solid rgba(251, 54, 64, 0.2); }
-.ov-card-orange .ov-metric-icon { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
-.ov-card-emerald .ov-metric-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+.ov-metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; position: relative; z-index: 2; }
+.ov-metric-icon { 
+    width: 3.25rem; height: 3.25rem; border-radius: 1rem; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 1.25rem;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-.ov-metric-val { font-family: var(--dt-font-display); font-size: 1.75rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; }
-.ov-metric-lbl { font-size: 0.7rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+.ov-metric-card:hover .ov-metric-icon { transform: scale(1.1) rotate(5deg); }
+
+.ov-metric-tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); }
+
+.ov-card-gold::before  { background: linear-gradient(180deg, #fb3640, #ff6b35); box-shadow: 2px 0 15px rgba(251,54,64,0.5); }
+.ov-card-orange::before { background: linear-gradient(180deg, #f59e0b, #fb923c); box-shadow: 2px 0 15px rgba(245,158,11,0.5); }
+.ov-card-emerald::before { background: linear-gradient(180deg, #10b981, #06b6d4); box-shadow: 2px 0 15px rgba(16,185,129,0.5); }
+
+.ov-card-gold .ov-metric-icon { background: linear-gradient(135deg, #fb3640, #ff6b35); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 20px rgba(251, 54, 64, 0.3); }
+.ov-card-orange .ov-metric-icon { background: linear-gradient(135deg, #f59e0b, #fb923c); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
+.ov-card-emerald .ov-metric-icon { background: linear-gradient(135deg, #10b981, #06b6d4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+
+.ov-metric-val { 
+    font-family: var(--dt-font-display); font-size: 2rem; font-weight: 900; 
+    color: var(--text-1); letter-spacing: -0.03em; 
+    position: relative; z-index: 2;
+}
+
+.ov-metric-lbl { 
+    font-size: 0.75rem; font-weight: 700; color: var(--text-3); 
+    text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.35rem;
+    position: relative; z-index: 2;
+}
 
 .ov-card-glow { 
-    position: absolute; top: -50px; right: -50px; width: 150px; height: 150px;
-    background: radial-gradient(circle, rgba(251, 54, 64, 0.05) 0%, transparent 70%);
-    pointer-events: none; opacity: 0; transition: opacity 0.6s ease;
+    position: absolute; top: -30%; right: -30%; width: 80%; height: 80%;
+    pointer-events: none; opacity: 0.3; transition: opacity 0.5s ease;
 }
-.ov-metric-card:hover .ov-card-glow { opacity: 1; }
+
+.ov-card-gold .ov-card-glow { background: radial-gradient(circle, rgba(251, 54, 64, 0.15) 0%, transparent 70%); }
+.ov-card-orange .ov-card-glow { background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%); }
+.ov-card-emerald .ov-card-glow { background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%); }
+
+.ov-metric-card:hover .ov-card-glow { opacity: 0.6; }
+
 
 /* Hero */
 .ov-hero { 
