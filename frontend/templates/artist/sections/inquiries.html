@@ -40,7 +40,7 @@
                     
                     {% if not item.artist_id %}
                         <form action="/artist/lead/claim/{{ item.inquiry_id }}" method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token">
                             <button type="submit" class="btn-claim">
                                 <i class="fas fa-bolt"></i> Claim Lead
                             </button>

@@ -67,7 +67,7 @@
                         {% if appt.status == 'Approved' %}
                         <span class="sc-status-badge sc-status-active">Active</span>
                         <form method="POST" action="/artist/done/{{ appt.appointment_id }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" aria-label="CSRF Token">
                             <button type="submit" class="sc-done-btn"
                                 onclick="return confirm('Mark this session as complete?')" title="Mark Done">
                                 <i class="fas fa-check"></i>

@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.getElementById('progressFill');
     const submitBtn = document.getElementById('submitBtn');
 
-    if (slots.length > 0) {
+    const otpForm = document.getElementById('otpForm');
+
+    if (slots.length > 0 && otpForm) {
         function updateOtp() {
             const val = Array.from(slots).map(s => s.value).join('');
             if (finalOtpInput) finalOtpInput.value = val;
@@ -18,6 +20,64 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (submitBtn) submitBtn.disabled = val.length !== 6;
         }
+
+        otpForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const otp = Array.from(slots).map(input => input.value).join('');
+            const csrfToken = otpForm.querySelector('input[name="csrf_token"]').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const submitBtn = otpForm.querySelector('button[type="submit"]');
+
+            if (otp.length !== 6) {
+                errorMessage.textContent = 'Please enter a 6-digit OTP';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Disable UI
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Verifying...';
+            errorMessage.style.display = 'none';
+
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `otp=${otp}&csrf_token=${csrfToken}`
+            })
+            .then(async response => {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    if (response.ok) {
+                        window.location.href = data.redirect || '/reset-password';
+                    } else {
+                        throw new Error(data.message || 'Verification failed');
+                    }
+                } else {
+                    // Fallback for non-JSON responses (e.g. 500 error pages)
+                    if (!response.ok) {
+                        throw new Error("Server error. Please try again later.");
+                    }
+                    window.location.href = '/reset-password';
+                }
+            })
+            .catch(err => {
+                errorMessage.textContent = err.message;
+                errorMessage.style.display = 'block';
+                
+                // Clear inputs on error for security
+                slots.forEach(input => input.value = '');
+                slots[0].focus();
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Verify & Continue';
+            });
+        });
 
         slots.forEach((slot, idx) => {
             slot.addEventListener('input', (e) => {
@@ -60,40 +120,37 @@ function resendOtp() {
     btn.disabled = true;
     btn.textContent = 'Sending...';
 
+    const email = document.querySelector('.verify-email-chip')?.textContent?.trim() || '';
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
     fetch('/forgot-password', {
         method: 'POST',
         headers: {
-            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
-            'email': document.querySelector('.card-subtitle strong').textContent,
-            'resend': 'true'
+            'email': email,
+            'resend': 'true',
+            'csrf_token': csrfToken
         })
     })
-    .then(response => {
+    .then(async response => {
         if (response.ok) {
-            btn.textContent = 'OTP Resent!';
-            // Reset the 10-minute timer
+            btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Code Sent!';
+            // Reset the 10-minute timer if needed (the inline timer in the HTML handles display)
             if (typeof timeLeft !== 'undefined') {
                 timeLeft = 600; 
                 btn.disabled = true;
-                btn.style.opacity = "0.5";
-                // Timer interval in HTML will pick this up
             }
-            setTimeout(() => {
-                if (btn.textContent === 'OTP Resent!') {
-                    btn.textContent = originalText;
-                }
-            }, 5000);
+            setTimeout(() => { btn.textContent = originalText; }, 5000);
         } else {
-            throw new Error();
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.message || 'Resend failed');
         }
     })
-    .catch(() => {
-        btn.textContent = 'Failed to resend';
+    .catch((err) => {
+        btn.textContent = err.message || 'Failed to resend';
         btn.disabled = false;
         setTimeout(() => { btn.textContent = originalText; }, 3000);
     });

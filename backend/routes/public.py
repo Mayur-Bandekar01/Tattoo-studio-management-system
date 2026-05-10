@@ -93,13 +93,47 @@ def submit_inquiry():
         artist_id = None
 
     conn = get_db()
-    with conn.cursor() as cursor:
+    with conn.cursor(dictionary=True) as cursor:
         try:
+            # 1. Save to database
             cursor.execute("""
                 INSERT INTO inquiry (full_name, email, phone, inquiry_type, message, artist_id)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (full_name, email, phone, inquiry_type, message, artist_id))
             conn.commit()
+
+            # 2. Trigger notifications
+            from ..app import mail
+            from ..utils.email_service import send_inquiry_notification
+
+            inquiry_details = {
+                "name": full_name,
+                "email": email,
+                "phone": phone,
+                "type": inquiry_type,
+                "message": message
+            }
+
+            # Fetch recipients
+            recipients = []
+            
+            # Fetch Owner Email
+            cursor.execute("SELECT email FROM owner LIMIT 1")
+            owner = cursor.fetchone()
+            if owner:
+                recipients.append(owner["email"])
+
+            # Fetch Artist Email if targeted
+            if artist_id:
+                cursor.execute("SELECT artist_email FROM artist WHERE artist_id = %s", (artist_id,))
+                artist = cursor.fetchone()
+                if artist and artist["artist_email"]:
+                    recipients.append(artist["artist_email"])
+
+            # Send emails
+            for r_email in set(recipients): # Deduplicate if owner is also an artist
+                send_inquiry_notification(mail, r_email, inquiry_details)
+
             return {"status": "success", "message": "Inquiry submitted! We will contact you soon."}, 201
         except Exception as e:
             return {"status": "error", "message": str(e)}, 500

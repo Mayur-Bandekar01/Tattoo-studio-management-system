@@ -185,7 +185,8 @@ def customer_book():
 
         ext = filename_parts[1].lower()
         filename = secure_filename(f"ref_{session['user_id']}_{int(time.time())}.{ext}")
-        save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+        # Save file to the references subdirectory
+        save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "references", filename)
         uploaded_file.save(save_path)
         reference = f"uploads/references/{filename}"
 

@@ -211,27 +211,22 @@ def chat_threads():
                    m.unread_count
             FROM (
                 SELECT
-                    CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
+                    ids.other_id,
                     latest.content AS latest_content,
                     latest.sent_at AS latest_at,
-                    unread.cnt AS unread_count
+                    COALESCE(unread.cnt, 0) AS unread_count
                 FROM (
-                    SELECT other_id, MAX(sent_at) AS max_sent_at
+                    SELECT other_id, MAX(message_id) AS max_msg_id
                     FROM (
-                        SELECT sender_id, receiver_id,
-                               CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
-                               sent_at
+                        SELECT CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
+                               message_id
                         FROM messages
                         WHERE (sender_id = %s AND sender_role = %s)
                            OR (receiver_id = %s AND receiver_role = %s)
                     ) sub
                     GROUP BY other_id
                 ) ids
-                JOIN messages latest ON latest.sent_at = ids.max_sent_at
-                    AND (
-                        (latest.sender_id = %s AND latest.receiver_id = ids.other_id)
-                        OR (latest.receiver_id = %s AND latest.sender_id = ids.other_id)
-                    )
+                JOIN messages latest ON latest.message_id = ids.max_msg_id
                 LEFT JOIN (
                     SELECT sender_id AS other_id, COUNT(*) AS cnt
                     FROM messages
@@ -242,8 +237,7 @@ def chat_threads():
             JOIN {table} t ON t.{id_col} = m.other_id
             ORDER BY m.latest_at DESC
             """.format(name_col=name_col, id_col=id_col, table=table),
-            (user_id, user_id, user_id, role, user_id, role,
-             user_id, user_id, user_id, role),
+            (user_id, user_id, role, user_id, role, user_id, role),
         )
         rows = cursor.fetchall()
         rows = [

@@ -132,21 +132,7 @@
     ══════════════════════════════════════ -->
     <main class="main-content">
 
-        <header class="top-header">
-            <div class="header-content-wrapper">
-                <div>
-                    <h1 class="page-header-title" id="pageTitle">Welcome</h1>
-                    <p class="page-header-subtitle" id="pageSubtitle">Your artistic journey at a glance</p>
-                </div>
-                <div class="header-actions">
-                    <button id="globalThemeBtn" class="header-action-btn header-theme-btn"
-                            onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle theme">
-                        <i class="fas fa-moon"></i>
-                        <i class="fas fa-sun"></i>
-                    </button>
-                </div>
-            </div>
-        </header>
+
 
         <div id="flashContainer">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -213,7 +199,7 @@
     <div class="glb-inner" id="glbInner">
         <!-- Image side (70%) -->
         <div class="glb-img-side" id="glbImgContainer">
-            <img id="lbImg" src="" alt="">
+            <img id="lbImg" src="" alt="Lightbox Image">
         </div>
         <!-- Info side (30%) -->
         <div class="glb-info-side">

@@ -50,3 +50,39 @@ body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
         return True
     except Exception as e:
         return False
+
+def send_inquiry_notification(mail_ext, recipient_email, inquiry_details):
+    """
+    Sends an internal notification email about a new inquiry.
+    """
+    try:
+        msg = Message(
+            subject=f"New Studio Inquiry: {inquiry_details['type']}",
+            recipients=[recipient_email]
+        )
+        msg.html = f"""
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+body{{margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;}}
+.wrap{{max-width:520px;margin:30px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}}
+.hdr{{background:#1a1a2e;padding:24px;text-align:center;}}
+.hdr h1{{color:#fff;font-size:20px;margin:0;letter-spacing:0.1em;}}
+.body{{padding:30px;color:#333;line-height:1.6;}}
+.detail-row{{margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #eee;}}
+.label{{font-weight:700;color:#1a1a2e;display:block;font-size:12px;text-transform:uppercase;margin-bottom:4px;}}
+.value{{font-size:15px;}}
+.msg-box{{background:#f8f9fa;padding:20px;border-radius:8px;margin-top:20px;font-style:italic;}}
+</style></head><body>
+<div class="wrap">
+  <div class="hdr"><h1>DRAGON TATTOOS</h1></div>
+  <div class="body">
+    <p>A new inquiry has been submitted via the studio website:</p>
+    <div class="detail-row"><span class="label">Client Name</span><span class="value">{inquiry_details['name']}</span></div>
+    <div class="detail-row"><span class="label">Contact Info</span><span class="value">{inquiry_details['email']} | {inquiry_details['phone']}</span></div>
+    <div class="detail-row"><span class="label">Interest</span><span class="value">{inquiry_details['type']}</span></div>
+    <div class="msg-box"><span class="label">Message</span>{inquiry_details['message']}</div>
+  </div>
+</div></body></html>"""
+        mail_ext.send(msg)
+        return True
+    except Exception:
+        return False

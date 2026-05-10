@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #{{ invoice.invoice_id }} — Dragon Tattoos</title>
+    <meta name="description" content="View and pay your Dragon Tattoos invoice online. Secure payment gateway for your tattoo session.">
+    <meta property="og:title" content="Invoice #{{ invoice.invoice_id }} — Dragon Tattoos">
+    <meta property="og:description" content="View and pay your Dragon Tattoos invoice online. Secure payment gateway for your tattoo session.">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/billing/billing.css') }}">
     <!-- Embedded Icon & Font Assets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/billing/font-awesome-embedded.css') }}">
@@ -222,8 +226,7 @@
                         <div class="upi-qr-wrapper">
                             <p class="scan-label">Scan to Pay</p>
                             <div class="upi-qr">
-                                <img src="{{ url_for('static', filename='images/QR_Code.png') }}"
-                                    alt="Dragon Tattoos UPI QR Code">
+                                <img src="{{ url_for('static', filename='images/QR_Code.png') }}" alt="Payment QR Code">
                             </div>
                             <p class="scan-label" style="margin-bottom:0.3rem;">Scan with any UPI app</p>
                             <p class="upi-amount-display">₹{{ "%.2f" | format(invoice.total_amt) }}</p>

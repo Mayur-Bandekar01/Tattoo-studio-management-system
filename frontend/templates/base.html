@@ -106,9 +106,7 @@
                 <a href="/contact" class="nav-link {% if request.path == '/contact' %}active{% endif %}">Contact</a>
             </div>
             <div class="flex items-center gap-5">
-                <button id="globalThemeBtn" onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-full border border-apple-border text-apple-muted hover:text-apple-accent hover:border-apple-accent/40 hover:bg-apple-gold/5 transition-all backdrop-blur-md" title="Toggle Theme">
-                    <i id="themeIcon" class="fas fa-moon"></i>
-                </button>
+
                 <div class="flex items-center gap-4">
                     {% if session.get('role') %}
                         <a href="/{{ session['role'] }}/dashboard"
@@ -148,9 +146,15 @@
                             {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
                             {% elif category == 'success' %}bg-green-500/10 border-green-500/20 text-green-400
                             {% else %}bg-apple-gold/10 border-apple-gold/20 text-apple-gold{% endif %}">
-                            <div class="flex items-center gap-3">
-                                <i class="fas {% if category == 'error' %}fa-circle-exclamation{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
-                                <p class="text-sm font-medium">{{ message }}</p>
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas {% if category == 'error' %}fa-circle-exclamation{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
+                                    <p class="text-sm font-medium">{{ message }}</p>
+                                </div>
+                                <button onclick="this.closest('.flash-message').remove()" aria-label="Dismiss notification"
+                                    class="ml-2 opacity-60 hover:opacity-100 transition-opacity text-inherit flex-shrink-0">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
                             </div>
                         </div>
                     {% endfor %}
@@ -214,8 +218,8 @@
 
             <div class="border-t pt-8 flex justify-between items-center text-xs text-apple-muted"
                 style="border-color:rgba(255,255,255,0.05)">
-                <p>&copy; 2025 Dragon Tattoos Studio. All rights reserved.</p>
-                <a href="#" class="footer-link">↑ Back to top</a>
+                <p>&copy; {{ now().year }} Dragon Tattoos Studio. All rights reserved.</p>
+                <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" class="footer-link">↑ Back to top</a>
             </div>
         </div>
     </footer>
@@ -235,7 +239,7 @@
         </button>
 
         <div class="lightbox-img-wrapper" id="lbWrapper">
-            <img src="" alt="" class="lightbox-img" id="lbImg">
+            <img src="" alt="Lightbox Preview" class="lightbox-img" id="lbImg">
         </div>
 
         <div class="lightbox-info">

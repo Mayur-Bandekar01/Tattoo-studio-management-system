@@ -235,19 +235,19 @@ def forgot_password_post():
 
     with conn.cursor(dictionary=True) as cursor:
         # Check Customer table
-        cursor.execute("SELECT customer_id as id, customer_name as name FROM customer WHERE customer_email = %s", (email,))
+        cursor.execute("SELECT customer_id as id, customer_name as name, customer_email as email FROM customer WHERE customer_email = %s", (email,))
         user_data = cursor.fetchone()
         if user_data:
             role_found = "customer"
         else:
             # Check Owner table
-            cursor.execute("SELECT owner_id as id, name FROM owner WHERE email = %s", (email,))
+            cursor.execute("SELECT owner_id as id, name, email FROM owner WHERE email = %s", (email,))
             user_data = cursor.fetchone()
             if user_data:
                 role_found = "owner"
             else:
-                # Check Artist table - use correct column 'artist_email'
-                cursor.execute("SELECT artist_id as id, artist_name as name FROM artist WHERE artist_email = %s", (email,))
+                # Check Artist table - allow Artist ID OR Email lookup
+                cursor.execute("SELECT artist_id as id, artist_name as name, artist_email as email FROM artist WHERE artist_email = %s OR artist_id = %s", (email, email))
                 user_data = cursor.fetchone()
                 if user_data:
                     role_found = "artist"
@@ -258,43 +258,50 @@ def forgot_password_post():
 
     otp = str(random.randint(100000, 999999))
     session["reset_otp"] = otp
-    session["reset_email"] = email
+    session["reset_email"] = user_data["email"]
     session["reset_role"] = role_found
     session["otp_expiry"] = (datetime.now() + timedelta(minutes=10)).strftime(
         "%Y-%m-%d %H:%M:%S"
     )
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json
 
     try:
         from ..app import mail
-        success = send_otp_email(mail, user_data["name"], email, otp)
+        # Always use the resolved email from user_data
+        target_email = user_data["email"]
+        success = send_otp_email(mail, user_data["name"], target_email, otp)
+        
         if success:
-            flash(
-                (
-                    "OTP resent successfully! Check your inbox."
-                    if resend
-                    else "OTP sent! Check your email inbox."
-                ),
-                "success",
-            )
+            msg = "OTP resent successfully! Check your inbox." if resend else "OTP sent! Check your email inbox."
+            if is_ajax:
+                return {"status": "success", "message": msg, "email": target_email}
+            flash(msg, "success")
         else:
+            if is_ajax:
+                return {"status": "error", "message": "Failed to send OTP. Please try again!"}, 500
             flash("Failed to send OTP. Please try again!", "error")
             return redirect("/forgot-password")
     except Exception as e:
         current_app.logger.error(f"Error sending OTP: {e}")
+        if is_ajax:
+            return {"status": "error", "message": "Internal error. Please try again later."}, 500
         flash("Failed to send OTP. Please try again!", "error")
         return redirect("/forgot-password")
 
-    return render_template("auth/verify_otp.html", email=email)
+    return render_template("auth/verify_otp.html", email=user_data["email"])
 
 
 @auth_bp.route("/verify-otp", methods=["POST"])
 def verify_otp():
     entered_otp = request.form.get("otp", "").strip()
-    email = session.get("reset_email", "")
-    stored_otp = session.get("reset_otp", "")
-    expiry_str = session.get("otp_expiry", "")
+    stored_otp = session.get("reset_otp")
+    email = session.get("reset_email")
+    expiry_str = session.get("otp_expiry")
+    is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json
 
     if not email or not stored_otp:
+        if is_ajax:
+            return {"status": "error", "message": "Session expired. Please start again!"}, 401
         flash("Session expired. Please start again!", "error")
         return redirect("/forgot-password")
 
@@ -304,18 +311,36 @@ def verify_otp():
             session.pop("reset_otp", None)
             session.pop("reset_email", None)
             session.pop("otp_expiry", None)
+            if is_ajax:
+                return {"status": "error", "message": "OTP has expired! Please request a new one."}, 400
             flash("OTP has expired! Please request a new one.", "error")
             return redirect("/forgot-password")
     except Exception:
+        if is_ajax:
+            return {"status": "error", "message": "Session error. Please try again!"}, 400
         flash("Session error. Please try again!", "error")
         return redirect("/forgot-password")
 
     if entered_otp != stored_otp:
+        if is_ajax:
+            return {"status": "error", "message": "Invalid OTP! Please check and try again."}, 400
         flash("Invalid OTP! Please check and try again.", "error")
         return render_template("auth/verify_otp.html", email=email)
 
     session["otp_verified"] = True
     session.pop("reset_otp", None)
+    
+    if is_ajax:
+        return {"status": "success", "redirect": "/reset-password"}
+        
+    return redirect("/reset-password")
+
+
+@auth_bp.route("/reset-password", methods=["GET"])
+def reset_password_get():
+    if not session.get("otp_verified"):
+        flash("Unauthorized! Please verify OTP first.", "error")
+        return redirect("/forgot-password")
     return render_template("auth/reset_password.html")
 
 
@@ -335,8 +360,8 @@ def reset_password():
     if new_pass != confirm:
         flash("Passwords do not match!", "error")
         return render_template("auth/reset_password.html")
-    if len(new_pass) < 8:
-        flash("Password must be at least 8 characters!", "error")
+    if not is_password_strong(new_pass):
+        flash("Password must be at least 8 characters and include an uppercase letter, a number, and a special character.", "error")
         return render_template("auth/reset_password.html")
 
     role = session.get("reset_role", "customer")

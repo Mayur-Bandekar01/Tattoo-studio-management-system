@@ -126,21 +126,7 @@
 
         <!-- ── MAIN CONTENT ───────────────────────────────────── -->
         <main class="main-content">
-            <header class="top-header">
-                <div class="header-content-wrapper">
-                    <div>
-                        <h1 class="page-header-title" id="pageTitle">Welcome</h1>
-                        <p id="pageSubtitle">Artist production workspace</p>
-                    </div>
-                    <div class="header-actions">
-                        <div id="header-actions-context" class="flex gap-2"></div>
-                        <button id="globalThemeBtn" class="header-action-btn header-theme-btn" onclick="toggleTheme()" title="Toggle Theme">
-                            <i class="fas fa-sun"></i>
-                            <i class="fas fa-moon"></i>
-                        </button>
-                    </div>
-                </div>
-            </header>
+
 
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}

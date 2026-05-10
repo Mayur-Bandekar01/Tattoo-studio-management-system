@@ -5,7 +5,7 @@ from backend.db import db_pool
 def check_schema():
     conn = db_pool.get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SHOW COLUMNS FROM inquiry")
+    cursor.execute("SHOW COLUMNS FROM messages")
     columns = cursor.fetchall()
     for col in columns:
         print(col)

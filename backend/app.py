@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta
+from datetime import datetime, timedelta
 from flask import Flask, redirect, flash, request, session
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
@@ -20,9 +20,14 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
 # Debug set to False for production-ready state
 
+# ── JINJA GLOBALS ────────────────────────────────────────────
+@app.context_processor
+def inject_now():
+    return {"now": datetime.now}
+
 # ── SECURITY CONFIGURATION ───────────────────────────────────
-# Generate a random key on every startup so sessions are invalidated on restart
-app.secret_key = os.urandom(24)
+# Reads from SECRET_KEY env var for production stability; falls back to urandom for local dev.
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.permanent_session_lifetime = timedelta(days=30)
 
 # CSRF Protection (Global)
@@ -44,7 +49,7 @@ app.config["MAIL_DEFAULT_SENDER"] = ("Dragon Tattoos", os.getenv("MAIL_USERNAME"
 mail = Mail(app)
 
 # ── UPLOAD CONFIG ─────────────────────────────────────────────
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "frontend", "static", "uploads", "references")
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "frontend", "static", "uploads")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Ensure upload directories exist

@@ -22,12 +22,12 @@
         const C = {
             indigo:  '#FF4B2B', emerald: '#10B981',
             amber:   '#F5A623', blue:    '#3B82F6',
-            pink:    '#F472B6', violet:  '#8B5CF6',
+            pink:    '#F472B6', teal:  '#0EA5E9',
             cyan:    '#06B6D4', orange:  '#F97316',
             slate:   '#64748B', red:     '#EF4444',
             gold:    '#FF8F00',
         };
-        const MULTI = [C.indigo, C.emerald, C.amber, C.blue, C.pink, C.violet, C.cyan, C.orange];
+        const MULTI = [C.indigo, C.emerald, C.amber, C.blue, C.pink, C.teal, C.cyan, C.orange];
 
         /* ── Chart.js defaults ── */
         Chart.defaults.font.family = "'Outfit', 'Inter', sans-serif";

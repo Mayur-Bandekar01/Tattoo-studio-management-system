@@ -29,94 +29,20 @@ artist_bp = Blueprint("artist", __name__)
 @artist_bp.route("/artist/dashboard")
 @role_required("artist")
 def artist_dashboard():
+    """Aggregates all artist-specific data into one main control panel."""
+    from ..services.artist_service import get_artist_dashboard_data
+    
     artist_id = session["user_id"]
     conn = get_db()
-    
     with conn.cursor(dictionary=True) as cursor:
-        cursor.execute(
-            """
-            SELECT a.*, c.customer_name FROM appointment a
-            JOIN customer c ON a.customer_id = c.customer_id
-            WHERE a.artist_id = %s ORDER BY a.appointment_date ASC
-        """,
-            (artist_id,),
-        )
-        appointments = cursor.fetchall()
-        appointments = sanitize_for_json(appointments)
-
-        # CORE FEATURE: Only fetch inventory items belonging to THIS artist
-        cursor.execute(
-            "SELECT * FROM inventory WHERE artist_id = %s ORDER BY category, item_name",
-            (artist_id,),
-        )
-        inventory = cursor.fetchall()
-        inventory = sanitize_for_json(inventory)
-
-        cursor.execute(
-            "SELECT * FROM gallery WHERE artist_id = %s ORDER BY uploaded_at DESC",
-            (artist_id,),
-        )
-        gallery = cursor.fetchall()
-        gallery = sanitize_for_json(gallery)
-
-        cursor.execute("SELECT * FROM artist WHERE artist_id = %s", (artist_id,))
-        artist_profile = cursor.fetchone()
-        artist_profile = sanitize_for_json(artist_profile)
-
-        # FETCH: Recent consumption logs for this artist
-        cursor.execute(
-            """
-            SELECT ul.*, i.item_name, i.unit 
-            FROM inventory_usage ul
-            JOIN inventory i ON ul.item_id = i.item_id
-            WHERE ul.artist_id = %s
-            ORDER BY ul.logged_at DESC LIMIT 10
-        """,
-            (artist_id,),
-        )
-        usage_logs = cursor.fetchall()
-        usage_logs = sanitize_for_json(usage_logs)
-
-        # FETCH: Relevant Public Inquiries (Assigned to THIS artist OR unassigned)
-        cursor.execute("""
-            SELECT i.*, ar.artist_name as requested_artist
-            FROM inquiry i
-            LEFT JOIN artist ar ON i.artist_id = ar.artist_id
-            WHERE i.artist_id = %s OR i.artist_id IS NULL
-            ORDER BY i.submitted_at DESC
-        """, (artist_id,))
-        inquiries = cursor.fetchall()
-        inquiries = sanitize_for_json(inquiries)
-
-    # Stats
-    total_count = len(appointments)
-    pending_count = sum(1 for a in appointments if a["status"] == "Pending")
-    done_count = sum(1 for a in appointments if a["status"] == "Done")
-    low_stock = sum(
-        1
-        for item in inventory
-        if (item.get("quant_stock") or 0) <= (item.get("reorder_level") or 0)
-    )
-    today_str = date.today().strftime("%Y-%m-%d")
-    today_count = sum(
-        1 for a in appointments if str(a["appointment_date"]) == today_str
-    )
+        data = get_artist_dashboard_data(cursor, artist_id)
 
     return render_template(
         "artist/dashboard.html",
         name=session["name"],
-        artist_profile=artist_profile,
-        appointments=appointments,
-        inventory=inventory,
-        inquiries=inquiries,
-        usage_logs=usage_logs,
-        my_gallery=gallery,
-        total_count=total_count,
-        pending_count=pending_count,
-        done_count=done_count,
-        low_stock=low_stock,
-        today_count=today_count,
+        **data
     )
+
 
 
 # ── APPOINTMENT ACTIONS ────────────────────────────────────────
@@ -386,7 +312,7 @@ def artist_gallery_upload():
 
     ext = image.filename.rsplit(".", 1)[1].lower()
     filename = secure_filename(f"art_{session['user_id']}_{int(time.time())}.{ext}")
-    save_path = os.path.join(current_app.static_folder, "uploads", "gallery", filename)
+    save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], "gallery", filename)
     image.save(save_path)
 
     image_rel_path = f"uploads/gallery/{filename}"
@@ -517,7 +443,8 @@ def artist_profile_update():
                 WHERE artist_id = %s
             """, (name, specialisation, phone, email, session["user_id"]))
             conn.commit()
-            session["name"] = name  # Update session name
+            session["name"] = name          # Update session name immediately
+            session["specialisation"] = specialisation  # Update session specialisation immediately
             flash("Profile updated successfully!", "success")
         except Exception as e:
             flash(f"Error updating profile: {str(e)}", "error")

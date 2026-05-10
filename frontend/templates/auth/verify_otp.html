@@ -1,160 +1,110 @@
 {% extends "base.html" %}
 
-{% block title %}Dragon Tattoos | OTP Verification{% endblock %}
+{% block title %}Dragon Tattoos | Verify Identity{% endblock %}
 
-{% block meta_description %}Verify your identity. Enter the 6-digit code to proceed with account recovery.{% endblock %}
+{% block meta_description %}Verify your identity. Enter the 6-digit code sent to your email to continue account recovery.{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/verify.css') }}">
-<style>
-    body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    main {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 4rem 1.5rem;
-        background: radial-gradient(circle at 50% 50%, rgba(30, 20, 0, 0.4) 0%, transparent 100%);
-    }
-
-    .glass-card {
-        background: rgba(10, 10, 15, 0.7);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(200, 160, 64, 0.15);
-        border-radius: 2rem;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(200, 160, 64, 0.05);
-        overflow: hidden;
-    }
-
-    .otp-input {
-        width: 3.5rem;
-        height: 4.5rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 2px solid rgba(200, 160, 64, 0.2);
-        border-radius: 0.75rem;
-        color: #e0b84a;
-        font-size: 1.75rem;
-        font-weight: 700;
-        text-align: center;
-        outline: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .otp-input:focus {
-        border-color: #c8a040;
-        background: rgba(200, 160, 64, 0.05);
-        box-shadow: 0 0 20px rgba(200, 160, 64, 0.15);
-        transform: translateY(-2px);
-    }
-
-    .progress-bar {
-        height: 3px;
-        background: rgba(200, 160, 64, 0.1);
-        border-radius: 10px;
-        margin-top: 1rem;
-        overflow: hidden;
-    }
-
-    #progressFill {
-        height: 100%;
-        background: linear-gradient(90deg, #8a6820, #c8a040);
-        width: 0%;
-        transition: width 0.4s ease;
-    }
-</style>
 {% endblock %}
 
 {% block footer %}{% endblock %}
 
 {% block content %}
-<div class="mesh-bg"></div>
+<div class="verify-page-bg">
+    <main class="verify-main">
+        <div class="verify-card animate-fade-in">
 
-<div class="otp-container w-full mx-auto" style="max-width: 580px;">
-    <div class="glass-card">
-        <div style="padding: 3rem 2.5rem;">
-            <div class="card-header text-center mb-10">
-                <div class="icon-ring" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(200, 160, 64, 0.1); border: 1px solid rgba(200, 160, 64, 0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 0 30px rgba(200, 160, 64, 0.1);">
-                    <i class="fa-solid fa-shield-halved" style="font-size: 2rem; color: #c8a040;"></i>
+            <!-- ── Card Header ── -->
+            <div class="verify-card-header">
+                <div class="verify-icon-ring">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h1 class="card-title" style="font-family:'Cinzel Decorative', cursive; font-size: 2rem; color: #f5f5f7; margin-bottom: 0.75rem;">Verify Identity</h1>
-                <p class="card-subtitle" style="color: #8b8b93; font-size: 0.9rem; line-height: 1.6;">
-                    Enter the 6-digit code we sent to <br>
-                    <strong style="color:#e0b84a; font-weight: 600;">{{ email if email else 'your email' }}</strong>
+                <h1 class="verify-title">Verify Identity</h1>
+                <p class="verify-subtitle">
+                    Enter the 6-digit secure code sent to
                 </p>
+                <span class="verify-email-chip">{{ email if email else 'your email' }}</span>
             </div>
 
-            <form id="otpForm" method="POST" action="/verify-otp">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                
-                <div class="flex justify-center gap-3 mb-4">
-                    <input type="text" maxlength="1" class="otp-input" required autofocus>
-                    <input type="text" maxlength="1" class="otp-input" required>
-                    <input type="text" maxlength="1" class="otp-input" required>
-                    <input type="text" maxlength="1" class="otp-input" required>
-                    <input type="text" maxlength="1" class="otp-input" required>
-                    <input type="text" maxlength="1" class="otp-input" required>
-                </div>
-                
-                <input type="hidden" name="otp" id="finalOtp">
+            <!-- ── Card Body ── -->
+            <div class="verify-card-body">
+                <form id="otpForm" method="POST" action="/verify-otp">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <div class="progress-bar">
-                    <div id="progressFill"></div>
-                </div>
+                    <!-- Error Banner -->
+                    <div id="errorMessage" class="error-banner" role="alert"></div>
 
-                <div style="text-align: center; margin: 2.5rem 0;">
-                    <p id="resendText" style="font-size: 0.85rem; color: #8b8b93;">
-                        Didn't receive the code? 
-                        <button type="button" id="resendBtn" onclick="resendOtp()" disabled style="background: none; border: none; color: #a89060; font-weight: 700; cursor: pointer; opacity: 0.5;">
+                    <!-- OTP Input Grid -->
+                    <div class="otp-grid">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autofocus autocomplete="off" aria-label="Digit 1">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 2">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 3">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 4">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 5">
+                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 6">
+                    </div>
+
+                    <input type="hidden" name="otp" id="finalOtp">
+
+                    <!-- Progress Bar -->
+                    <div class="progress-track">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+
+                    <div class="verify-divider"></div>
+
+                    <!-- Resend Section -->
+                    <div class="resend-area">
+                        <p class="resend-text">Didn't receive the code?</p>
+                        <button type="button" id="resendBtn" onclick="resendOtp()" class="resend-link" disabled>
                             Resend in <span id="timer">10:00</span>
                         </button>
-                    </p>
-                </div>
+                    </div>
 
-                <button type="submit" id="submitBtn" class="btn-gold w-full" disabled style="padding: 1.1rem; font-size: 1rem; border-radius: 1rem;">
-                    VERIFY & PROCEED <i class="fa-solid fa-arrow-right" style="margin-left: 0.75rem;"></i>
-                </button>
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="btn-verify" disabled>
+                        Verify &amp; Continue
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                    </button>
 
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a href="/forgot-password" style="font-size: 0.85rem; color: #8b8b93; text-decoration: none; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#c8a040'" onmouseout="this.style.color='#8b8b93'">
-                        <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i> Try another email address
+                    <!-- Back Link -->
+                    <a href="/forgot-password" class="back-link">
+                        <i class="fa-solid fa-arrow-left-long"></i>
+                        Try another email address
                     </a>
-                </div>
-            </form>
+                </form>
+            </div>
+
         </div>
-    </div>
+    </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/auth/verify.js') }}"></script>
 <script>
-    // 10 Minute Timer Logic
-    let timeLeft = 600; // 10 minutes in seconds
-    const timerElement = document.getElementById('timer');
+    // ── 10-Minute Countdown Timer ──
+    let timeLeft = 600;
+    const timerEl  = document.getElementById('timer');
     const resendBtn = document.getElementById('resendBtn');
 
     function updateTimer() {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        timerEl.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             resendBtn.disabled = false;
-            resendBtn.style.opacity = "1";
-            resendBtn.innerHTML = "Resend OTP Now";
+            resendBtn.innerHTML = 'Resend OTP Now';
         } else {
             timeLeft--;
         }
     }
 
     const timerInterval = setInterval(updateTimer, 1000);
-    updateTimer(); // Initial call
+    updateTimer();
 </script>
 {% endblock %}
