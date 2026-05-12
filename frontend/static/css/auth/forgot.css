@@ -102,6 +102,7 @@ body.landing-page {
     width: 100%;
     max-width: 440px;
     perspective: 1000px;
+    margin-top: 5rem;
     animation: cardEnter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -430,9 +431,9 @@ body.landing-page {
 
 /* ── Light Mode ── */
 html.light-mode {
-    --bg: #F7F7FF;
+    --bg: #EBEBFF;
     --surface: rgba(255, 255, 255, 0.7);
-    --border: rgba(39, 24, 126, 0.1);
+    --border: #27187E;
     --text: #27187E;
     --muted: rgba(39, 24, 126, 0.6);
     --accent: #27187E;
@@ -442,19 +443,23 @@ html.light-mode {
 
 html.light-mode .mesh-bg {
     background:
-        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 60% at 80% 20%, rgba(91, 33, 182, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse 70% 50% at 50% 80%, rgba(124, 58, 237, 0.04) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(39, 24, 126, 0.2) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 60% at 80% 20%, rgba(39, 24, 126, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 70% 50% at 50% 80%, rgba(39, 24, 126, 0.12) 0%, transparent 70%);
 }
 
 
 
-html.light-mode .glass-card::before {
-    background: linear-gradient(135deg, rgba(124,58,237,0.3) 0%, transparent 40%, transparent 60%, rgba(91,33,182,0.2) 100%);
+html.light-mode .glass-card {
+    box-shadow: 0 25px 80px rgba(39, 24, 126, 0.18), 0 0 120px rgba(39, 24, 126, 0.05);
+    background: linear-gradient(145deg, #27187E 0%, #1e1261 100%) !important;
+    border: none !important;
+    padding: 2px !important;
 }
 
 html.light-mode .card-inner {
-    background: rgba(255, 255, 255, 0.5);
+    background: #ffffff !important;
+    border-radius: 22px !important;
 }
 
 html.light-mode .card-inner::after {

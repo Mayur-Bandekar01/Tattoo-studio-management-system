@@ -1,0 +1,27 @@
+# User Manual & Operational Guide: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. Introduction to the "Vibrant Obsidian" UI
+The DTSMS is designed with an "Artist-First" philosophy. The user interface utilizes the "Vibrant Obsidian" design system, which features a sophisticated dark mode optimized to reduce eye strain in low-light studio environments. Navigation is handled via the premium floating glass sidebar, ensuring all tools are accessible within three clicks.
+
+## 2. Customer Workflow (The Booking Hub)
+The Customer Hub is the public-facing booking engine.
+- **Step 1: Service Selection.** The client navigates to the booking portal and selects a service (e.g., Custom Tattoo, Flash Art, Laser Removal).
+- **Step 2: Artist Filtering.** The client views portfolios dynamically filtered by the selected service.
+- **Step 3: Secure Booking.** The client selects an available time slot on the interactive calendar. They are prompted to securely upload a reference image (max 10MB) and submit session notes.
+- **Step 4: Confirmation.** The system locks the slot and dispatches an automated confirmation email outlining pre-appointment care instructions.
+
+## 3. Artist Workflow (The Artist Portal)
+Artists access a specialized view stripped of unnecessary administrative noise.
+- **Daily Manifest:** Upon logging in with their unique Artist ID (e.g., DRAG-ART-001) or Email, the artist lands on their daily schedule.
+- **Client Preparation:** Clicking an appointment card reveals the client's notes and allows the artist to review the uploaded reference image in a secure, high-resolution modal.
+- **Inventory Logging:** After a session, the artist clicks "Log Inventory." A streamlined, touch-friendly UI prompts them to quickly select the ink colors, needle types, and stencil paper used during the session.
+- **Portfolio Curation:** Artists can upload post-session photos of their work directly to their public-facing gallery to attract future bookings.
+
+## 4. Owner Workflow (The Analytics Dashboard)
+The Owner Dashboard is the central command center for financial and operational oversight.
+- **Financial Suite:** Owners can view real-time revenue streams. The dashboard provides a visual heatmap comparing revenue across different artists and service types (e.g., calculating that Portrait work yields a 15% higher ROI than standard sketching).
+- **Invoice Generation:** Invoices are automatically generated upon appointment completion based on the artist's predefined commission rate. The owner can review, edit, and mark these invoices as 'Paid'.
+- **Inventory Management:** The owner receives low-stock alerts triggered automatically when the aggregated data from the artists' inventory logs dips below a defined threshold, ensuring the studio never runs out of critical supplies.
+
+## 5. Support and Troubleshooting
+If any user experiences a "Session Expired" warning, they must re-authenticate. This is a deliberate security feature (CSRF/RBAC hardening). For UI anomalies (e.g., floating glass elements overlapping), users are advised to ensure they are running the latest version of a Chromium-based browser or Safari, as the system relies heavily on modern CSS variables and backdrop-filters.

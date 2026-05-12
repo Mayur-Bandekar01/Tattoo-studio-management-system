@@ -1,0 +1,25 @@
+# Disaster Recovery & Business Continuity Plan: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. Executive Summary
+This document establishes the protocol for recovering the DTSMS operations following a critical failure, such as a localized AWS region outage, catastrophic database corruption, or a ransomware attack. The primary objective is to maintain studio operations with minimal financial loss.
+
+## 2. Recovery Objectives
+- **Recovery Time Objective (RTO):** 2 Hours. The system must be fully restored and capable of processing new bookings within two hours of a declared disaster.
+- **Recovery Point Objective (RPO):** 1 Hour. In the worst-case scenario, the studio will lose no more than 60 minutes of operational data (e.g., appointments, invoices).
+
+## 3. Backup Strategies
+- **Database (MySQL):** Amazon RDS automated snapshots occur daily. Additionally, transaction logs are archived every 15 minutes to an isolated S3 bucket, allowing for Point-in-Time Recovery (PITR).
+- **Static Assets:** Reference images and UI assets are hosted in AWS S3 with Cross-Region Replication (CRR) enabled, ensuring that assets remain available even if the primary data center fails.
+
+## 4. Disaster Scenarios and Responses
+
+### 4.1 Database Corruption
+- **Trigger:** Invalid data ingestion or accidental mass-deletion via Owner panel.
+- **Response:** The engineering team will immediately trigger the RDS Point-in-Time Recovery script, restoring the database state to the minute preceding the corruption event. The frontend will display a "Maintenance Mode" screen during the 15-minute restoration window.
+
+### 4.2 Complete Regional Outage (AWS US-East-1 goes offline)
+- **Trigger:** AWS Status dashboard confirms regional failure.
+- **Response:** The standby architecture in a secondary region (e.g., US-West-2) is activated via pre-configured Terraform scripts. Route53 DNS traffic is automatically rerouted to the secondary load balancer.
+
+## 5. Manual Fallback Operations
+Should the digital infrastructure fail entirely for an extended period, the studio relies on a "Paper-First" fallback protocol. The system automatically emails the Owner a PDF summary of the day's schedule at 7:00 AM every morning. Artists will use this manifest to complete appointments and manually log inventory, which will be retroactively ingested into the DTSMS once service is restored.

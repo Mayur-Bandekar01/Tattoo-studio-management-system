@@ -4,7 +4,7 @@
 (function () {
     const themes = ['noir', 'ivory'];
     const saved = localStorage.getItem('siteTheme');
-    const initialTheme = themes.includes(saved) ? saved : 'noir';
+    const initialTheme = themes.includes(saved) ? saved : 'ivory';
     document.documentElement.setAttribute('data-theme', initialTheme);
 
     function syncLightModeClass(theme) {

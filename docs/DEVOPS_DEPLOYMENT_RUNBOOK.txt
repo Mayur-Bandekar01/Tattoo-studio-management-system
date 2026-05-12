@@ -1,0 +1,22 @@
+# DevOps & Deployment Runbook: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. Infrastructure Architecture
+The DTSMS is deployed on a highly available, cloud-native infrastructure utilizing Amazon Web Services (AWS). To ensure the application scales seamlessly during high-volume booking periods, the architecture is entirely containerized using Docker and orchestrated via Amazon EKS (Elastic Kubernetes Service).
+
+## 2. CI/CD Pipeline Protocol
+Continuous Integration and Continuous Deployment (CI/CD) are handled via GitHub Actions to maintain zero-downtime releases.
+
+- **Phase 1: Code Integration (CI)**
+  - Trigger: Push to the `main` or `staging` branch.
+  - Action: Automated test suites (PyTest and Jest) run concurrently. A Python `flake8` linter checks backend syntax, while the frontend is evaluated against accessibility standards to preserve the "Vibrant Obsidian" UX.
+- **Phase 2: Container Build**
+  - Action: If CI passes, Docker images are built for the Flask backend and Nginx reverse proxy. Images are tagged with the specific Git commit SHA and pushed to Amazon ECR (Elastic Container Registry).
+- **Phase 3: Deployment (CD)**
+  - Action: The EKS cluster pulls the latest images and executes a Rolling Update (Blue-Green Deployment). Old pods are slowly terminated only after the new pods report a successful `/healthz` check.
+
+## 3. Environment Variable Management
+All secrets (e.g., Database URIs, SMTP credentials, JWT Secret Keys) are managed securely out-of-band using AWS Secrets Manager. They are injected into the EKS pods at runtime, ensuring no sensitive data is ever hardcoded into the application repository.
+
+## 4. Routine Maintenance Tasks
+- **Log Rotation:** Application logs are streamed to AWS CloudWatch. A retention policy of 30 days is enforced to prevent EBS volume saturation.
+- **Database Vacuuming:** For optimal MySQL performance under connection pooling, weekly maintenance tasks rebuild indices on the `appointments` and `users` tables during off-peak hours (e.g., 3:00 AM local studio time).

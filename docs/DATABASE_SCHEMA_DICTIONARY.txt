@@ -1,0 +1,43 @@
+# Database Schema and Data Dictionary: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. Architectural Overview
+The DTSMS utilizes a highly normalized MySQL relational database engineered to handle concurrent transactions without locking contention. The database architecture is designed with connection pooling (`pool_size=5`) to ensure high throughput and low latency, which is critical for real-time appointment scheduling and financial analytics.
+
+## 2. Entity-Relationship (ER) Model
+The schema is partitioned into three core operational domains: **Identity & Access Management (IAM)**, **Operational Scheduling**, and **Financial & Inventory Logistics**.
+
+### 2.1 Identity & Access Management (IAM)
+- **`users` Table**: The centralized authentication hub.
+  - `user_id` (PK, UUID/INT): Unique identifier.
+  - `email` (VARCHAR, Unique): Primary authentication token.
+  - `password_hash` (VARCHAR): Secure hashed credential.
+  - `role_enum` (ENUM): Defines RBAC boundaries ('OWNER', 'ARTIST', 'CUSTOMER').
+- **`artists_metadata` Table**: Extension of `users` for artists.
+  - `artist_id` (PK, VARCHAR): Alphanumeric ID (e.g., DRAG-ART-001).
+  - `specialty` (VARCHAR): e.g., 'Portrait', 'Laser Removal'.
+  - `commission_rate` (DECIMAL): Base percentage for revenue calculations.
+
+### 2.2 Operational Scheduling
+- **`appointments` Table**: The transactional core for the Customer Hub.
+  - `appointment_id` (PK, INT Auto-Increment).
+  - `customer_id` (FK -> users.user_id).
+  - `artist_id` (FK -> artists_metadata.artist_id).
+  - `start_time` / `end_time` (DATETIME): Managed with strict timezone offset indexing.
+  - `status` (ENUM): 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'.
+  - `reference_image_path` (VARCHAR): Secure URI to uploaded inspirational assets.
+
+### 2.3 Financial & Inventory Logistics
+- **`invoices` Table**: Generated upon appointment completion.
+  - `invoice_id` (PK, VARCHAR).
+  - `appointment_id` (FK -> appointments.appointment_id).
+  - `gross_amount` (DECIMAL).
+  - `artist_cut` (DECIMAL): Automatically derived via backend triggers.
+- **`inventory_logs` Table**: Real-time supply tracking.
+  - `log_id` (PK, INT).
+  - `artist_id` (FK -> artists_metadata.artist_id).
+  - `item_type` (ENUM): 'INK', 'NEEDLE', 'STENCIL'.
+  - `quantity_used` (INT).
+  - `timestamp` (DATETIME).
+
+## 3. Data Integrity and Indexing Strategy
+To ensure the analytics dashboards render rapidly in the "Vibrant Obsidian" UI, compound indexes are applied to the `appointments` table (`artist_id`, `start_time`) and `invoices` table (`created_at`, `status`). Foreign key constraints are enforced with `ON DELETE RESTRICT` to prevent orphan records, ensuring 100% financial auditability.

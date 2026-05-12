@@ -483,7 +483,7 @@ body[data-theme="ivory"] summary {
 }
 
 /* ── LIGHT THEME (White + Orange Energetic) ── */
-body {
+html.light-mode body {
     --bg: #ffffff;
     --bg-grad: rgba(249, 115, 22, 0.05);
     --card-bg: #fffaf5;
@@ -501,69 +501,69 @@ body {
 
 
 /* ── LIGHT MODE HOME OVERRIDES ── */
-section {
+html.light-mode section {
     background: var(--bg) !important;
 }
 
-.bento-card,
-.stat-card,
-.testi-card {
+html.light-mode .bento-card,
+html.light-mode .stat-card,
+html.light-mode .testi-card {
     background: var(--card-bg) !important;
     border-color: var(--border) !important;
     box-shadow: 0 4px 20px var(--shadow) !important;
 }
 
-.bento-card:hover {
+html.light-mode .bento-card:hover {
     background: var(--card-hover) !important;
     border-color: var(--border-h) !important;
 }
 
-.testi-quote,
-.testi-detail {
+html.light-mode .testi-quote,
+html.light-mode .testi-detail {
     color: var(--muted) !important;
 }
 
-.testi-name {
+html.light-mode .testi-name {
     color: var(--text) !important;
 }
 
-.bg-grid {
+html.light-mode .bg-grid {
     background-image: linear-gradient(rgba(249, 115, 22, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(249, 115, 22, 0.05) 1px, transparent 1px) !important;
 }
 
 /* Fix inline-background testimonial avatars */
-div[style*='background:linear-gradient(135deg,#1e1e22'] {
+html.light-mode div[style*='background:linear-gradient(135deg,#1e1e22'] {
     background: rgba(249, 115, 22, 0.08) !important;
     border-color: rgba(249, 115, 22, 0.3) !important;
 }
 
 /* ── STATS PILL LIGHT MODE ── */
-.stats-glass {
+html.light-mode .stats-glass {
     background: rgba(255, 255, 255, 0.8) !important;
     border-color: rgba(249, 115, 22, 0.2) !important;
     border-top-color: rgba(249, 115, 22, 0.4) !important;
     box-shadow: 0 15px 35px rgba(249, 115, 22, 0.15) !important;
 }
 
-.stats-glass .text-apple-gold {
+html.light-mode .stats-glass .text-apple-gold {
     color: #f97316 !important;
 }
 
-.stats-glass .stats-icon {
+html.light-mode .stats-glass .stats-icon {
     background: linear-gradient(135deg, #fb923c, #f97316) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
 }
 
-.stats-glass .bg-white\/5 {
+html.light-mode .stats-glass .bg-white\/5 {
     background-color: rgba(249, 115, 22, 0.1) !important;
 }
 
-*,
-*::before,
-*::after {
+html.light-mode *,
+html.light-mode *::before,
+html.light-mode *::after {
     transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
 }
 

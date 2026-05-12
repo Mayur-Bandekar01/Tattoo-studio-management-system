@@ -1,0 +1,54 @@
+# API Documentation and Integration Guide: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. System Interface Overview
+The DTSMS backend exposes a RESTful API powered by Flask Blueprints. It serves as the secure communication layer between the "Vibrant Obsidian" frontend UI and the MySQL persistence layer. The API adheres to strict JSON payload standards and utilizes secure, stateless session tokens for authentication to maintain performance across concurrent user actions.
+
+## 2. Authentication Protocol
+All endpoints under the `/api/v1/secure/` prefix require an active session, managed via HTTP-Only, Secure cookies to prevent XSS exfiltration.
+
+- **Endpoint:** `POST /api/v1/auth/login`
+- **Purpose:** Unified credential evaluation for all roles.
+- **Payload:** `{"identifier": "email_or_artist_id", "password": "secure_password"}`
+- **Security:** Implements login throttling (exponential backoff) to thwart brute-force attacks and enforces global CSRF token validation on all mutations.
+
+## 3. Core Endpoint Specifications
+
+### 3.1 Customer Booking Flow
+- **Endpoint:** `POST /api/v1/booking/request`
+- **Role Required:** `CUSTOMER`
+- **Description:** Submits a new appointment request. Places a temporary transaction lock on the selected time slot to prevent double-booking.
+- **Payload Example:** 
+  ```json
+  {
+    "artist_id": "DRAG-ART-001",
+    "desired_datetime": "2026-06-15T14:00:00Z",
+    "service_type": "Custom Tattoo",
+    "notes": "Looking for realism styling."
+  }
+  ```
+- **Response (201 Created):** Successfully queues an asynchronous task to dispatch confirmation emails via the studio's SMTP service.
+
+### 3.2 Artist Operational Sync
+- **Endpoint:** `PUT /api/v1/artist/inventory/log`
+- **Role Required:** `ARTIST`
+- **Description:** Allows artists to rapidly log supply usage post-session.
+- **Response (200 OK):** Updates the Owner's real-time inventory heatmap instantly.
+
+### 3.3 Owner Analytics Engine
+- **Endpoint:** `GET /api/v1/owner/analytics/revenue?timeframe=30d`
+- **Role Required:** `OWNER`
+- **Description:** Aggregates and returns complex JOIN queries detailing gross revenue, commission splits, and ROI per service type.
+- **Performance:** Payload is compressed and optimized for sub-500ms delivery to the frontend analytics dashboard.
+
+## 4. Error Handling Architecture
+The API employs a standardized error schema. Any failure (e.g., validation errors, RBAC violations) returns a uniform JSON structure:
+```json
+{
+  "error": {
+    "code": "RBAC_403",
+    "message": "Insufficient privileges to access financial endpoints.",
+    "timestamp": "2026-05-10T14:30:00Z"
+  }
+}
+```
+This guarantees seamless interpretation by the frontend state manager, ensuring the UI gracefully degrades and alerts the user appropriately, rather than failing silently.

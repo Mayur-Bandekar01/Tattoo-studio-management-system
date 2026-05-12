@@ -12,6 +12,10 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+.auth-main {
+    padding-top: 5rem !important;
+}
+
 /* Standardized Navbar is managed by design-system.css */
 
 
@@ -143,7 +147,7 @@ body {
     padding: 2.5rem 2.5rem 1.5rem;
     text-align: center;
     border-bottom: 1px solid rgba(200, 160, 64, 0.15);
-    background: linear-gradient(180deg, rgba(30, 20, 0, 0.4) 0%, transparent 100%);
+    background: transparent;
 }
 
 .logo-circle {
@@ -488,17 +492,21 @@ body {
 
 /* ── LIGHT MODE OVERRIDES ── */
 html.light-mode body {
-    background: #F7F7FF !important;
+    background: #ffffff !important;
     color: #27187E !important;
 }
 
 html.light-mode .mesh-bg {
-    background: radial-gradient(circle at 20% 30%, rgba(39, 24, 126, 0.03) 0%, transparent 40%);
+    background: 
+        radial-gradient(circle at 15% 15%, rgba(39, 24, 126, 0.15) 0%, transparent 55%),
+        radial-gradient(circle at 85% 85%, rgba(39, 24, 126, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(39, 24, 126, 0.08) 0%, transparent 80%);
 }
 
 html.light-mode .card-wrap {
     background: linear-gradient(145deg, #27187E 0%, #1e1261 100%);
-    box-shadow: 0 20px 50px rgba(39, 24, 126, 0.1);
+    box-shadow: 0 25px 80px rgba(39, 24, 126, 0.18), 0 0 120px rgba(39, 24, 126, 0.05);
+    padding: 2px !important;
 }
 
 html.light-mode .card-body {
@@ -636,6 +644,6 @@ body, nav, .card-wrap, .card-body, .field, .role-card,
 }
 
 html.light-mode .ambient-glow {
-    display: none !important;
+    background: radial-gradient(circle, rgba(39, 24, 126, 0.06) 0%, transparent 70%) !important;
 }
 

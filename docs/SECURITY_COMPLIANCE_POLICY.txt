@@ -1,0 +1,35 @@
+# Security, Privacy & Compliance Policy: Dragon Tattoos Studio Management System (DTSMS)
+
+## 1. Executive Security Posture
+The Dragon Tattoos Studio Management System (DTSMS) operates on a "Zero Trust" security model. Given the sensitive nature of the data handled—including medical questionnaires, personal contact information, and high-value financial records—the architecture prioritizes impenetrable defense mechanisms without compromising the premium "Vibrant Obsidian" user experience.
+
+## 2. Threat Modeling and Mitigation
+
+### 2.1 Cross-Site Request Forgery (CSRF) & XSS
+- **Vulnerability:** Malicious actors attempting to force state-changing requests or inject scripts.
+- **DTSMS Mitigation:** The Flask application is wrapped in a global `WTForms` CSRF protection layer. Every state-mutating request (POST, PUT, DELETE) requires a valid, synchronized CSRF token. All user inputs (especially booking notes and profile updates) undergo strict sanitization and context-aware output encoding via the Jinja2 rendering engine to eliminate Cross-Site Scripting (XSS) vectors.
+
+### 2.2 Broken Access Control
+- **Vulnerability:** Privilege escalation (e.g., an Artist accessing Owner revenue data).
+- **DTSMS Mitigation:** Role-Based Access Control (RBAC) is enforced at the route-decorator level (`@role_required('OWNER')`). The system actively verifies the session claim against the database on every sensitive request, preventing horizontal and vertical privilege escalation.
+
+### 2.3 Single Point of Failure (SPF) Attacks
+- **Vulnerability:** Denial of Service targeting the single MySQL instance.
+- **DTSMS Mitigation:** Implemented robust connection pooling (`pool_size=5`, `max_overflow=10`). If connections are exhausted, the application layer queues requests, returning a graceful "High Traffic" UI state rather than crashing.
+
+## 3. Data Protection and Cryptography
+
+### 3.1 Encryption At-Rest and In-Transit
+- All client-server communication is strictly enforced over **TLS 1.3** (HTTPS), rendering Man-in-the-Middle (MitM) attacks mathematically infeasible.
+- Sensitive database fields (e.g., reference images containing private medical/anatomical context) are stored securely outside the public web root, accessible only via authenticated proxy endpoints.
+
+### 3.2 Credential Security
+- Passwords are encrypted using modern hashing algorithms (e.g., Argon2 or Bcrypt) with unique, per-user salts. The system does not store plaintext passwords under any circumstances.
+
+## 4. Privacy and GDPR Compliance
+The DTSMS is built with "Privacy by Design":
+- **Data Minimization:** Only data strictly necessary for operational scheduling and invoicing is collected.
+- **Right to Erasure:** A centralized administrative utility exists to fully purge a Customer's PII (Personally Identifiable Information) and scrub reference images, maintaining compliance with global privacy regulations while retaining anonymized data for historical revenue analytics.
+
+## 5. Audit Logging and Forensics
+Every critical action (login attempts, invoice generation, inventory modification) generates an immutable timestamped log. This forensic trail empowers the Studio Owner to track unauthorized access attempts and ensures complete operational accountability across the creative workforce.
