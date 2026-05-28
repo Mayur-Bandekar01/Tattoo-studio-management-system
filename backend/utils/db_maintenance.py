@@ -185,5 +185,19 @@ def ensure_schema_consistency():
             except Exception as e:
                 pass
 
+        # 14. Invoice Table Self-Healing Schema Checks
+        try:
+            cursor.execute("SHOW COLUMNS FROM invoice LIKE 'base_amt'")
+            if not cursor.fetchone():
+                run_step("Add invoice base_amt", "ALTER TABLE invoice ADD COLUMN base_amt DECIMAL(10,2) DEFAULT 0.00")
+            
+            cursor.execute("SHOW COLUMNS FROM invoice LIKE 'tax_amt'")
+            if not cursor.fetchone():
+                run_step("Add invoice tax_amt", "ALTER TABLE invoice ADD COLUMN tax_amt DECIMAL(10,2) DEFAULT 0.00")
+            
+            run_step("Make owner_id optional with default", "ALTER TABLE invoice MODIFY COLUMN owner_id INT DEFAULT 1")
+        except Exception:
+            pass
+
 if __name__ == "__main__":
     ensure_schema_consistency()

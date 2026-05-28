@@ -41,9 +41,7 @@ The frontend uses a custom-built, framework-free design system optimized for aes
 | **Spec** | `design-system/` | Design tokens and visual guides. |
 
 ## Development Workflow
-The project utilizes the **GSD (Get Stuff Done)** methodology:
-- `.planning/`: Contains milestones, task manifests, and architectural decisions.
-- `.agent/`: Houses specialized AI agent instructions for Frontend, Backend, and Security.
+The project follows a standard modular full-stack development workflow, utilizing manual and automated validations before deployment.
 
 ---
 *Last Updated: 2026-05-05*

@@ -350,10 +350,11 @@ def owner_generate_invoice():
             flash("An invoice already exists for this appointment.", "error")
             return redirect("/owner/dashboard")
 
+        owner_id = session.get("user_id", 1)
         cursor.execute("""
-            INSERT INTO invoice (appointment_id, base_amt, tax_amt, total_amt, generated_date, pay_status)
-            VALUES (%s, %s, %s, %s, CURDATE(), 'Pending')
-        """, (appt_id, base_amt, tax_amt, total_amt))
+            INSERT INTO invoice (appointment_id, owner_id, base_amt, tax_amt, total_amt, generated_date, pay_status)
+            VALUES (%s, %s, %s, %s, %s, CURDATE(), 'Pending')
+        """, (appt_id, owner_id, base_amt, tax_amt, total_amt))
         conn.commit()
     flash("Invoice generated successfully!", "success")
     return redirect("/owner/dashboard")

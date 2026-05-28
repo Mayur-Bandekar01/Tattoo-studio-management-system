@@ -260,7 +260,9 @@ DROP TABLE IF EXISTS `invoice`;
 CREATE TABLE `invoice` (
   `invoice_id` int NOT NULL AUTO_INCREMENT,
   `appointment_id` int NOT NULL,
-  `owner_id` int NOT NULL,
+  `owner_id` int DEFAULT '1',
+  `base_amt` decimal(10,2) DEFAULT '0.00',
+  `tax_amt` decimal(10,2) DEFAULT '0.00',
   `total_amt` decimal(10,2) NOT NULL,
   `concept_type` varchar(255) DEFAULT NULL,
   `pay_status` enum('Pending','Paid','Under Review') DEFAULT 'Pending',
@@ -279,7 +281,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,1,5000.00,'Tattoo','Paid','2026-03-14'),(2,2,1,2000.00,'Tattoo','Paid','2026-03-15'),(3,3,1,2000.00,'Removal','Paid','2026-03-18'),(4,4,1,2000.00,'Touch-up','Paid','2026-03-18'),(5,5,1,5000.00,'Tattoo','Paid','2026-03-18'),(6,6,1,2000.00,'Tattoo','Paid','2026-03-19'),(7,7,1,3000.00,'Tattoo','Paid','2026-03-21'),(8,11,1,1000.00,'Sketch','Paid','2026-03-23'),(9,12,1,1500.00,'Sketch','Paid','2026-04-22'),(10,13,1,1000.00,'Sketch','Paid','2026-04-30'),(11,16,1,1000.00,'Sketch','Paid','2026-04-30');
+INSERT INTO `invoice` (`invoice_id`, `appointment_id`, `owner_id`, `total_amt`, `concept_type`, `pay_status`, `generated_date`) VALUES (1,1,1,5000.00,'Tattoo','Paid','2026-03-14'),(2,2,1,2000.00,'Tattoo','Paid','2026-03-15'),(3,3,1,2000.00,'Removal','Paid','2026-03-18'),(4,4,1,2000.00,'Touch-up','Paid','2026-03-18'),(5,5,1,5000.00,'Tattoo','Paid','2026-03-18'),(6,6,1,2000.00,'Tattoo','Paid','2026-03-19'),(7,7,1,3000.00,'Tattoo','Paid','2026-03-21'),(8,11,1,1000.00,'Sketch','Paid','2026-03-23'),(9,12,1,1500.00,'Sketch','Paid','2026-04-22'),(10,13,1,1000.00,'Sketch','Paid','2026-04-30'),(11,16,1,1000.00,'Sketch','Paid','2026-04-30');
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
