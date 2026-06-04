@@ -1,288 +1,124 @@
-/* ── Reset Password - Scarlet Obsidian Theme ── */
-:root {
-    --bg-deep: #0a0a0f;
-    --card-bg: rgba(18, 18, 26, 0.75);
-    --gold-accent: #c8a040;
-    --gold-dim: #a89060;
-    --gold-highlight: #e0b84a;
-    --scarlet: #d62828;
-    --border-glass: rgba(255, 255, 255, 0.1);
-    --text-primary: #f5f5f7;
-    --text-muted: #8b8b93;
+/* ═══════════════════════════════════════════════════
+   Reset Password — Dragon Tattoos
+   Only reset-specific components (strength meter,
+   match status). Card / bg / buttons from auth.css.
+═══════════════════════════════════════════════════ */
+
+/* ── Strength Meter Panel ── */
+.rst-strength-panel {
+    background: rgba(200, 160, 64, 0.04);
+    border: 1px solid rgba(200, 160, 64, 0.15);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    animation: rstFadeIn 0.35s ease-out;
 }
 
-.auth-wrapper {
-    background: var(--bg-deep);
-    position: relative;
-    z-index: 1;
+@keyframes rstFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-.glass-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-glass);
-    border-radius: 2rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-.auth-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-}
-
-.auth-icon-ring {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: rgba(200, 160, 64, 0.08);
-    border: 1px solid rgba(200, 160, 64, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    font-size: 1.75rem;
-    color: var(--gold-accent);
-}
-
-.auth-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 2rem;
-    color: var(--text-primary);
-    margin-bottom: 0.75rem;
-}
-
-.auth-subtitle {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    line-height: 1.6;
-}
-
-/* ── Input Groups ── */
-.input-group {
-    margin-bottom: 1.5rem;
-}
-
-.input-label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--gold-accent);
-    margin-bottom: 0.6rem;
-}
-
-.input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-field {
-    width: 100%;
-    padding: 1rem 3rem 1rem 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1.5px solid var(--border-glass);
-    border-radius: 1rem;
-    color: var(--text-primary);
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.input-field:focus {
-    border-color: var(--gold-accent);
-    background: rgba(200, 160, 64, 0.05);
-    box-shadow: 0 0 0 4px rgba(200, 160, 64, 0.1);
-}
-
-.input-icon {
-    position: absolute;
-    right: 1.25rem;
-    color: var(--text-muted);
-    transition: color 0.3s;
-}
-
-.input-icon:hover {
-    color: var(--gold-accent);
-}
-
-/* ── Strength Meter ── */
-.strength-panel {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-glass);
-    border-radius: 1.25rem;
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-    animation: fadeIn 0.4s ease-out;
-}
-
-.strength-header {
+.rst-strength-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.65rem;
 }
 
-.strength-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--text-muted);
+.rst-strength-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #6b6b78;
     text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.strength-value {
+.rst-strength-value {
     font-size: 0.7rem;
     font-weight: 700;
-    color: var(--gold-accent);
+    color: #c8a040;
+    letter-spacing: 0.05em;
 }
 
-.strength-bars {
+/* Strength bars */
+.rst-strength-bars {
     display: flex;
-    gap: 6px;
-    margin-bottom: 1rem;
+    gap: 5px;
+    margin-bottom: 0.85rem;
 }
 
-.strength-bar {
+.rst-bar {
     flex: 1;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    height: 3px;
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 100px;
-    transition: all 0.4s ease;
+    transition: background 0.35s ease;
 }
 
-.strength-bar.weak { background: var(--scarlet); }
-.strength-bar.fair { background: #f59e0b; }
-.strength-bar.good { background: #10b981; }
-.strength-bar.strong { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+.rst-bar.weak   { background: #e05555; }
+.rst-bar.fair   { background: #f59e0b; }
+.rst-bar.good   { background: #10b981; }
+.rst-bar.strong { background: #c8a040; box-shadow: 0 0 8px rgba(200,160,64,0.3); }
 
-.req-list {
+/* Requirements checklist */
+.rst-req-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    gap: 0.5rem 1rem;
 }
 
-.req-item {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+.rst-req-item {
+    font-size: 0.72rem;
+    color: #6b6b78;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
+    letter-spacing: 0.02em;
 }
 
-.req-dot {
-    width: 6px;
-    height: 6px;
+.rst-req-dot {
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
-.req-item.met { color: #10b981; }
-.req-item.met .req-dot { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
-
-/* ── Buttons ── */
-.btn-premium {
-    background: linear-gradient(135deg, var(--gold-accent) 0%, var(--gold-dim) 100%);
-    border: none;
-    border-radius: 1.25rem;
-    color: #000;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 1.15rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.rst-req-item.met { color: #10b981; }
+.rst-req-item.met .rst-req-dot {
+    background: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
 }
 
-.btn-premium:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(200, 160, 64, 0.2);
-    filter: brightness(1.1);
+/* ── Password match status ── */
+.rst-match-status {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.45rem;
+    padding-left: 0.25rem;
+    min-height: 1em;
+    letter-spacing: 0.03em;
 }
 
-.btn-premium:disabled {
-    opacity: 0.2;
-    cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-muted);
+.rst-match-status.match    { color: #10b981; }
+.rst-match-status.no-match { color: #e05555; }
+
+/* ── Light Mode ── */
+html.light-mode .rst-strength-panel {
+    background: rgba(200, 160, 64, 0.05);
+    border-color: rgba(200, 160, 64, 0.2);
 }
 
-.back-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-top: 1.5rem;
-    transition: color 0.3s;
+html.light-mode .rst-bar {
+    background: rgba(0, 0, 0, 0.07);
 }
 
-.back-link:hover {
-    color: var(--gold-accent);
+html.light-mode .rst-strength-value {
+    color: #8b6010;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Light Mode Support ── */
-html.light-mode :root {
-    --bg-deep: #F7F7FF;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --border-glass: rgba(39, 24, 126, 0.1);
-    --text-primary: #27187E;
-    --text-muted: rgba(39, 24, 126, 0.6);
-    --gold-accent: #27187E;
-    --gold-dim: #1e1261;
-    --gold-highlight: #4338ca;
-}
-
-html.light-mode .auth-wrapper {
-    background: #fbfbfd;
-}
-
-html.light-mode .glass-card {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-}
-
-html.light-mode .input-field {
-    background: #fff;
-    color: #1d1d1f;
-    border-color: rgba(0, 0, 0, 0.1);
-}
-
-html.light-mode .input-field:focus {
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(168, 144, 96, 0.1);
-}
-
-html.light-mode .auth-icon-ring {
-    background: rgba(168, 144, 96, 0.05);
-    border-color: rgba(168, 144, 96, 0.15);
-}
-
-html.light-mode .strength-panel {
-    background: rgba(0, 0, 0, 0.02);
-}
-
-html.light-mode .strength-bar {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-html.light-mode .btn-premium {
-    color: #fff;
-}
-
-@media (max-width: 480px) {
-    .req-list { grid-template-columns: 1fr; }
-    .auth-title { font-size: 1.75rem; }
+/* ── Responsive ── */
+@media (max-width: 420px) {
+    .rst-req-list { grid-template-columns: 1fr; }
 }

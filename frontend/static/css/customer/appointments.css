@@ -9,7 +9,27 @@
   border-radius: var(--radius, 1rem);
   padding: 2rem 2.25rem;
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.appts-wrap::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg, #fb3640 0%, #ff8f00 100%);
+  pointer-events: none;
+  z-index: 1;
+  box-shadow: 2px 0 15px rgba(251, 54, 64, 0.4);
+}
+
+.appts-wrap:hover {
+  border-color: rgba(251, 54, 64, 0.2);
+  box-shadow: var(--shadow), 0 0 40px -10px rgba(251, 54, 64, 0.15);
+}
+
 [data-theme="ivory"] .appts-wrap { background: #fff; border-color: rgba(0,0,0,.06); }
 
 /* Header */

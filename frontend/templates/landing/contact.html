@@ -100,7 +100,7 @@
                         <label class="text-[0.6rem] font-bold uppercase tracking-widest text-apple-muted ml-2">Your Message</label>
                         <textarea id="message" name="message" class="contact-input min-h-[120px] py-4" placeholder="Describe your vision, size, and placement..." required></textarea>
                     </div>
-                    <button type="submit" class="w-full py-5 bg-apple-gold text-black rounded-xl font-bold tracking-tight hover:bg-apple-goldLt transition-all shadow-xl">
+                    <button type="submit" class="w-full py-3 bg-apple-gold text-black rounded-xl font-bold tracking-tight hover:bg-apple-goldLt transition-all shadow-xl">
                         Send Message
                     </button>
                 </form>
@@ -119,17 +119,17 @@
             </p>
             <ul class="space-y-6">
                 <li class="flex gap-4">
-                    <div class="text-apple-gold mt-1"><i class="fas fa-plane"></i></div>
+                    <div class="text-apple-gold mt-1"><i class="fas fa-train"></i></div>
                     <div>
-                        <h4 class="text-apple-text font-display text-base mb-1">Airport Transfer</h4>
-                        <p class="text-apple-muted text-[0.7rem] font-light">The studio is located approximately 90 minutes from Belagavi Airport (IXG). We can arrange private transfers upon request.</p>
+                        <h4 class="text-apple-text font-display text-lg mb-1">Railway & Transit</h4>
+                        <p class="text-apple-muted text-sm font-light">The nearest railway station is located just 12km from the studio. Comprehensive local bus facilities and private transport are readily available to reach us comfortably.</p>
                     </div>
                 </li>
                 <li class="flex gap-4">
                     <div class="text-apple-gold mt-1"><i class="fas fa-hotel"></i></div>
                     <div>
-                        <h4 class="text-apple-text font-display text-base mb-1">Stay Recommendations</h4>
-                        <p class="text-apple-muted text-[0.7rem] font-light">We have partnerships with local boutique hotels that understand the needs of tattoo clients post-session.</p>
+                        <h4 class="text-apple-text font-display text-lg mb-1">Stay Recommendations</h4>
+                        <p class="text-apple-muted text-sm font-light">We have partnerships with local boutique hotels that understand the needs of tattoo clients post-session.</p>
                     </div>
                 </li>
             </ul>
@@ -138,21 +138,35 @@
         <!-- Process Guide -->
         <div class="reveal reveal-d2">
             <h2 class="font-display text-3xl text-apple-text mb-8">Booking <span class="text-apple-accent">Process</span></h2>
-            <div class="relative space-y-12 pl-8 border-l border-apple-gold/20">
-                <div class="relative">
-                    <div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-apple-gold shadow-[0_0_15px_rgba(200,160,64,0.5)]"></div>
-                    <h4 class="text-apple-text font-display text-base mb-1">Initial Inquiry</h4>
-                    <p class="text-apple-muted text-[0.7rem] font-light">Submit the form with your vision. Our booking coordinator will review and respond within 48 hours.</p>
+            <div class="relative space-y-12">
+                <!-- Timeline Line -->
+                <div class="absolute left-[11px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-apple-gold via-apple-gold/30 to-transparent"></div>
+
+                <!-- Step 1 -->
+                <div class="relative pl-12 group">
+                    <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-apple-bg border-2 border-apple-gold flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(200,160,64,0.4)] z-10">
+                        <div class="w-2 h-2 rounded-full bg-apple-gold group-hover:bg-apple-goldLt transition-colors duration-300"></div>
+                    </div>
+                    <h4 class="text-apple-text font-display text-lg mb-2 group-hover:text-apple-accent transition-colors duration-300">Initial Inquiry</h4>
+                    <p class="text-apple-muted text-sm font-light leading-relaxed">Submit the form with your vision. Our booking coordinator will review and respond within 48 hours.</p>
                 </div>
-                <div class="relative">
-                    <div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-apple-gold shadow-[0_0_15px_rgba(200,160,64,0.5)]"></div>
-                    <h4 class="text-apple-text font-display text-base mb-1">Design Review</h4>
-                    <p class="text-apple-muted text-[0.7rem] font-light">A digital or in-person consultation to finalize the blueprint and technical details.</p>
+                
+                <!-- Step 2 -->
+                <div class="relative pl-12 group">
+                    <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-apple-bg border-2 border-apple-gold/50 flex items-center justify-center group-hover:border-apple-gold group-hover:scale-110 transition-all duration-300 z-10">
+                        <div class="w-2 h-2 rounded-full bg-apple-gold/50 group-hover:bg-apple-gold transition-colors duration-300"></div>
+                    </div>
+                    <h4 class="text-apple-text font-display text-lg mb-2 group-hover:text-apple-accent transition-colors duration-300">Design Review</h4>
+                    <p class="text-apple-muted text-sm font-light leading-relaxed">A digital or in-person consultation to finalize the blueprint and technical details.</p>
                 </div>
-                <div class="relative">
-                    <div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-apple-gold shadow-[0_0_15px_rgba(200,160,64,0.5)]"></div>
-                    <h4 class="text-apple-text font-display text-base mb-1">Deposit & Date</h4>
-                    <p class="text-apple-muted text-[0.7rem] font-light">Secure your session with a non-refundable deposit that goes towards the final price of your tattoo.</p>
+                
+                <!-- Step 3 -->
+                <div class="relative pl-12 group">
+                    <div class="absolute left-0 top-0.5 w-6 h-6 rounded-full bg-apple-bg border-2 border-apple-gold/30 flex items-center justify-center group-hover:border-apple-gold group-hover:scale-110 transition-all duration-300 z-10">
+                        <div class="w-2 h-2 rounded-full bg-apple-gold/30 group-hover:bg-apple-gold transition-colors duration-300"></div>
+                    </div>
+                    <h4 class="text-apple-text font-display text-lg mb-2 group-hover:text-apple-accent transition-colors duration-300">Deposit & Date</h4>
+                    <p class="text-apple-muted text-sm font-light leading-relaxed">Secure your session with a non-refundable deposit that goes towards the final price of your tattoo.</p>
                 </div>
             </div>
         </div>

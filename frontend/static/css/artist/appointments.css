@@ -48,13 +48,6 @@
 }
 /* Header accent removed in favor of container accent */
 
-.appts-header .card-title {
-    font-family: var(--dt-font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-1);
-    margin: 0;
-}
 
 .header-subtitle {
     font-size: 0.65rem;

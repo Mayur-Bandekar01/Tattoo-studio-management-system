@@ -13,7 +13,20 @@
   border-radius: var(--radius, 1rem);
   overflow: hidden;
   box-shadow: var(--shadow);
+  position: relative;
 }
+
+.msg-shell::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 6px;
+  background: linear-gradient(180deg, #10b981 0%, #06b6d4 100%);
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 2px 0 15px rgba(16, 185, 129, 0.4);
+}
+
 [data-theme="ivory"] .msg-shell { background: #fff; border-color: rgba(0,0,0,.06); }
 @media(max-width:900px) { .msg-shell { grid-template-columns: 72px 1fr; } }
 

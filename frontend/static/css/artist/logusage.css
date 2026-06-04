@@ -52,12 +52,6 @@
     box-shadow: 0 12px 32px rgba(251, 54, 64, 0.2);
 }
 
-.logusage-header .card-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    font-family: var(--dt-font-display);
-}
 
 .log-subtitle {
     font-size: 0.65rem;

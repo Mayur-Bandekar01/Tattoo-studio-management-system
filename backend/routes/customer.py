@@ -120,9 +120,14 @@ def customer_book():
 
     extra_details = {}
     tattoo_concept = ""
+    tattoo_name = ""
 
     if service_type == "tattoo":
+        tattoo_name = request.form.get("tattoo_name", "").strip()
         tattoo_concept = request.form.get("tattoo_concept", "").strip()
+        if not tattoo_name:
+            flash("Please enter a tattoo name.", "error")
+            return redirect("/customer/dashboard")
         if not tattoo_concept:
             flash("Please enter a tattoo concept.", "error")
             return redirect("/customer/dashboard")
@@ -230,13 +235,15 @@ def customer_book():
             flash("You already have a booking with this artist at that time.", "error")
             return redirect("/customer/dashboard")
 
+        tattoo_name = request.form.get("tattoo_name", "").strip()
+
         try:
             cursor.execute(
                 """
                 INSERT INTO appointment
                     (customer_id, artist_id, tattoo_concept, reference,
-                     appointment_date, appointment_time, extra_details)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                     appointment_date, appointment_time, extra_details, tattoo_name)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """,
                 (
                     session["user_id"],
@@ -246,6 +253,7 @@ def customer_book():
                     appt_date,
                     appt_time,
                     json.dumps(extra_details),
+                    tattoo_name
                 ),
             )
             conn.commit()

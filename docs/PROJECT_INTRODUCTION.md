@@ -1,6 +1,6 @@
 # Introduction to My Project: A Comprehensive Overview
 
-As a software development project, our primary objective is to design and implement a web application that leverages the capabilities of the Flask framework, HTML, CSS, JavaScript, and SQLite3. In this introduction, we will delve into the features and definitions of each component, highlighting their significance in our project and explaining why we have chosen to utilize them.
+As a software development project, our primary objective is to design and implement a web application that leverages the capabilities of the Flask framework, HTML, CSS, JavaScript, and MySQL. In this introduction, we will delve into the features and definitions of each component, highlighting their significance in our project and explaining why we have chosen to utilize them.
 
 ## Language and Framework Introduction
 
@@ -58,28 +58,28 @@ Examples of JavaScript in our project include:
 * Validating user input using JavaScript and displaying error messages
 * Updating the DOM in response to user interactions, such as clicking a button
 
-## SQLite Introduction
+## MySQL Introduction
 
-SQLite is a self-contained, serverless, and zero-configuration database that provides a reliable and efficient way to store and manage data. The key features of SQLite include:
+MySQL is a powerful, open-source relational database management system (RDBMS) based on Structured Query Language (SQL). It operates on a client-server architecture and is widely known for its speed, reliability, and ease of use. The key features of MySQL include:
 
-1. **Self-Contained**: SQLite is a self-contained database, meaning it does not require a separate server process.
-2. **Serverless**: SQLite does not require a server to operate, making it an excellent choice for embedded systems and mobile devices.
-3. **Zero-Configuration**: SQLite requires minimal configuration, making it easy to set up and use.
+1. **Relational Integrity**: MySQL enforces relational data models through primary keys, foreign keys, and cascading constraints, ensuring data consistency across multiple interconnected tables.
+2. **High Scalability & Performance**: Designed for high-concurrency environments, MySQL features robust connection pooling and indexing structures to deliver rapid query response times under heavy concurrent loads.
+3. **Robust Security & Permissions**: MySQL offers enterprise-grade security protocols, including encrypted passwords, user access controls, and data isolation levels to protect sensitive operational information.
 
-Common Use Cases for SQLite include:
-* Embedded systems and mobile devices
-* Desktop applications and web browsers
-* Serverless architectures and cloud computing
+Common Use Cases for MySQL include:
+* Full-stack enterprise web applications
+* E-commerce, banking, and financial record portals
+* Dynamic content management systems (CMS) and studio management platforms
 
-**SQLite3 in Flask Projects:**
-SQLite3 is a popular choice for Flask projects due to its ease of use, reliability, and performance. In our project, we will utilize SQLite3 as the primary database, leveraging its features to store and manage data.
+**MySQL in Flask Projects:**
+MySQL is a premier choice for Flask web projects where relational consistency and complex queries are required. In our project, we utilize MySQL via the `mysql-connector-python` connection pool to store customer accounts, artist schedules, studio inventories, invoices, and messaging threads efficiently.
 
 ## Project Introduction
 
 Our project aims to create a web application that provides a user-friendly interface for managing and storing data. The key objectives of our project include:
 
-1. **Data Management**: Provide a robust and efficient data management system using SQLite3.
+1. **Data Management**: Provide a robust and efficient data management system using MySQL.
 2. **User Interface**: Create a user-friendly interface using HTML, CSS, and JavaScript.
-3. **Scalability**: Design a scalable architecture using Flask and SQLite3.
+3. **Scalability**: Design a scalable architecture using Flask and MySQL.
 
-By leveraging the features and capabilities of Flask, HTML, CSS, JavaScript, and SQLite3, we aim to create a comprehensive and efficient web application that meets the needs of our users. Throughout this project, we will provide detailed explanations, examples, and code snippets to demonstrate the implementation of each component, ensuring a thorough understanding of the technologies and techniques used.
+By leveraging the features and capabilities of Flask, HTML, CSS, JavaScript, and MySQL, we aim to create a comprehensive and efficient web application that meets the needs of our users. Throughout this project, we will provide detailed explanations, examples, and code snippets to demonstrate the implementation of each component, ensuring a thorough understanding of the technologies and techniques used.

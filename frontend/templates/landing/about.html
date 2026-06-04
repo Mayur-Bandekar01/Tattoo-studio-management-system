@@ -81,38 +81,66 @@
                 <span class="text-apple-gold text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-4 block">The Masters</span>
                 <h2 class="font-display text-4xl text-apple-text tracking-tight">Our Resident <span class="text-apple-accent">Artists</span></h2>
             </div>
-            <p class="text-apple-muted text-sm font-light max-w-sm">Curating the world's most talented creators to bring your vision to life.</p>
+            <p class="text-apple-muted text-sm font-light max-w-sm">Three master craftsmen dedicated to turning your vision into permanent art.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <!-- Artist 1 -->
-            <div class="flex flex-col md:flex-row gap-8 items-center reveal">
-                <div class="w-48 h-48 rounded-full overflow-hidden border-2 border-white/5 shrink-0">
-                    <img src="{{ url_for('static', filename='images/artist_about_1.png') }}" alt="Master Artist" class="w-full h-full object-cover">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Artist 1: Arjun Mehta -->
+            <div class="flex flex-col items-center text-center reveal reveal-d1">
+                <div class="artist-avatar-ring">
+                    <div class="artist-avatar">
+                        <img src="{{ url_for('static', filename='images/artist1.jpg') }}" alt="Arjun Mehta - Tattoo Artist" class="w-full h-full object-cover" style="transform: scale(1.35); transform-origin: center 20%;">
+                    </div>
+                    <div class="artist-avatar-badge"><i class="fas fa-pen-nib"></i></div>
                 </div>
-                <div>
-                    <h3 class="font-display text-2xl text-apple-text mb-2">Vikram 'The Blade'</h3>
-                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Senior Realism Specialist</p>
-                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-4">With 15 years of international experience, Vikram specializes in hyper-realistic portraits and complex black & grey compositions.</p>
-                    <div class="flex gap-4">
-                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fas fa-globe"></i></a>
+                <div class="artist-info">
+                    <h3 class="font-display text-2xl text-apple-text mb-1">Arjun Mehta</h3>
+                    <div class="artist-divider"></div>
+                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Tattoo Artist</p>
+                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-5">Arjun is the studio's lead ink master, specializing in bold blackwork, realistic portraits, and custom original designs. Known for precision lines and deep artistic vision.</p>
+                    <div class="flex gap-4 justify-center">
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fas fa-globe"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Artist 2 -->
-            <div class="flex flex-col md:flex-row gap-8 items-center reveal reveal-d2">
-                <div class="w-48 h-48 rounded-full overflow-hidden border-2 border-white/5 shrink-0">
-                    <img src="{{ url_for('static', filename='images/artist_about_2.png') }}" alt="Master Artist" class="w-full h-full object-cover">
+            <!-- Artist 2: Priya Sharma -->
+            <div class="flex flex-col items-center text-center reveal reveal-d2">
+                <div class="artist-avatar-ring">
+                    <div class="artist-avatar">
+                        <img src="{{ url_for('static', filename='images/artist2.jpg') }}" alt="Priya Sharma - Sketch Artist" class="w-full h-full object-cover" style="transform: scale(1.35); transform-origin: center 20%;">
+                    </div>
+                    <div class="artist-avatar-badge"><i class="fas fa-paint-brush"></i></div>
                 </div>
-                <div>
-                    <h3 class="font-display text-2xl text-apple-text mb-2">Elena Rossi</h3>
-                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Fine-Line & Geometric Expert</p>
-                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-4">Elena is renowned for her surgical precision in minimalist botanical art and sacred geometry, blending ancient symbols with modern aesthetics.</p>
-                    <div class="flex gap-4">
-                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-xs"><i class="fas fa-globe"></i></a>
+                <div class="artist-info">
+                    <h3 class="font-display text-2xl text-apple-text mb-1">Priya Sharma</h3>
+                    <div class="artist-divider"></div>
+                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Sketch Artist</p>
+                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-5">Priya brings concepts to life before the needle touches skin. Expert in watercolor paintings, digital sketches, blood art, and fine-line illustrations that set the foundation for flawless tattoos.</p>
+                    <div class="flex gap-4 justify-center">
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fas fa-globe"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artist 3: Rahul Verma -->
+            <div class="flex flex-col items-center text-center reveal reveal-d3">
+                <div class="artist-avatar-ring">
+                    <div class="artist-avatar">
+                        <img src="{{ url_for('static', filename='images/artist3.jpg') }}" alt="Rahul Verma - Laser Removal Specialist" class="w-full h-full object-cover" style="transform: scale(1.35); transform-origin: center 20%;">
+                    </div>
+                    <div class="artist-avatar-badge"><i class="fas fa-bolt"></i></div>
+                </div>
+                <div class="artist-info">
+                    <h3 class="font-display text-2xl text-apple-text mb-1">Rahul Verma</h3>
+                    <div class="artist-divider"></div>
+                    <p class="text-apple-gold text-xs font-bold tracking-widest uppercase mb-4">Laser Removal Specialist</p>
+                    <p class="text-apple-muted text-xs font-light leading-relaxed mb-5">Rahul is the studio's certified laser technician, offering safe and effective tattoo removal treatments. He combines clinical expertise with an understanding of skin to deliver precise, comfortable sessions.</p>
+                    <div class="flex gap-4 justify-center">
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-apple-muted hover:text-apple-gold transition-colors text-sm"><i class="fas fa-globe"></i></a>
                     </div>
                 </div>
             </div>
@@ -125,13 +153,13 @@
     <div class="max-w-4xl mx-auto text-center reveal">
         <h2 class="font-display text-4xl text-apple-text mb-8">Our Ethical <span class="text-apple-accent">Code</span></h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
-            <div class="p-8 rounded-3xl bg-black/40 border border-white/5">
+            <div class="p-8 rounded-3xl bg-apple-card border border-apple-border shadow-xl">
                 <h4 class="text-apple-text font-display text-lg mb-4">Authentic Connection</h4>
-                <p class="text-apple-muted text-xs font-light leading-relaxed">We believe in a client-first approach. We listen, advise, and collaborate to ensure every tattoo is a reflection of the wearer's true self.</p>
+                <p class="text-apple-muted text-sm font-light leading-relaxed">We believe in a client-first approach. We listen, advise, and collaborate to ensure every tattoo is a reflection of the wearer's true self.</p>
             </div>
-            <div class="p-8 rounded-3xl bg-black/40 border border-white/5">
+            <div class="p-8 rounded-3xl bg-apple-card border border-apple-border shadow-xl">
                 <h4 class="text-apple-text font-display text-lg mb-4">Sustainable Practice</h4>
-                <p class="text-apple-muted text-xs font-light leading-relaxed">From eco-friendly disposables to vegan-friendly inks, we strive to minimize our environmental footprint without compromising on quality.</p>
+                <p class="text-apple-muted text-sm font-light leading-relaxed">From eco-friendly disposables to vegan-friendly inks, we strive to minimize our environmental footprint without compromising on quality.</p>
             </div>
         </div>
     </div>

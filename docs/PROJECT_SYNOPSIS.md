@@ -33,7 +33,7 @@ To maintain clean architecture and separation of concerns, the system is divided
 The development, testing, and deployment of this system leverage a robust, modern technology stack tailored for performance and aesthetic precision:
 - **Backend:** Python utilizing the Flask web framework for rapid, secure API and routing development.
 - **Database:** MySQL for reliable, relational data storage, specifically optimized with connection pooling to handle concurrent requests efficiently.
-- **Frontend:** HTML5, modern JavaScript, and a framework-free Vanilla CSS3 architecture. The UI explicitly eschews heavy CSS frameworks like Bootstrap or Tailwind in favor of a bespoke "Scarlet Obsidian" design system, utilizing "floating glass" elements to ensure a unique, luxury aesthetic.
+- **Frontend:** HTML5, modern JavaScript, and a bespoke "Scarlet Obsidian" design system. The UI leverages modern CSS alongside Bootstrap and Tailwind CSS libraries to offer a premium, highly responsive interface utilizing "floating glass" elements to deliver a luxury operational environment.
 - **Collaboration & Version Control:** Git and GitHub for source code management, branching strategies, and collaborative pull requests.
 
 ## 8. Limitations

@@ -53,12 +53,12 @@ def get_artist_dashboard_data(cursor, artist_id):
     usage_logs = cursor.fetchall()
     usage_logs = sanitize_for_json(usage_logs)
 
-    # 6. Inquiries (Assigned to this artist OR unassigned)
+    # 6. Inquiries (Assigned to this artist OR unassigned general inquiries)
     cursor.execute("""
         SELECT i.*, ar.artist_name as requested_artist
         FROM inquiry i
         LEFT JOIN artist ar ON i.artist_id = ar.artist_id
-        WHERE i.artist_id = %s OR i.artist_id IS NULL
+        WHERE i.artist_id = %s OR ((i.artist_id IS NULL OR i.artist_id = '') AND i.inquiry_type = 'general')
         ORDER BY i.submitted_at DESC
     """, (artist_id,))
     inquiries = cursor.fetchall()

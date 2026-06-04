@@ -192,6 +192,110 @@ body {
     opacity: 1;
 }
 
+/* ── ARTIST AVATAR SYSTEM ── */
+
+/* 
+ * Gradient ring technique:
+ * The outer .artist-avatar-ring has a gradient background and tight padding.
+ * A 3px gap (via .artist-avatar background) creates the visible gradient border.
+ * ::before renders a faint dashed outer arc for editorial texture.
+ */
+.artist-avatar-ring {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 184px;
+    height: 184px;
+    border-radius: 50%;
+    /* Gradient border: amber → dark-gold → warm-amber */
+    background: linear-gradient(
+        145deg,
+        rgba(212, 175, 55, 0.9)  0%,
+        rgba(160, 110, 20, 0.6)  40%,
+        rgba(200, 160, 64, 0.85) 70%,
+        rgba(240, 195, 80, 0.95) 100%
+    );
+    padding: 3px;
+    margin-bottom: 1.75rem;
+    /* Deep, tight shadow — grounds the avatar, kills the floating look */
+    box-shadow:
+        0 8px 24px -4px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(200, 160, 64, 0.12),
+        inset 0 1px 0 rgba(255, 220, 120, 0.25);
+}
+
+/* Decorative outer arc ring */
+.artist-avatar-ring::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px dashed rgba(200, 160, 64, 0.2);
+    pointer-events: none;
+}
+
+/* Second outer arc, slightly larger */
+.artist-avatar-ring::after {
+    content: '';
+    position: absolute;
+    inset: -16px;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 160, 64, 0.07);
+    pointer-events: none;
+}
+
+/* The actual image circle — sits inside the gradient ring */
+.artist-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    /* Dark gap between gradient ring and image */
+    background: #0a0a0c;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.artist-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Small role-icon badge anchored at bottom-right of ring */
+.artist-avatar-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c8a040, #8b5a0a);
+    border: 2px solid #0a0a0c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: #fff8e7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Decorative name ↔ role separator */
+.artist-divider {
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200, 160, 64, 0.7), transparent);
+    margin: 0.4rem auto 0.6rem;
+}
+
+/* Info block — gives breathing room above the ring's outer arc */
+.artist-info {
+    padding-top: 0.25rem;
+}
+
+
+
 footer {
     background: #000;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -297,4 +401,14 @@ nav~* footer {
 *::before,
 *::after {
     transition: background-color 0.4s ease, border-color 0.4s ease, color 0.35s ease, box-shadow 0.4s ease;
+}
+
+/* Override: all avatar layers must be strictly static — no transitions */
+.artist-avatar-ring,
+.artist-avatar-ring::before,
+.artist-avatar-ring::after,
+.artist-avatar,
+.artist-avatar img,
+.artist-avatar-badge {
+    transition: none !important;
 }

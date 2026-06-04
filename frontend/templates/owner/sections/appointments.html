@@ -209,11 +209,30 @@
 ══════════════════════════════════════ */
 
 .sm-card {
-    background: var(--surface);
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface-2) 100%);
     border: 1px solid var(--border);
     border-radius: 1.25rem;
     overflow: hidden;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-premium, 0 10px 30px -10px rgba(0,0,0,0.5));
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sm-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, var(--gold, #fb3640) 0%, #ff8f00 100%);
+    pointer-events: none;
+    box-shadow: 2px 0 15px rgba(251, 54, 64, 0.4);
+}
+
+.sm-card:hover {
+    border-color: var(--gold-dim);
+    box-shadow: var(--shadow-premium, 0 20px 40px -10px rgba(0,0,0,0.6)), 0 0 40px -10px var(--gold-glow);
 }
 
 /* ── Header ── */

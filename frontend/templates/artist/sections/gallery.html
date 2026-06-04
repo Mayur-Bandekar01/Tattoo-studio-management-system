@@ -130,12 +130,12 @@
 
             <div class="gal-ov">
                 {% if item.caption %}
-                <p class="text-xs font-bold text-white mb-2 leading-tight drop-shadow-lg">
+                <p class="gal-ov-title">
                     {{ item.caption[:40] }}{{ '...' if item.caption|length > 40 else '' }}
                 </p>
                 {% endif %}
-                <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/20 text-white text-[9px] font-black uppercase tracking-widest">
+                <div class="gal-ov-tags">
+                    <span class="gal-ov-tag">
                         {{ item.style or 'Tattoo' }}
                     </span>
                 </div>

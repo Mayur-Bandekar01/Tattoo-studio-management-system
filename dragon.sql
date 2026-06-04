@@ -29,6 +29,7 @@ CREATE TABLE `appointment` (
   `customer_id` int NOT NULL,
   `artist_id` varchar(20) DEFAULT NULL,
   `service_type` varchar(20) DEFAULT 'tattoo',
+  `tattoo_name` varchar(255) DEFAULT NULL,
   `tattoo_concept` varchar(255) NOT NULL,
   `reference` varchar(255) DEFAULT NULL,
   `extra_details` text,

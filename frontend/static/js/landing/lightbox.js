@@ -18,6 +18,7 @@ class PremiumLightbox {
         
         this.items = [];
         this.currentIndex = 0;
+        this.getData = null;
         
         this.initEvents();
         this.initOnLoad();
@@ -95,7 +96,9 @@ class PremiumLightbox {
     }
 
     open(el, getData) {
-        this.render(el, getData);
+        // Store callback so navigation (prev/next) can reuse it
+        if (getData) this.getData = getData;
+        this.render(el, this.getData);
         this.lightbox.classList.add('open');
         document.body.style.overflow = 'hidden';
         
@@ -167,7 +170,7 @@ class PremiumLightbox {
         this.lightbox.classList.add('loading');
         
         setTimeout(() => {
-            this.render(el);
+            this.render(el, this.getData);
             // Image onload will handle removing the loading class
         }, 200);
     }

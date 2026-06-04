@@ -33,9 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
             textEl.style.color = colors[score];
 
             bars.forEach((bar, i) => {
-                bar.className = 'strength-bar';
+                bar.className = 'rst-bar';
                 if (i < score) {
-                    bar.classList.add('active');
                     if (score === 1) bar.classList.add('weak');
                     else if (score === 2) bar.classList.add('fair');
                     else if (score === 3) bar.classList.add('good');
@@ -58,9 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cpw.length > 0) {
             const match = pw === cpw;
             status.textContent = match ? '✓ Passwords match' : '✗ Passwords do not match';
-            status.className = 'match-status ' + (match ? 'ok' : 'err');
+            status.className = 'rst-match-status ' + (match ? 'match' : 'no-match');
         } else {
             status.textContent = '';
+            status.className = 'rst-match-status';
         }
 
         const isStrong = pw.length >= 8 && /[A-Z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw);

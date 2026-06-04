@@ -24,9 +24,38 @@
     transition: box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
-.profile-wrap:hover {
-    box-shadow: var(--shadow-md), 0 0 40px rgba(212,175,55,0.06);
-    border-color: rgba(212,175,55,0.18);
+/* Identity card — Gold → Amber accent */
+.profile-wrap:not(.profile-security-card)::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #d4af37 0%, #f59e0b 100%);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 2px 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.profile-wrap:not(.profile-security-card):hover {
+    box-shadow: var(--shadow-md), 0 0 40px -10px rgba(212, 175, 55, 0.2);
+    border-color: rgba(212, 175, 55, 0.2);
+}
+
+/* Security card — Scarlet → Orange accent */
+.profile-security-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #fb3640 0%, #ff8f00 100%);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 2px 0 15px rgba(251, 54, 64, 0.4);
+}
+
+.profile-security-card:hover {
+    box-shadow: var(--shadow-md), 0 0 40px -10px rgba(251, 54, 64, 0.15);
+    border-color: rgba(251, 54, 64, 0.2);
 }
 
 /* Decorative glow orb */

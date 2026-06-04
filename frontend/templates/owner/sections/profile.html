@@ -149,8 +149,39 @@
 }
 
 .studio-card:hover {
-    border-color: var(--gold-dim);
     box-shadow: var(--shadow-lg), 0 20px 60px -20px rgba(0,0,0,0.3);
+}
+
+/* ── Identity Card — Scarlet → Gold accent ── */
+.profile-main-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #fb3640 0%, #ff8f00 100%);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 2px 0 15px rgba(251, 54, 64, 0.4);
+}
+.profile-main-card:hover {
+    border-color: rgba(251, 54, 64, 0.2);
+    box-shadow: var(--shadow-lg), 0 20px 60px -20px rgba(0,0,0,0.3), 0 0 40px -10px rgba(251, 54, 64, 0.15);
+}
+
+/* ── Security Vault Card — Blue → Indigo accent ── */
+.security-vault-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #3b82f6 0%, #6366f1 100%);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 2px 0 15px rgba(59, 130, 246, 0.4);
+}
+.security-vault-card:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+    box-shadow: var(--shadow-lg), 0 20px 60px -20px rgba(0,0,0,0.3), 0 0 40px -10px rgba(59, 130, 246, 0.15);
 }
 
 /* ── HEADER STYLES ── */

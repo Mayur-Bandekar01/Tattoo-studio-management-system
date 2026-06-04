@@ -7,78 +7,128 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/verify.css') }}">
+<style>
+    /* Scoped layout — identical to login page */
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6rem 1.5rem 4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mesh-bg {
+        position: fixed;
+        inset: 0;
+        background:
+            radial-gradient(circle at 20% 30%, rgba(200, 160, 64, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(200, 160, 64, 0.05) 0%, transparent 40%);
+        z-index: -2;
+    }
+
+    .ambient-glow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(200, 160, 64, 0.08) 0%, transparent 70%);
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
 {% endblock %}
 
 {% block footer %}{% endblock %}
 
 {% block content %}
-<div class="verify-page-bg">
-    <main class="verify-main">
-        <div class="verify-card animate-fade-in">
+<!-- BACKGROUND ELEMENTS — same as login -->
+<div class="mesh-bg"></div>
+<div class="ambient-glow"></div>
 
-            <!-- ── Card Header ── -->
-            <div class="verify-card-header">
-                <div class="verify-icon-ring">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <h1 class="verify-title">Verify Identity</h1>
-                <p class="verify-subtitle">
+<div class="card-wrap w-full page-enter mx-auto" style="max-width: 520px;">
+    <div class="card-body">
+
+        <!-- ── Header — same structure as login ── -->
+        <div id="cardHeader" style="padding: 2rem 2.5rem 1.25rem; text-align: center; border-bottom: 1px solid rgba(200,160,64,0.15); background: transparent;">
+            <div id="logoCircle" style="display:inline-flex; align-items:center; justify-content:center; width:4rem; height:4rem; border-radius:50%; margin-bottom:1rem; overflow:hidden; border:2px solid rgba(200,160,64,0.4); box-shadow: 0 0 30px rgba(200,160,64,0.15); background:#0a0800;">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Dragon Tattoos Studio Logo" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <h1 class="title-grad" style="font-family:'Cinzel Decorative', cursive; font-size:1.8rem; letter-spacing:0.06em; margin:0 0 0.3rem; font-weight:700;">DRAGON TATTOOS</h1>
+            <p id="cardSubtitle" style="color:#a89060; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; margin:0; font-weight:600; opacity:0.8;">
+                Identity Verification
+            </p>
+        </div>
+
+        <!-- ── Form Container — same padding as login ── -->
+        <div class="form-container">
+
+            <!-- Email chip — who the code was sent to -->
+            <div style="text-align:center; margin-bottom:1.5rem;">
+                <p style="font-size:0.78rem; color:#6b6b78; margin-bottom:0.4rem; letter-spacing:0.04em;">
                     Enter the 6-digit secure code sent to
                 </p>
-                <span class="verify-email-chip">{{ email if email else 'your email' }}</span>
+                <span class="otp-email-chip">{{ email if email else 'your email address' }}</span>
             </div>
 
-            <!-- ── Card Body ── -->
-            <div class="verify-card-body">
-                <form id="otpForm" method="POST" action="/verify-otp">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <form id="otpForm" method="POST" action="/verify-otp" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    <!-- Error Banner -->
-                    <div id="errorMessage" class="error-banner" role="alert"></div>
+                <!-- Error Banner -->
+                <div id="errorMessage" class="otp-error-banner" role="alert"></div>
 
-                    <!-- OTP Input Grid -->
-                    <div class="otp-grid">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autofocus autocomplete="off" aria-label="Digit 1">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 2">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 3">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 4">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 5">
-                        <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 6">
-                    </div>
+                <!-- ── OTP Digit Inputs ── -->
+                <div class="otp-grid">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autofocus autocomplete="off" aria-label="Digit 1">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 2">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 3">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 4">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 5">
+                    <input type="text" inputmode="numeric" maxlength="1" class="otp-input" required autocomplete="off" aria-label="Digit 6">
+                </div>
 
-                    <input type="hidden" name="otp" id="finalOtp">
+                <input type="hidden" name="otp" id="finalOtp">
 
-                    <!-- Progress Bar -->
-                    <div class="progress-track">
-                        <div id="progressFill" class="progress-fill"></div>
-                    </div>
+                <!-- Progress Bar -->
+                <div class="otp-progress-track">
+                    <div id="progressFill" class="otp-progress-fill"></div>
+                </div>
 
-                    <div class="verify-divider"></div>
-
-                    <!-- Resend Section -->
-                    <div class="resend-area">
-                        <p class="resend-text">Didn't receive the code?</p>
-                        <button type="button" id="resendBtn" onclick="resendOtp()" class="resend-link" disabled>
-                            Resend in <span id="timer">10:00</span>
-                        </button>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" id="submitBtn" class="btn-verify" disabled>
-                        Verify &amp; Continue
-                        <i class="fa-solid fa-arrow-right-long"></i>
+                <!-- Resend Section -->
+                <div class="otp-resend-area">
+                    <p style="font-size:0.78rem; color:#6b6b78; margin-bottom:0.3rem;">Didn't receive the code?</p>
+                    <button type="button" id="resendBtn" onclick="resendOtp()" class="otp-resend-link" disabled>
+                        Resend in <span id="timer">10:00</span>
                     </button>
+                </div>
 
-                    <!-- Back Link -->
-                    <a href="/forgot-password" class="back-link">
-                        <i class="fa-solid fa-arrow-left-long"></i>
-                        Try another email address
+                <!-- ── Action Buttons — same classes as login ── -->
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="btn-gold w-full" disabled>
+                        VERIFY &amp; CONTINUE &nbsp;<i class="fa-solid fa-arrow-right-long"></i>
+                    </button>
+                </div>
+
+                <!-- Back link -->
+                <div style="text-align:center; margin-top:1.25rem;">
+                    <a href="/forgot-password" style="font-size:0.8rem; color:#6b6b78; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; font-weight:500; transition:color 0.2s;"
+                       onmouseover="this.style.color='#c8a040'" onmouseout="this.style.color='#6b6b78'">
+                        <i class="fa-solid fa-arrow-left-long"></i> Try another email address
                     </a>
-                </form>
-            </div>
+                </div>
 
+            </form>
         </div>
-    </main>
+    </div>
 </div>
 {% endblock %}
 

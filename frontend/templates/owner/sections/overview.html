@@ -317,23 +317,36 @@
 /* Action Grid */
 .ov-action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 .ov-action-card { 
-    background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem;
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface-2) 100%); 
+    border: 1px solid var(--border-soft); 
+    border-radius: 1.5rem;
     padding: 1.75rem 1.75rem 1.75rem 2.25rem;
-    cursor: pointer; transition: all 0.3s; position: relative;
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); 
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-premium, 0 10px 30px -10px rgba(0,0,0,0.5));
 }
 .ov-action-card::before {
     content: '';
     position: absolute;
-    left: 0; top: 1rem; bottom: 1rem;
-    width: 4px; border-radius: 0 4px 4px 0;
+    left: 0; top: 0; bottom: 0;
+    width: 6px; border-radius: 0;
     background: var(--border-soft);
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 .ov-action-card:nth-child(1)::before { background: linear-gradient(180deg, #f59e0b, #fb923c); }
 .ov-action-card:nth-child(2)::before { background: linear-gradient(180deg, #fb3640, #ff6b35); }
 .ov-action-card:nth-child(3)::before { background: linear-gradient(180deg, #10b981, #06b6d4); }
-.ov-action-card:hover { border-color: var(--gold); background: var(--surface-3); transform: translateY(-4px); }
-.ov-action-card:hover::before { top: 0.5rem; bottom: 0.5rem; box-shadow: 2px 0 12px rgba(251,54,64,0.25); }
+.ov-action-card:hover { 
+    border-color: var(--gold-dim); 
+    box-shadow: var(--shadow-premium, 0 20px 40px -10px rgba(0,0,0,0.6)), 0 0 40px -10px var(--gold-glow);
+    transform: translateY(-4px); 
+}
+.ov-action-card:hover::before { 
+    box-shadow: 2px 0 15px rgba(251,54,64,0.4); 
+}
 
 .ov-action-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
 .ov-action-icon { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
@@ -341,16 +354,43 @@
 .ov-icon-orange { background: rgba(251, 54, 64, 0.1); color: #fb3640; }
 .ov-icon-emerald { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 
-.ov-action-title { font-size: 1rem; font-weight: 800; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.05em; }
+.ov-action-title { font-family: var(--dt-font-display); font-size: 1.25rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; line-height: 1.1; }
 .ov-action-text { font-size: 0.75rem; color: var(--text-3); line-height: 1.5; margin-bottom: 1.5rem; }
 .ov-action-footer { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 0.5rem; }
 
 /* Streams Grid */
 .ov-streams-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem; }
-.ov-stream-card { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 1.5rem; padding: 1.75rem; }
+.ov-stream-card { 
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface-2) 100%); 
+    border: 1px solid var(--border-soft); 
+    border-radius: 1.5rem; 
+    padding: 1.75rem; 
+    box-shadow: var(--shadow-premium, 0 10px 30px -10px rgba(0,0,0,0.5));
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ov-stream-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, var(--gold, #fb3640) 0%, #ff8f00 100%);
+    pointer-events: none;
+    box-shadow: 2px 0 15px rgba(251, 54, 64, 0.4);
+}
+
+.ov-stream-card:hover {
+    border-color: var(--gold-dim);
+    box-shadow: var(--shadow-premium, 0 20px 40px -10px rgba(0,0,0,0.6)), 0 0 40px -10px var(--gold-glow);
+    transform: translateY(-4px);
+}
 
 .ov-stream-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
-.ov-stream-title { font-size: 1.1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.05em; }
+.ov-stream-title { font-family: var(--dt-font-display); font-size: 1.3rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; line-height: 1.1; }
 .ov-stream-sub { font-size: 0.65rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
 
 .ov-stream-btn { 

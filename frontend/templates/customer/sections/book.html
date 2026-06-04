@@ -165,13 +165,22 @@
                     <div class="step-divider"></div>
                 </div>
 
+                <div style="margin-bottom:1.5rem;">
+                    <label class="book-field-label" for="tc-name">
+                        Tattoo Name <span style="color:var(--studio-danger);" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text" name="tattoo_name" id="tc-name"
+                           placeholder="e.g. Traditional Dragon, Tribal Armband"
+                           class="book-input" required>
+                </div>
+
                 <div>
                     <label class="book-field-label" for="tc-tattoo">
                         Tattoo Concept <span style="color:var(--studio-danger);" aria-hidden="true">*</span>
                     </label>
                     <input type="text" name="tattoo_concept" id="tc-tattoo"
                            placeholder="e.g. Dragon wrapped around forearm, black &amp; grey style"
-                           class="book-input">
+                           class="book-input" required>
                 </div>
 
                 <div class="book-grid-2">
@@ -486,14 +495,11 @@
 
                 <div class="book-grid-2">
                     <div>
-                        <label class="book-field-label" for="remSessions">Expected Sessions</label>
-                        <select name="removal_sessions" id="remSessions" class="book-select">
-                            <option value="TBD">Artist will advise</option>
-                            <option value="1–3 sessions">1–3 Sessions</option>
-                            <option value="4–6 sessions">4–6 Sessions</option>
-                            <option value="6–10 sessions">6–10 Sessions</option>
-                            <option value="10+ sessions">10+ Sessions</option>
-                        </select>
+                        <label class="book-field-label">Expected Sessions</label>
+                        <div class="book-input" style="display: flex; align-items: center; background: rgba(255,255,255,0.02); opacity: 0.7; cursor: not-allowed; user-select: none;">
+                            <i class="fas fa-lock mr-2" style="color: var(--studio-gold);"></i> Artist will advise
+                        </div>
+                        <input type="hidden" name="removal_sessions" value="TBD">
                     </div>
                     <div>
                         <label class="book-field-label" for="removalSkin">Skin Sensitivity</label>

@@ -39,13 +39,14 @@ app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB Limit
 # ── MAIL CONFIG ──────────────────────────────────────────────
 app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
 if not app.config["MAIL_SERVER"]:
-    raise RuntimeError("CRITICAL: MAIL_SERVER is not set in environment or .env.")
+    app.logger.warning("WARNING: MAIL_SERVER is not configured. Email features (OTP, notifications) will operate in graceful fallback mode.")
+    app.config["MAIL_SERVER"] = "smtp.gmail.com"
 
 app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", 587))
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = ("Dragon Tattoos", os.getenv("MAIL_USERNAME"))
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME") or "mock@example.com"
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD") or ""
+app.config["MAIL_DEFAULT_SENDER"] = ("Dragon Tattoos", app.config["MAIL_USERNAME"])
 mail = Mail(app)
 
 # ── UPLOAD CONFIG ─────────────────────────────────────────────

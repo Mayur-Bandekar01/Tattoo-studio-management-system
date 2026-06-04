@@ -231,6 +231,27 @@
     border-radius: 1.75rem;
     border: 1px solid var(--border-soft);
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.py-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, #f59e0b 0%, #10b981 100%);
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 2px 0 15px rgba(245, 158, 11, 0.45);
+}
+
+.py-container:hover {
+    border-color: rgba(245, 158, 11, 0.2);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2), 0 0 40px -10px rgba(245, 158, 11, 0.2);
 }
 
 /* ── Header ── */
@@ -241,6 +262,7 @@
 }
 
 .py-title {
+    font-family: var(--dt-font-display);
     font-size: 2rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.03em;
     background: linear-gradient(135deg, var(--text-1) 30%, #6366f1 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -290,11 +312,11 @@
 
 /* ── Cards ── */
 .py-alert-card {
-    background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(234,88,12,0.03) 100%);
-    border: 1px solid rgba(245,158,11,0.25);
-    border-left: 4px solid #f59e0b;
+    background: linear-gradient(135deg, rgba(234,88,12,0.08) 0%, rgba(239,68,68,0.04) 100%);
+    border: 1px solid rgba(234,88,12,0.3);
+    border-left: 4px solid #ea580c;
     border-radius: 1.25rem; padding: 1.75rem; margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(245,158,11,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 4px 20px rgba(234,88,12,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .py-manual-card {
     background: var(--surface-2);
@@ -330,7 +352,7 @@
     color: #fff;
 }
 
-.py-card-title { font-size: 1rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: 0.06em; }
+.py-card-title { font-family: var(--dt-font-display); font-size: 1.25rem; font-weight: 900; color: var(--text-1); text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 0.2rem; }
 .py-card-sub { font-size: 0.65rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
 
 /* ── Table ── */

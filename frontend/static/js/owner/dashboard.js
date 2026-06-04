@@ -3,9 +3,9 @@
  * Themes: obsidian (Obsidian Noir), ivory (Ivory Regal)
  */
 (function () {
-    const themes = ['obsidian', 'ivory'];
+    const themes = ['noir', 'ivory'];
     const saved = localStorage.getItem('siteTheme');
-    const initialTheme = themes.includes(saved) ? saved : 'obsidian';
+    const initialTheme = themes.includes(saved) ? saved : 'noir';
     document.documentElement.setAttribute('data-theme', initialTheme);
 
     function syncLightModeClass(theme) {
@@ -28,8 +28,8 @@
     };
 
     window.toggleTheme = function () {
-        const current = document.documentElement.getAttribute('data-theme') || 'obsidian';
-        const next = current === 'obsidian' ? 'ivory' : 'obsidian';
+        const current = document.documentElement.getAttribute('data-theme') || 'noir';
+        const next = current === 'noir' ? 'ivory' : 'noir';
         window.setTheme(next);
     };
 

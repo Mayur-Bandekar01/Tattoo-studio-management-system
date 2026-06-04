@@ -56,7 +56,10 @@
             <td><span class="cell-id">#{{ a.appointment_id }}</span></td>
             <td><span class="cell-artist">{{ a.artist_name }}</span></td>
             <td>
-              <span class="cell-concept" title="{{ a.tattoo_concept }}">"{{ a.tattoo_concept }}"</span>
+              <span class="cell-concept" title="{{ a.tattoo_concept }}">
+                {% if a.tattoo_name %}<strong>{{ a.tattoo_name }}</strong><br>{% endif %}
+                "{{ a.tattoo_concept }}"
+              </span>
             </td>
             <td>
               <span class="cell-date">{{ a.appointment_date }}</span>

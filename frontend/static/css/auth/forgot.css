@@ -525,3 +525,111 @@ html.light-mode .back-link:hover {
     .icon-ring { width: 64px; height: 64px; }
     .navbar { padding: 0 1rem; }
 }
+
+/* ─────────────────────────────────────────────
+   TARGETED FIX: Email label + input box layout
+   Overrides conflicting rules from auth.css
+───────────────────────────────────────────── */
+
+/* Force stacked layout: label above input, never side-by-side */
+.form-area .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Fix label — override auth.css purple light-mode label rule */
+.form-area .input-label,
+html.light-mode .form-area .input-label {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    color: var(--fp-muted) !important;       /* gold-muted, never purple */
+    margin-bottom: 0.55rem !important;
+    width: 100%;
+}
+
+html.light-mode .form-area .input-label {
+    color: var(--fp-muted) !important;       /* warm tan in light mode */
+}
+
+.form-area .input-label i {
+    color: var(--fp-accent) !important;
+    font-size: 0.7rem;
+    opacity: 1 !important;
+}
+
+/* Input wrap — always full width block */
+.form-area .input-wrap {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+/* Input field — clean gold-border style */
+.form-area .input-field {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1.1rem 0.9rem 2.9rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid rgba(200, 160, 64, 0.22);
+    border-radius: 10px;
+    color: var(--fp-text);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-area .input-field::placeholder {
+    color: rgba(107, 107, 120, 0.5);
+}
+
+.form-area .input-field:focus {
+    border-color: rgba(200, 160, 64, 0.6);
+    background: rgba(200, 160, 64, 0.025);
+    box-shadow: 0 0 0 3px rgba(200, 160, 64, 0.08);
+}
+
+/* Light mode input */
+html.light-mode .form-area .input-field {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(200, 160, 64, 0.3) !important;
+    color: var(--fp-text) !important;
+}
+
+html.light-mode .form-area .input-field:focus {
+    border-color: var(--fp-accent) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 0 0 3px rgba(200, 160, 64, 0.1) !important;
+}
+
+/* Icon inside input — always gold */
+.form-area .input-icon {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(200, 160, 64, 0.45);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.form-area .input-wrap:focus-within .input-icon {
+    color: var(--fp-accent);
+}
+
+/* Hint text */
+.form-area .input-hint {
+    font-size: 0.72rem !important;
+    color: var(--fp-muted) !important;
+    opacity: 0.65 !important;
+    margin-top: 0.45rem !important;
+    padding-left: 0.2rem;
+}

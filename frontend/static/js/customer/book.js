@@ -140,6 +140,21 @@
         }
 
         // Basic validation
+        if (type === 'tattoo') {
+            const tattooName = document.getElementById('tc-name').value.trim();
+            if (!tattooName) {
+                alert('Please enter a Tattoo Name');
+                document.getElementById('tc-name').focus();
+                return;
+            }
+            const tcTattoo = document.getElementById('tc-tattoo').value.trim();
+            if (!tcTattoo) {
+                alert('Please enter a Tattoo Concept');
+                document.getElementById('tc-tattoo').focus();
+                return;
+            }
+        }
+        
         if (type === 'art') {
             const artType = document.getElementById('tc-art').value;
             if (!artType) {

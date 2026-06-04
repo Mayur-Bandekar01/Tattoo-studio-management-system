@@ -58,12 +58,6 @@
 .accent-emerald .inv-icon-box { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 .accent-scarlet .inv-icon-box { background: rgba(251, 54, 64, 0.1); color: var(--gold); }
 
-.inventory-header .card-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    font-family: var(--dt-font-display);
-}
 
 .inv-subtitle {
     font-size: 0.65rem;
