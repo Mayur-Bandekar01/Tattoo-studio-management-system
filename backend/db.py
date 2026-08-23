@@ -10,6 +10,7 @@ db_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="dragon_pool",
     pool_size=int(os.getenv("DB_POOL_SIZE", 5)),
     host=os.getenv("DB_HOST", "localhost"),
+    port=int(os.getenv("DB_PORT", 3306)),
     user=os.getenv("DB_USER", "root"),
     password=os.getenv("DB_PASSWORD", os.getenv("DB_PASS", "")),
     database=os.getenv("DB_NAME", "dragon_tattoos"),
