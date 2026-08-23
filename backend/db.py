@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ── DATABASE POOL INITIALIZATION ─────────────────────────────
-# This pool will persist across requests, reusing connections
+# Initialize MySQL connection pool
 db_pool = mysql.connector.pooling.MySQLConnectionPool(
     pool_name="dragon_pool",
     pool_size=int(os.getenv("DB_POOL_SIZE", 5)),
@@ -16,7 +15,7 @@ db_pool = mysql.connector.pooling.MySQLConnectionPool(
     database=os.getenv("DB_NAME", "dragon_tattoos"),
     charset="utf8mb4",
     collation="utf8mb4_general_ci",
-    use_pure=True,  # Pure python implementation can sometimes be more stable in pooled environments
+    use_pure=True,
 )
 
 

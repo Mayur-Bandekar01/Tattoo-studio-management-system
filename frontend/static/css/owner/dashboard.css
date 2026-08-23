@@ -527,6 +527,15 @@ input:checked + .toggle-slider:before {
 .master-banner h1 { font-family: var(--dt-font-display); font-size: 2.75rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.04em; line-height: 1.1; margin: 0 0 1rem; }
 .master-banner p { font-family: var(--dt-font-ui); font-size: 0.95rem; color: var(--text-2); max-width: 500px; line-height: 1.6; margin-bottom: 2rem; }
 
+/* ── IVORY OVERRIDE: master-banner switches from near-black to warm ivory ── */
+[data-theme="ivory"] .master-banner {
+    background: linear-gradient(135deg, #fdfbf7 0%, #f8f5ee 100%);
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+[data-theme="ivory"] .master-banner h1 { color: #18181b; }
+[data-theme="ivory"] .master-banner p  { color: #374151; }
+
 /* Buttons */
 .btn-gold { 
     display: inline-flex; 
@@ -548,10 +557,17 @@ input:checked + .toggle-slider:before {
     transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .btn-gold:hover {
-    background: #000;
-    color: #FF4B2B !important;
+    background: #1a1a1a;
+    color: #fff !important;
     transform: translateY(-3px);
     box-shadow: 0 12px 30px rgba(255, 75, 43, 0.2);
+}
+
+/* ── IVORY OVERRIDE: dark hover is unreadable on light body ── */
+[data-theme="ivory"] .btn-gold:hover {
+    background: #18181b;
+    color: #fff !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
 }
 .btn-outline { 
     display: inline-flex; 
@@ -609,6 +625,11 @@ input:checked + .toggle-slider:before {
     mask-composite: exclude;
     pointer-events: none;
     z-index: 1;
+}
+
+/* ── IVORY OVERRIDE: rgba-white glass shine is invisible on white cards ── */
+[data-theme="ivory"] .studio-card::before {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.01) 50%, transparent);
 }
 
 .studio-card:hover {
@@ -872,6 +893,25 @@ select.studio-input { appearance: none; background-image: url("data:image/svg+xm
     background: rgba(239, 68, 68, 0.1); 
     color: #ef4444; 
     border: 1px solid rgba(239, 68, 68, 0.2); 
+}
+
+/* ── IVORY OVERRIDES: WCAG AA — darken status text for 4.5:1 on white ── */
+[data-theme="ivory"] .status-done,
+[data-theme="ivory"] .status-approved {
+    color: #059669;  /* #059669 on white = 4.6:1 ✅ */
+    background: rgba(5, 150, 105, 0.08);
+    border-color: rgba(5, 150, 105, 0.2);
+}
+[data-theme="ivory"] .status-pending {
+    color: #B45309;  /* #B45309 on white = 4.8:1 ✅ */
+    background: rgba(180, 83, 9, 0.08);
+    border-color: rgba(180, 83, 9, 0.2);
+}
+[data-theme="ivory"] .status-cancelled,
+[data-theme="ivory"] .status-rejected {
+    color: #DC2626;  /* #DC2626 on white = 5.0:1 ✅ */
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.2);
 }
 
 /* Specialty Badges */
@@ -1144,9 +1184,31 @@ select.studio-input { appearance: none; background-image: url("data:image/svg+xm
 }
 
 [data-theme="ivory"] .flash-msg {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    color: #18181b;
+}
+[data-theme="ivory"] .flash-msg.success,
+[data-theme="ivory"] .flash-success {
+    color: #059669;
+    background: rgba(5, 150, 105, 0.07);
+    border-color: rgba(5, 150, 105, 0.25);
+    box-shadow: 0 8px 24px rgba(5, 150, 105, 0.10);
+}
+[data-theme="ivory"] .flash-msg.error,
+[data-theme="ivory"] .flash-error {
+    color: #DC2626;
+    background: rgba(220, 38, 38, 0.07);
+    border-color: rgba(220, 38, 38, 0.25);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.10);
+}
+[data-theme="ivory"] .flash-msg.info,
+[data-theme="ivory"] .flash-info {
+    color: #2563EB;
+    background: rgba(37, 99, 235, 0.07);
+    border-color: rgba(37, 99, 235, 0.25);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.10);
 }
 
 

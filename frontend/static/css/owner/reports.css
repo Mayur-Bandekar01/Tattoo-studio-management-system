@@ -93,6 +93,14 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* ── IVORY OVERRIDE: rgba-white glass bg is invisible on white body ── */
+[data-theme="ivory"] .rep-kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    backdrop-filter: none;
+}
+
 .rep-kpi-card::before {
     content: ''; position: absolute;
     left: 0; top: 0; bottom: 0;
@@ -108,11 +116,23 @@
     pointer-events: none; opacity: 0.5;
 }
 
+/* ── IVORY OVERRIDE: glass shine invisible on white ── */
+[data-theme="ivory"] .rep-kpi-card::after {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+}
+
 .rep-kpi-card:hover { 
     transform: translateY(-8px) scale(1.02); 
     border-color: rgba(255, 255, 255, 0.15);
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── IVORY OVERRIDE: white hover bg on white body = no change visible ── */
+[data-theme="ivory"] .rep-kpi-card:hover {
+    border-color: rgba(251, 54, 64, 0.2);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.10);
+    background: #fafafa;
 }
 
 .rep-kpi-card:hover::before { width: 6px; }
@@ -325,6 +345,12 @@
 .rep-legend-label { font-size: 0.75rem; font-weight: 600; color: var(--text-2); flex: 1; }
 .rep-legend-badge { font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 700; color: var(--text-1); padding: 0.15rem 0.5rem; background: rgba(255,255,255,0.05); border-radius: 0.4rem; }
 .rep-legend-pct { font-size: 0.65rem; font-weight: 800; color: var(--text-3); width: 35px; text-align: right; }
+
+/* ── IVORY OVERRIDE: rgba-white badge bg invisible on white ── */
+[data-theme="ivory"] .rep-legend-badge {
+    background: rgba(0, 0, 0, 0.05);
+    color: #18181b;
+}
 
 /* ── 6. Table Ledger ── */
 .rep-table-card {

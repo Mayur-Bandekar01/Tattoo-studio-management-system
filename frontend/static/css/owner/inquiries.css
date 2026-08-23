@@ -51,6 +51,12 @@
     border: 1px solid var(--border);
 }
 
+/* ── IVORY OVERRIDE: rgba-white icon bg invisible on white cards ── */
+[data-theme="ivory"] .stat-card-icon {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: #e2e8f0;
+}
+
 .stat-content {
     display: flex;
     flex-direction: column;

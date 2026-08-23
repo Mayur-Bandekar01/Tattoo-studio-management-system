@@ -1,47 +1,54 @@
-# Project Architecture Analysis: Dragon Tattoos
+# Architecture Overview
 
-## Overview
-Dragon Tattoos is a high-fidelity, role-based Studio Management System built with **Flask**. It follows a modular architecture designed for scalability, security, and a premium "Vibrant Obsidian" user experience.
+This document describes the architectural layout and component structure of the Dragon Tattoos Studio Management System.
 
-## Core Architecture
+## Architecture
 
-### 1. Backend (Modular Logic)
-The backend is organized into a clean directory structure to separate concerns:
-- **`backend/app.py`**: The application factory. Handles global configurations (Security, Mail, Uploads) and registers blueprints.
-- **`backend/routes/`**: Decentralized route management using Flask Blueprints.
-    - `public.py`: Landing pages and static content.
-    - `auth.py`: Centralized authentication, registration, and password recovery.
-    - `customer.py`, `artist.py`, `owner.py`: Role-specific dashboard logic.
-    - `chat.py`: Real-time communication endpoints.
-- **`backend/db.py`**: Database abstraction layer using connection pooling for high-performance MySQL interactions.
+```
+                               ┌─────────────────────────┐
+                               │   Client Web Browser    │
+                               └───────────┬─────────────┘
+                                           │ HTTP / Jinja2 SSR
+                                           ▼
+                               ┌─────────────────────────┐
+                               │    Flask Application    │
+                               │      (backend/app.py)   │
+                               └─────┬──────────────┬────┘
+                                     │              │
+                    ┌────────────────┴───┐      ┌───┴────────────────┐
+                    │  Blueprint Routes  │      │ Utility & Services │
+                    │  (backend/routes/) │      │ (backend/services/)│
+                    └────────┬───────────┘      └───┬────────────────┘
+                             │                      │
+                             └───────────┬──────────┘
+                                         ▼
+                               ┌─────────────────────────┐
+                               │  Database Pool (MySQL)  │
+                               │      (backend/db.py)    │
+                               └─────────────────────────┘
+```
 
-### 2. Frontend (Vibrant Obsidian Design System)
-The frontend uses a custom-built, framework-free design system optimized for aesthetics and performance.
-- **Engine**: Jinja2 Server-Side Rendering.
-- **Styling**: Vanilla CSS3 with CSS Variables for theming (**Scarlet Obsidian** / **Ivory**).
-    - Located in `frontend/static/css/<role>/`.
-    - Uses an `@import` architecture for component-level modularity.
-- **Interactions**: Vanilla JavaScript (`frontend/static/js/`) for dashboard reactivity and theme management.
+### 1. Backend (`backend/`)
+- **`app.py`**: Central Flask application setup, environment loading, error handlers, and blueprint registration.
+- **`db.py`**: Connection pool initialization and context lifecycle handlers (`get_db`, `close_db`).
+- **`routes/`**: Modular Flask blueprints divided by role and function:
+  - `public.py`: Public website views (Home, About, Services, Gallery, Contact).
+  - `auth.py`: User registration, login, logout, and password recovery.
+  - `customer.py`: Customer portal for booking sessions, viewing history, and invoices.
+  - `artist.py`: Artist appointment management, portfolio updates, and material usage logs.
+  - `owner.py`: Studio owner oversight, revenue analytics, inquiries, and staff control.
+  - `chat.py`: Direct messaging between studio staff and clients.
+- **`services/`**: Business logic helpers for artist and owner operations.
+- **`utils/`**: Helper utilities including input validators, serializers, email dispatching, and schema verification.
 
-### 3. Data Integrity & Security
-- **RBAC**: Role-Based Access Control enforced at the route level.
-- **CSRF**: Global Cross-Site Request Forgery protection.
-- **Connection Pooling**: Efficient database resource management.
-- **Validation**: Strict server-side input validation for emails (inclusive of all providers), phones, and passwords.
-- **Unified Auth**: Intelligent credential matching supporting alphanumeric Artist IDs and primary email identifiers across a singular `email` parameter.
+### 2. Frontend (`frontend/`)
+- **`templates/`**: Jinja2 templates organized by section (`landing/`, `customer/`, `artist/`, `owner/`, `auth/`, `billing/`).
+- **`static/`**:
+  - `css/`: Modular stylesheets tailored for each dashboard role.
+  - `js/`: Vanilla JavaScript for UI interactions, appointment modals, and asynchronous actions.
+  - `uploads/`: Dedicated directories for user uploads (`gallery/`, `references/`).
 
-## File Structure
-
-| Layer | Path | Description |
-| :--- | :--- | :--- |
-| **Logic** | `backend/routes/` | Role-based blueprints. |
-| **Data** | `backend/db.py` | Connection pooling. |
-| **UI** | `frontend/templates/` | Modular Jinja2 templates. |
-| **Assets** | `frontend/static/` | CSS, JS, and Brand Assets. |
-| **Spec** | `design-system/` | Design tokens and visual guides. |
-
-## Development Workflow
-The project follows a standard modular full-stack development workflow, utilizing manual and automated validations before deployment.
-
----
-*Last Updated: 2026-05-05*
+### 3. Database Layer (`database/`)
+- Relational schema managed via MySQL.
+- Connection pooling handles concurrent connections efficiently.
+- Foreign key constraints enforce relationship integrity across appointments, users, and billing logs.

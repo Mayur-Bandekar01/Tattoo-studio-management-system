@@ -2,27 +2,54 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.pytest_cache/
-.ruff_cache/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Environments
+# Virtual Environments
 .env
-.venv
-env/
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+.venv/
 venv/
 ENV/
+env/
 
-# IDEs
+# IDE and Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
+# Operating System
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Logs
+# Logs & Temporary Files
 *.log
-
-# Project Specific
 tmp/
-.planning/codebase/
+temp/
+
+# User Uploads (keep directories via .gitkeep, ignore uploaded files)
+frontend/static/uploads/gallery/*
+!frontend/static/uploads/gallery/.gitkeep
+frontend/static/uploads/references/*
+!frontend/static/uploads/references/.gitkeep

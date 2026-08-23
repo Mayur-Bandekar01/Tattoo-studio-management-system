@@ -1,65 +1,136 @@
-# 🐉 Dragon Tattoos - Studio Management System
+# Dragon Tattoos Studio Management System
 
-A premium, full-stack management portal designed for high-end tattoo studios. This system streamlines client bookings, artist scheduling, inventory tracking, and financial analytics within a unified, high-performance environment.
+A web-based management platform built with Python (Flask) and MySQL for tattoo studios. It centralizes appointment booking, artist portfolio management, material tracking, and studio billing.
 
-## Quick Start
+## Key Features
+
+- **Customer Portal**: Online booking for tattoo sessions, custom artwork/sketches, and laser removal, with appointment status tracking.
+- **Artist Dashboard**: Personal appointment calendar, material/supply usage logging, and portfolio gallery management.
+- **Studio Management (Owner)**: Revenue and performance analytics, staff management, supply inventory tracking with low-stock alerts, and invoice generation.
+- **Billing & Invoicing**: Payment tracking, automated invoice generation, and status management (Pending, Paid, Partial).
+- **Authentication & RBAC**: Role-based access control (Owner, Artist, Customer) with CSRF protection and pooled database connections.
+
+## Tech Stack
+
+- **Backend**: Python 3, Flask, Flask-WTF, Flask-Mail
+- **Database**: MySQL (with connection pooling)
+- **Frontend**: HTML5, Vanilla CSS, JavaScript, Jinja2 Templates
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.10+
+- MySQL Server 8.0+
+- `pip` (Python package manager)
+
+### 1. Clone the Repository
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd TatooStudioProject
+git clone https://github.com/your-username/dragon-tattoos-management.git
+cd dragon-tattoos-management
+```
 
-# Install Python dependencies (Pinned versions)
-pip install -r backend/requirements.txt
+### 2. Set Up Virtual Environment
 
-# Configure your environment
-# Copy .env.example to .env and update credentials
-# Production requires a secure SECRET_KEY
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
 
-# Run the project from root
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Database Setup
+
+1. Start your local MySQL server.
+2. Import the schema and initial data from the `database/` directory:
+
+```bash
+mysql -u root -p < database/dragon.sql
+```
+
+### 5. Environment Configuration
+
+Copy `.env.example` to `.env` and fill in your database credentials:
+
+```bash
+cp .env.example .env
+```
+
+Update your `.env` file with your settings:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=dragon_tattoos
+DB_POOL_SIZE=5
+
+SECRET_KEY=your_secret_key_here
+FLASK_DEBUG=1
+PORT=5000
+
+# Optional: Email / SMTP for OTP & notifications
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+```
+
+### 6. Run the Application
+
+```bash
 python run.py
 ```
 
-## Features
+Open your browser and navigate to `http://localhost:5000`.
 
-- **Owner Dashboard**: Advanced analytics with two-tier filtering, revenue tracking, and artist performance metrics.
-- **Artist Portal**: Individual appointment management, inventory usage logging, and gallery portfolio control.
-- **Customer Hub**: Seamless booking experience for Tattoos, Art/Sketching, and Removal services with real-time status tracking.
-- **Premium Aesthetics**: Framework-free Vanilla CSS3 architecture optimized for clarity, precision, and a luxury studio feel.
-- **Financial Suite**: Consolidated invoicing and payment recording with automated billing states.
-- **Inclusive Authentication**: Robust login system supporting all email providers and alphanumeric Artist IDs (e.g., DRAG-ART-001).
-- **Security & Performance**: Global CSRF protection, secured session management with unified parameter handling, and MySQL connection pooling.
+## Project Structure
 
-## Configuration
-
-The application uses environment variables for all sensitive data and configuration. Create a `.env` file in the `backend/` directory.
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DB_HOST` | MySQL Database Host | `localhost` |
-| `DB_USER` | MySQL Database User | `root` |
-| `DB_PASSWORD` | MySQL Database Password (`DB_PASS` is also accepted for older local setups) | - |
-| `DB_NAME` | Database Name | `dragon_tattoos` |
-| `DB_POOL_SIZE`| Database Connection Pool Size | `5` |
-| `SECRET_KEY` | Flask Secret Key (Required for Session & CSRF) | - |
-| `MAIL_SERVER` | SMTP Server for OTP emails | `smtp.gmail.com` |
-| `MAIL_USERNAME`| Email account for SMTP | - |
-| `MAIL_PASSWORD`| Password/App Token for SMTP | - |
+```
+├── backend/
+│   ├── routes/          # Flask blueprints (public, auth, customer, artist, owner, chat)
+│   ├── services/        # Business logic for artists and studio owner
+│   ├── utils/           # Helpers (validators, mailer, metrics, schema maintenance)
+│   ├── app.py           # App initialization and configuration
+│   └── db.py            # MySQL connection pooling
+├── database/
+│   └── dragon.sql       # Database schema and seed data
+├── frontend/
+│   ├── static/          # CSS stylesheets, JS scripts, and upload directories
+│   └── templates/       # Jinja2 template views by section
+├── docs/
+│   ├── api.md           # Route and endpoint reference
+│   ├── architecture.md  # Architecture diagram and component breakdown
+│   ├── database_schema.md # Database table reference
+│   ├── er_diagram.md    # Mermaid ER diagram
+│   └── project_synopsis.md # Project goals and module scope
+├── .env.example         # Environment template
+├── .gitignore           # Git ignore rules
+├── LICENSE              # MIT License
+├── requirements.txt     # Python package requirements
+└── run.py               # Application entry point
+```
 
 ## Documentation
 
+Further details are available in the [`docs/`](./docs) directory:
 - [API Reference](./docs/api.md)
 - [Architecture Details](./docs/architecture.md)
-- [Project Plan](./docs/PLAN.md)
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- [Database Schema](./docs/database_schema.md)
+- [ER Diagram](./docs/er_diagram.md)
+- [Project Synopsis](./docs/project_synopsis.md)
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

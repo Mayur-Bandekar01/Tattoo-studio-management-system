@@ -5,10 +5,11 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
 
-# ── PATH CONFIGURATION ───────────────────────────────────────
+# Base directory
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-# Load environment variables explicitly from backend
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 load_dotenv(os.path.join(BASE_DIR, "backend", ".env"))
 
 app = Flask(
@@ -18,28 +19,24 @@ app = Flask(
 )
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.jinja_env.auto_reload = True
-# Debug set to False for production-ready state
 
-# ── JINJA GLOBALS ────────────────────────────────────────────
+# Context processors
 @app.context_processor
 def inject_now():
     return {"now": datetime.now}
 
-# ── SECURITY CONFIGURATION ───────────────────────────────────
-# Reads from SECRET_KEY env var for production stability; falls back to urandom for local dev.
+# Security and session settings
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 app.permanent_session_lifetime = timedelta(days=30)
 
-# CSRF Protection (Global)
+# CSRF protection
 csrf = CSRFProtect(app)
+app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB limit
 
-# Global Payload Limit (Stop DoS at server level)
-app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB Limit
-
-# ── MAIL CONFIG ──────────────────────────────────────────────
+# Mail configuration
 app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
 if not app.config["MAIL_SERVER"]:
-    app.logger.warning("WARNING: MAIL_SERVER is not configured. Email features (OTP, notifications) will operate in graceful fallback mode.")
+    app.logger.warning("MAIL_SERVER is not configured. Falling back to default SMTP host.")
     app.config["MAIL_SERVER"] = "smtp.gmail.com"
 
 app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", 587))
@@ -49,21 +46,14 @@ app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD") or ""
 app.config["MAIL_DEFAULT_SENDER"] = ("Dragon Tattoos", app.config["MAIL_USERNAME"])
 mail = Mail(app)
 
-# ── UPLOAD CONFIG ─────────────────────────────────────────────
+# Upload directory configuration
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "frontend", "static", "uploads")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Ensure upload directories exist
-os.makedirs(
-    os.path.join(BASE_DIR, "frontend", "static", "uploads", "gallery"), exist_ok=True
-)
-os.makedirs(
-    os.path.join(BASE_DIR, "frontend", "static", "uploads", "references"), exist_ok=True
-)
+os.makedirs(os.path.join(UPLOAD_FOLDER, "gallery"), exist_ok=True)
+os.makedirs(os.path.join(UPLOAD_FOLDER, "references"), exist_ok=True)
 
-
-
-# ── NO CACHE AFTER LOGOUT ────────────────────────────────────
+# Cache control headers
 @app.after_request
 def add_no_cache(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -71,22 +61,19 @@ def add_no_cache(response):
     response.headers["Expires"] = "0"
     return response
 
-
-# ── DATABASE LIFECYCLE ──
+# Database teardown
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     from .db import close_db
     close_db(exception)
 
-
-# ── ERROR HANDLERS ───────────────────────────────────────────
+# Error handlers
 @app.errorhandler(404)
 def page_not_found(e):
     app.logger.warning(f"404 Error: {request.path} [Referrer: {request.referrer}]")
     if "role" in session:
         return redirect(f"/{session['role']}/dashboard")
     return redirect("/")
-
 
 @app.errorhandler(500)
 def server_error(e):
@@ -96,13 +83,12 @@ def server_error(e):
         return redirect(f"/{session['role']}/dashboard")
     return redirect("/")
 
-
-# ── REGISTER BLUEPRINTS ──────────────────────────────────────
+# Blueprint registration
 from .routes import register_blueprints
 
 register_blueprints(app)
 
-# ── DB MAINTENANCE ──────────────────────────────────────────
+# Schema consistency check
 from .utils.db_maintenance import ensure_schema_consistency
 
 with app.app_context():
